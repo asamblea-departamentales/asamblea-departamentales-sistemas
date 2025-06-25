@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Pasantes - Sprint 0",
+    "version": "1.0.0",
+    "description": "Documentación inicial para las APIs del proyecto de pasantes, Sprint 0."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Servidor de desarrollo local de Laravel"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Verificar el estado de salud de la aplicación",
+        "description": "Este endpoint devuelve un estado 'ok' si la aplicación está funcionando correctamente.",
+        "responses": {
+          "200": {
+            "description": "Estado de salud exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    }
+                  },
+                  "required": ["status"]
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Salud"]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Salud",
+      "description": "Endpoints relacionados con la verificación del estado de la aplicación."
+    }
+  ],
+  "components": {
+    "schemas": {}
+  }
+}
