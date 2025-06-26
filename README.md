@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-Hello Sprint 0 ST
-=======
 # ⚡ Setup rápido
 
 Guía completa para levantar el entorno de desarrollo en Laravel en ≤15 minutos.
