@@ -1,23 +1,35 @@
-# EditorConfig ayuda a mantener estilos consistentes entre IDEs
-root = true
+# Laravel
+/public/storage
+/storage/*.key
+.env
+.env.*.local
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+/.vagrant
+/.idea
+/.phpunit.cache
 
-[*]
-charset = utf-8
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
+# Logs
+/storage/logs
+*.log
 
-# PHP y Laravel
-[*.php]
-indent_style = space
-indent_size = 4
+# Cache
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
 
-# JSON, YAML, Markdown
-[*.{json,yml,yaml,md}]
-indent_style = space
-indent_size = 2
+# Composer
+composer.lock
 
-# HTML, CSS, JS, TS
-[*.{html,css,scss,js,ts}]
-indent_style = space
-indent_size = 2
+# Node
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# VSCode / IDEs
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
