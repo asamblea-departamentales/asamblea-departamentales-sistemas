@@ -39,13 +39,16 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 ```bash
 git clone git@github.com:HenryBo6/sandbox-pasantes.git
 cd sandbox-pasantes
-```
+---
 
 2. Copiar el archivo de entorno y generar clave
 ```bash
 cp .env.example .env
+# Edita el archivo .env con tus credenciales locales
 php artisan key:generate
 ```
+⚠️ Importante: Nunca subas el archivo .env al repositorio.
+Usa siempre .env.example como plantilla de referencia.
 
 3. Instalar dependencias de PHP
 ```bash
@@ -64,14 +67,23 @@ npm run dev
 
 > 💡 Deja esta terminal abierta durante el desarrollo para que Laravel cargue JS/CSS dinámicamente con Vite.
 
-6. Configurar conexión a base de datos en `.env`
+6.Configurar conexión a base de datos
+Abre el archivo .env que copiaste desde .env.example y ajusta los valores de conexión según tu entorno local. `.env`
 ```dotenv
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=sandbox
 DB_USERNAME=root
 DB_PASSWORD=
+
+
 ```
 
 7. Crear base de datos manualmente (si no existe)
@@ -191,8 +203,18 @@ php artisan test
 ```bash
 npm run build
 ```
+🔐 Seguridad
 
+Nunca subas tu archivo .env al repositorio.
+
+Usa .env.example como plantilla de configuración.
+
+No incluyas credenciales reales en commits, issues o pull requests.
+
+Consulta el archivo SECURITY.md
+ para más lineamientos.
 ---
 
 ✅ ¡Listo! Tu entorno Laravel con Vite debería estar funcionando correctamente.  
 ¿Algo falló? Revisa el `.env`, asegúrate que los puertos estén bien, y prueba los comandos desde terminal.
+
