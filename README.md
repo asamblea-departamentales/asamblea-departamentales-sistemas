@@ -8,67 +8,67 @@ Guía completa para levantar el entorno de desarrollo en Laravel en ≤15 minuto
 
 Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
-- PHP ≥ 8.1
-- Composer → https://getcomposer.org/
-- Node.js v18.x → https://nodejs.org/dist/latest-v18.x/
-- npm (incluido con Node.js)
-- Git
-- MySQL o MariaDB (puede ser con XAMPP o standalone)
-- phpMyAdmin (opcional, para gestionar la base de datos desde el navegador)
+**Requisitos obligatorios:**
+- **PHP ≥ 8.1** (verifica con `php -v`)
+- **Composer** → https://getcomposer.org/
+- **Node.js v18.x** → https://nodejs.org/dist/latest-v18.x/
+- **npm** (incluido con Node.js)
+- **Git**
+- **MySQL o MariaDB**
+
+**Opciones de servidor local (elige uno):**
+- XAMPP (Windows/Mac/Linux)
+- Laragon (Windows)
+- WAMP (Windows) 
+- MAMP (Mac)
+- MySQL standalone + phpMyAdmin
 
 ---
 
 ## ℹ️ Introducción breve a Laravel, PHP y Vite
 
-- **PHP** es el lenguaje backend ejecutado por Laravel.
-- **Laravel** es un framework MVC moderno con rutas, controladores, modelos y vistas.
-- **Composer** maneja librerías PHP, **npm** las de frontend.
-- **Vite** es el bundler que Laravel usa para compilar JS y CSS (reemplaza Laravel Mix).
-- Estructura común de carpetas:
-  - `routes/web.php`: rutas principales
-  - `app/Http/Controllers`: lógica del backend
-  - `resources/views`: vistas Blade (HTML)
-  - `resources/js`, `resources/css`: frontend (Vite)
-  - `.env`: configuración de entorno, credenciales, base de datos, etc.
+- **PHP** es el lenguaje backend ejecutado por Laravel
+- **Laravel** es un framework MVC moderno con rutas, controladores, modelos y vistas
+- **Composer** maneja librerías PHP, **npm** las de frontend
+- **Vite** es el bundler que Laravel usa para compilar JS y CSS (reemplaza Laravel Mix)
+
+**Estructura común de carpetas:**
+- `routes/web.php`: rutas principales
+- `app/Http/Controllers`: lógica del backend
+- `resources/views`: vistas Blade (HTML)
+- `resources/js`, `resources/css`: frontend (Vite)
+- `.env`: configuración de entorno, credenciales, base de datos, etc.
 
 ---
 
-## 🚀 Pasos de instalación
+## 🚀 Instalación
 
-1. Clonar el repositorio
+### 1. Clonar el repositorio
 ```bash
 git clone git@github.com:HenryBo6/sandbox-pasantes.git
 cd sandbox-pasantes
----
+```
 
-2. Copiar el archivo de entorno y generar clave
+### 2. Configurar archivo de entorno
 ```bash
 cp .env.example .env
-# Edita el archivo .env con tus credenciales locales
 php artisan key:generate
 ```
-⚠️ Importante: Nunca subas el archivo .env al repositorio.
-Usa siempre .env.example como plantilla de referencia.
+> ⚠️ **Importante:** Nunca subas el archivo `.env` al repositorio. Usa siempre `.env.example` como plantilla de referencia.
 
-3. Instalar dependencias de PHP
+### 3. Instalar dependencias
 ```bash
+# Dependencias de PHP
 composer install
-```
 
-4. Instalar dependencias de Node
-```bash
+# Dependencias de Node.js
 npm install
 ```
 
-5. Iniciar Vite en modo desarrollo
-```bash
-npm run dev
-```
+### 4. Configurar base de datos
 
-> 💡 Deja esta terminal abierta durante el desarrollo para que Laravel cargue JS/CSS dinámicamente con Vite.
+Edita el archivo `.env` con tus credenciales locales:
 
-6.Configurar conexión a base de datos
-Abre el archivo .env que copiaste desde .env.example y ajusta los valores de conexión según tu entorno local. `.env`
 ```dotenv
 APP_NAME=Laravel
 APP_ENV=local
@@ -82,142 +82,133 @@ DB_PORT=3306
 DB_DATABASE=sandbox
 DB_USERNAME=root
 DB_PASSWORD=
-
-
 ```
 
-7. Crear base de datos manualmente (si no existe)
-### Usando MySQL desde terminal:
+### 5. Crear base de datos
+
+**Opción A - MySQL desde terminal:**
 ```bash
 mysql -u root -p
-# Luego en el prompt de MySQL:
 CREATE DATABASE sandbox;
 exit;
 ```
 
-### Usando phpMyAdmin:
-1. Abrir en navegador: `http://localhost/phpmyadmin`
+**Opción B - phpMyAdmin:**
+1. Abrir: `http://localhost/phpmyadmin`
 2. Click en "Nueva"
 3. Nombre: `sandbox`, luego "Crear"
 
-8. Ejecutar migraciones
+### 6. Ejecutar migraciones y seeders
 ```bash
 php artisan migrate
+php artisan db:seed  # (opcional)
 ```
 
-9. (Opcional) Ejecutar seeders
+---
+
+## 🚀 Ejecución local
+
+### 1. Iniciar Vite (assets)
 ```bash
-php artisan db:seed
+npm run dev
 ```
+> 💡 **Importante:** Deja esta terminal abierta durante el desarrollo para que Laravel cargue JS/CSS dinámicamente.
 
-10. Iniciar servidor de Laravel
+### 2. Iniciar servidor de Laravel
 ```bash
 php artisan serve
 ```
 
-11. Abrir en el navegador
+### 3. Abrir en el navegador
 ```
 http://localhost:8000
 ```
 
 ---
-☁️ Despliegue a Cloudways desde Git
 
-Para subir y ejecutar el proyecto en Cloudways, sigue este flujo general:
+## ☁️ Despliegue a Cloudways desde Git
 
-Conectar el repositorio
+### Flujo general de despliegue:
 
-Vincula tu repositorio de GitHub en la plataforma Cloudways mediante la opción "Deploy via Git".
+#### 1. Conectar repositorio
+- Vincula tu repositorio de GitHub en la plataforma Cloudways mediante "Deploy via Git"
+- Selecciona la rama a desplegar (normalmente `main` o `master`)
 
-Selecciona la rama que quieras desplegar (normalmente main o master).
+#### 2. Ejecutar despliegue
+Cloudways descargará automáticamente el código. Después del deploy, ejecuta los pasos post-despliegue:
 
-Ejecutar despliegue
+```bash
+# Instalar dependencias
+composer install --optimize-autoloader --no-dev
+npm install
 
-Cloudways descargará automáticamente el código en el servidor.
+# Configurar entorno
+cp .env.example .env
+# Editar .env con valores de producción
+php artisan key:generate
 
-Tras el deploy, realiza los pasos post-despliegue necesarios:
+# Base de datos
+php artisan migrate --force
 
-Instalar dependencias de PHP y Node (composer install, npm install)
+# Compilar assets para producción
+npm run build
 
-Configurar el archivo .env con valores de producción (sin subir credenciales al repo)
+# Optimizar Laravel
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
 
-Generar la clave de la aplicación (php artisan key:generate)
+#### 3. Verificación
+- Accede a la URL de la aplicación en Cloudways
+- Verifica que el login funcione correctamente
+- Si usas Filament, confirma que el panel de administración carga sin errores
 
-Ejecutar migraciones si aplica (php artisan migrate)
+> 💡 **Nota:** Ejecuta todos los comandos desde la consola de Cloudways. **Nunca incluyas credenciales sensibles en el repositorio.**
 
-Compilar assets para producción (npm run build)
-
-Verificación
-
-Accede a la URL de la aplicación en Cloudways para confirmar que el proyecto funciona correctamente.
-
-Revisa la sección de login y, si usas Filament, asegúrate que el panel de administración carga sin errores.
-
-💡 Nota: Todos los pasos deben ejecutarse desde la consola de Cloudways o mediante su interfaz de gestión, sin incluir contraseñas ni credenciales sensibles en el repositorio.
+---
 
 ## 🛠 Troubleshooting común
 
 ### Errores generales
 
-- Autoload roto:
+**Autoload roto:**
 ```bash
 composer dump-autoload
 ```
 
-- Permisos en Linux/macOS:
+**Permisos en Linux/macOS:**
 ```bash
 sudo chmod -R 775 storage bootstrap/cache
 ```
 
-- Verificar versión de Node:
+**Verificar versión de Node:**
 ```bash
 node -v
-```
-
-- Cambiar a Node 18 si es necesario:
-```bash
+# Si no es v18.x:
 npm install -g n
 sudo n 18
 ```
 
-- Assets no cargan:
+**Assets no cargan:**
 ```bash
 npm run dev
 ```
 
----
-
 ### ⚠️ XAMPP y MySQL 8.4.4
 
-#### Problema: Puerto en uso o conflictos
-MySQL 8.4.4 puede entrar en conflicto con otros servicios. Para cambiar el puerto:
+#### Problema: Puerto en uso
+1. Editar `C:/xampp/mysql/bin/my.ini`
+2. Cambiar `port=3306` por `port=3307`
+3. En `.env`: `DB_PORT=3307`
+4. Reiniciar MySQL desde XAMPP
 
-1. Ir a `C:/xampp/mysql/bin/my.ini`
-2. Cambiar:
-```
-port=3306
-```
-por
-```
-port=3307
-```
+#### Problema: phpMyAdmin no carga
+- Descarga phpMyAdmin standalone desde https://www.phpmyadmin.net/
+- Descomprímelo en carpeta separada
+- Configura Apache o usa servidor web externo
 
-3. En `.env` de Laravel:
-```dotenv
-DB_PORT=3307
-```
-
-4. Reiniciar MySQL desde el panel de XAMPP.
-
-#### Problema: phpMyAdmin no carga o da error
-
-- XAMPP puede bloquear phpMyAdmin si Laravel se ejecuta en otro contexto.
-- Solución: descarga phpMyAdmin desde https://www.phpmyadmin.net/
-  - Descomprime en una carpeta aparte (ej: `C:/phpmyadmin-standalone`)
-  - Correlo desde un servidor web externo o configura Apache para apuntar ahí.
-
-#### Abrir MySQL y administrar base de datos desde consola
-
+#### MySQL desde consola:
 ```bash
 cd C:/xampp/mysql/bin
 mysql -u root -p
@@ -225,30 +216,52 @@ mysql -u root -p
 
 ---
 
-## 🧪 Extras
+## 🧪 Comandos adicionales
 
-- Ejecutar pruebas de Laravel
+**Ejecutar pruebas:**
 ```bash
 php artisan test
 ```
 
-- Compilar assets para producción
+**Compilar para producción:**
 ```bash
 npm run build
 ```
-🔐 Seguridad
 
-Nunca subas tu archivo .env al repositorio.
+**Limpiar caché:**
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
 
-Usa .env.example como plantilla de configuración.
-
-No incluyas credenciales reales en commits, issues o pull requests.
-
-Consulta el archivo SECURITY.md
- para más lineamientos.
 ---
 
-✅ ¡Listo! Tu entorno Laravel con Vite debería estar funcionando correctamente.  
-¿Algo falló? Revisa el `.env`, asegúrate que los puertos estén bien, y prueba los comandos desde terminal.
+## 🔐 Seguridad
 
+- ⚠️ **Nunca subas tu archivo `.env` al repositorio**
+- Usa `.env.example` como plantilla de configuración
+- No incluyas credenciales reales en commits, issues o pull requests
+- Consulta el archivo `SECURITY.md` para más lineamientos
 
+---
+
+## 📸 Evidencia de funcionamiento
+
+Una vez completado el setup, deberías poder ver:
+
+- **Página de bienvenida de Laravel** en `http://localhost:8000`
+- **Panel de login** funcionando correctamente
+- **Filament admin panel** (si aplica) cargando sin errores
+- **Assets compilados** (CSS/JS) mediante Vite
+
+### Capturas requeridas:
+- [ ] Pantalla de login del proyecto
+- [ ] Dashboard o página principal funcionando
+- [ ] Panel de Filament (si aplica)
+
+---
+
+✅ **¡Listo!** Tu entorno Laravel con Vite debería estar funcionando correctamente.  
+
+¿Algo falló? Revisa el `.env`, asegúrate que los puertos estén correctos, y ejecuta los comandos desde terminal.
