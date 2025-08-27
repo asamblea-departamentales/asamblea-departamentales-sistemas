@@ -121,6 +121,39 @@ http://localhost:8000
 ```
 
 ---
+☁️ Despliegue a Cloudways desde Git
+
+Para subir y ejecutar el proyecto en Cloudways, sigue este flujo general:
+
+Conectar el repositorio
+
+Vincula tu repositorio de GitHub en la plataforma Cloudways mediante la opción "Deploy via Git".
+
+Selecciona la rama que quieras desplegar (normalmente main o master).
+
+Ejecutar despliegue
+
+Cloudways descargará automáticamente el código en el servidor.
+
+Tras el deploy, realiza los pasos post-despliegue necesarios:
+
+Instalar dependencias de PHP y Node (composer install, npm install)
+
+Configurar el archivo .env con valores de producción (sin subir credenciales al repo)
+
+Generar la clave de la aplicación (php artisan key:generate)
+
+Ejecutar migraciones si aplica (php artisan migrate)
+
+Compilar assets para producción (npm run build)
+
+Verificación
+
+Accede a la URL de la aplicación en Cloudways para confirmar que el proyecto funciona correctamente.
+
+Revisa la sección de login y, si usas Filament, asegúrate que el panel de administración carga sin errores.
+
+💡 Nota: Todos los pasos deben ejecutarse desde la consola de Cloudways o mediante su interfaz de gestión, sin incluir contraseñas ni credenciales sensibles en el repositorio.
 
 ## 🛠 Troubleshooting común
 
@@ -217,4 +250,5 @@ Consulta el archivo SECURITY.md
 
 ✅ ¡Listo! Tu entorno Laravel con Vite debería estar funcionando correctamente.  
 ¿Algo falló? Revisa el `.env`, asegúrate que los puertos estén bien, y prueba los comandos desde terminal.
+
 
