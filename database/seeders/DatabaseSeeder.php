@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use SebastianBergmann\CodeCoverage\Report\Xml\Report;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,15 +13,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // Aquí se llama a los seeders 
-            RolesAccesoSeeder::class,
-            UsuarioSeeder::class,
-            ActividadesProgramadasSeeder::class,
-            ActividadesRealizadasSeeder::class,
-            AtestadosSeeder::class,
-            ReportesSeeder::class,
-            ReporteActividadSeeder::class,
-            BitacoraAdministrativaSeeder::class,
+            RoleSeeder::class,
+            UsersSeeder::class,
+            BannersSeeder::class,
+            BlogsSeeder::class,
+            ContactUsSeeder::class,
+            MenuSeeder::class,
+            DepartamentalesSeeder::class,
+            //para tener data
+            ActividadesSeeder::class,
+            AssignShieldPermissionsSeeder::class,
         ]);
     }
 }

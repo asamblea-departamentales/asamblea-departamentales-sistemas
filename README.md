@@ -1,267 +1,261 @@
-# ⚡ Setup rápido
+<div align="center">
+  <img src="https://i.postimg.cc/4djrcJXx/logo.png" alt="Starter kit logo" width="200"/>
 
-Guía completa para levantar el entorno de desarrollo en Laravel en ≤15 minutos.
+  [![Latest Version on Packagist](https://img.shields.io/packagist/v/riodwanto/superduper-filament-starter-kit.svg?style=flat-square)](https://packagist.org/packages/riodwanto/superduper-filament-starter-kit)
+  [![Laravel](https://github.com/riodwanto/superduper-filament-starter-kit/actions/workflows/laravel.yml/badge.svg)](https://github.com/riodwanto/superduper-filament-starter-kit/actions/workflows/laravel.yml)
+    [![Total Downloads](https://img.shields.io/packagist/dt/riodwanto/superduper-filament-starter-kit.svg?style=flat-square)](https://packagist.org/packages/riodwanto/superduper-filament-starter-kit)
+</div>
 
----
+<p align="center">
+    A starting point to create your next Filament 3 💡 app. With pre-installed plugins, pre-configured, and custom page. So you don't start all over again.
+</p>
 
-## ✅ Requisitos previos
+#### ✨ Features
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente:
+- 🛡️ **User & Access Management**
+  - [Filament Shield](#plugins-used) for comprehensive role-based access control
+  - 👥 Multiple user roles with granular permissions
+  - 🔐 Secure authentication workflows
 
-**Requisitos obligatorios:**
-- **PHP ≥ 8.1** (verifica con `php -v`)
-- **Composer** → https://getcomposer.org/
-- **Node.js v18.x** → https://nodejs.org/dist/latest-v18.x/
-- **npm** (incluido con Node.js)
-- **Git**
-- **MySQL o MariaDB**
+- 👤 **Profile & User Experience**
+  - 👨🏻‍🦱 Customizable profile page from [Filament Breezy](#plugins-used)
+  - 🌙 Dark/light mode switching
+  - 🎭 Personalized user dashboard
 
-**Opciones de servidor local (elige uno):**
-- XAMPP (Windows/Mac/Linux)
-- Laragon (Windows)
-- WAMP (Windows) 
-- MAMP (Mac)
-- MySQL standalone + phpMyAdmin
+- 🎨 **Theme & UI Customization**
+  - 🖼️ Theme settings for panel colors and layout preferences
+  - 🧩 Modular design for easy extension
+  - 🎚️ Responsive interface for all devices
 
----
+- 🌐 **Content Management**
+  - 📝 Blog module with categories and tags
+  - 🖼️ Banner management system
+  - 📅 Event scheduling capabilities
 
-## ℹ️ Introducción breve a Laravel, PHP y Vite
+- 📊 **Media Management**
+  - 🌌 Complete media library with [Filament Spatie Media](#plugins-used)
+  - 🖼️ Image optimization and thumbnails
+  - 📂 Easy upload and organization
 
-- **PHP** es el lenguaje backend ejecutado por Laravel
-- **Laravel** es un framework MVC moderno con rutas, controladores, modelos y vistas
-- **Composer** maneja librerías PHP, **npm** las de frontend
-- **Vite** es el bundler que Laravel usa para compilar JS y CSS (reemplaza Laravel Mix)
+- 🌍 **Localization & Translation**
+  - 🅻 Powerful Lang Generator tool
+  - 🔄 Automated translation capabilities
+  - 🌐 Multi-language support for global applications
 
-**Estructura común de carpetas:**
-- `routes/web.php`: rutas principales
-- `app/Http/Controllers`: lógica del backend
-- `resources/views`: vistas Blade (HTML)
-- `resources/js`, `resources/css`: frontend (Vite)
-- `.env`: configuración de entorno, credenciales, base de datos, etc.
+- 📧 **Email & Notifications**
+  - 💌 Configure mail settings on the fly
+  - 📨 Customizable email templates
+  - 🔔 User notification system
 
----
+- 🔧 **System Configuration**
+  - ⚙️ Frontend web settings (Site Name, Scripts, etc.)
+  - 📝 Log viewer and error tracking
+  - 🧰 Developer-friendly tools
 
-## 🚀 Instalación
+- 🔍 **SEO & Analytics**
+  - 🔎 Comprehensive SEO settings and optimization
+  - 📈 Laravel Trend integration for data visualization
+  - 📊 Traffic and user analytics
 
-### 1. Clonar el repositorio
+- 🛠️ **Developer Experience**
+  - ⚡ Optimized performance out of the box
+  - 📝 Code editor integration
+  - 🧪 Testing tools and infrastructure
+
+#### Latest update
+
+##### Version: v1.19.0
+
+- User impersonation feature for admins
+- Contact Us stats dashboard widget
+- Blog module improvements (stats, author filtering, status tracking)
+- Enhanced menu builder with more locations and configuration
+- Clustered site settings and new site editor page
+- Improved site logo functionality
+- Updated panel footer and various UI/UX enhancements
+- Improved security headers, new middleware, and log channels
+- Enhanced afterSave hooks and visibility suffix actions
+- Updated translations and language generator improvements
+- Various bug fixes and styling improvements
+
+[Version Releases](https://github.com/riodwanto/superduper-filament-starter-kit/releases)
+
+#### Getting Started
+
+Create project with this composer command:
+
 ```bash
-git clone git@github.com:HenryBo6/sandbox-pasantes.git
-cd sandbox-pasantes
+composer create-project riodwanto/superduper-filament-starter-kit
 ```
 
-### 2. Configurar archivo de entorno
+Setup your project easily using the one of setup scripts:
+
 ```bash
+php bin/setup.php
+```
+
+Or manually:
+
+Setup your env:
+
+```bash
+cd superduper-filament-starter-kit
 cp .env.example .env
+```
+
+Run migration & seeder:
+
+```bash
+php artisan migrate
+php artisan db:seed
+```
+
+<p align="center">or</p>
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Generate Shield permissions & policies:
+
+```bash
+php artisan shield:generate --all
+```
+
+One Liner:
+
+```bash
+php artisan migrate && php artisan db:seed && php artisan shield:generate --all
+
+[Important] Bind permissions to roles:
+
+```bash
+php artisan db:seed --class=PermissionsSeeder
+```
+
+Generate key:
+
+```bash
 php artisan key:generate
 ```
-> ⚠️ **Importante:** Nunca subas el archivo `.env` al repositorio. Usa siempre `.env.example` como plantilla de referencia.
 
-### 3. Instalar dependencias
+Storage Link:
+
 ```bash
-# Dependencias de PHP
-composer install
+php artisan storage:link
+```
 
-# Dependencias de Node.js
+Install dependencies:
+
+```bash
 npm install
 ```
 
-### 4. Configurar base de datos
+Build :
 
-Edita el archivo `.env` con tus credenciales locales:
-
-```dotenv
-APP_NAME=Laravel
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=sandbox
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-### 5. Crear base de datos
-
-**Opción A - MySQL desde terminal:**
-```bash
-mysql -u root -p
-CREATE DATABASE sandbox;
-exit;
-```
-
-**Opción B - phpMyAdmin:**
-1. Abrir: `http://localhost/phpmyadmin`
-2. Click en "Nueva"
-3. Nombre: `sandbox`, luego "Crear"
-
-### 6. Ejecutar migraciones y seeders
-```bash
-php artisan migrate
-php artisan db:seed  # (opcional)
-```
-
----
-
-## 🚀 Ejecución local
-
-### 1. Iniciar Vite (assets)
 ```bash
 npm run dev
+OR
+npm run build
 ```
-> 💡 **Importante:** Deja esta terminal abierta durante el desarrollo para que Laravel cargue JS/CSS dinámicamente.
 
-### 2. Iniciar servidor de Laravel
+Start development server:
+
 ```bash
 php artisan serve
 ```
 
-### 3. Abrir en el navegador
-```
-http://localhost:8000
-```
-
----
-
-## ☁️ Despliegue a Cloudways desde Git
-
-### Flujo general de despliegue:
-
-#### 1. Conectar repositorio
-- Vincula tu repositorio de GitHub en la plataforma Cloudways mediante "Deploy via Git"
-- Selecciona la rama a desplegar (normalmente `main` o `master`)
-
-#### 2. Ejecutar despliegue
-Cloudways descargará automáticamente el código. Después del deploy, ejecuta los pasos post-despliegue:
+Now you can access with `/admin` path, using:
 
 ```bash
-# Instalar dependencias
-composer install --optimize-autoloader --no-dev
-npm install
-
-# Configurar entorno
-cp .env.example .env
-# Editar .env con valores de producción
-php artisan key:generate
-
-# Base de datos
-php artisan migrate --force
-
-# Compilar assets para producción
-npm run build
-
-# Optimizar Laravel
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+email: superadmin@starter-kit.com
+password: superadmin
 ```
 
-#### 3. Verificación
-- Accede a la URL de la aplicación en Cloudways
-- Verifica que el login funcione correctamente
-- Si usas Filament, confirma que el panel de administración carga sin errores
+#### Performance
 
-> 💡 **Nota:** Ejecuta todos los comandos desde la consola de Cloudways. **Nunca incluyas credenciales sensibles en el repositorio.**
+*It's recommend to run below command as suggested in [Filament Documentation](https://filamentphp.com/docs/3.x/panels/installation#improving-filament-panel-performance) for improving panel perfomance.*
 
----
-
-## 🛠 Troubleshooting común
-
-### Errores generales
-
-**Autoload roto:**
 ```bash
-composer dump-autoload
+php artisan icons:cache
 ```
 
-**Permisos en Linux/macOS:**
+Please see this [Improving Filament panel performance](https://filamentphp.com/docs/3.x/panels/installation#improving-filament-panel-performance) documentation for further improvement
+
+#### Language Generator
+
+This project include lang generator.
+
 ```bash
-sudo chmod -R 775 storage bootstrap/cache
+php artisan superduper:lang-translate [from] [to]
 ```
 
-**Verificar versión de Node:**
+Generator will look up files inside folder `[from]`. Get all variables inside the file; create a file and translate using `translate.googleapis.com`.
+
+This is what the translation process looks like.
+
 ```bash
-node -v
-# Si no es v18.x:
-npm install -g n
-sudo n 18
+❯ php artisan superduper:lang-translate en fr es
+
+ 🔔 Translate to 'fr'
+ 3/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100% -- ✅
+
+ 🔔 Translate to 'es'
+ 1/3 [▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░]  33% -- 🔄 Processing: page.php
 ```
 
-**Assets no cargan:**
+##### Usage example
+
+- Single output
+
 ```bash
-npm run dev
+php artisan superduper:lang-translate en fr
 ```
 
-### ⚠️ XAMPP y MySQL 8.4.4
+- Multiple output
 
-#### Problema: Puerto en uso
-1. Editar `C:/xampp/mysql/bin/my.ini`
-2. Cambiar `port=3306` por `port=3307`
-3. En `.env`: `DB_PORT=3307`
-4. Reiniciar MySQL desde XAMPP
-
-#### Problema: phpMyAdmin no carga
-- Descarga phpMyAdmin standalone desde https://www.phpmyadmin.net/
-- Descomprímelo en carpeta separada
-- Configura Apache o usa servidor web externo
-
-#### MySQL desde consola:
 ```bash
-cd C:/xampp/mysql/bin
-mysql -u root -p
+php artisan superduper:lang-translate en es ar fr pt-PT pt-BR zh-CN zh-TW
 ```
 
----
+###### If you are using json translation
 
-## 🧪 Comandos adicionales
-
-**Ejecutar pruebas:**
 ```bash
-php artisan test
+php artisan superduper:lang-translate en fr --json
 ```
 
-**Compilar para producción:**
-```bash
-npm run build
-```
+#### Plugins
 
-**Limpiar caché:**
-```bash
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-```
+These are [Filament Plugins](https://filamentphp.com/plugins) use for this project.
 
----
+| **Plugin**                                                                                          | **Author**                                          |
+| :-------------------------------------------------------------------------------------------------- | :-------------------------------------------------- |
+| [Filament Spatie Media Library](https://github.com/filamentphp/spatie-laravel-media-library-plugin) | [Filament Official](https://github.com/filamentphp)   |
+| [Filament Spatie Settings](https://github.com/filamentphp/spatie-laravel-settings-plugin)           | [Filament Official](https://github.com/filamentphp)   |
+| [Filament Spatie Tags](https://github.com/filamentphp/spatie-laravel-tags-plugin)                   | [Filament Official](https://github.com/filamentphp)   |
+| [Shield](https://github.com/bezhanSalleh/filament-shield)                                           | [bezhansalleh](https://github.com/bezhansalleh)     |
+| [Exceptions](https://github.com/bezhansalleh/filament-exceptions)                                   | [bezhansalleh](https://github.com/bezhansalleh)     |
+| [Breezy](https://github.com/jeffgreco13/filament-breezy)                                            | [jeffgreco13](https://github.com/jeffgreco13)       |
+| [Logger](https://github.com/z3d0x/filament-logger)                                                  | [z3d0x](https://github.com/z3d0x)                   |
+| [Ace Code Editor](https://github.com/riodwanto/filament-ace-editor)                                 | [riodwanto](https://github.com/riodwanto)           |
+| [Filament media manager](https://github.com/tomatophp/filament-media-manager)                       | [tomatophp](https://github.com/tomatophp)           |
+| [Filament Menu Builder](https://github.com/datlechin/filament-menu-builder)                         | [datlechin](https://github.com/datlechin)           |
 
-## 🔐 Seguridad
+#### Plugins Recommendation
 
-- ⚠️ **Nunca subas tu archivo `.env` al repositorio**
-- Usa `.env.example` como plantilla de configuración
-- No incluyas credenciales reales en commits, issues o pull requests
-- Consulta el archivo `SECURITY.md` para más lineamientos
+Other recommendations for your starter, in my personal opinion:
 
----
+- [Rupadana - API Resources](https://filamentphp.com/plugins/rupadana-api-service) : Generate API for your Resources.
+- [Bezhan Salleh - Language Switch](https://filamentphp.com/plugins/bezhansalleh-language-switch) : Zero config Language Switcher plugin for Filament Panels.
+- [Kenepa - Resource Lock](https://filamentphp.com/plugins/kenepa-resource-lock) : Resource locking when other user begins editing a resource.
+- [Ralph J. Smit - Components](https://filamentphp.com/plugins/ralphjsmit-components) : A collection of handy components.
+- [Tapp Network - Laravel Auditing](https://filamentphp.com/plugins/tapp-network-laravel-auditing) : Auditing package which contains a relation manager for audits that you can add to your resources.
+- [Shuvro Roy - Spatie Laravel Health](https://filamentphp.com/plugins/shuvroroy-spatie-laravel-health) : Health monitoring for Filament.
 
-## 📸 Evidencia de funcionamiento
+<a href="https://buymeacoffee.com/riodewanto" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
-Una vez completado el setup, deberías poder ver:
+### License
 
-- **Página de bienvenida de Laravel** en `http://localhost:8000`
-- **Panel de login** funcionando correctamente
-- **Filament admin panel** (si aplica) cargando sin errores
-- **Assets compilados** (CSS/JS) mediante Vite
+Filament Starter is provided under the [MIT License](LICENSE.md).
 
-### Capturas requeridas:
-- [ ] Pantalla de login del proyecto
-- [ ] Dashboard o página principal funcionando
-- [ ] Panel de Filament (si aplica)
-
----
-
-✅ **¡Listo!** Tu entorno Laravel con Vite debería estar funcionando correctamente.  
-
-¿Algo falló? Revisa el `.env`, asegúrate que los puertos estén correctos, y ejecuta los comandos desde terminal.
+If you discover a bug, please [open an issue](https://github.com/riodwanto/superduper-filament-starter-kit/issues).

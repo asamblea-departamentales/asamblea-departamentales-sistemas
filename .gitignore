@@ -1,35 +1,22 @@
-# Laravel
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
 /public/storage
 /storage/*.key
+/vendor
 .env
-.env.*.local
+.env.backup.*
+.env.production
 .phpunit.result.cache
-Homestead.yaml
 Homestead.json
-/.vagrant
-/.idea
-/.phpunit.cache
-
-# Logs
-/storage/logs
-*.log
-
-# Cache
-bootstrap/cache/*
-!bootstrap/cache/.gitignore
-
-# Composer
-composer.lock
-
-# Node
+Homestead.yaml
+auth.json
 npm-debug.log
 yarn-error.log
-pnpm-debug.log
-
-# VSCode / IDEs
-.vscode/
-.idea/
-
-# Sistema operativo
-.DS_Store
-Thumbs.db
+/.fleet
+/.idea
+/.vscode
+/-local
+/docs
+setup.php.disabled
