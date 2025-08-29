@@ -6,32 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
-            $table->dropColumn(['asistentes']); // si todavía existe la vieja
-    $table->integer('asistentes_hombres')->default(0)->after('lugar');
-    $table->integer('asistentes_mujeres')->default(0)->after('asistentes_hombres');
-    $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
-});
-        
+            // Solo eliminar si la columna existe
+            if (Schema::hasColumn('actividades', 'asistentes')) {
+                $table->dropColumn('asistentes');
+            }
+
+            $table->integer('asistentes_hombres')->default(0)->after('lugar');
+            $table->integer('asistentes_mujeres')->default(0)->after('asistentes_hombres');
+            $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
             $table->dropColumn([
-                'lugar', 
-                'asistentes_hombres', 
-                'asistentes_mujeres', 
-                'asistencia_completa'
+                'asistentes_hombres',
+                'asistentes_mujeres',
+                'asistencia_completa',
             ]);
+
+            // Solo agregar la columna vieja si no existe
+            if (!Schema::hasColumn('actividades', 'asistentes')) {
+                $table->integer('asistentes')->default(0)->after('lugar');
+            }
         });
     }
 };
