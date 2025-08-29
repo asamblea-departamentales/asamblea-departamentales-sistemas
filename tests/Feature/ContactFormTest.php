@@ -18,10 +18,7 @@ class ContactFormTest extends TestCase
             'lastname'  => 'Doe',
             'email'     => 'john@example.com',
             'subject'   => 'Hello',
-            'message'   => 'This is a test message.',
-            // Agrega los campos que requiera tu ContactUsRequest
-            'phone'     => '1234567890', // si es requerido
-            'company'   => 'Test Company', // si es requerido
+            'message'   => 'This is a test message with more than 10 characters.',
         ]);
 
         // Debe redirigir de vuelta
@@ -37,14 +34,13 @@ class ContactFormTest extends TestCase
         
         $response = $this->post('/contact', []);
 
-        // Debe regresar con errores en sesión
+        // Debe regresar con errores en sesión para los campos requeridos
         $response->assertSessionHasErrors([
             'firstname',
             'lastname',
             'email',
             'subject',
             'message',
-            // Agrega otros campos requeridos según tu ContactUsRequest
         ]);
     }
 }
