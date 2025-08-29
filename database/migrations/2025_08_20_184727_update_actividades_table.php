@@ -9,14 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
-            // Solo eliminar si la columna existe
+            if (!Schema::hasColumn('actividades', 'asistentes_hombres')) {
+                $table->integer('asistentes_hombres')->default(0)->after('lugar');
+            }
+
+            if (!Schema::hasColumn('actividades', 'asistentes_mujeres')) {
+                $table->integer('asistentes_mujeres')->default(0)->after('asistentes_hombres');
+            }
+
+            if (!Schema::hasColumn('actividades', 'asistencia_completa')) {
+                $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
+            }
+
+            // Opcional: eliminar la columna vieja si existe
             if (Schema::hasColumn('actividades', 'asistentes')) {
                 $table->dropColumn('asistentes');
             }
-
-            $table->integer('asistentes_hombres')->default(0)->after('lugar');
-            $table->integer('asistentes_mujeres')->default(0)->after('asistentes_hombres');
-            $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
         });
     }
 
@@ -29,7 +37,6 @@ return new class extends Migration
                 'asistencia_completa',
             ]);
 
-            // Solo agregar la columna vieja si no existe
             if (!Schema::hasColumn('actividades', 'asistentes')) {
                 $table->integer('asistentes')->default(0)->after('lugar');
             }
