@@ -1,7 +1,5 @@
 <?php
-
 namespace Tests\Feature;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,16 +12,19 @@ class ContactFormTest extends TestCase
     {
         // Desactivar CSRF para este test
         $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
-
+        
         $response = $this->post('/contact', [
             'firstname' => 'John',
             'lastname'  => 'Doe',
             'email'     => 'john@example.com',
             'subject'   => 'Hello',
             'message'   => 'This is a test message.',
+            // Agrega los campos que requiera tu ContactUsRequest
+            'phone'     => '1234567890', // si es requerido
+            'company'   => 'Test Company', // si es requerido
         ]);
 
-        // Debe redirigir al mismo formulario
+        // Debe redirigir de vuelta
         $response->assertRedirect();
         $response->assertSessionHas('success');
     }
@@ -33,7 +34,7 @@ class ContactFormTest extends TestCase
     {
         // Desactivar CSRF para este test
         $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
-
+        
         $response = $this->post('/contact', []);
 
         // Debe regresar con errores en sesión
@@ -43,6 +44,7 @@ class ContactFormTest extends TestCase
             'email',
             'subject',
             'message',
+            // Agrega otros campos requeridos según tu ContactUsRequest
         ]);
     }
 }
