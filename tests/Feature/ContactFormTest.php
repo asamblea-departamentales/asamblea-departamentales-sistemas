@@ -22,58 +22,45 @@ class ContactFormTest extends TestCase
         Mail::fake();
     }
 
-    /** @test */
-    public function contact_form_can_be_submitted()
-    {
-        Event::fake();
+   /** @test */
+public function contact_form_can_be_submitted()
+{
+    Event::fake();
+    Mail::fake();
 
-        // Create the contact directly to ensure test passes
-        // while we wait for controller updates
-        $response = $this->withoutMiddleware()->post('/contact', [
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'email' => 'john@gmail.com',
-            'phone' => '555-123-4567',
-            'company' => 'Acme Inc',
-            'employees' => '11-50',
-            'title' => 'CEO',
-            'subject' => 'General Inquiry',
-            'message' => 'This is a test message from the contact form.',
-        ]);
+    $data = [
+        'firstname' => 'John',
+        'lastname' => 'Doe',
+        'email' => 'john@gmail.com',
+        'phone' => '555-123-4567',
+        'company' => 'Acme Inc',
+        'employees' => '11-50',
+        'title' => 'CEO',
+        'subject' => 'General Inquiry',
+        'message' => 'This is a test message from the contact form.',
+    ];
 
-        // If controller doesn't set success message yet, use test-only approach
-        if (! $response->getSession()->has('success')) {
-            // Create the contact directly for testing
-            ContactUs::create([
-                'firstname' => 'John',
-                'lastname' => 'Doe',
-                'email' => 'john@gmail.com',
-                'phone' => '555-123-4567',
-                'company' => 'Acme Inc',
-                'employees' => '11-50',
-                'title' => 'CEO',
-                'subject' => 'General Inquiry',
-                'message' => 'This is a test message from the contact form.',
-            ]);
+    // Enviar POST sin deshabilitar middleware
+    $response = $this->post('/contact', $data);
 
-            // Skip session assertions since we're manually creating the contact
-            $this->assertTrue(true);
-        } else {
-            $response->assertSessionHas('success');
-            $response->assertRedirect();
-        }
+    // Verificar redirección y sesión
+    $response->assertStatus(302); // normalmente redirige después de guardar
+    $response->assertSessionHas('success');
 
-        $this->assertDatabaseHas('contact_us', [
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'email' => 'john@gmail.com',
-            'status' => 'new',
-        ]);
+    // Verificar la base de datos
+    $this->assertDatabaseHas('contact_us', [
+        'firstname' => 'John',
+        'lastname' => 'Doe',
+        'email' => 'john@gmail.com',
+        'status' => 'new',
+    ]);
 
-        Event::assertDispatched(ContactUsCreated::class, function ($event) {
-            return $event->contact->email === 'john@gmail.com';
-        });
-    }
+    // Verificar evento
+    Event::assertDispatched(ContactUsCreated::class, function ($event) {
+        return $event->contact->email === 'john@gmail.com';
+    });
+}
+
 
     /** @test */
     public function validation_errors_are_returned_when_form_is_incomplete()
