@@ -10,15 +10,15 @@ return new class extends Migration
     {
         Schema::table('actividades', function (Blueprint $table) {
             // Crear nuevas columnas si no existen
-            if (!Schema::hasColumn('actividades', 'asistentes_hombres')) {
+            if (! Schema::hasColumn('actividades', 'asistentes_hombres')) {
                 $table->integer('asistentes_hombres')->default(0)->after('lugar');
             }
 
-            if (!Schema::hasColumn('actividades', 'asistentes_mujeres')) {
+            if (! Schema::hasColumn('actividades', 'asistentes_mujeres')) {
                 $table->integer('asistentes_mujeres')->default(0)->after('asistentes_hombres');
             }
 
-            if (!Schema::hasColumn('actividades', 'asistencia_completa')) {
+            if (! Schema::hasColumn('actividades', 'asistencia_completa')) {
                 $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
             }
 
@@ -40,7 +40,7 @@ return new class extends Migration
             ]);
 
             // Restaurar la columna antigua si no existe
-            if (!Schema::hasColumn('actividades', 'asistentes')) {
+            if (! Schema::hasColumn('actividades', 'asistentes')) {
                 $table->integer('asistentes')->default(0)->after('lugar');
             }
         });
