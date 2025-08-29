@@ -14,9 +14,12 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3' # 🔥 Cambiado a 8.3 para que sea compatible con composer.lock
+          php-version: '8.3'
           extensions: mbstring, bcmath, pdo_mysql
           coverage: none
+
+      - name: Verify PHP version 🔍
+        run: php -v
 
       - name: Cache Composer
         uses: actions/cache@v3
@@ -44,6 +47,5 @@ jobs:
       - name: Run Pint (Laravel style checker)
         run: vendor/bin/pint --test || true
 
-      # Opcional: correr tests si existen
       - name: Run PHPUnit
         run: php artisan test --parallel || true
