@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,15 @@ Route::get('impersonate/leave', function () {
 
     app(ImpersonateManager::class)->leave();
 
-    return redirect(
-        session()->pull('impersonate.back_to', '/')
-    );
+    return redirect(session()->pull('impersonate.back_to', '/'));
 })->name('impersonate.leave')->middleware('web');
+
+// ---------------------------
+// Rutas públicas de contacto
+// ---------------------------
+
+// Mostrar formulario de contacto
+Route::get('/contact', fn() => view('contact'))->name('contact.form');
+
+// Enviar formulario de contacto
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
