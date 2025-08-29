@@ -20,47 +20,37 @@ class ContactFormTest extends TestCase
     {
         parent::setUp();
         Mail::fake();
+        Event::fake();
     }
 
-   /** @test */
-public function contact_form_can_be_submitted()
-{
-    Event::fake();
-    Mail::fake();
+    /** @test */
+    public function contact_form_can_be_submitted()
+    {
+        $response = $this->post('/contact', [
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john@gmail.com',
+            'phone' => '555-123-4567',
+            'company' => 'Acme Inc',
+            'employees' => '11-50',
+            'title' => 'CEO',
+            'subject' => 'General Inquiry',
+            'message' => 'This is a test message from the contact form.',
+        ]);
 
-    $data = [
-        'firstname' => 'John',
-        'lastname' => 'Doe',
-        'email' => 'john@gmail.com',
-        'phone' => '555-123-4567',
-        'company' => 'Acme Inc',
-        'employees' => '11-50',
-        'title' => 'CEO',
-        'subject' => 'General Inquiry',
-        'message' => 'This is a test message from the contact form.',
-    ];
+        $response->assertStatus(302); // Redirección tras crear contacto
 
-    // Enviar POST sin deshabilitar middleware
-    $response = $this->post('/contact', $data);
+        $this->assertDatabaseHas('contact_us', [
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'email' => 'john@gmail.com',
+            'status' => 'new',
+        ]);
 
-    // Verificar redirección y sesión
-    $response->assertStatus(302); // normalmente redirige después de guardar
-    $response->assertSessionHas('success');
-
-    // Verificar la base de datos
-    $this->assertDatabaseHas('contact_us', [
-        'firstname' => 'John',
-        'lastname' => 'Doe',
-        'email' => 'john@gmail.com',
-        'status' => 'new',
-    ]);
-
-    // Verificar evento
-    Event::assertDispatched(ContactUsCreated::class, function ($event) {
-        return $event->contact->email === 'john@gmail.com';
-    });
-}
-
+        Event::assertDispatched(ContactUsCreated::class, function ($event) {
+            return $event->contact->email === 'john@gmail.com';
+        });
+    }
 
     /** @test */
     public function validation_errors_are_returned_when_form_is_incomplete()
@@ -118,7 +108,6 @@ public function contact_form_can_be_submitted()
     /** @test */
     public function email_notification_is_sent_directly()
     {
-        // Create a test contact
         $contact = ContactUs::create([
             'firstname' => 'Test',
             'lastname' => 'Email',
@@ -129,11 +118,8 @@ public function contact_form_can_be_submitted()
             'status' => 'new',
         ]);
 
-        // Create and send the email directly
-        $email = new NewContactUsNotificationMail($contact);
-        Mail::to('test@example.com')->send($email);
+        Mail::to('test@example.com')->send(new NewContactUsNotificationMail($contact));
 
-        // Assert the email was sent
         Mail::assertSent(NewContactUsNotificationMail::class, function ($mail) use ($contact) {
             return $mail->contact->id === $contact->id;
         });
@@ -160,10 +146,8 @@ public function contact_form_can_be_submitted()
     /** @test */
     public function reply_can_be_added_to_contact()
     {
-        // Create a test user
         $user = User::factory()->create();
 
-        // Create a test contact
         $contact = ContactUs::create([
             'firstname' => 'Reply',
             'lastname' => 'Test',
@@ -174,17 +158,14 @@ public function contact_form_can_be_submitted()
             'status' => 'new',
         ]);
 
-        // Add a reply
         $contact->addReply(
             'RE: Test Reply',
             'Thank you for your message. We will get back to you soon.',
             $user
         );
 
-        // Get the fresh instance from the database
         $updatedContact = $contact->fresh();
 
-        // Assert the reply was added
         $this->assertEquals('RE: Test Reply', $updatedContact->reply_subject);
         $this->assertEquals('Thank you for your message. We will get back to you soon.', $updatedContact->reply_message);
         $this->assertEquals($user->id, $updatedContact->replied_by_user_id);
@@ -195,7 +176,6 @@ public function contact_form_can_be_submitted()
     /** @test */
     public function search_scope_returns_matching_contacts()
     {
-        // Create test contacts
         ContactUs::create([
             'firstname' => 'Search',
             'lastname' => 'Test',
@@ -216,12 +196,8 @@ public function contact_form_can_be_submitted()
             'status' => 'new',
         ]);
 
-        // Search for the keyword using the searchWithLike method for testing
-        // This method bypasses fulltext search and uses LIKE instead
         $searchTerm = 'SEARCHME';
-        $results = DB::table('contact_us')
-            ->where('message', 'LIKE', '%'.$searchTerm.'%')
-            ->get();
+        $results = ContactUs::where('message', 'LIKE', '%'.$searchTerm.'%')->get();
 
         $this->assertEquals(1, $results->count());
         $this->assertEquals('search@example.com', $results[0]->email);
