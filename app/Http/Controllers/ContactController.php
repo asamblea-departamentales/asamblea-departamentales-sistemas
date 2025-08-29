@@ -4,18 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactUsRequest;
 use App\Models\ContactUs;
+use App\Events\ContactUsCreated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
-    // TODO
-    // - Multi Language for success & error
-
-    /**
-     * Handle the contact form submission.
-     */
     public function submit(ContactUsRequest $request): RedirectResponse
     {
         try {
@@ -46,6 +41,8 @@ class ContactController extends Controller
                 ],
             ]);
 
+            event(new ContactUsCreated($contact));
+
             DB::commit();
 
             Log::info('Contact form submitted successfully', [
@@ -53,7 +50,7 @@ class ContactController extends Controller
                 'email' => $contact->email,
             ]);
 
-            return back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
+            return redirect()->back()->with('success', 'Your message has been sent successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -62,7 +59,7 @@ class ContactController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->withInput()->with('error', 'Something went wrong. Please try again later.');
+            return redirect()->back()->withInput()->with('error', 'Something went wrong. Please try again later.');
         }
     }
 }

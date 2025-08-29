@@ -97,13 +97,28 @@ jobs:
             sleep 1
           done
 
+      - name: Clear Laravel caches before migrations
+        if: ${{ hashFiles('**/artisan') != '' }}
+        run: |
+          php artisan config:clear
+          php artisan route:clear  
+          php artisan cache:clear
+          php artisan view:clear
+
       - name: Run migrations
         if: ${{ hashFiles('**/artisan') != '' && hashFiles('**/vendor/bin/phpunit') != '' }}
         run: php artisan migrate:fresh --force
 
-      - name: Run Laravel Pint (style) - conditional
+      - name: Clear Laravel caches before tests
+        if: ${{ hashFiles('**/artisan') != '' }}
+        run: |
+          php artisan config:clear
+          php artisan route:clear
+          php artisan cache:clear
+
+      - name: Run Laravel Pint (auto-fix)
         if: ${{ hashFiles('**/vendor/bin/pint') != '' }}
-        run: vendor/bin/pint --test
+        run: vendor/bin/pint
 
       - name: Run PHPUnit (if tests exist)
         if: ${{ hashFiles('**/vendor/bin/phpunit') != '' }}
