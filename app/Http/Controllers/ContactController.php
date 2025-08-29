@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
-    /**
-     * Handle the contact form submission.
-     */
     public function submit(ContactUsRequest $request): RedirectResponse
     {
         try {
@@ -44,7 +41,6 @@ class ContactController extends Controller
                 ],
             ]);
 
-            // Dispatch event
             event(new ContactUsCreated($contact));
 
             DB::commit();
@@ -54,7 +50,7 @@ class ContactController extends Controller
                 'email' => $contact->email,
             ]);
 
-            return redirect()->back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
+            return redirect()->back()->with('success', 'Your message has been sent successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
 
