@@ -2,14 +2,18 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function test_the_application_returns_a_successful_response()
     {
-        $response = $this->withoutMiddleware()->get('/contact'); // ajustado a formulario de contacto
-        $response->assertStatus(200);
+        // La home redirige al login del panel
+        $response = $this->get('/');
+        $response->assertRedirect('/admin/login');
     }
 }
