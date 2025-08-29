@@ -97,9 +97,9 @@ jobs:
             sleep 1
           done
 
-      - name: Run migrations (if artisan)
+      - name: Run migrations
         if: ${{ hashFiles('**/artisan') != '' && hashFiles('**/vendor/bin/phpunit') != '' }}
-        run: php artisan migrate --force
+        run: php artisan migrate:fresh --force
 
       - name: Run Laravel Pint (style) - conditional
         if: ${{ hashFiles('**/vendor/bin/pint') != '' }}
