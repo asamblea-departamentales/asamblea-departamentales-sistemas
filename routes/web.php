@@ -1,23 +1,23 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Lab404\Impersonate\Services\ImpersonateManager;
+use App\Http\Controllers\ContactController;
 
-// Clear all caches in testing
-if (app()->environment('testing')) {
-    \Illuminate\Support\Facades\Artisan::call('route:clear');
-    \Illuminate\Support\Facades\Artisan::call('config:clear');
-    \Illuminate\Support\Facades\Artisan::call('cache:clear');
-}
+// Rutas de contacto PRIMERO
+Route::get('/contact', fn() => view('contact'))->name('contact.form');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// Test routes - muy simple
-Route::get('/contact', function() {
-    return response('Contact GET works', 200);
-});
+// Home → login del panel
+Route::redirect('/', '/admin/login')->name('home');
 
-Route::post('/contact', function() {
-    return response('Contact POST works', 200);
-});
+// Impersonate leave
+Route::get('impersonate/leave', function () {
+    if (! app(ImpersonateManager::class)->isImpersonating()) {
+        return redirect('/');
+    }
+    app(ImpersonateManager::class)->leave();
+    return redirect(session()->pull('impersonate.back_to', '/'));
+})->name('impersonate.leave');
 
-// Fallback
-Route::fallback(function() {
-    return redirect('/admin/login');
-});
+// Fallback al final
+Route::fallback(fn () => redirect('/admin/login'));
