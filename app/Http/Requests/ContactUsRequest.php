@@ -36,8 +36,7 @@ class ContactUsRequest extends FormRequest
             'email.email' => 'Please provide a valid email address.',
             'email.dns' => 'The email domain appears to be invalid.',
             'subject.required' => 'Please provide a subject for your message.',
-            'message.required' => 'Your message should not be empty.',
-            'message.min' => 'Your message should be at least 10 characters long.',
+            'message.required' => 'Your message should be at least 10 characters.',
         ];
     }
 
