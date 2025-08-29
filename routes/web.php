@@ -7,10 +7,10 @@ use App\Http\Controllers\ContactController;
 // Home → login del panel
 Route::redirect('/', '/admin/login')->name('home');
 
-// Fallback → login
+// Fallback
 Route::fallback(fn () => redirect('/admin/login'));
 
-// Salir de impersonación
+// Impersonate leave
 Route::get('impersonate/leave', function () {
     if (! app(ImpersonateManager::class)->isImpersonating()) {
         return redirect('/');
@@ -22,9 +22,7 @@ Route::get('impersonate/leave', function () {
 // ---------------------------
 // Rutas públicas de contacto
 // ---------------------------
-
-// Mostrar formulario de contacto
-Route::get('/contact', fn() => view('contact'))->name('contact.form');
-
-// Enviar formulario de contacto
-Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+Route::middleware('web')->group(function () {
+    Route::get('/contact', fn() => view('contact'))->name('contact.form');
+    Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+});
