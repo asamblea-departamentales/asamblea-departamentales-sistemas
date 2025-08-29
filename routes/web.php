@@ -1,14 +1,10 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
 use App\Http\Controllers\ContactController;
 
 // Home → login del panel
 Route::redirect('/', '/admin/login')->name('home');
-
-// Fallback
-Route::fallback(fn () => redirect('/admin/login'));
 
 // Impersonate leave
 Route::get('impersonate/leave', function () {
@@ -17,12 +13,13 @@ Route::get('impersonate/leave', function () {
     }
     app(ImpersonateManager::class)->leave();
     return redirect(session()->pull('impersonate.back_to', '/'));
-})->name('impersonate.leave')->middleware('web');
+})->name('impersonate.leave');
 
 // ---------------------------
-// Rutas públicas de contacto
+// Rutas públicas de contacto (ANTES del fallback)
 // ---------------------------
-Route::middleware('web')->group(function () {
-    Route::get('/contact', fn() => view('contact'))->name('contact.form');
-    Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
-});
+Route::get('/contact', fn() => view('contact'))->name('contact.form');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Fallback (DEBE ir al final)
+Route::fallback(fn () => redirect('/admin/login'));
