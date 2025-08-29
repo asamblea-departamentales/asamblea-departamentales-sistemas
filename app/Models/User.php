@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Departamental;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
-
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,12 +18,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail, HasAvatar,  HasMedia
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, MustVerifyEmail
 {
-    use InteractsWithMedia;
-    use HasUuids, HasRoles;
     use HasApiTokens, HasFactory, Notifiable;
+    use HasRoles, HasUuids;
     use Impersonate;
+    use InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -128,17 +126,19 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     /* ==============================
      |  Scopes útiles
      ===============================*/
-     public function scopeByDepartamental($query, ?int $departamentalId)
-     {
-         if (!$departamentalId) return $query; // permite NULL, incluye superadmins
-         return $query->where('departamental_id', $departamentalId);
-     }
-     
+    public function scopeByDepartamental($query, ?int $departamentalId)
+    {
+        if (! $departamentalId) {
+            return $query;
+        } // permite NULL, incluye superadmins
+
+        return $query->where('departamental_id', $departamentalId);
+    }
 
     /* ==============================
      |  Media Library
      ===============================*/
-    public function registerMediaConversions(Media|null $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->fit(Fit::Contain, 300, 300)
@@ -148,8 +148,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail, Has
     public function getFallbackMediaUrl(string $collectionName = 'default', string $conversion = ''): string
     {
         if ($collectionName === 'avatars') {
-            return 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?? $this->email ?? 'User');
+            return 'https://ui-avatars.com/api/?name='.urlencode($this->name ?? $this->email ?? 'User');
         }
+
         return parent::getFallbackMediaUrl($collectionName, $conversion);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionsSeeder extends Seeder
 {
@@ -21,21 +21,21 @@ class PermissionsSeeder extends Seeder
             'create_actividad',
             'update_actividad',
             'delete_actividad',
-            
+
             // Permisos de usuarios
             'view_any_user',
             'view_user',
             'create_user',
             'update_user',
             'delete_user',
-            
+
             // Permisos de roles
             'view_any_role',
             'view_role',
             'create_role',
             'update_role',
             'delete_role',
-            
+
             // Otros permisos del sistema
             'access_log_viewer',
             'view_any_contact_us',
@@ -43,25 +43,25 @@ class PermissionsSeeder extends Seeder
             'create_contact_us',
             'update_contact_us',
             'delete_contact_us',
-            
+
             'view_any_post',
             'view_post',
             'create_post',
             'update_post',
             'delete_post',
-            
+
             'view_any_menu',
             'view_menu',
             'create_menu',
             'update_menu',
             'delete_menu',
-            
+
             'view_any_category',
             'view_category',
             'create_category',
             'update_category',
             'delete_category',
-            
+
             'view_any_content',
             'view_content',
             'create_content',
@@ -90,7 +90,7 @@ class PermissionsSeeder extends Seeder
         // Configurar permisos para Viewer (solo lectura)
         $viewerPermissions = Permission::where(function ($query) {
             $query->where('name', 'like', 'view%')
-                  ->orWhere('name', '=', 'access_log_viewer');
+                ->orWhere('name', '=', 'access_log_viewer');
         })->get();
         $viewerRole->syncPermissions($viewerPermissions);
 

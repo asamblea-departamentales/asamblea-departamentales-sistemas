@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Models\Blog\Category;
+use App\Models\User;
+use Database\Factories\HtmlProvider;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\Uid\Ulid;
-use Faker\Factory as Faker;
-use App\Models\User;
-use App\Models\Blog\Category;
-use App\Models\Blog\Post;
-use Database\Factories\HtmlProvider;
 
 class BlogsSeeder extends Seeder
 {
@@ -44,7 +43,7 @@ class BlogsSeeder extends Seeder
 
         if (empty($adminIds)) {
             // Create a default user if none exists
-            $userId = (string) new Ulid();
+            $userId = (string) new Ulid;
             User::create([
                 'id' => $userId,
                 'firstname' => 'System',
@@ -61,7 +60,7 @@ class BlogsSeeder extends Seeder
             $name = ucwords($faker->words(2, true));
             $creatorId = $faker->randomElement($adminIds);
             $parentCategories[] = [
-                'id' => (string) new Ulid(),
+                'id' => (string) new Ulid,
                 'name' => $name,
                 'slug' => Str::slug($name),
                 'description' => $faker->paragraph(2),
@@ -89,7 +88,7 @@ class BlogsSeeder extends Seeder
             $updaterId = $faker->boolean(30) ? $faker->randomElement($adminIds) : $creatorId;
 
             $childCategories[] = [
-                'id' => (string) new Ulid(),
+                'id' => (string) new Ulid,
                 'parent_id' => $faker->randomElement($parentIds),
                 'name' => $name,
                 'slug' => Str::slug($name),
@@ -152,16 +151,16 @@ class BlogsSeeder extends Seeder
             $updaterId = $faker->boolean(40) ? $faker->randomElement($editorIds) : $creatorId;
 
             // Generate Markdown content instead of HTML
-            $contentRaw = "# " . $faker->sentence . "\n\n";
-            $contentRaw .= $faker->paragraph(3) . "\n\n";
-            $contentRaw .= "## " . $faker->sentence . "\n\n";
-            $contentRaw .= $faker->paragraph(4) . "\n\n";
-            $contentRaw .= "* " . $faker->sentence . "\n";
-            $contentRaw .= "* " . $faker->sentence . "\n";
-            $contentRaw .= "* " . $faker->sentence . "\n\n";
-            $contentRaw .= "## " . $faker->sentence . "\n\n";
-            $contentRaw .= $faker->paragraph(3) . "\n\n";
-            $contentRaw .= "> " . $faker->sentence . "\n\n";
+            $contentRaw = '# '.$faker->sentence."\n\n";
+            $contentRaw .= $faker->paragraph(3)."\n\n";
+            $contentRaw .= '## '.$faker->sentence."\n\n";
+            $contentRaw .= $faker->paragraph(4)."\n\n";
+            $contentRaw .= '* '.$faker->sentence."\n";
+            $contentRaw .= '* '.$faker->sentence."\n";
+            $contentRaw .= '* '.$faker->sentence."\n\n";
+            $contentRaw .= '## '.$faker->sentence."\n\n";
+            $contentRaw .= $faker->paragraph(3)."\n\n";
+            $contentRaw .= '> '.$faker->sentence."\n\n";
             $contentRaw .= $faker->paragraph(2);
 
             // Convert Markdown to HTML using CommonMark
@@ -192,7 +191,7 @@ class BlogsSeeder extends Seeder
             }
 
             $posts[] = [
-                'id' => (string) new Ulid(),
+                'id' => (string) new Ulid,
                 'blog_author_id' => $faker->randomElement($authorIds),
                 'blog_category_id' => $faker->randomElement($categoryIds),
                 'title' => $title,

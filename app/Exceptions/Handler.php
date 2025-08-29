@@ -3,9 +3,9 @@
 namespace App\Exceptions;
 
 use BezhanSalleh\FilamentExceptions\FilamentExceptions;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\Access\AuthorizationException;
 use Filament\Notifications\Notification;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -33,19 +33,19 @@ class Handler extends ExceptionHandler
         });
     }
 
-    //Para las tostadas
+    // Para las tostadas
     public function render($request, Throwable $exception)
     {
         // Solo manejar excepciones de autorización en el panel de filament
-        if (($request->is('admin/*') || $request->routeIs('filament.*')) 
+        if (($request->is('admin/*') || $request->routeIs('filament.*'))
             && $exception instanceof AuthorizationException) {
-            
+
             Notification::make()
                 ->title('Acceso denegado')
                 ->body('No tienes permiso para realizar esta acción.')
                 ->danger()
                 ->send();
-                
+
             return redirect()->back();
         }
 

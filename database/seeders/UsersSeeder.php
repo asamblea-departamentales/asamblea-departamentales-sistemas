@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Artisan;
-use Faker\Factory as Faker;
-use App\Models\User;
 
 class UsersSeeder extends Seeder
 {
@@ -20,12 +20,12 @@ class UsersSeeder extends Seeder
         $user = User::firstOrCreate(
             ['username' => 'superadmin'], // clave única
             [
-                'id'               => (string) Str::uuid(),
-                'firstname'        => 'Super',
-                'lastname'         => 'Admin',
-                'email'            => 'superadmin@starter-kit.com',
-                'email_verified_at'=> now(),
-                'password'         => Hash::make('superadmin'),
+                'id' => (string) Str::uuid(),
+                'firstname' => 'Super',
+                'lastname' => 'Admin',
+                'email' => 'superadmin@starter-kit.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('superadmin'),
             ]
         );
 
@@ -44,12 +44,12 @@ class UsersSeeder extends Seeder
                 $u = User::firstOrCreate(
                     ['email' => $email],   // evita duplicar por correo
                     [
-                        'id'                => (string) Str::uuid(),
-                        'username'          => $username,
-                        'firstname'         => $faker->firstName(),
-                        'lastname'          => $faker->lastName(),
+                        'id' => (string) Str::uuid(),
+                        'username' => $username,
+                        'firstname' => $faker->firstName(),
+                        'lastname' => $faker->lastName(),
                         'email_verified_at' => now(),
-                        'password'          => Hash::make('password'),
+                        'password' => Hash::make('password'),
                     ]
                 );
 

@@ -13,14 +13,11 @@ class Updating
 {
     /**
      * Handle the updating event
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return void
      */
     public function handle(Model $model): void
     {
         // Skip if stamping is disabled or column doesn't exist
-        if (!$model->isUserstamping() || is_null($model->getUpdatedByColumn())) {
+        if (! $model->isUserstamping() || is_null($model->getUpdatedByColumn())) {
             return;
         }
 
@@ -43,13 +40,13 @@ class Updating
                 $model->{$model->getUpdatedByColumn()} = $userId;
 
                 // Handle team stamping if enabled
-                if ($model->isTeamStamping() && !is_null($model->getUpdatedByTeamColumn())) {
+                if ($model->isTeamStamping() && ! is_null($model->getUpdatedByTeamColumn())) {
                     $model->{$model->getUpdatedByTeamColumn()} = UserStamp::getTeamId();
                 }
             }
         } catch (\Exception $e) {
             if (config('userstamp.log_stamping_errors', true)) {
-                Log::error('Error during user stamping (updating): ' . $e->getMessage());
+                Log::error('Error during user stamping (updating): '.$e->getMessage());
             }
         }
     }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\SecurityLogger;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\SecurityLogger;
 
 class SecurityHeaders
 {
@@ -25,8 +25,6 @@ class SecurityHeaders
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -38,24 +36,24 @@ class SecurityHeaders
         }
 
         if (app()->environment('production')) {
-            $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                   "img-src 'self' data:; " .
-                   "font-src 'self' data: https://cdnjs.cloudflare.com; " .
-                   "connect-src 'self'; " .
-                   "media-src 'self'; " .
-                   "object-src 'none'; " .
+            $csp = "default-src 'self'; ".
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
+                   "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
+                   "img-src 'self' data:; ".
+                   "font-src 'self' data: https://cdnjs.cloudflare.com; ".
+                   "connect-src 'self'; ".
+                   "media-src 'self'; ".
+                   "object-src 'none'; ".
                    "frame-src 'self';";
         } else {
-            $csp = "default-src 'self'; " .
-                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                   "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " .
-                   "img-src 'self' data:; " .
-                   "font-src 'self' data: https://cdnjs.cloudflare.com; " .
-                   "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:*; " .
-                   "media-src 'self'; " .
-                   "object-src 'none'; " .
+            $csp = "default-src 'self'; ".
+                   "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
+                   "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
+                   "img-src 'self' data:; ".
+                   "font-src 'self' data: https://cdnjs.cloudflare.com; ".
+                   "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:*; ".
+                   "media-src 'self'; ".
+                   "object-src 'none'; ".
                    "frame-src 'self';";
         }
 
@@ -65,7 +63,7 @@ class SecurityHeaders
 
             SecurityLogger::logSuspiciousActivity('CSP Report-Only mode enabled', [
                 'enabled_by' => 'request header',
-                'csp' => $csp
+                'csp' => $csp,
             ]);
         } else {
             $response->headers->set('Content-Security-Policy', $csp);
@@ -76,9 +74,6 @@ class SecurityHeaders
 
     /**
      * Add basic security headers that are always included, even when CSP is disabled
-     *
-     * @param Response $response
-     * @return Response
      */
     protected function addBasicSecurityHeaders(Response $response): Response
     {
@@ -110,9 +105,6 @@ class SecurityHeaders
 
     /**
      * Log any CSP violations reported by the browser
-     *
-     * @param Request $request
-     * @return void
      */
     protected function logCspViolations(Request $request): void
     {

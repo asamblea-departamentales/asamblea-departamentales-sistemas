@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AssignShieldPermissionsSeeder extends Seeder
 {
@@ -23,7 +23,9 @@ class AssignShieldPermissionsSeeder extends Seeder
         // 2) Asegura que todos los roles puedan entrar al panel
         $accessAdmin = Permission::where('name', 'access_admin')->first();
         foreach ($roleModels as $role) {
-            if ($accessAdmin) $role->givePermissionTo($accessAdmin);
+            if ($accessAdmin) {
+                $role->givePermissionTo($accessAdmin);
+            }
         }
 
         // 3) Slugs de recursos (ajusta a los que tengas creados)
@@ -40,9 +42,8 @@ class AssignShieldPermissionsSeeder extends Seeder
         $admin = ['user', 'departamental', 'parametro_sistema', 'log_auditoria', 'cierre_mensual'];
 
         // Helper para construir nombres y filtrar solo los que existen
-        $make = fn(string $action, string $slug) => "{$action}_{$slug}";
-        $exists = fn(array $names) =>
-            Permission::whereIn('name', $names)->pluck('name')->all();
+        $make = fn (string $action, string $slug) => "{$action}_{$slug}";
+        $exists = fn (array $names) => Permission::whereIn('name', $names)->pluck('name')->all();
 
         // 4) TI = todo
         if ($ti = $roleModels->get('ti')) {
@@ -75,7 +76,7 @@ class AssignShieldPermissionsSeeder extends Seeder
 
             // Operación CRUD
             foreach ($operacion as $slug) {
-                foreach (['view_any','view','create','update'] as $a) {
+                foreach (['view_any', 'view', 'create', 'update'] as $a) {
                     $want[] = $make($a, $slug);
                 }
                 // si quieres permitir borrar en su oficina, agrega 'delete'
@@ -83,7 +84,7 @@ class AssignShieldPermissionsSeeder extends Seeder
             }
 
             // Cierre mensual: crear/actualizar/ver
-            foreach (['view_any','view','create','update'] as $a) {
+            foreach (['view_any', 'view', 'create', 'update'] as $a) {
                 $want[] = $make($a, 'cierre_mensual');
             }
 
@@ -106,13 +107,13 @@ class AssignShieldPermissionsSeeder extends Seeder
 
             // Operación: ver/crear/editar (sin delete)
             foreach ($operacion as $slug) {
-                foreach (['view_any','view','create','update'] as $a) {
+                foreach (['view_any', 'view', 'create', 'update'] as $a) {
                     $want[] = $make($a, $slug);
                 }
             }
 
             // Cierre: solo ver
-            foreach (['view_any','view'] as $a) {
+            foreach (['view_any', 'view'] as $a) {
                 $want[] = $make($a, 'cierre_mensual');
             }
 

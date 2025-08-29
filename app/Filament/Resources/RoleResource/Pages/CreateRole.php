@@ -4,7 +4,6 @@ namespace App\Filament\Resources\RoleResource\Pages;
 
 use App\Filament\Resources\RoleResource;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Route;
 
 class CreateRole extends CreateRecord
 {
@@ -16,11 +15,11 @@ class CreateRole extends CreateRecord
     }
 
     public function getBreadcrumbs(): array
-{
-    return [
-        route('filament.admin.pages.dashboard') => 'Dashboard',
-        route('filament.admin.resources.roles.index') => 'Roles',
-        '#' => 'Crear', // o directamente: '' => 'Crear',
-    ];
-}
+    {
+        return [
+            route('filament.admin.pages.dashboard') => 'Dashboard',
+            route('filament.admin.resources.roles.index') => 'Roles',
+            '#' => 'Crear', // o directamente: '' => 'Crear',
+        ];
+    }
 }

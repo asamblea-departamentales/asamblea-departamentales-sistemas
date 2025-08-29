@@ -16,9 +16,11 @@ use function Filament\Support\is_app_url;
 class ManageSiteSocial extends SettingsPage
 {
     use HasPageShield;
+
     protected static string $settings = SiteSocialSettings::class;
 
     protected static ?int $navigationSort = 4;
+
     protected static ?string $navigationIcon = 'heroicon-o-share';
 
     /**
@@ -159,7 +161,7 @@ class ManageSiteSocial extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.sites");
+        return __('menu.nav_group.sites');
     }
 
     public static function getNavigationLabel(): string

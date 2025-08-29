@@ -7,40 +7,60 @@ use Spatie\LaravelSettings\Settings;
 class MailSettings extends Settings
 {
     public string $from_address;
+
     public string $from_name;
+
     public string $reply_to_address;
+
     public string $reply_to_name;
 
     // SMTP configuration
     public ?string $driver;
+
     public ?string $host;
+
     public int $port;
+
     public string $encryption;
+
     public ?string $username;
+
     public ?string $password;
+
     public ?int $timeout;
+
     public ?string $local_domain;
 
     // Email template and design settings
     public string $template_theme;
+
     public string $footer_text;
+
     public string $logo_path;
+
     public string $primary_color;
+
     public string $secondary_color;
 
     // Email delivery configuration
     public bool $queue_emails;
+
     public string $queue_name;
+
     public string $queue_connection;
+
     public array $rate_limiting;
 
     // Notification settings
     public bool $notifications_enabled;
+
     public array $notification_types;
 
     // Email testing and debugging
     public bool $test_mode;
+
     public string $log_channel;
+
     public string $test_to_address;
 
     // Alternative mail providers configuration
@@ -90,7 +110,7 @@ class MailSettings extends Settings
         // Queue configuration
         if ($this->queue_emails) {
             config([
-                'queue.connections.' . $this->queue_connection . '.queue' => $this->queue_name,
+                'queue.connections.'.$this->queue_connection.'.queue' => $this->queue_name,
                 'mail.queue.connection' => $this->queue_connection,
                 'mail.queue.queue' => $this->queue_name,
             ]);

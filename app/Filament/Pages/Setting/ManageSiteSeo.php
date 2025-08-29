@@ -4,28 +4,30 @@ namespace App\Filament\Pages\Setting;
 
 use App\Settings\SiteSeoSettings;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Filament\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\SettingsPage;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Support\Htmlable;
-use Riodwanto\FilamentAceEditor\AceEditor;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
 use Illuminate\Support\HtmlString;
+use Riodwanto\FilamentAceEditor\AceEditor;
 
 use function Filament\Support\is_app_url;
 
 class ManageSiteSeo extends SettingsPage
 {
     use HasPageShield;
+
     protected static string $settings = SiteSeoSettings::class;
 
     protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
 
     /**
@@ -93,13 +95,13 @@ class ManageSiteSeo extends SettingsPage
                     ->icon('heroicon-o-eye')
                     ->modalHeading('SEO Preview')
                     ->modalWidth('md')
-                    ->modalContent(fn() => new HtmlString($this->renderSeoPreview()))
+                    ->modalContent(fn () => new HtmlString($this->renderSeoPreview()))
                     ->modalSubmitAction(false),
 
                 Action::make('export_settings')
                     ->label('Export Settings')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->action(fn() => $this->exportSettings()),
+                    ->action(fn () => $this->exportSettings()),
 
                 Action::make('import_settings')
                     ->label('Import Settings')
@@ -110,7 +112,7 @@ class ManageSiteSeo extends SettingsPage
                             ->acceptedFileTypes(['application/json'])
                             ->required(),
                     ])
-                    ->action(fn(array $data) => $this->importSettings($data['settings_file'])),
+                    ->action(fn (array $data) => $this->importSettings($data['settings_file'])),
             ])
                 ->color('primary')
                 ->hiddenLabel()
@@ -140,18 +142,18 @@ class ManageSiteSeo extends SettingsPage
 
         // Search result preview
         $preview .= '<div class="p-4 border rounded-lg bg-gray-50">';
-        $preview .= '<div class="text-lg font-medium text-blue-600">' . $sampleTitle . '</div>';
+        $preview .= '<div class="text-lg font-medium text-blue-600">'.$sampleTitle.'</div>';
         $preview .= '<div class="text-sm text-green-600">https://example.com/sample-page</div>';
-        $preview .= '<div class="mt-1 text-sm text-gray-600">' . $metaDescription . '</div>';
+        $preview .= '<div class="mt-1 text-sm text-gray-600">'.$metaDescription.'</div>';
         $preview .= '</div>';
 
         // Open Graph preview
         $preview .= '<div class="p-4 border rounded-lg">';
         $preview .= '<h3 class="font-medium">Open Graph Preview</h3>';
         $preview .= '<div class="p-3 mt-2 border rounded bg-blue-50">';
-        $preview .= '<div class="font-medium text-md">' . $sampleTitle . '</div>';
+        $preview .= '<div class="font-medium text-md">'.$sampleTitle.'</div>';
         $preview .= '<div class="mt-1 text-xs text-gray-500">example.com</div>';
-        $preview .= '<div class="mt-1 text-sm">' . $metaDescription . '</div>';
+        $preview .= '<div class="mt-1 text-sm">'.$metaDescription.'</div>';
         $preview .= '</div>';
         $preview .= '</div>';
 
@@ -159,8 +161,8 @@ class ManageSiteSeo extends SettingsPage
         $preview .= '<div class="p-4 border rounded-lg">';
         $preview .= '<h3 class="font-medium">Twitter Card Preview</h3>';
         $preview .= '<div class="p-3 mt-2 border rounded bg-blue-50">';
-        $preview .= '<div class="font-medium text-md">' . $sampleTitle . '</div>';
-        $preview .= '<div class="mt-1 text-sm">' . $metaDescription . '</div>';
+        $preview .= '<div class="font-medium text-md">'.$sampleTitle.'</div>';
+        $preview .= '<div class="mt-1 text-sm">'.$metaDescription.'</div>';
         $preview .= '<div class="mt-1 text-xs text-gray-500">example.com</div>';
         $preview .= '</div>';
         $preview .= '</div>';
@@ -176,7 +178,7 @@ class ManageSiteSeo extends SettingsPage
 
         return response()->streamDownload(function () use ($settings) {
             echo json_encode($settings, JSON_PRETTY_PRINT);
-        }, 'seo-settings-' . now()->format('Y-m-d') . '.json');
+        }, 'seo-settings-'.now()->format('Y-m-d').'.json');
     }
 
     protected function importSettings($file)
@@ -274,7 +276,7 @@ class ManageSiteSeo extends SettingsPage
                             ->label('Default Meta Description')
                             ->required()
                             ->placeholder('Enter a compelling description of your site (150-160 characters recommended)')
-                            ->helperText(fn($state) => 'Character count: ' . strlen($state ?? ''))
+                            ->helperText(fn ($state) => 'Character count: '.strlen($state ?? ''))
                             ->rows(2)
                             ->maxLength(200),
                         Forms\Components\TagsInput::make('meta_keywords')
@@ -299,7 +301,7 @@ class ManageSiteSeo extends SettingsPage
                                 Forms\Components\Actions\Action::make('previewBlogTitleFormat')
                                     ->icon('heroicon-m-eye')
                                     ->tooltip('Preview')
-                                    ->action(fn() => Notification::make()->title('Blog Title Preview')->body('Sample Post | Blog | Your Website')->info()->send())
+                                    ->action(fn () => Notification::make()->title('Blog Title Preview')->body('Sample Post | Blog | Your Website')->info()->send())
                             )
                             ->maxLength(100),
                         Forms\Components\TextInput::make('product_title_format')
@@ -492,7 +494,7 @@ class ManageSiteSeo extends SettingsPage
                                     ->label('Opening Hours'),
                             ])
                             ->columns(2)
-                            ->visible(fn(callable $get): bool => $get('schema_type') === 'LocalBusiness'),
+                            ->visible(fn (callable $get): bool => $get('schema_type') === 'LocalBusiness'),
                     ]),
             ]);
     }
@@ -632,7 +634,7 @@ class ManageSiteSeo extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.sites");
+        return __('menu.nav_group.sites');
     }
 
     public static function getNavigationLabel(): string

@@ -30,15 +30,21 @@ use Illuminate\Support\Str;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+
     protected static int $globalSearchResultsLimit = 20;
 
     protected static ?int $navigationSort = -1;
+
     protected static ?string $navigationIcon = 'heroicon-s-users';
 
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $pluralLabel = 'Usuarios';
-    protected static ?string $label = 'Usuario'; //para singular
+
+    protected static ?string $label = 'Usuario'; // para singular
+
     protected static ?string $navigationLabel = 'Usuarios';
+
     protected static ?string $slug = 'usuarios';
 
     public static function form(Form $form): Form
@@ -61,7 +67,7 @@ class UserResource extends Resource
                             ->imageResizeTargetHeight('256')
                             ->maxSize(1024)
                             ->maxFiles(1)
-                            ->helperText(fn () => new HtmlString('<div class="text-center text-gray-300">' . __('resource.user.avatar_helper') . '</div>')),
+                            ->helperText(fn () => new HtmlString('<div class="text-center text-gray-300">'.__('resource.user.avatar_helper').'</div>')),
 
                         Forms\Components\Actions::make([
                             Action::make('resend_verification')
@@ -95,10 +101,10 @@ class UserResource extends Resource
                         Forms\Components\Placeholder::make('user_info')
                             ->hiddenLabel()
                             ->content(function (?User $record): HtmlString {
-                                if (!$record) {
+                                if (! $record) {
                                     return new HtmlString('<span class="text-sm text-gray-500">Save to see user details! 😊</span>');
                                 }
-                                $name = trim(($record->firstname ?? '') . ' ' . ($record->lastname ?? ''));
+                                $name = trim(($record->firstname ?? '').' '.($record->lastname ?? ''));
                                 $joined = $record->created_at?->format('M j, Y \a\t g:i A') ?? 'just now';
                                 $updated = $record->updated_at?->diffForHumans() ?? 'never';
                                 $updatedExact = $record->updated_at?->format('M j, Y \a\t g:i A') ?? '';
@@ -108,6 +114,7 @@ class UserResource extends Resource
                                 } else {
                                     $sentence = "<span class='font-semibold'>$name</span> joined $joined and hasn't verified their email yet. Last updated <span class='font-semibold' title='Updated on $updatedExact'>$updated</span>.";
                                 }
+
                                 return new HtmlString($sentence);
                             })
                             ->hidden(fn (string $operation): bool => $operation === 'create'),
@@ -125,8 +132,9 @@ class UserResource extends Resource
                                     ->live()
                                     ->rules(function ($record) {
                                         $userId = $record?->id;
+
                                         return $userId
-                                            ? ['unique:users,username,' . $userId]
+                                            ? ['unique:users,username,'.$userId]
                                             : ['unique:users,username'];
                                     }),
 
@@ -136,12 +144,13 @@ class UserResource extends Resource
                                     ->maxLength(255)
                                     ->rules(function ($record) {
                                         $userId = $record?->id;
+
                                         return $userId
-                                            ? ['unique:users,email,' . $userId]
+                                            ? ['unique:users,email,'.$userId]
                                             : ['unique:users,email'];
                                     })
                                     ->disabled(fn (string $operation) => $operation === 'edit')
-                                    ->helperText(fn () => new HtmlString('<div class="text-gray-300">' . __('resource.user.email_edit_warning') . '</div>')),
+                                    ->helperText(fn () => new HtmlString('<div class="text-gray-300">'.__('resource.user.email_edit_warning').'</div>')),
 
                                 Forms\Components\TextInput::make('Primer Nombre')
                                     ->required()
@@ -153,18 +162,18 @@ class UserResource extends Resource
 
                                 // === Departamental ===
                                 Select::make('departamental_id')
-                                ->label('Departamental')
-                                ->relationship('departamental', 'nombre')
-                                ->searchable()
-                                ->preload()
-                                ->required()
-                                ->default(fn () => Filament::auth()->user()?->departamental_id)
-                                ->disabled(function (): bool {
-                                    $u = Filament::auth()->user();
-                                    // TI, GOL o SuperAdmin pueden cambiar la oficina
-                                    return ! ($u && ($u->hasAnyRole(['Administrador','GOL']) || $u->hasRole(config('filament-shield.super_admin.name'))));
-                                }),
-                            
+                                    ->label('Departamental')
+                                    ->relationship('departamental', 'nombre')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->default(fn () => Filament::auth()->user()?->departamental_id)
+                                    ->disabled(function (): bool {
+                                        $u = Filament::auth()->user();
+
+                                        // TI, GOL o SuperAdmin pueden cambiar la oficina
+                                        return ! ($u && ($u->hasAnyRole(['Administrador', 'GOL']) || $u->hasRole(config('filament-shield.super_admin.name'))));
+                                    }),
 
                                 // === Marcar email verificado (solo en crear) ===
                                 Forms\Components\Toggle::make('mark_email_verified')
@@ -174,12 +183,13 @@ class UserResource extends Resource
                             ])
                             ->columns(2),
 
-                            Forms\Components\Tabs\Tab::make('Roles')
+                        Forms\Components\Tabs\Tab::make('Roles')
                             ->icon('fluentui-shield-task-48')
                             ->visible(function () {
                                 $user = Filament::auth()->user();
+
                                 return $user && (
-                                    $user->hasRole('Administrador') || 
+                                    $user->hasRole('Administrador') ||
                                     $user->hasRole(config('filament-shield.super_admin.name'))
                                 );
                             })
@@ -200,7 +210,7 @@ class UserResource extends Resource
                     ])
                     ->columnSpan([
                         'sm' => 1,
-                        'lg' => 2
+                        'lg' => 2,
                     ]),
             ])
             ->columns(3);
@@ -218,7 +228,7 @@ class UserResource extends Resource
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre Completo')
-                    ->getStateUsing(fn (Model $record) => $record->firstname . ' ' . $record->lastname)
+                    ->getStateUsing(fn (Model $record) => $record->firstname.' '.$record->lastname)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('username')
@@ -282,14 +292,14 @@ class UserResource extends Resource
             ->modifyQueryUsing(function ($query) {
                 /** @var \App\Models\User|null $user */
                 $user = Filament::auth()->user();
-            
-                $isCentral = $user && ($user->hasAnyRole(['Administrador','GOL']) || $user->hasRole(config('filament-shield.super_admin.name')));
-            
+
+                $isCentral = $user && ($user->hasAnyRole(['Administrador', 'GOL']) || $user->hasRole(config('filament-shield.super_admin.name')));
+
                 if (! $isCentral && $user) {
                     $query->where('departamental_id', $user->departamental_id);
                 }
             })
-            
+
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     ImpersonateTableAction::make()->tooltip('Impersonate this user'),
@@ -334,9 +344,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListUsers::route('/'),
+            'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'edit'   => Pages\EditUser::route('/{record}/edit'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 
@@ -353,24 +363,24 @@ class UserResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'name' => $record->firstname . ' ' . $record->lastname,
+            'name' => $record->firstname.' '.$record->lastname,
         ];
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.access");
+        return __('menu.nav_group.access');
     }
 
-    public static function doResendEmailVerification($settings = null, $user): void
+    public static function doResendEmailVerification($settings, $user): void
     {
-        if (!method_exists($user, 'notify')) {
+        if (! method_exists($user, 'notify')) {
             $userClass = $user::class;
             throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
         }
 
         if ($settings->isMailSettingsConfigured()) {
-            $notification = new VerifyEmail();
+            $notification = new VerifyEmail;
             $notification->url = Filament::getVerifyEmailUrl($user);
 
             $settings->loadMailSettingsToConfig();

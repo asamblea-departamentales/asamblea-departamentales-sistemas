@@ -48,7 +48,7 @@ class ContactUsStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
             Stat::make('This Month', $thisMonth)
-                ->description($percentageChange . '% ' . $trend . ' from last month')
+                ->description($percentageChange.'% '.$trend.' from last month')
                 ->descriptionIcon($trend === 'up' ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($trend === 'up' ? 'success' : 'danger'),
         ];

@@ -4,26 +4,35 @@ namespace App\Livewire\SuperDuper\Pages;
 
 use App\Models\ContactUs as ContactUsModel;
 use App\Services\SecurityLogger;
-use Livewire\Component;
 use Illuminate\Support\Facades\RateLimiter;
+use Livewire\Component;
 
 class ContactUs extends Component
 {
     // Form fields
     public $firstname = '';
+
     public $lastname = '';
+
     public $email = '';
+
     public $phone = '';
+
     public $company = '';
+
     public $employees = '';
+
     public $subject = '';
+
     public $message = '';
 
     public $company_website = ''; // Honeypot field
 
     // UI state
     public $success = false;
+
     public $formSubmitted = false;
+
     public $submitting = false;
 
     public $employeeOptions = [
@@ -31,7 +40,7 @@ class ContactUs extends Component
         '11-50' => '11-50 employees',
         '51-200' => '51-200 employees',
         '201-500' => '201-500 employees',
-        '501+' => '501+ employees'
+        '501+' => '501+ employees',
     ];
 
     protected function rules()
@@ -80,18 +89,19 @@ class ContactUs extends Component
 
     public function submit()
     {
-        if (!empty($this->company_website)) {
+        if (! empty($this->company_website)) {
             SecurityLogger::logHoneypotTrigger('company_website', $this->company_website);
 
             $this->reset(['firstname', 'lastname', 'email', 'phone', 'company', 'employees', 'subject', 'message', 'company_website']);
             $this->success = true;
             $this->formSubmitted = true;
             $this->dispatchBrowserEvent('successMessageShown');
+
             return;
         }
 
         $ipAddress = request()->ip();
-        $rateLimitKey = 'contact-form:' . $ipAddress;
+        $rateLimitKey = 'contact-form:'.$ipAddress;
 
         // Limit to 5 submissions per hour (3600 seconds)
         if (RateLimiter::tooManyAttempts($rateLimitKey, 5)) {
@@ -100,8 +110,9 @@ class ContactUs extends Component
 
             SecurityLogger::logRateLimitHit($rateLimitKey, 5, 3600);
 
-            session()->flash('error', "Too many submissions. Please try again in " .
-                ($minutes > 1 ? "$minutes minutes" : "$seconds seconds") . ".");
+            session()->flash('error', 'Too many submissions. Please try again in '.
+                ($minutes > 1 ? "$minutes minutes" : "$seconds seconds").'.');
+
             return;
         }
 
@@ -119,7 +130,7 @@ class ContactUs extends Component
             'message' => $validatedData['message'] ?? '',
         ]);
 
-        if (!empty($spamMatches)) {
+        if (! empty($spamMatches)) {
             SecurityLogger::logSpamContent('contact', $spamMatches, $validatedData);
 
             $validatedData['metadata']['spam_detected'] = true;
@@ -162,7 +173,7 @@ class ContactUs extends Component
 
             logger()->error('Contact form submission failed', [
                 'error' => $e->getMessage(),
-                'data' => $validatedData
+                'data' => $validatedData,
             ]);
 
             session()->flash('error', 'Something went wrong. Please try again later.');
@@ -174,7 +185,7 @@ class ContactUs extends Component
     /**
      * Check for spam content in form fields
      *
-     * @param array $data The data to check
+     * @param  array  $data  The data to check
      * @return array An array of matched spam patterns
      */
     protected function checkForSpamContent(array $data): array
@@ -194,7 +205,7 @@ class ContactUs extends Component
         $content = strtolower(implode(' ', $data));
 
         foreach ($spamPatterns as $pattern => $description) {
-            if (preg_match('/' . $pattern . '/i', $content)) {
+            if (preg_match('/'.$pattern.'/i', $content)) {
                 $matches[] = $description;
             }
         }
@@ -204,9 +215,6 @@ class ContactUs extends Component
 
     /**
      * Convert empty strings to null values
-     *
-     * @param array $data
-     * @return array
      */
     protected function emptyStringsToNull(array $data): array
     {

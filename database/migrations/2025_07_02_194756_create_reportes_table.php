@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('usuario_id')
                 ->constrained('usuarios_')
                 ->onDelete('cascade'); // Elimina el reporte si se elimina el usuario
-            $table->enum('tipo', ['Anual','Mensual']); // Tipo de reporte   
+            $table->enum('tipo', ['Anual', 'Mensual']); // Tipo de reporte
             $table->date('fecha_inicio'); // Fecha de inicio del reporte
             $table->date('fecha_fin'); // Fecha de fin del reporte
             $table->text('descripcion'); // Descripción del reporte (JSON o resumen)

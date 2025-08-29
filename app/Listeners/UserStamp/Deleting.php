@@ -13,14 +13,11 @@ class Deleting
 {
     /**
      * Handle the deleting event
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return void
      */
     public function handle(Model $model): void
     {
         // Skip if stamping is disabled or column doesn't exist
-        if (!$model->isUserstamping() || is_null($model->getDeletedByColumn())) {
+        if (! $model->isUserstamping() || is_null($model->getDeletedByColumn())) {
             return;
         }
 
@@ -43,7 +40,7 @@ class Deleting
                 $model->{$model->getDeletedByColumn()} = $userId;
 
                 // Handle team stamping if enabled
-                if ($model->isTeamStamping() && !is_null($model->getDeletedByTeamColumn())) {
+                if ($model->isTeamStamping() && ! is_null($model->getDeletedByTeamColumn())) {
                     $model->{$model->getDeletedByTeamColumn()} = UserStamp::getTeamId();
                 }
 
@@ -54,7 +51,7 @@ class Deleting
             }
         } catch (\Exception $e) {
             if (config('userstamp.log_stamping_errors', true)) {
-                Log::error('Error during user stamping (deleting): ' . $e->getMessage());
+                Log::error('Error during user stamping (deleting): '.$e->getMessage());
             }
         }
     }

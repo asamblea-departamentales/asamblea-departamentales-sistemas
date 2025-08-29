@@ -1,4 +1,5 @@
 <?php
+
 return [
     'datetime_format' => 'd/m/Y H:i:s',
     'date_format' => 'd/m/Y',
@@ -14,7 +15,7 @@ return [
         'color' => 'success',
 
         'exclude' => [
-            //App\Filament\Resources\UserResource::class,
+            // App\Filament\Resources\UserResource::class,
         ],
         'cluster' => null,
         'navigation_group' => 'Activities',
@@ -40,7 +41,7 @@ return [
         'color' => 'warning',
         'logger' => \Z3d0X\FilamentLogger\Loggers\ModelLogger::class,
         'register' => [
-            //App\Models\User::class,
+            // App\Models\User::class,
         ],
     ],
 

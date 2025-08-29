@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use Filament\Tables\Table;
+use App\Models\Blog\Post;
+use App\Observers\PostObserver;
 use Filament\Support\Facades\FilamentView;
+use Filament\Tables\Table;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
-use App\Models\Blog\Post;
-use App\Observers\PostObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,21 +41,22 @@ class AppServiceProvider extends ServiceProvider
         LogViewer::auth(function ($request) {
             $user = auth()->user();
             $role = $user?->roles?->first()?->name;
+
             return $role == config('filament-shield.super_admin.name');
         });
 
         // # Filament Hooks
         FilamentView::registerRenderHook(
             PanelsRenderHook::FOOTER,
-            fn(): View => view('filament.components.panel-footer'),
+            fn (): View => view('filament.components.panel-footer'),
         );
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_BEFORE,
-            fn(): View => view('filament.components.button-website'),
+            fn (): View => view('filament.components.button-website'),
         );
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
-            fn() => view('filament.components.impersonate-banner')
+            fn () => view('filament.components.impersonate-banner')
         );
     }
 }

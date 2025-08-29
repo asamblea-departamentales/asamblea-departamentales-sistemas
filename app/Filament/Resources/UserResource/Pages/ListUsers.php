@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use App\Models\User;
 use Filament\Actions;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
 use Filament\Resources\Components\Tab;
@@ -13,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ListUsers extends ListRecords
 {
     use ExposesTableToWidgets;
+
     protected static string $resource = UserResource::class;
 
     protected function getHeaderActions(): array
@@ -48,7 +48,7 @@ class ListUsers extends ListRecords
         $user = auth()->user();
         $model = (new (static::$resource::getModel()))->with('roles')->where('id', '!=', auth()->user()->id);
 
-        if (!$user->isSuperAdmin()) {
+        if (! $user->isSuperAdmin()) {
             $model = $model->whereDoesntHave('roles', function ($query) {
                 $query->where('name', '=', config('filament-shield.super_admin.name'));
             });

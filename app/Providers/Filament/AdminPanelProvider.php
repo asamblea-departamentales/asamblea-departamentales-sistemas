@@ -3,20 +3,17 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EmailVerification;
-use Filament\Pages\Auth\OpsLogin;
 use App\Filament\Pages\Auth\RequestPasswordReset;
-
 // RESOURCES del sistema (solo los que quieres ver)
-use App\Filament\Resources\UserResource;
-use App\Filament\Resources\DepartamentalResource;
 use App\Filament\Resources\ActividadResource;
-use App\Filament\Resources\Shield\RoleResource; // visible según permisos Shield
-
+use App\Filament\Resources\DepartamentalResource;
+use App\Filament\Resources\Shield\RoleResource;
+use App\Filament\Resources\UserResource; // visible según permisos Shield
 // WIDGETS propios
 use App\Filament\Widgets\ActividadChart;
 use App\Filament\Widgets\ActividadOverview;
 use App\Filament\Widgets\CalendarioWidget;
-
+use App\Http\Middleware\FilamentRobotsMiddleware;
 use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -35,7 +32,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
-use App\Http\Middleware\FilamentRobotsMiddleware;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -49,18 +45,17 @@ class AdminPanelProvider extends PanelProvider
             // Auth
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->passwordReset(RequestPasswordReset::class)
-            ->emailVerification(EmailVerification::class)            ->passwordReset(RequestPasswordReset::class)
+            ->emailVerification(EmailVerification::class)->passwordReset(RequestPasswordReset::class)
             ->emailVerification(EmailVerification::class)
 
             // Branding desde settings
             ->favicon(fn (GeneralSettings $s) => $s->site_favicon ? Storage::url($s->site_favicon) : asset(''))
-->brandName(fn (GeneralSettings $s) => $s->brand_name ?: 'Asamblea Legislativa')
-->brandLogo(fn (GeneralSettings $s) => $s->brand_logo ? asset($s->brand_logo) : asset('images/logo-azul-fondo-transparente (002).png'))
-->brandLogoHeight(fn (GeneralSettings $s) => $s->brand_logoHeight ?: '15rem')
-->colors(fn (GeneralSettings $s) => $s->site_theme ?: [
-    'primary' => \Filament\Support\Colors\Color::hex('#0A2C65'), // azul institucional
-])
-
+            ->brandName(fn (GeneralSettings $s) => $s->brand_name ?: 'Asamblea Legislativa')
+            ->brandLogo(fn (GeneralSettings $s) => $s->brand_logo ? asset($s->brand_logo) : asset('images/logo-azul-fondo-transparente (002).png'))
+            ->brandLogoHeight(fn (GeneralSettings $s) => $s->brand_logoHeight ?: '15rem')
+            ->colors(fn (GeneralSettings $s) => $s->site_theme ?: [
+                'primary' => \Filament\Support\Colors\Color::hex('#0A2C65'), // azul institucional
+            ])
 
             // UX
             ->databaseNotifications()->databaseNotificationsPolling('30s')

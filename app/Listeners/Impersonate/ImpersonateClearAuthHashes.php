@@ -2,8 +2,8 @@
 
 namespace App\Listeners\Impersonate;
 
-use Illuminate\Support\Facades\Session;
 use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Session;
 
 class ImpersonateClearAuthHashes
 {
@@ -14,10 +14,10 @@ class ImpersonateClearAuthHashes
         $panelGuard = Filament::getCurrentPanel()?->getAuthGuard() ?? $defaultGuard;
 
         $keys = [
-            'password_hash_' . session('impersonate.guard'),
-            'password_hash_' . session($guardKey),
-            'password_hash_' . $panelGuard,
-            'password_hash_' . \Illuminate\Support\Facades\Auth::getDefaultDriver(),
+            'password_hash_'.session('impersonate.guard'),
+            'password_hash_'.session($guardKey),
+            'password_hash_'.$panelGuard,
+            'password_hash_'.\Illuminate\Support\Facades\Auth::getDefaultDriver(),
             'password_hash_sanctum',
         ];
 

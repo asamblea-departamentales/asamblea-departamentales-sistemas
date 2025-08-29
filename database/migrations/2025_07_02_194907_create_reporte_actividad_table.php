@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('reporte_id')->constrained('reportes')->onDelete('cascade'); // Hace referencia a la tabla reportes
             $table->foreignId('actividad_id')->constrained('actividades_realizadas')->onDelete('cascade'); // Hace referencia a la tabla actividades_realizadas
 
-            //Clave primaria compuesta
+            // Clave primaria compuesta
             $table->primary(['reporte_id', 'actividad_id']);
         });
     }

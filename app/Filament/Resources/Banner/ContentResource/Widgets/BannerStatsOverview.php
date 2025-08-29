@@ -10,6 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class BannerStatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
+
     protected static ?string $pollingInterval = '15s';
 
     public function getStats(): array
@@ -41,23 +42,23 @@ class BannerStatsOverview extends BaseWidget
 
         return [
             Stat::make('Active Banners', $activeBanners)
-                ->description($activePercentage . '% of total banners')
+                ->description($activePercentage.'% of total banners')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([7, 4, 6, 8, 7, $activePercentage])
                 ->color('success'),
 
             Stat::make('Total Categories', $totalCategories)
-                ->description($activeCategories . ' active categories')
+                ->description($activeCategories.' active categories')
                 ->descriptionIcon('heroicon-m-folder')
                 ->color('primary'),
 
             Stat::make('Total Impressions', number_format($totalImpressions))
-                ->description('CTR: ' . $ctr . '%')
+                ->description('CTR: '.$ctr.'%')
                 ->descriptionIcon('heroicon-m-cursor-arrow-rays')
                 ->color($ctr > 2 ? 'success' : 'warning'),
 
             Stat::make('Scheduled', $scheduledBanners)
-                ->description($expiringBanners . ' expiring soon')
+                ->description($expiringBanners.' expiring soon')
                 ->descriptionIcon('heroicon-m-calendar')
                 ->color($expiringBanners > 0 ? 'warning' : 'success'),
         ];

@@ -5,24 +5,24 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ContactUsResource\Actions\ReplyAction;
 use App\Filament\Resources\ContactUsResource\Pages;
 use App\Models\ContactUs;
-use Filament\Tables\Actions as TablesActions;
-use Filament\Infolists\Infolist;
+use Filament\Forms\Components\DatePicker as FilamentDatePicker;
 use Filament\Infolists;
+use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
+use Filament\Tables\Actions as TablesActions;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Enums\FiltersLayout;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
-use Filament\Notifications\Notification;
-use Filament\Forms\Components\DatePicker as FilamentDatePicker;
 
 class ContactUsResource extends Resource
 {
@@ -50,7 +50,7 @@ class ContactUsResource extends Resource
                             ->copyable(),
                         Infolists\Components\TextEntry::make('company'),
                         Infolists\Components\TextEntry::make('employees')
-                            ->formatStateUsing(fn(?string $state): ?string => $state ? $state . ' Employees' : null),
+                            ->formatStateUsing(fn (?string $state): ?string => $state ? $state.' Employees' : null),
                         Infolists\Components\TextEntry::make('title')
                             ->label('Job Title'),
                         Infolists\Components\TextEntry::make('ip_address')
@@ -109,8 +109,7 @@ class ContactUsResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->visible(
-                        fn(ContactUs $record): bool =>
-                        !empty($record->reply_message) && !empty($record->reply_subject)
+                        fn (ContactUs $record): bool => ! empty($record->reply_message) && ! empty($record->reply_subject)
                     )
                     ->collapsed(),
             ]);
@@ -125,7 +124,7 @@ class ContactUsResource extends Resource
                         Tables\Columns\TextColumn::make('name')
                             ->searchable()
                             ->weight('bold')
-                            ->description(fn($record) => $record->email)
+                            ->description(fn ($record) => $record->email)
                             ->icon('heroicon-o-user')
                             ->limit(20)
                             ->alignLeft(),
@@ -146,7 +145,7 @@ class ContactUsResource extends Resource
                             ->toggleable()
                             ->alignLeft(),
                         Tables\Columns\TextColumn::make('employees')
-                            ->formatStateUsing(fn(?string $state): ?string => $state ?? '')
+                            ->formatStateUsing(fn (?string $state): ?string => $state ?? '')
                             ->toggleable()
                             ->toggledHiddenByDefault()
                             ->alignLeft(),
@@ -154,8 +153,8 @@ class ContactUsResource extends Resource
                     Tables\Columns\Layout\Stack::make([
                         Tables\Columns\TextColumn::make('status')
                             ->badge()
-                            ->formatStateUsing(fn(string $state): string => ucfirst($state))
-                            ->color(fn(string $state): string => match ($state) {
+                            ->formatStateUsing(fn (string $state): string => ucfirst($state))
+                            ->color(fn (string $state): string => match ($state) {
                                 'new' => 'danger',
                                 'read' => 'warning',
                                 'responded' => 'success',
@@ -169,9 +168,9 @@ class ContactUsResource extends Resource
                             ->label('Sent at')
                             ->alignLeft(),
                     ])->alignment('center')->space(1),
-                ])
+                ]),
             ])
-            ->recordClasses(fn(ContactUs $record) => match ($record->status) {
+            ->recordClasses(fn (ContactUs $record) => match ($record->status) {
                 'new' => 'border-s-2 border-danger-600 dark:border-danger-300',
                 'read' => 'border-s-2 border-warning-600 dark:border-warning-300',
                 'responded' => 'border-s-2 border-success-600 dark:border-success-300',
@@ -198,8 +197,8 @@ class ContactUsResource extends Resource
                     ])
                     ->query(function ($query, $data) {
                         return $query
-                            ->when($data['from'], fn($q, $date) => $q->whereDate('created_at', '>=', $date))
-                            ->when($data['until'], fn($q, $date) => $q->whereDate('created_at', '<=', $date));
+                            ->when($data['from'], fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'], fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
                     })
                     ->label('Received Date'),
 
@@ -259,8 +258,8 @@ class ContactUsResource extends Resource
                     ->button()
                     ->size('xs')
                     ->tooltip('Reply to this message')
-                    ->color(fn(ContactUs $record): string => (empty($record->reply_message) || empty($record->reply_subject)) ? 'success' : 'gray')
-                    ->disabled(fn(ContactUs $record): bool => !empty($record->reply_message) || !empty($record->reply_subject)),
+                    ->color(fn (ContactUs $record): string => (empty($record->reply_message) || empty($record->reply_subject)) ? 'success' : 'gray')
+                    ->disabled(fn (ContactUs $record): bool => ! empty($record->reply_message) || ! empty($record->reply_subject)),
                 TablesActions\ActionGroup::make([
                     TablesActions\ViewAction::make('view')
                         ->mutateRecordDataUsing(function (array $data, ContactUs $record): array {
@@ -268,6 +267,7 @@ class ContactUsResource extends Resource
                                 $data['status'] = 'read';
                                 $record->markAsRead();
                             }
+
                             return $data;
                         }),
                     TablesActions\Action::make('markAsRead')
@@ -346,6 +346,6 @@ class ContactUsResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
     {
-        return $record->firstname . ' ' . $record->lastname;
+        return $record->firstname.' '.$record->lastname;
     }
 }

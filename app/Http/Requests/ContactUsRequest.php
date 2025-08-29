@@ -9,8 +9,6 @@ class ContactUsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -34,7 +32,7 @@ class ContactUsRequest extends FormRequest
             'employees' => [
                 'nullable',
                 'string',
-                Rule::in(['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'])
+                Rule::in(['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+']),
             ],
             'title' => ['nullable', 'string', 'max:150'],
             'subject' => ['required', 'string', 'max:255'],
@@ -69,7 +67,7 @@ class ContactUsRequest extends FormRequest
     protected function prepareForValidation()
     {
         // If we have title but no subject (backward compatibility), use title as subject
-        if ($this->has('title') && !$this->has('subject') && $this->title) {
+        if ($this->has('title') && ! $this->has('subject') && $this->title) {
             $this->merge([
                 'subject' => $this->title,
             ]);

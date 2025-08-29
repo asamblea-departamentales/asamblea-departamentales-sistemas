@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Blog\PostResource\Widgets;
 
 use App\Enums\Blog\PostStatus;
-use App\Models\Blog\Post;
 use App\Models\Blog\Category;
+use App\Models\Blog\Post;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
@@ -21,7 +21,7 @@ class BlogPostStatsWidget extends BaseWidget
         if ($user && $user->hasRole('author')) {
             $query->where(function ($q) use ($user) {
                 $q->where('blog_author_id', $user->id)
-                  ->orWhere('created_by', $user->id);
+                    ->orWhere('created_by', $user->id);
             });
         }
         // Get post counts by status
@@ -41,6 +41,7 @@ class BlogPostStatsWidget extends BaseWidget
             ? round((($postsThisMonth - $postsLastMonth) / $postsLastMonth) * 100)
             : 0;
         $trend = $percentageChange >= 0 ? 'up' : 'down';
+
         return [
             Stat::make('Total Posts', $totalPosts)
                 ->description('All blog posts')
@@ -59,7 +60,7 @@ class BlogPostStatsWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('info'),
             Stat::make('This Month', $postsThisMonth)
-                ->description($percentageChange . '% ' . $trend . ' from last month')
+                ->description($percentageChange.'% '.$trend.' from last month')
                 ->descriptionIcon($trend === 'up' ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color($trend === 'up' ? 'success' : 'danger'),
             Stat::make('Categories', Category::active()->count())

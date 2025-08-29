@@ -162,7 +162,6 @@ return [
         App\Providers\UserStampServiceProvider::class,
         Saade\FilamentFullCalendar\FilamentFullCalendarServiceProvider::class,
 
-
         /*
          * Application Service Providers...
          */

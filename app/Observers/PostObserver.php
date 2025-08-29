@@ -14,7 +14,7 @@ class PostObserver
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 
@@ -43,12 +43,12 @@ class PostObserver
         }
 
         // Authors cannot set posts as featured
-        if ($user->hasRole('author') && !$user->can('feature', $post)) {
+        if ($user->hasRole('author') && ! $user->can('feature', $post)) {
             $post->is_featured = false;
         }
 
         // Authors cannot set posts to published status directly
-        if ($user->hasRole('author') && !$user->can('publish', $post)) {
+        if ($user->hasRole('author') && ! $user->can('publish', $post)) {
             if ($post->status === 'published') {
                 $post->status = 'draft';
             }
@@ -62,7 +62,7 @@ class PostObserver
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return;
         }
 
@@ -74,21 +74,21 @@ class PostObserver
             $original = $post->getOriginal();
 
             // Authors cannot change the author if they don't have permission
-            if (!$user->can('changeAuthor', $post)) {
+            if (! $user->can('changeAuthor', $post)) {
                 if ($post->isDirty('blog_author_id') && $original['blog_author_id'] !== $user->id) {
                     $post->blog_author_id = $original['blog_author_id'];
                 }
             }
 
             // Authors cannot feature posts
-            if (!$user->can('feature', $post)) {
+            if (! $user->can('feature', $post)) {
                 if ($post->isDirty('is_featured')) {
                     $post->is_featured = $original['is_featured'] ?? false;
                 }
             }
 
             // Authors cannot publish posts directly
-            if (!$user->can('publish', $post)) {
+            if (! $user->can('publish', $post)) {
                 if ($post->isDirty('status') && $post->status === 'published') {
                     $post->status = $original['status'] ?? 'draft';
                 }

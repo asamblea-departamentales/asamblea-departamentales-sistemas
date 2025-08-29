@@ -24,6 +24,7 @@ class ManageMail extends SettingsPage
     protected static string $settings = MailSettings::class;
 
     protected static ?int $navigationSort = 99;
+
     protected static ?string $navigationIcon = 'fluentui-mail-settings-20';
 
     /**
@@ -65,10 +66,10 @@ class ManageMail extends SettingsPage
                                                 Forms\Components\Select::make('driver')
                                                     ->label(fn () => __('page.mail_settings.fields.driver'))
                                                     ->options([
-                                                        "smtp" => "SMTP (Standard Email Server) - Recommended",
-                                                        "mailgun" => "Mailgun API Service - Untested",
-                                                        "ses" => "Amazon SES (AWS Email Service) - Untested",
-                                                        "postmark" => "Postmark API Service - Untested",
+                                                        'smtp' => 'SMTP (Standard Email Server) - Recommended',
+                                                        'mailgun' => 'Mailgun API Service - Untested',
+                                                        'ses' => 'Amazon SES (AWS Email Service) - Untested',
+                                                        'postmark' => 'Postmark API Service - Untested',
                                                     ])
                                                     ->helperText('Select your preferred mail delivery method. Alternative providers require API credentials.')
                                                     ->native(false)
@@ -86,8 +87,8 @@ class ManageMail extends SettingsPage
                                                 Forms\Components\Select::make('encryption')
                                                     ->label(fn () => __('page.mail_settings.fields.encryption'))
                                                     ->options([
-                                                        "ssl" => "SSL",
-                                                        "tls" => "TLS",
+                                                        'ssl' => 'SSL',
+                                                        'tls' => 'TLS',
                                                     ])
                                                     ->native(false)
                                                     ->visible(fn (callable $get) => $get('driver') === 'smtp'),
@@ -230,9 +231,9 @@ class ManageMail extends SettingsPage
                                                         ->label('Send Test Email')
                                                         ->action('sendTestMail')
                                                         ->color('warning')
-                                                        ->icon('fluentui-mail-alert-28-o')
+                                                        ->icon('fluentui-mail-alert-28-o'),
                                                 ])
-                                                ->fullWidth(),
+                                                    ->fullWidth(),
                                             ]),
                                     ])
                                     ->columnSpan(1),
@@ -372,7 +373,7 @@ class ManageMail extends SettingsPage
                                             ->columnSpan(2),
                                         Forms\Components\Textarea::make('footer_text')
                                             ->label('Email Footer Text')
-                                            ->default('© ' . date('Y') . ' SuperDuper Starter. All rights reserved.')
+                                            ->default('© '.date('Y').' SuperDuper Starter. All rights reserved.')
                                             ->rows(2)
                                             ->columnSpan(2),
                                     ])
@@ -388,7 +389,7 @@ class ManageMail extends SettingsPage
                                                     'secondary-color' => $get('secondary_color') ?? '#FFC903',
                                                     'logo-path' => $get('logo_path'),
                                                     'theme-name' => $get('template_theme') ?? 'default',
-                                                    'footer-text' => $get('footer_text') ?? ('© ' . date('Y') . ' SuperDuper Starter. All rights reserved.'),
+                                                    'footer-text' => $get('footer_text') ?? ('© '.date('Y').' SuperDuper Starter. All rights reserved.'),
                                                 ];
                                             })
                                             ->columnSpan('full'),
@@ -400,7 +401,7 @@ class ManageMail extends SettingsPage
             ->statePath('data');
     }
 
-    public function save(MailSettings $settings = null): void
+    public function save(?MailSettings $settings = null): void
     {
         try {
             $this->callHook('beforeValidate');
@@ -439,7 +440,7 @@ class ManageMail extends SettingsPage
             'logo_path' => 'sites/email-logo.png',
             'reply_to_address' => $data['from_address'] ?? 'noreply@superduperstarter.com',
             'reply_to_name' => $data['from_name'] ?? 'SuperDuper Filament Starter',
-            'footer_text' => '© ' . date('Y') . ' SuperDuper Starter. All rights reserved.',
+            'footer_text' => '© '.date('Y').' SuperDuper Starter. All rights reserved.',
             'template_theme' => 'default',
             'primary_color' => '#2D2B8D',
             'secondary_color' => '#FFC903',
@@ -447,12 +448,12 @@ class ManageMail extends SettingsPage
         ];
 
         foreach ($stringDefaults as $key => $default) {
-            if (!isset($data[$key]) || $data[$key] === null || $data[$key] === '') {
+            if (! isset($data[$key]) || $data[$key] === null || $data[$key] === '') {
                 $data[$key] = $default;
             }
         }
 
-        if (!isset($data['providers']) || !is_array($data['providers'])) {
+        if (! isset($data['providers']) || ! is_array($data['providers'])) {
             $data['providers'] = [
                 'mailgun' => ['domain' => null, 'secret' => null, 'endpoint' => 'api.mailgun.net'],
                 'postmark' => ['token' => null],
@@ -460,7 +461,7 @@ class ManageMail extends SettingsPage
             ];
         }
 
-        if (!isset($data['rate_limiting']) || !is_array($data['rate_limiting'])) {
+        if (! isset($data['rate_limiting']) || ! is_array($data['rate_limiting'])) {
             $data['rate_limiting'] = [
                 'enabled' => true,
                 'attempts' => 5,
@@ -468,7 +469,7 @@ class ManageMail extends SettingsPage
             ];
         }
 
-        if (!isset($data['notification_types']) || !is_array($data['notification_types'])) {
+        if (! isset($data['notification_types']) || ! is_array($data['notification_types'])) {
             $data['notification_types'] = [
                 'account' => true,
                 'system' => true,
@@ -484,7 +485,7 @@ class ManageMail extends SettingsPage
         ];
 
         foreach ($booleanDefaults as $key => $default) {
-            if (!isset($data[$key])) {
+            if (! isset($data[$key])) {
                 $data[$key] = $default;
             }
         }
@@ -504,7 +505,7 @@ class ManageMail extends SettingsPage
         }
     }
 
-    public function sendTestMail(MailSettings $settings = null)
+    public function sendTestMail(?MailSettings $settings = null)
     {
         $data = $this->form->getState();
 
@@ -516,8 +517,9 @@ class ManageMail extends SettingsPage
         try {
             $mailTo = $data['test_to_address'] ?? null;
 
-            if (!$mailTo) {
+            if (! $mailTo) {
                 $this->sendErrorNotification('Please provide a recipient email address');
+
                 return;
             }
 
@@ -528,7 +530,7 @@ class ManageMail extends SettingsPage
                     'logo' => $data['logo_path'] ?? 'sites/logo.png',
                     'primaryColor' => $data['primary_color'] ?? '#2D2B8D',
                     'secondaryColor' => $data['secondary_color'] ?? '#FFC903',
-                    'footer' => $data['footer_text'] ?? ('© ' . date('Y') . ' SuperDuper Starter. All rights reserved.'),
+                    'footer' => $data['footer_text'] ?? ('© '.date('Y').' SuperDuper Starter. All rights reserved.'),
                     'theme' => $data['template_theme'] ?? 'default',
                 ],
                 'include_sample_attachment' => $data['include_sample_attachment'] ?? false,
@@ -536,53 +538,51 @@ class ManageMail extends SettingsPage
 
             Mail::to($mailTo)->send(new TestMail($mailData));
 
-            $this->sendSuccessNotification('Test email sent successfully to ' . $mailTo .
+            $this->sendSuccessNotification('Test email sent successfully to '.$mailTo.
                 ($mailData['include_sample_attachment'] ? ' with attachment' : ''));
         } catch (\Exception $e) {
-            $this->sendErrorNotification('Failed to send test email: ' . $e->getMessage());
+            $this->sendErrorNotification('Failed to send test email: '.$e->getMessage());
         }
     }
-
 
     public function sendSuccessNotification($title)
     {
         Notification::make()
-                ->title($title)
-                ->success()
-                ->send();
+            ->title($title)
+            ->success()
+            ->send();
     }
 
     public function sendErrorNotification($title)
     {
         Notification::make()
-                ->title($title)
-                ->danger()
-                ->send();
+            ->title($title)
+            ->danger()
+            ->send();
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.systems");
+        return __('menu.nav_group.systems');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __("page.mail_settings.navigationLabel");
+        return __('page.mail_settings.navigationLabel');
     }
 
     public function getTitle(): string|Htmlable
     {
-        return __("page.mail_settings.title");
+        return __('page.mail_settings.title');
     }
 
     public function getHeading(): string|Htmlable
     {
-        return __("page.mail_settings.heading");
+        return __('page.mail_settings.heading');
     }
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __("page.mail_settings.subheading");
+        return __('page.mail_settings.subheading');
     }
 }
-

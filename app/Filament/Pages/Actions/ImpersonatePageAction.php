@@ -23,10 +23,10 @@ class ImpersonatePageAction extends Action
             ->color('warning')
             ->requiresConfirmation()
             ->modalHeading('Impersonate User')
-            ->modalDescription(fn(Model $record): string => "Are you sure you want to impersonate {$record->name}?")
+            ->modalDescription(fn (Model $record): string => "Are you sure you want to impersonate {$record->name}?")
             ->modalSubmitActionLabel('Start Impersonation')
             ->action(function (Model $record): void {
-                if (!$this->canBeImpersonated($record)) {
+                if (! $this->canBeImpersonated($record)) {
                     return;
                 }
 
@@ -58,6 +58,7 @@ class ImpersonatePageAction extends Action
                 } elseif ($user && $record && isset($user->id, $record->id)) {
                     $notSame = $user->id !== $record->id;
                 }
+
                 return $user && method_exists($user, $canImpersonate) && $user->$canImpersonate() && $notSame && method_exists($record, $canBeImpersonated) && $record->$canBeImpersonated();
             });
     }
@@ -77,7 +78,7 @@ class ImpersonatePageAction extends Action
 
         return $current && method_exists($current, $canImpersonate) && $current->$canImpersonate()
             && $notSame
-            && !app(ImpersonateManager::class)->isImpersonating()
+            && ! app(ImpersonateManager::class)->isImpersonating()
             && method_exists($target, $canBeImpersonated) && $target->$canBeImpersonated();
     }
 }

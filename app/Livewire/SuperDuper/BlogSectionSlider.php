@@ -2,17 +2,21 @@
 
 namespace App\Livewire\SuperDuper;
 
-use App\Models\Blog\Post;
 use App\Models\Blog\Category;
-use Livewire\Component;
+use App\Models\Blog\Post;
 use Illuminate\Support\Facades\App;
+use Livewire\Component;
 
 class BlogSectionSlider extends Component
 {
     public $articles = [];
+
     public $activeCategory = null;
+
     public $categories = [];
+
     public $featuredOnly = false;
+
     public $limit = 5;
 
     public function mount($limit = 5, $featuredOnly = false, $categorySlug = null)
@@ -46,7 +50,7 @@ class BlogSectionSlider extends Component
 
     public function toggleFeatured()
     {
-        $this->featuredOnly = !$this->featuredOnly;
+        $this->featuredOnly = ! $this->featuredOnly;
         $this->loadArticles();
     }
 

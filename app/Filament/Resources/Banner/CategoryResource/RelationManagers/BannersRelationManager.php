@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Banner\CategoryResource\RelationManagers;
 
-use App\Models\Banner\Content;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -81,13 +80,13 @@ class BannersRelationManager extends RelationManager
                         return $query
                             ->when(
                                 $data['from'],
-                                fn(Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
+                                fn (Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
                                     $q->whereNull('end_date')->orWhere('end_date', '>=', $date);
                                 }),
                             )
                             ->when(
                                 $data['until'],
-                                fn(Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
+                                fn (Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
                                     $q->whereNull('start_date')->orWhere('start_date', '<=', $date);
                                 }),
                             );
@@ -106,11 +105,11 @@ class BannersRelationManager extends RelationManager
                     Tables\Actions\BulkAction::make('activate')
                         ->label('Set Active')
                         ->icon('heroicon-m-check-circle')
-                        ->action(fn(\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => true])),
+                        ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => true])),
                     Tables\Actions\BulkAction::make('deactivate')
                         ->label('Set Inactive')
                         ->icon('heroicon-m-x-circle')
-                        ->action(fn(\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => false])),
+                        ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => false])),
                 ]),
             ]);
     }
@@ -128,8 +127,7 @@ class ChildrenRelationManager extends RelationManager
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) =>
-                        $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255)

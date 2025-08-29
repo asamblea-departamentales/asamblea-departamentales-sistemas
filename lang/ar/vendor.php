@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'filament-shield.custom' => 'أذونات أخرى'
-    ];
+    'filament-shield.custom' => 'أذونات أخرى',
+];

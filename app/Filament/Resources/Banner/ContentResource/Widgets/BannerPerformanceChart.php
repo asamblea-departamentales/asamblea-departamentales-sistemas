@@ -8,7 +8,9 @@ use Filament\Widgets\ChartWidget;
 class BannerPerformanceChart extends ChartWidget
 {
     protected static ?string $heading = 'Banner Performance';
+
     protected static ?int $sort = 2;
+
     protected static ?string $pollingInterval = '60s';
 
     protected function getData(): array
@@ -54,7 +56,7 @@ class BannerPerformanceChart extends ChartWidget
                     'data' => $clickData,
                     'backgroundColor' => 'rgba(16, 185, 129, 0.5)',
                     'borderColor' => 'rgb(16, 185, 129)',
-                ]
+                ],
             ],
             'labels' => $labels,
         ];

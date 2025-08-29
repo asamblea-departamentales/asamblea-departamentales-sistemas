@@ -7,7 +7,9 @@ use Filament\Pages\Page;
 class MapaDeActores extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
     protected static ?string $title = 'Mapa de Actores';
+
     protected static string $view = 'filament.pages.mapa-de-actores';
 
     public function getViewData(): array

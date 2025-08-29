@@ -10,19 +10,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Tags\HasTags;
-use Illuminate\Support\Str;
 
 class Post extends Model implements HasMedia
 {
-    use InteractsWithMedia;
     use HasFactory, HasUlids, SoftDeletes;
-    use HasUserStamp, HasTags;
+    use HasTags, HasUserStamp;
+    use InteractsWithMedia;
 
     /**
      * The table associated with the model.
@@ -99,7 +99,7 @@ class Post extends Model implements HasMedia
         });
 
         static::updating(function ($post) {
-            if ($post->isDirty('title') && !$post->isDirty('slug')) {
+            if ($post->isDirty('title') && ! $post->isDirty('slug')) {
                 $post->slug = Str::slug($post->title);
             }
         });
@@ -123,7 +123,7 @@ class Post extends Model implements HasMedia
         // Auto-generate content overview if not set
         if (empty($this->attributes['content_overview'])) {
             $plainText = strip_tags($this->attributes['content_html']);
-            $this->attributes['content_overview'] = substr($plainText, 0, 157) . '...';
+            $this->attributes['content_overview'] = substr($plainText, 0, 157).'...';
         }
 
         // Calculate reading time (avg reading speed: 200 words per minute)
@@ -166,7 +166,7 @@ class Post extends Model implements HasMedia
     /**
      * Register media conversions.
      */
-    public function registerMediaConversions(Media|null $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('preview')
             ->format('webp')
@@ -196,14 +196,12 @@ class Post extends Model implements HasMedia
 
     /**
      * Get the featured image URL
-     * @param string $conversion
-     * @return string|null
      */
     public function getFeaturedImageUrl(string $conversion = ''): ?string
     {
         $media = $this->getFirstMedia('featured');
 
-        if (!$media) {
+        if (! $media) {
             return null;
         }
 
@@ -212,7 +210,6 @@ class Post extends Model implements HasMedia
 
     /**
      * Check if the post has a featured image
-     * @return bool
      */
     public function hasFeaturedImage(): bool
     {
@@ -330,6 +327,7 @@ class Post extends Model implements HasMedia
 
         // Calculate if not already set
         $wordCount = str_word_count(strip_tags($this->content_html));
+
         return ceil($wordCount / 200); // Average reading speed: 200 words per minute
     }
 
@@ -340,18 +338,21 @@ class Post extends Model implements HasMedia
     {
         $url = urlencode($this->getCanonicalUrl());
         $title = urlencode($this->title);
+
         return "https://twitter.com/intent/tweet?url={$url}&text={$title}";
     }
 
     public function getFacebookShareUrl()
     {
         $url = urlencode($this->getCanonicalUrl());
+
         return "https://www.facebook.com/sharer/sharer.php?u={$url}";
     }
 
     public function getLinkedinShareUrl()
     {
         $url = urlencode($this->getCanonicalUrl());
+
         // $title = urlencode($this->title);
         return "https://www.linkedin.com/sharing/share-offsite/?url={$url}";
     }
@@ -360,9 +361,9 @@ class Post extends Model implements HasMedia
     {
         $url = urlencode($this->getCanonicalUrl());
         $title = urlencode($this->title);
+
         return "https://api.whatsapp.com/send?text={$title}%20{$url}";
     }
-
 
     /**
      * Get the route key for the model.

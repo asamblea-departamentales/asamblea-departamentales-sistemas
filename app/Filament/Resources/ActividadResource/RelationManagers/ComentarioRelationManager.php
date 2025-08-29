@@ -1,14 +1,15 @@
 <?php
+
 namespace App\Filament\Resources\ActividadResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Resources\RelationManagers\RelationManager;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables;
 
 class ComentarioRelationManager extends RelationManager
 {
     protected static string $relationship = 'comentarios';
+
     protected static ?string $recordTitleAttribute = 'contenido';
 
     public function form(Forms\Form $form): Forms\Form // Quité 'static'
@@ -46,6 +47,7 @@ class ComentarioRelationManager extends RelationManager
                     ->label('Nuevo Comentario')
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
+
                         return $data;
                     }),
             ])

@@ -13,10 +13,15 @@ use Filament\Tables\Table;
 class DepartamentalResource extends Resource
 {
     protected static ?string $model = Departamental::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
+
     protected static ?string $navigationGroup = 'Gestión';
+
     protected static ?int $navigationSort = 1;
+
     protected static ?string $label = 'Departamental';
+
     protected static ?string $pluralLabel = 'Departamentales';
 
     public static function form(Form $form): Form
@@ -49,9 +54,9 @@ class DepartamentalResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListDepartamentals::route('/'),
+            'index' => Pages\ListDepartamentals::route('/'),
             'create' => Pages\CreateDepartamental::route('/create'),
-            'edit'   => Pages\EditDepartamental::route('/{record}/edit'),
+            'edit' => Pages\EditDepartamental::route('/{record}/edit'),
         ];
     }
 }

@@ -30,13 +30,13 @@ class UserStamp
     /**
      * Set a custom callback for resolving the user ID
      *
-     * @param callable $callback Function that returns a user ID
-     * @return void
+     * @param  callable  $callback  Function that returns a user ID
+     *
      * @throws \InvalidArgumentException
      */
     public static function resolveUsing(callable $callback): void
     {
-        if (!is_callable($callback)) {
+        if (! is_callable($callback)) {
             throw new \InvalidArgumentException('User resolver must be callable');
         }
 
@@ -60,15 +60,14 @@ class UserStamp
 
             return static::$cachedUserId;
         } catch (\Exception $e) {
-            Log::error('Failed to resolve user ID: ' . $e->getMessage());
+            Log::error('Failed to resolve user ID: '.$e->getMessage());
+
             return null;
         }
     }
 
     /**
      * Clear the cached user ID
-     *
-     * @return void
      */
     public static function clearUserIdCache(): void
     {
@@ -78,13 +77,12 @@ class UserStamp
     /**
      * Check if the provided user ID is valid
      *
-     * @param mixed $userId User ID to validate
-     * @return bool
+     * @param  mixed  $userId  User ID to validate
      */
     public static function isValidUserId($userId): bool
     {
         // Basic validation - customize based on your requirements
-        return !is_null($userId) && ($userId !== false);
+        return ! is_null($userId) && ($userId !== false);
     }
 
     /**

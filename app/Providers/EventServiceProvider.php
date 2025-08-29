@@ -7,8 +7,8 @@ use App\Listeners\SendNewContactNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Lab404\Impersonate\Events\TakeImpersonation;
 use Lab404\Impersonate\Events\LeaveImpersonation;
+use Lab404\Impersonate\Events\TakeImpersonation;
 
 class EventServiceProvider extends ServiceProvider
 {

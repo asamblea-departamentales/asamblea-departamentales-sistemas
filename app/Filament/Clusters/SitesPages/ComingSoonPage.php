@@ -2,22 +2,21 @@
 
 namespace App\Filament\Clusters\SitesPages;
 
-use Filament\Pages\Page;
-use Illuminate\Support\Facades\File;
-use Filament\Notifications\Notification;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
+use Exception;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-
-use Illuminate\Validation\ValidationException;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Exception;
+use Illuminate\Validation\ValidationException;
+use Riodwanto\FilamentAceEditor\AceEditor;
 
 class ComingSoonPage extends Page implements HasForms
 {
-    use InteractsWithForms, HasPageShield;
+    use HasPageShield, InteractsWithForms;
 
     protected static ?string $cluster = \App\Filament\Clusters\SitesPages::class;
 
@@ -28,6 +27,7 @@ class ComingSoonPage extends Page implements HasForms
     protected static string $view = 'filament.pages.edit-page';
 
     public string $fileContent = '';
+
     public int $formKey = 0;
 
     // TODO: Add permission update
@@ -63,7 +63,7 @@ class ComingSoonPage extends Page implements HasForms
                 Log::warning("Coming Soon page file not found: {$mainFilePath}");
             }
         } catch (Exception $e) {
-            Log::error('Error loading coming soon page content: ' . $e->getMessage());
+            Log::error('Error loading coming soon page content: '.$e->getMessage());
             $this->fileContent = '';
 
             Notification::make()
@@ -80,8 +80,9 @@ class ComingSoonPage extends Page implements HasForms
     public function getDisplayFilePath(): string
     {
         $fullPath = $this->getMainFilePath();
+
         // Remove the base path to show relative path
-        return str_replace(base_path() . '/', '', $fullPath);
+        return str_replace(base_path().'/', '', $fullPath);
     }
 
     /**
@@ -117,7 +118,7 @@ class ComingSoonPage extends Page implements HasForms
                 ->send();
 
             // Log the action
-            Log::info('Coming Soon page content updated by user: ' . auth()->user()->email);
+            Log::info('Coming Soon page content updated by user: '.auth()->user()->email);
 
         } catch (ValidationException $e) {
             // Handle validation errors
@@ -128,9 +129,8 @@ class ComingSoonPage extends Page implements HasForms
                 ->send();
 
             throw $e;
-
         } catch (Exception $e) {
-            Log::error('Error saving coming soon page content: ' . $e->getMessage());
+            Log::error('Error saving coming soon page content: '.$e->getMessage());
 
             Notification::make()
                 ->title('Save Error')
@@ -162,22 +162,22 @@ class ComingSoonPage extends Page implements HasForms
         foreach ($dangerousPatterns as $pattern) {
             if (preg_match($pattern, $content)) {
                 throw ValidationException::withMessages([
-                    'fileContent' => 'Content contains potentially unsafe elements. Please remove scripts, PHP code, or dangerous HTML elements.'
+                    'fileContent' => 'Content contains potentially unsafe elements. Please remove scripts, PHP code, or dangerous HTML elements.',
                 ]);
             }
         }
 
         // Validate HTML structure (basic check)
-        if (!empty($content)) {
+        if (! empty($content)) {
             libxml_use_internal_errors(true);
-            $doc = new \DOMDocument();
-            $doc->loadHTML('<!DOCTYPE html><html><body>' . $content . '</body></html>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            $doc = new \DOMDocument;
+            $doc->loadHTML('<!DOCTYPE html><html><body>'.$content.'</body></html>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $errors = libxml_get_errors();
 
-            if (!empty($errors)) {
-                $errorMessages = array_map(fn($error) => trim($error->message), $errors);
+            if (! empty($errors)) {
+                $errorMessages = array_map(fn ($error) => trim($error->message), $errors);
                 throw ValidationException::withMessages([
-                    'fileContent' => 'HTML validation errors: ' . implode(', ', array_unique($errorMessages))
+                    'fileContent' => 'HTML validation errors: '.implode(', ', array_unique($errorMessages)),
                 ]);
             }
             libxml_clear_errors();
@@ -193,23 +193,23 @@ class ComingSoonPage extends Page implements HasForms
 
         // Ensure directory exists
         $directory = dirname($mainFilePath);
-        if (!File::isDirectory($directory)) {
+        if (! File::isDirectory($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
 
         // Create backup if file exists
         if (File::exists($mainFilePath)) {
-            $backupPath = $mainFilePath . '.backup.' . now()->format('Y-m-d_H-i-s');
+            $backupPath = $mainFilePath.'.backup.'.now()->format('Y-m-d_H-i-s');
             File::copy($mainFilePath, $backupPath);
         }
 
         // Write the file
-        if (!File::put($mainFilePath, $this->fileContent)) {
+        if (! File::put($mainFilePath, $this->fileContent)) {
             throw new Exception('Failed to write file to disk');
         }
 
         // Verify the file was written correctly
-        if (!File::exists($mainFilePath) || File::get($mainFilePath) !== $this->fileContent) {
+        if (! File::exists($mainFilePath) || File::get($mainFilePath) !== $this->fileContent) {
             throw new Exception('File verification failed after writing');
         }
     }
@@ -258,7 +258,7 @@ class ComingSoonPage extends Page implements HasForms
                     ->validationMessages([
                         'required' => 'Content cannot be empty',
                         'max' => 'Content is too large (maximum 1MB)',
-                    ])
+                    ]),
             ])
             ->statePath('');
     }
@@ -324,6 +324,6 @@ class ComingSoonPage extends Page implements HasForms
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return round($bytes, $precision).' '.$units[$i];
     }
 }

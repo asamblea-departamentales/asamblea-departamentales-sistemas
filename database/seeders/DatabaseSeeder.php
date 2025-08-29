@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class DatabaseSeeder extends Seeder
             ContactUsSeeder::class,
             MenuSeeder::class,
             DepartamentalesSeeder::class,
-            //para tener data
+            // para tener data
             ActividadesSeeder::class,
             AssignShieldPermissionsSeeder::class,
         ]);

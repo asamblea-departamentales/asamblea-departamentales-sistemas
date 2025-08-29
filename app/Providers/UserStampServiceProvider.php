@@ -15,7 +15,7 @@ class UserStampServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/userstamp.php',
+            __DIR__.'/../../config/userstamp.php',
             'userstamp'
         );
     }
@@ -28,7 +28,7 @@ class UserStampServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../config/userstamp.php' => config_path('userstamp.php'),
+            __DIR__.'/../../config/userstamp.php' => config_path('userstamp.php'),
         ], 'userstamp-config');
 
         // Set up custom user resolver if needed

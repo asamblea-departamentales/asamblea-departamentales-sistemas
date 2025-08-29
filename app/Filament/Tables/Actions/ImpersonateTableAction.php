@@ -2,11 +2,11 @@
 
 namespace App\Filament\Tables\Actions;
 
-use Filament\Tables\Actions\Action;
 use Filament\Facades\Filament;
-use Lab404\Impersonate\Services\ImpersonateManager;
+use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Lab404\Impersonate\Services\ImpersonateManager;
 
 class ImpersonateTableAction extends Action
 {
@@ -23,7 +23,7 @@ class ImpersonateTableAction extends Action
             ->icon('heroicon-o-user')
             ->color('warning')
             ->action(function (Model $record): void {
-                if (!$this->canBeImpersonated($record)) {
+                if (! $this->canBeImpersonated($record)) {
                     return;
                 }
 
@@ -49,6 +49,7 @@ class ImpersonateTableAction extends Action
                 $user = Auth::user();
                 $canImpersonate = config('superduper.impersonate.can_impersonate_method', 'canImpersonate');
                 $canBeImpersonated = config('superduper.impersonate.can_be_impersonated_method', 'canBeImpersonated');
+
                 return $user && method_exists($user, $canImpersonate) && $user->$canImpersonate() && method_exists($record, $canBeImpersonated) && $record->$canBeImpersonated();
             })
             ->requiresConfirmation()
@@ -74,7 +75,7 @@ class ImpersonateTableAction extends Action
 
         return $current && method_exists($current, $canImpersonate) && $current->$canImpersonate()
             && $notSame
-            && !app(ImpersonateManager::class)->isImpersonating()
+            && ! app(ImpersonateManager::class)->isImpersonating()
             && method_exists($target, $canBeImpersonated) && $target->$canBeImpersonated();
     }
 }

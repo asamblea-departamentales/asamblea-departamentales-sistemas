@@ -22,9 +22,11 @@ trait BelongsToDepartamental
     public function scopeForCurrentUser(Builder $query): Builder
     {
         $u = Filament::auth()->user() ?? auth()->user();
-        if (! $u) return $query;
+        if (! $u) {
+            return $query;
+        }
 
-        $isCentral = $u->hasAnyRole(['Administrador','GOL']) 
+        $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
                      || $u->hasRole(config('filament-shield.super_admin.name'));
         $table = $query->getModel()->getTable();
 
@@ -40,13 +42,15 @@ trait BelongsToDepartamental
     {
         static::creating(function ($model) {
             $u = Filament::auth()->user() ?? auth()->user();
-            if (! $u) return;
+            if (! $u) {
+                return;
+            }
 
-            $isCentral = $u->hasAnyRole(['Administrador','GOL']) 
+            $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
                           || $u->hasRole(config('filament-shield.super_admin.name'));
 
-            if (! $isCentral 
-                && empty($model->departamental_id) 
+            if (! $isCentral
+                && empty($model->departamental_id)
                 && Schema::hasColumn($model->getTable(), 'departamental_id')
             ) {
                 $model->departamental_id = $u->departamental_id;
@@ -55,9 +59,11 @@ trait BelongsToDepartamental
 
         static::addGlobalScope('departamental', function ($query) {
             $u = Filament::auth()->user() ?? auth()->user();
-            if (! $u) return;
+            if (! $u) {
+                return;
+            }
 
-            $isCentral = $u->hasAnyRole(['Administrador','GOL']) 
+            $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
                           || $u->hasRole(config('filament-shield.super_admin.name'));
             $table = $query->getModel()->getTable();
 

@@ -2,12 +2,12 @@
 
 namespace App\Livewire\SuperDuper;
 
-use App\Models\Blog\Post;
 use App\Models\Blog\Category;
-use Livewire\Component;
-use Livewire\WithPagination;
+use App\Models\Blog\Post;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class BlogList extends Component
 {
@@ -16,14 +16,23 @@ class BlogList extends Component
     protected $paginationTheme = 'tailwind';
 
     public $search = '';
+
     public $activeCategory = null;
+
     public $categories = [];
+
     public $featuredOnly = false;
+
     public $perPage = 3;
+
     public $sortField = 'published_at';
+
     public $sortDirection = 'desc';
+
     public $recentPosts = [];
+
     public $popularTags = [];
+
     public $isSearching = false;
 
     protected $queryString = [
@@ -39,7 +48,7 @@ class BlogList extends Component
         // Get all active categories with post counts
         $this->categories = cache()->remember('active_categories', now()->addHours(3), function () {
             return Category::active()
-                ->withCount(['posts' => function($query) {
+                ->withCount(['posts' => function ($query) {
                     $query->published();
                 }])
                 ->having('posts_count', '>', 0)
@@ -51,7 +60,7 @@ class BlogList extends Component
         $this->recentPosts = cache()->remember('recent_posts', now()->addMinutes(30), function () {
             return Post::published()
                 ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview'])
-                ->with(['category:id,name,slug', 'media' => function($query) {
+                ->with(['category:id,name,slug', 'media' => function ($query) {
                     $query->where('collection_name', 'featured');
                 }])
                 ->orderBy('published_at', 'desc')
@@ -62,10 +71,10 @@ class BlogList extends Component
         // Get popular tags
         $locale = app()->getLocale();
 
-        $this->popularTags = cache()->remember('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
+        $this->popularTags = cache()->remember('popular_tags_'.$locale, now()->addHours(6), function () use ($locale) {
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
-                ->join('blog_posts', function($join) {
+                ->join('blog_posts', function ($join) {
                     $join->on('taggables.taggable_id', '=', 'blog_posts.id')
                         ->where('taggables.taggable_type', Post::class);
                 })
@@ -91,7 +100,7 @@ class BlogList extends Component
 
                 return [
                     'name' => $name,
-                    'count' => $tag->count
+                    'count' => $tag->count,
                 ];
             })->toArray();
         });
@@ -118,7 +127,7 @@ class BlogList extends Component
     // Toggle featured posts filter
     public function toggleFeatured()
     {
-        $this->featuredOnly = !$this->featuredOnly;
+        $this->featuredOnly = ! $this->featuredOnly;
         $this->resetPage();
     }
 
@@ -155,7 +164,7 @@ class BlogList extends Component
     /**
      * Handle search via tag
      *
-     * @param string|array|object $tagName
+     * @param  string|array|object  $tagName
      * @return void
      */
     public function searchByTag($tagName)
@@ -182,23 +191,23 @@ class BlogList extends Component
                 'category',
                 'author',
                 'media',
-                'tags'
+                'tags',
             ])
             ->published()
             ->locale(App::getLocale());
 
-        if (!empty($this->search)) {
-            $searchTerm = '%' . $this->search . '%';
+        if (! empty($this->search)) {
+            $searchTerm = '%'.$this->search.'%';
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'like', $searchTerm)
-                  ->orWhere('content_raw', 'like', $searchTerm)
-                  ->orWhere('content_overview', 'like', $searchTerm)
-                  ->orWhereHas('tags', function($q) use ($searchTerm) {
-                      $q->where('name', 'like', $searchTerm);
-                  })
-                  ->orWhereHas('category', function($q) use ($searchTerm) {
-                      $q->where('name', 'like', $searchTerm);
-                  });
+                    ->orWhere('content_raw', 'like', $searchTerm)
+                    ->orWhere('content_overview', 'like', $searchTerm)
+                    ->orWhereHas('tags', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('category', function ($q) use ($searchTerm) {
+                        $q->where('name', 'like', $searchTerm);
+                    });
             });
         }
 

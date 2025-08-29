@@ -6,17 +6,17 @@ use App\Filament\Resources\Banner\ContentResource\Pages;
 use App\Models\Banner\Category;
 use App\Models\Banner\Content;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Notifications\Notification;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class ContentResource extends Resource
 {
@@ -29,6 +29,7 @@ class ContentResource extends Resource
     protected static int $globalSearchResultsLimit = 10;
 
     protected static ?int $navigationSort = -2;
+
     protected static ?string $navigationIcon = 'heroicon-o-photo';
 
     protected static function getLastSortValue(): int
@@ -59,7 +60,7 @@ class ContentResource extends Resource
                                                     ->required()
                                                     ->maxLength(255)
                                                     ->live(onBlur: true)
-                                                    ->afterStateUpdated(fn($state, Forms\Set $set) => $set('slug', Str::slug($state))),
+                                                    ->afterStateUpdated(fn ($state, Forms\Set $set) => $set('slug', Str::slug($state))),
                                                 Forms\Components\TextInput::make('slug')
                                                     ->disabled()
                                                     ->dehydrated()
@@ -84,7 +85,7 @@ class ContentResource extends Resource
                                                                         $set('new_slug', Str::slug($state));
                                                                     })
                                                                     ->unique(Category::class, 'slug', ignoreRecord: true)
-                                                                    ->helperText('The slug will be automatically formatted as you type.')
+                                                                    ->helperText('The slug will be automatically formatted as you type.'),
                                                             ])
                                                             ->action(function (array $data, Forms\Set $set) {
                                                                 $set('slug', $data['new_slug']);
@@ -199,23 +200,25 @@ class ContentResource extends Resource
                                     ->schema([
                                         Forms\Components\Placeholder::make('impression_count')
                                             ->label('Impressions')
-                                            ->content(fn(Content $record): string => number_format($record->impression_count ?? 0)),
+                                            ->content(fn (Content $record): string => number_format($record->impression_count ?? 0)),
                                         Forms\Components\Placeholder::make('click_count')
                                             ->label('Clicks')
-                                            ->content(fn(Content $record): string => number_format($record->click_count ?? 0)),
+                                            ->content(fn (Content $record): string => number_format($record->click_count ?? 0)),
                                         Forms\Components\Placeholder::make('ctr')
                                             ->label('CTR (Click Through Rate)')
                                             ->content(function (Content $record): string {
                                                 if (($record->impression_count ?? 0) > 0) {
                                                     $ctr = ($record->click_count / $record->impression_count) * 100;
-                                                    return number_format($ctr, 2) . '%';
+
+                                                    return number_format($ctr, 2).'%';
                                                 }
+
                                                 return '0.00%';
                                             }),
                                     ])
                                     ->compact()
                                     ->columns(3)
-                                    ->visible(fn(?Content $record) => $record !== null),
+                                    ->visible(fn (?Content $record) => $record !== null),
                             ]),
                         Forms\Components\Tabs\Tab::make('Advanced Settings')
                             ->icon('heroicon-o-cog')
@@ -256,7 +259,7 @@ class ContentResource extends Resource
                     ->circular(false)
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('title')
-                    ->description(fn(Model $record): string => Str::limit(strip_tags($record->description), 100))
+                    ->description(fn (Model $record): string => Str::limit(strip_tags($record->description), 100))
                     ->searchable()
                     ->sortable()
                     ->wrap(),
@@ -314,13 +317,13 @@ class ContentResource extends Resource
                         return $query
                             ->when(
                                 $data['from'],
-                                fn(Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
+                                fn (Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
                                     $q->whereNull('end_date')->orWhere('end_date', '>=', $date);
                                 }),
                             )
                             ->when(
                                 $data['until'],
-                                fn(Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
+                                fn (Builder $query, $date): Builder => $query->where(function ($q) use ($date) {
                                     $q->whereNull('start_date')->orWhere('start_date', '<=', $date);
                                 }),
                             );
@@ -329,11 +332,11 @@ class ContentResource extends Resource
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
-                            $indicators['from'] = 'Active from ' . $data['from']->format('M j, Y');
+                            $indicators['from'] = 'Active from '.$data['from']->format('M j, Y');
                         }
 
                         if ($data['until'] ?? null) {
-                            $indicators['until'] = 'Active until ' . $data['until']->format('M j, Y');
+                            $indicators['until'] = 'Active until '.$data['until']->format('M j, Y');
                         }
 
                         return $indicators;
@@ -346,7 +349,7 @@ class ContentResource extends Resource
                     Tables\Actions\Action::make('preview')
                         ->label('Preview Banner')
                         ->icon('heroicon-m-eye')
-                        ->url(fn(Content $record) => $record->getImageUrl('large'))
+                        ->url(fn (Content $record) => $record->getImageUrl('large'))
                         ->openUrlInNewTab(),
                     Tables\Actions\Action::make('clone')
                         ->label('Clone Banner')
@@ -395,12 +398,12 @@ class ContentResource extends Resource
                         ->label('Set Active')
                         ->icon('heroicon-m-check-circle')
                         ->requiresConfirmation()
-                        ->action(fn(\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => true])),
+                        ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => true])),
                     Tables\Actions\BulkAction::make('deactivate')
                         ->label('Set Inactive')
                         ->icon('heroicon-m-x-circle')
                         ->requiresConfirmation()
-                        ->action(fn(\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => false])),
+                        ->action(fn (\Illuminate\Database\Eloquent\Collection $records) => $records->each->update(['is_active' => false])),
                 ]),
             ])
             ->defaultSort('sort', 'asc')
@@ -449,7 +452,7 @@ class ContentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.banner");
+        return __('menu.nav_group.banner');
     }
 
     public static function getNavigationBadge(): ?string

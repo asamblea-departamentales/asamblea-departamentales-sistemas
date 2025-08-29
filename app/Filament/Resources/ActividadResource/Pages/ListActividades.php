@@ -14,9 +14,9 @@ class ListActividades extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Crear Actividad')
-            ->icon('heroicon-o-plus-circle')
-            ->color('primary'),
+                ->label('Crear Actividad')
+                ->icon('heroicon-o-plus-circle')
+                ->color('primary'),
         ];
     }
 }

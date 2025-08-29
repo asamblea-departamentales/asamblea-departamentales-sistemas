@@ -8,10 +8,10 @@ use App\Policies\ActivityPolicy;
 use App\Policies\Blog\CategoryPolicy as BlogPostCategoryPolicy;
 use App\Policies\Blog\PostPolicy as BlogPostPolicy;
 use App\Policies\ExceptionPolicy;
+use BezhanSalleh\FilamentExceptions\Models\Exception;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Activitylog\Models\Activity;
-use BezhanSalleh\FilamentExceptions\Models\Exception;
 
 class AuthServiceProvider extends ServiceProvider
 {

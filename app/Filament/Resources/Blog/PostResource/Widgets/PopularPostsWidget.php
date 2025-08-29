@@ -21,9 +21,10 @@ class PopularPostsWidget extends BaseWidget
         if ($user && $user->hasRole('author')) {
             $query->where(function ($q) use ($user) {
                 $q->where('blog_author_id', $user->id)
-                  ->orWhere('created_by', $user->id);
+                    ->orWhere('created_by', $user->id);
             });
         }
+
         return $query->orderBy('view_count', 'desc')->limit(5);
     }
 
@@ -40,7 +41,7 @@ class PopularPostsWidget extends BaseWidget
 
             Tables\Columns\TextColumn::make('author.firstname')
                 ->label('Author')
-                ->formatStateUsing(fn($record) => "{$record->author->firstname} {$record->author->lastname}"),
+                ->formatStateUsing(fn ($record) => "{$record->author->firstname} {$record->author->lastname}"),
 
             Tables\Columns\TextColumn::make('view_count')
                 ->label('Views')
@@ -60,12 +61,12 @@ class PopularPostsWidget extends BaseWidget
     {
         return [
             Tables\Actions\Action::make('view')
-                ->url(fn(Post $record): string => $record->getUrl())
+                ->url(fn (Post $record): string => $record->getUrl())
                 ->icon('heroicon-o-eye')
                 ->openUrlInNewTab(),
 
             Tables\Actions\Action::make('edit')
-                ->url(fn(Post $record): string => route('filament.admin.resources.blog.posts.edit', $record))
+                ->url(fn (Post $record): string => route('filament.admin.resources.blog.posts.edit', $record))
                 ->icon('heroicon-o-pencil-square'),
         ];
     }

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\ContactUsResource\Actions;
 
-use App\Models\ContactUs;
 use App\Mail\ContactReply;
+use App\Models\ContactUs;
 use App\Settings\MailSettings;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -11,7 +11,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Config;
 
 class ReplyAction extends Action
 {
@@ -57,8 +56,8 @@ class ReplyAction extends Action
                 $mailSettings = app(MailSettings::class);
 
                 // Check if mail settings are configured
-                if (!$mailSettings->isMailSettingsConfigured()) {
-                    Log::warning('Mail settings not configured. Reply email not sent for contact ID: ' . $record->id);
+                if (! $mailSettings->isMailSettingsConfigured()) {
+                    Log::warning('Mail settings not configured. Reply email not sent for contact ID: '.$record->id);
 
                     Notification::make()
                         ->title('Reply saved but email not sent')
@@ -79,7 +78,7 @@ class ReplyAction extends Action
 
                     Log::info('Contact reply email queued successfully', [
                         'contact_id' => $record->id,
-                        'recipient' => $record->email
+                        'recipient' => $record->email,
                     ]);
 
                     Notification::make()
@@ -92,12 +91,12 @@ class ReplyAction extends Action
                         'contact_id' => $record->id,
                         'recipient' => $record->email,
                         'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
+                        'trace' => $e->getTraceAsString(),
                     ]);
 
                     Notification::make()
                         ->title('Reply saved but email failed to send')
-                        ->body('The reply has been saved but there was an error sending the email: ' . $e->getMessage())
+                        ->body('The reply has been saved but there was an error sending the email: '.$e->getMessage())
                         ->warning()
                         ->send();
                 }
@@ -106,7 +105,7 @@ class ReplyAction extends Action
                 Log::error('Error processing contact reply', [
                     'contact_id' => $record->id ?? 'unknown',
                     'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
+                    'trace' => $e->getTraceAsString(),
                 ]);
 
                 Notification::make()

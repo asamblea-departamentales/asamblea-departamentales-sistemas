@@ -7,9 +7,9 @@ use App\Mail\NewContactUsNotificationMail;
 use App\Settings\MailSettings;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Config;
 
 class SendNewContactNotification implements ShouldQueue
 {
@@ -44,22 +44,21 @@ class SendNewContactNotification implements ShouldQueue
      */
     public function __construct(
         protected MailSettings $settings
-    ) {
-    }
+    ) {}
 
     /**
      * Handle the event.
      *
-     * @param  \App\Events\ContactUsCreated  $event
      * @return void
      */
     public function handle(ContactUsCreated $event)
     {
         $contact = $event->contact;
 
-        if (!$this->settings->isMailSettingsConfigured()) {
-            Log::warning('Mail settings not configured. Email not sent for contact ID: ' . $contact->id);
+        if (! $this->settings->isMailSettingsConfigured()) {
+            Log::warning('Mail settings not configured. Email not sent for contact ID: '.$contact->id);
             $this->fail('Mail settings not properly configured');
+
             return;
         }
 
@@ -79,13 +78,13 @@ class SendNewContactNotification implements ShouldQueue
 
             Log::info('Contact notification email sent successfully', [
                 'contact_id' => $contact->id,
-                'recipients' => $recipients
+                'recipients' => $recipients,
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to send contact notification email', [
                 'contact_id' => $contact->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             $this->fail($e); // Mark the job as failed for retries.

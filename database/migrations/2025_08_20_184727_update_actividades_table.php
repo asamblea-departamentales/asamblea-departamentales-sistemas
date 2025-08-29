@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
+            // Crear nuevas columnas si no existen
             if (!Schema::hasColumn('actividades', 'asistentes_hombres')) {
                 $table->integer('asistentes_hombres')->default(0)->after('lugar');
             }
@@ -21,7 +22,7 @@ return new class extends Migration
                 $table->integer('asistencia_completa')->default(0)->after('asistentes_mujeres');
             }
 
-            // Opcional: eliminar la columna vieja si existe
+            // Eliminar columna vieja si existe
             if (Schema::hasColumn('actividades', 'asistentes')) {
                 $table->dropColumn('asistentes');
             }
@@ -31,12 +32,14 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('actividades', function (Blueprint $table) {
+            // Eliminar las nuevas columnas
             $table->dropColumn([
                 'asistentes_hombres',
                 'asistentes_mujeres',
                 'asistencia_completa',
             ]);
 
+            // Restaurar la columna antigua si no existe
             if (!Schema::hasColumn('actividades', 'asistentes')) {
                 $table->integer('asistentes')->default(0)->after('lugar');
             }

@@ -5,13 +5,12 @@ namespace App\Filament\Resources\Blog\PostResource\Pages;
 use App\Enums\Blog\PostStatus;
 use App\Filament\Resources\Blog\PostResource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportRedirects\Redirector;
-use Filament\Forms;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 
 class EditPost extends EditRecord
 {
@@ -45,12 +44,12 @@ class EditPost extends EditRecord
                         $this->refreshFormData([
                             'status',
                             'published_at',
-                            'last_published_at'
+                            'last_published_at',
                         ]);
                     })
                     ->icon('heroicon-m-check-circle')
                     ->color('success')
-                    ->visible(fn() => $this->record->status !== PostStatus::PUBLISHED),
+                    ->visible(fn () => $this->record->status !== PostStatus::PUBLISHED),
 
                 Actions\Action::make('schedule')
                     ->label('Schedule Publication')
@@ -75,7 +74,7 @@ class EditPost extends EditRecord
 
                         Notification::make()
                             ->title('Post scheduled for publication')
-                            ->body('It will be automatically published on ' . $data['scheduled_at']->format('M d, Y \a\t h:i A'))
+                            ->body('It will be automatically published on '.$data['scheduled_at']->format('M d, Y \a\t h:i A'))
                             ->success()
                             ->send();
 
@@ -86,7 +85,7 @@ class EditPost extends EditRecord
                     })
                     ->icon('heroicon-m-clock')
                     ->color('warning')
-                    ->visible(fn() => $this->record->status !== PostStatus::PUBLISHED),
+                    ->visible(fn () => $this->record->status !== PostStatus::PUBLISHED),
 
                 Actions\Action::make('unpublish')
                     ->label('Unpublish')
@@ -110,13 +109,13 @@ class EditPost extends EditRecord
                     })
                     ->icon('heroicon-m-archive-box')
                     ->color('danger')
-                    ->visible(fn() => $this->record->status === PostStatus::PUBLISHED || $this->record->status === PostStatus::PENDING),
+                    ->visible(fn () => $this->record->status === PostStatus::PUBLISHED || $this->record->status === PostStatus::PENDING),
 
                 // Featuring action
                 Actions\Action::make('toggle_featured')
-                    ->label(fn() => $this->record->is_featured ? 'Remove Featured' : 'Mark as Featured')
+                    ->label(fn () => $this->record->is_featured ? 'Remove Featured' : 'Mark as Featured')
                     ->action(function () {
-                        $newValue = !$this->record->is_featured;
+                        $newValue = ! $this->record->is_featured;
 
                         $this->record->update([
                             'is_featured' => $newValue,
@@ -131,8 +130,8 @@ class EditPost extends EditRecord
 
                         $this->refreshFormData(['is_featured']);
                     })
-                    ->icon(fn() => $this->record->is_featured ? 'heroicon-m-x-mark' : 'heroicon-m-star')
-                    ->color(fn() => $this->record->is_featured ? 'info' : 'info'),
+                    ->icon(fn () => $this->record->is_featured ? 'heroicon-m-x-mark' : 'heroicon-m-star')
+                    ->color(fn () => $this->record->is_featured ? 'info' : 'info'),
 
                 // Duplication action
                 Actions\Action::make('duplicate')
@@ -140,7 +139,7 @@ class EditPost extends EditRecord
                     ->form([
                         Forms\Components\TextInput::make('title')
                             ->label('New Title')
-                            ->default(fn() => "Copy of {$this->record->title}")
+                            ->default(fn () => "Copy of {$this->record->title}")
                             ->required()
                             ->maxLength(255)
                             ->live(debounce: 500)
@@ -150,7 +149,7 @@ class EditPost extends EditRecord
 
                         Forms\Components\TextInput::make('slug')
                             ->label('New Slug')
-                            ->default(fn() => Str::slug("Copy of {$this->record->title}"))
+                            ->default(fn () => Str::slug("Copy of {$this->record->title}"))
                             ->required()
                             ->maxLength(255)
                             ->unique('blog_posts', 'slug'),
@@ -237,14 +236,14 @@ class EditPost extends EditRecord
 
                 Actions\Action::make('view_on_site')
                     ->label('View on Website')
-                    ->url(fn() => $this->record->getUrl())
+                    ->url(fn () => $this->record->getUrl())
                     ->icon('heroicon-o-globe-alt')
-                    ->visible(fn() => $this->record->status === PostStatus::PUBLISHED)
+                    ->visible(fn () => $this->record->status === PostStatus::PUBLISHED)
                     ->openUrlInNewTab(),
 
                 Actions\Action::make('preview')
                     ->label('Preview Draft')
-                    ->url(fn() => route('blog.preview', ['id' => $this->record->id, 'token' => hash('sha256', $this->record->id . config('app.key'))]))
+                    ->url(fn () => route('blog.preview', ['id' => $this->record->id, 'token' => hash('sha256', $this->record->id.config('app.key'))]))
                     ->icon('heroicon-o-eye')
                     ->openUrlInNewTab(),
             ])
@@ -295,7 +294,7 @@ class EditPost extends EditRecord
             foreach ($users as $user) {
                 Notification::make()
                     ->title('Post submitted for approval')
-                    ->body('The post "' . $this->record->title . '" has been submitted for approval.')
+                    ->body('The post "'.$this->record->title.'" has been submitted for approval.')
                     ->info()
                     ->sendToDatabase($user);
             }

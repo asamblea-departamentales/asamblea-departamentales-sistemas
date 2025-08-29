@@ -15,6 +15,5 @@ return [
     'nav_group.settings' => 'Settings',
     'nav_group.systems' => 'Systems',
 
-
     'nav_group.item.log_viewer' => 'Log Viewer',
 ];

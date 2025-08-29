@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Settings\GeneralSettings;
 use Closure;
 use Illuminate\Http\Request;
-use App\Settings\GeneralSettings;
 
 class FilamentRobotsMiddleware
 {
@@ -22,7 +22,7 @@ class FilamentRobotsMiddleware
 
             $content = str_replace(
                 '<meta name="viewport"',
-                $robotsTag . "\n" . '    <meta name="viewport"',
+                $robotsTag."\n".'    <meta name="viewport"',
                 $content
             );
 

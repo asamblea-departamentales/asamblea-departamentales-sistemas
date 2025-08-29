@@ -7,5 +7,5 @@ return [
     'nav_group.blog' => '博客',
     'nav_group.content' => '内容',
     'nav_group.sites' => '站点',
-    'nav_group.settings' => '设置'
-    ];
+    'nav_group.settings' => '设置',
+];

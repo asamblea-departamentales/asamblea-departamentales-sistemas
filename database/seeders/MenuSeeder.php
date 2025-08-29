@@ -322,4 +322,3 @@ class MenuSeeder extends Seeder
         DB::table($menuItemsTable)->insert($menuItems);
     }
 }
-

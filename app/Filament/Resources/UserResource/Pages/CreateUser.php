@@ -24,20 +24,19 @@ class CreateUser extends CreateRecord
      * - Si quien crea NO es rol central (TI/GOL), forzamos su mismo departamental.
      */
     protected function mutateFormDataBeforeCreate(array $data): array
-{
-    $auth = Filament::auth()->user();
+    {
+        $auth = Filament::auth()->user();
 
-    /** @var \App\Models\User|null $auth */ // <- ayuda al IDE
-    if (
-        $auth
-        && ! ($auth->hasAnyRole(['ti', 'gol']) || $auth->hasRole(config('filament-shield.super_admin.name')))
-    ) {
-        $data['departamental_id'] = $auth->departamental_id;
+        /** @var \App\Models\User|null $auth */ // <- ayuda al IDE
+        if (
+            $auth
+            && ! ($auth->hasAnyRole(['ti', 'gol']) || $auth->hasRole(config('filament-shield.super_admin.name')))
+        ) {
+            $data['departamental_id'] = $auth->departamental_id;
+        }
+
+        return $data;
     }
-
-    return $data;
-}
-
 
     /**
      * Después de crear:
@@ -46,12 +45,12 @@ class CreateUser extends CreateRecord
      */
     protected function afterCreate(): void
     {
-        $user     = $this->record;
-        $state    = $this->form->getState();       // aquí está 'mark_email_verified'
+        $user = $this->record;
+        $state = $this->form->getState();       // aquí está 'mark_email_verified'
         $settings = app(MailSettings::class);
 
         // 1) Verificar directamente (sin correo)
-        if (!empty($state['mark_email_verified'])) {
+        if (! empty($state['mark_email_verified'])) {
             if (is_null($user->email_verified_at)) {
                 $user->forceFill(['email_verified_at' => now()])->save();
             }
@@ -71,7 +70,7 @@ class CreateUser extends CreateRecord
         }
 
         if ($settings->isMailSettingsConfigured()) {
-            $notification      = new VerifyEmail();
+            $notification = new VerifyEmail;
             $notification->url = Filament::getVerifyEmailUrl($user);
 
             $settings->loadMailSettingsToConfig();

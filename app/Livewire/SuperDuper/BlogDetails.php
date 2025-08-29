@@ -2,21 +2,28 @@
 
 namespace App\Livewire\SuperDuper;
 
-use App\Models\Blog\Post;
 use App\Models\Blog\Category;
-use Livewire\Component;
-use Illuminate\Support\Facades\DB;
+use App\Models\Blog\Post;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class BlogDetails extends Component
 {
     public $post;
+
     public $slug;
+
     public $relatedPosts = [];
+
     public $previousPost;
+
     public $nextPost;
+
     public $recentPosts = [];
+
     public $categories = [];
+
     public $popularTags = [];
 
     public function mount($slug)
@@ -38,11 +45,11 @@ class BlogDetails extends Component
             'category',
             'author',
             'tags',
-            'media'
+            'media',
         ])
-        ->where('slug', $this->slug)
-        ->published()
-        ->firstOrFail();
+            ->where('slug', $this->slug)
+            ->published()
+            ->firstOrFail();
 
         // Track view
         $this->post->trackView();
@@ -68,7 +75,7 @@ class BlogDetails extends Component
             return Post::published()
                 ->where('id', '!=', $this->post->id)
                 ->select(['id', 'title', 'slug', 'blog_category_id', 'published_at', 'content_overview'])
-                ->with(['category:id,name,slug', 'media' => function($query) {
+                ->with(['category:id,name,slug', 'media' => function ($query) {
                     $query->where('collection_name', 'featured');
                 }])
                 ->orderBy('published_at', 'desc')
@@ -79,7 +86,7 @@ class BlogDetails extends Component
         // Get categories with post counts
         $this->categories = Cache::remember('active_categories', now()->addHours(3), function () {
             return Category::active()
-                ->withCount(['posts' => function($query) {
+                ->withCount(['posts' => function ($query) {
                     $query->published();
                 }])
                 ->having('posts_count', '>', 0)
@@ -89,11 +96,11 @@ class BlogDetails extends Component
 
         // Get popular tags
         $locale = app()->getLocale();
-        $this->popularTags = Cache::remember('popular_tags_' . $locale, now()->addHours(6), function () use ($locale) {
+        $this->popularTags = Cache::remember('popular_tags_'.$locale, now()->addHours(6), function () use ($locale) {
             // Use a more efficient query with proper indexing
             $rawTags = DB::table('taggables')
                 ->join('tags', 'taggables.tag_id', '=', 'tags.id')
-                ->join('blog_posts', function($join) {
+                ->join('blog_posts', function ($join) {
                     $join->on('taggables.taggable_id', '=', 'blog_posts.id')
                         ->where('taggables.taggable_type', Post::class);
                 })
@@ -119,7 +126,7 @@ class BlogDetails extends Component
 
                 return [
                     'name' => $name,
-                    'count' => $tag->count
+                    'count' => $tag->count,
                 ];
             })->toArray();
         });
@@ -146,7 +153,7 @@ class BlogDetails extends Component
                 'logo' => [
                     '@type' => 'ImageObject',
                     'url' => asset('path/to/your/logo.png'),
-                ]
+                ],
             ],
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'filament-shield.custom' => 'Autres autorisations'
-    ];
+    'filament-shield.custom' => 'Autres autorisations',
+];

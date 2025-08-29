@@ -24,7 +24,7 @@ class ViewPost extends ViewRecord
                 ->action(function () {
                     $record = $this->record;
                     $duplicate = $record->replicate();
-                    $duplicate->title = "Copy of " . $record->title;
+                    $duplicate->title = 'Copy of '.$record->title;
                     $duplicate->slug = \Illuminate\Support\Str::slug($duplicate->title);
                     $duplicate->status = 'draft';
                     $duplicate->published_at = null;

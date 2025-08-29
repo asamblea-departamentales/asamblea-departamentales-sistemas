@@ -2,8 +2,8 @@
 
 namespace App\Policies\Banner;
 
-use App\Models\User;
 use App\Models\Banner\Category;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy

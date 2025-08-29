@@ -36,5 +36,5 @@ return [
     'user.notifications.verify_warning' => [
         'title' => 'Não é possível enviar a verificação de email!',
         'description' => 'Verifique sua configuração de e -mail ou tente novamente mais tarde.',
-    ]
-    ];
+    ],
+];

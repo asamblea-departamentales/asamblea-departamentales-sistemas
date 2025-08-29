@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('usuarios_', function (Blueprint $table) {
-            $table->id(); //ID del usuario
-            $table->foreignId('rol_acceso_id') //Llave foránea al rol de acceso
+            $table->id(); // ID del usuario
+            $table->foreignId('rol_acceso_id') // Llave foránea al rol de acceso
                 ->constrained('roles_acceso') // Hace referencia a la tabla roles_acceso
                 ->onDelete('cascade'); // Elimina el usuario si se elimina el rol de acceso
-            $table->string('nombre', 100); //Nombre del usuario
-            $table->string('email', 100)->unique(); //Email del usuario, debe ser único
-            $table->string('password'); //Contraseña del usuario hasheada
+            $table->string('nombre', 100); // Nombre del usuario
+            $table->string('email', 100)->unique(); // Email del usuario, debe ser único
+            $table->string('password'); // Contraseña del usuario hasheada
             $table->timestamps(); // Timestamps para created_at y updated_at
         });
     }

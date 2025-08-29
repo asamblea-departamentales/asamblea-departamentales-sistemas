@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -18,12 +18,12 @@ return new class extends Migration
 
         // 2) Backfill: intenta mapear por NOMBRE (o por CÓDIGO si lo prefieres)
         // ——— Mapea por nombre ———
-        DB::statement("
+        DB::statement('
             UPDATE actividades a
             JOIN departamentales d ON TRIM(LOWER(d.nombre)) = TRIM(LOWER(a.departamental))
             SET a.departamental_id = d.id
             WHERE a.departamental_id IS NULL
-        ");
+        ');
 
         // (Alternativa: mapear por 'codigo' si tu texto guarda códigos)
         // DB::statement("
@@ -69,8 +69,14 @@ return new class extends Migration
                 if (Schema::hasColumn('actividades', 'departamental_id')) {
                     $sm = Schema::getConnection()->getDoctrineSchemaManager();
                     // Intenta soltar la FK si existe
-                    try { $table->dropForeign('actividades_departamental_id_fk'); } catch (\Throwable $e) {}
-                    try { $table->dropIndex('actividades_departamental_id_index'); } catch (\Throwable $e) {}
+                    try {
+                        $table->dropForeign('actividades_departamental_id_fk');
+                    } catch (\Throwable $e) {
+                    }
+                    try {
+                        $table->dropIndex('actividades_departamental_id_index');
+                    } catch (\Throwable $e) {
+                    }
                 }
                 $table->dropColumn('departamental_id');
             }

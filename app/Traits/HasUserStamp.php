@@ -3,8 +3,6 @@
 namespace App\Traits;
 
 use App\Scopes\UserStampScope;
-use App\Support\UserStamp;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -17,17 +15,14 @@ trait HasUserStamp
 {
     /**
      * Whether user stamping is enabled for this model instance
-     *
-     * @var bool
      */
     protected bool $userstamping = true;
 
     /**
      * Whether team stamping is enabled for this model instance
-     *
-     * @var bool
      */
     protected bool $teamStamping = false;
+
     /**
      * Default value for team stamping
      *
@@ -37,8 +32,6 @@ trait HasUserStamp
 
     /**
      * Boot the trait
-     *
-     * @return void
      */
     public static function bootHasUserStamp(): void
     {
@@ -61,8 +54,6 @@ trait HasUserStamp
 
     /**
      * Register model event listeners
-     *
-     * @return void
      */
     public static function registerListeners(): void
     {
@@ -77,8 +68,6 @@ trait HasUserStamp
 
     /**
      * Check if the model uses soft deletes
-     *
-     * @return bool
      */
     public static function usingSoftDeletes(): bool
     {
@@ -131,7 +120,7 @@ trait HasUserStamp
      */
     public function creatorTeam()
     {
-        if (!$this->isTeamStamping() || is_null($this->getCreatedByTeamColumn())) {
+        if (! $this->isTeamStamping() || is_null($this->getCreatedByTeamColumn())) {
             return null;
         }
 
@@ -145,7 +134,7 @@ trait HasUserStamp
      */
     public function editorTeam()
     {
-        if (!$this->isTeamStamping() || is_null($this->getUpdatedByTeamColumn())) {
+        if (! $this->isTeamStamping() || is_null($this->getUpdatedByTeamColumn())) {
             return null;
         }
 
@@ -159,7 +148,7 @@ trait HasUserStamp
      */
     public function destroyerTeam()
     {
-        if (!$this->isTeamStamping() || is_null($this->getDeletedByTeamColumn())) {
+        if (! $this->isTeamStamping() || is_null($this->getDeletedByTeamColumn())) {
             return null;
         }
 
@@ -168,80 +157,66 @@ trait HasUserStamp
 
     /**
      * Get the created by column name
-     *
-     * @return string|null
      */
     public function getCreatedByColumn(): ?string
     {
         return defined('static::CREATED_BY')
-            ? constant(static::class . '::CREATED_BY')
+            ? constant(static::class.'::CREATED_BY')
             : config('userstamp.columns.created_by');
     }
 
     /**
      * Get the updated by column name
-     *
-     * @return string|null
      */
     public function getUpdatedByColumn(): ?string
     {
         return defined('static::UPDATED_BY')
-            ? constant(static::class . '::UPDATED_BY')
+            ? constant(static::class.'::UPDATED_BY')
             : config('userstamp.columns.updated_by');
     }
 
     /**
      * Get the deleted by column name
-     *
-     * @return string|null
      */
     public function getDeletedByColumn(): ?string
     {
         return defined('static::DELETED_BY')
-            ? constant(static::class . '::DELETED_BY')
+            ? constant(static::class.'::DELETED_BY')
             : config('userstamp.columns.deleted_by');
     }
 
     /**
      * Get the created by team column name
-     *
-     * @return string|null
      */
     public function getCreatedByTeamColumn(): ?string
     {
         return defined('static::CREATED_BY_TEAM')
-            ? constant(static::class . '::CREATED_BY_TEAM')
+            ? constant(static::class.'::CREATED_BY_TEAM')
             : config('userstamp.columns.created_by_team');
     }
 
     /**
      * Get the updated by team column name
-     *
-     * @return string|null
      */
     public function getUpdatedByTeamColumn(): ?string
     {
         return defined('static::UPDATED_BY_TEAM')
-            ? constant(static::class . '::UPDATED_BY_TEAM')
+            ? constant(static::class.'::UPDATED_BY_TEAM')
             : config('userstamp.columns.updated_by_team');
     }
 
     /**
      * Get the deleted by team column name
-     *
-     * @return string|null
      */
     public function getDeletedByTeamColumn(): ?string
     {
         return defined('static::DELETED_BY_TEAM')
-            ? constant(static::class . '::DELETED_BY_TEAM')
+            ? constant(static::class.'::DELETED_BY_TEAM')
             : config('userstamp.columns.deleted_by_team');
     }
 
     /**
      * Check if user stamping is enabled
-     *
-     * @return bool
      */
     public function isUserstamping(): bool
     {
@@ -250,8 +225,6 @@ trait HasUserStamp
 
     /**
      * Check if team stamping is enabled
-     *
-     * @return bool
      */
     public function isTeamStamping(): bool
     {
@@ -260,8 +233,6 @@ trait HasUserStamp
 
     /**
      * Disable user stamping for this model instance
-     *
-     * @return void
      */
     public function stopUserstamping(): void
     {
@@ -270,8 +241,6 @@ trait HasUserStamp
 
     /**
      * Enable user stamping for this model instance
-     *
-     * @return void
      */
     public function startUserstamping(): void
     {
@@ -280,8 +249,6 @@ trait HasUserStamp
 
     /**
      * Enable team stamping for this model instance
-     *
-     * @return void
      */
     public function enableTeamStamping(): void
     {
@@ -290,8 +257,6 @@ trait HasUserStamp
 
     /**
      * Disable team stamping for this model instance
-     *
-     * @return void
      */
     public function disableTeamStamping(): void
     {
@@ -300,8 +265,6 @@ trait HasUserStamp
 
     /**
      * Get the user class
-     *
-     * @return string
      */
     protected function getUserClass(): string
     {
@@ -310,8 +273,6 @@ trait HasUserStamp
 
     /**
      * Get the team class
-     *
-     * @return string
      */
     protected function getTeamClass(): string
     {
@@ -350,8 +311,6 @@ trait HasUserStamp
 
     /**
      * Check if the model should filter by current user
-     *
-     * @return bool
      */
     public function shouldFilterByCurrentUser(): bool
     {

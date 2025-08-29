@@ -5,10 +5,10 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Attachment;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class TestMail extends Mailable implements ShouldQueue
@@ -36,7 +36,7 @@ class TestMail extends Mailable implements ShouldQueue
         );
 
         // Add reply-to address if specified in settings
-        if (!empty(config('mail.reply_to.address'))) {
+        if (! empty(config('mail.reply_to.address'))) {
             $envelope->replyTo(
                 new Address(
                     config('mail.reply_to.address'),
@@ -59,7 +59,7 @@ class TestMail extends Mailable implements ShouldQueue
                 'mailData' => $this->mailData,
                 'theme' => $this->mailData['theme'] ?? null,
                 'preheader' => 'This is a test email to verify your email configuration is working properly.',
-                'footerText' => $this->mailData['theme']['footer'] ?? ('© ' . date('Y') . ' SuperDuper Starter. All rights reserved.'),
+                'footerText' => $this->mailData['theme']['footer'] ?? ('© '.date('Y').' SuperDuper Starter. All rights reserved.'),
                 'displayDate' => now()->format('F j, Y'),
             ],
         );

@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToDepartamental;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Concerns\BelongsToDepartamental;
-use App\Models\Comentarios; 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class Actividad extends Model
 {
-    use HasFactory;
-    use BelongsToDepartamental;                 // <- ✨ habilita la relación y el scope
+    use BelongsToDepartamental;
+    use HasFactory;                 // <- ✨ habilita la relación y el scope
 
     protected $table = 'actividades';
 
@@ -23,32 +22,32 @@ class Actividad extends Model
     protected $fillable = [
         'user_id',
         'fecha',
-        'departamental_id', 
+        'departamental_id',
         'programa',
         'macroactividad',
         'estado',
-        'star_date',   
+        'star_date',
         'due_date',
         'reminder_at',
         'atestados',
-        'lugar', //campo agregado
-        'asistentes_hombres', //campo agregado
-        'asistentes_mujeres', //campo agregado
-        'asistencia_completa', //campo agregado
+        'lugar', // campo agregado
+        'asistentes_hombres', // campo agregado
+        'asistentes_mujeres', // campo agregado
+        'asistencia_completa', // campo agregado
     ];
 
     protected $casts = [
-        'star_date'  => 'datetime', 
-        'due_date'    => 'datetime',
+        'star_date' => 'datetime',
+        'due_date' => 'datetime',
         'reminder_at' => 'datetime',
-        'fecha'       => 'date',
-        'atestados'   => 'array',
+        'fecha' => 'date',
+        'atestados' => 'array',
         'asistentes_hombres' => 'integer', // campo agregado
         'asistentes_mujeres' => 'integer', // campo agregado
         'asistencia_completa' => 'integer', // campo agregado
     ];
 
-    //metodo agregado
+    // metodo agregado
     protected static function boot()
     {
         parent::boot();
@@ -95,14 +94,15 @@ class Actividad extends Model
             return [];
         }
 
-        return collect($this->atestados)->map(fn ($path) => asset('storage/' . ltrim($path, '/')))->all();
+        return collect($this->atestados)->map(fn ($path) => asset('storage/'.ltrim($path, '/')))->all();
     }
 
-    //Agregado tambien
+    // Agregado tambien
     public function getAsistenciaTotalAttribute()
     {
         return $this->asistentes_hombres + $this->asistentes_mujeres;
     }
+
     protected $appends = ['archivos_urls', 'asistencia_total']; // <- Agrega asistencia_total a los atributos accesibles
 
     /** Scopes de estado (nombres alineados al valor) */

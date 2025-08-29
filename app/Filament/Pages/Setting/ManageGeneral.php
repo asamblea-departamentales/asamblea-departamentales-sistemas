@@ -18,9 +18,11 @@ use function Filament\Support\is_app_url;
 class ManageGeneral extends SettingsPage
 {
     use HasPageShield;
+
     protected static string $settings = GeneralSettings::class;
 
     protected static ?int $navigationSort = 99;
+
     protected static ?string $navigationIcon = 'fluentui-settings-20';
 
     /**
@@ -60,14 +62,14 @@ class ManageGeneral extends SettingsPage
         return $form
             ->schema([
                 Forms\Components\Section::make('Site')
-                    ->label(fn() => __('page.general_settings.sections.site'))
-                    ->description(fn() => __('page.general_settings.sections.site.description'))
+                    ->label(fn () => __('page.general_settings.sections.site'))
+                    ->description(fn () => __('page.general_settings.sections.site.description'))
                     ->icon('fluentui-web-asset-24-o')
                     ->collapsible()
                     ->schema([
                         Forms\Components\Grid::make()->schema([
                             Forms\Components\TextInput::make('brand_name')
-                                ->label(fn() => __('page.general_settings.fields.brand_name'))
+                                ->label(fn () => __('page.general_settings.fields.brand_name'))
                                 ->required(),
                             Forms\Components\Toggle::make('search_engine_indexing')
                                 ->label('Admin Panel Indexing')
@@ -84,7 +86,7 @@ class ManageGeneral extends SettingsPage
                     ->schema([
                         Forms\Components\Grid::make()->schema([
                             Forms\Components\TextInput::make('brand_logoHeight')
-                                ->label(fn() => __('page.general_settings.fields.brand_logoHeight'))
+                                ->label(fn () => __('page.general_settings.fields.brand_logoHeight'))
                                 ->numeric()
                                 ->suffix('px')
                                 ->required(),
@@ -92,7 +94,7 @@ class ManageGeneral extends SettingsPage
 
                         Forms\Components\Grid::make()->schema([
                             Forms\Components\FileUpload::make('brand_logo')
-                                ->label(fn() => __('page.general_settings.fields.brand_logo'))
+                                ->label(fn () => __('page.general_settings.fields.brand_logo'))
                                 ->image()
                                 ->directory('sites')
                                 ->visibility('public')
@@ -101,7 +103,7 @@ class ManageGeneral extends SettingsPage
                                 ->helperText('Upload your site logo (optional)'),
 
                             Forms\Components\FileUpload::make('site_favicon')
-                                ->label(fn() => __('page.general_settings.fields.site_favicon'))
+                                ->label(fn () => __('page.general_settings.fields.site_favicon'))
                                 ->image()
                                 ->directory('sites')
                                 ->visibility('public')
@@ -121,13 +123,13 @@ class ManageGeneral extends SettingsPage
                                     ->compact()
                                     ->schema([
                                         Forms\Components\ColorPicker::make('site_theme.primary')
-                                            ->label(fn() => __('page.general_settings.fields.primary'))
+                                            ->label(fn () => __('page.general_settings.fields.primary'))
                                             ->helperText('Used for primary buttons and links'),
                                         Forms\Components\ColorPicker::make('site_theme.secondary')
-                                            ->label(fn() => __('page.general_settings.fields.secondary'))
+                                            ->label(fn () => __('page.general_settings.fields.secondary'))
                                             ->helperText('Used for secondary elements'),
                                         Forms\Components\ColorPicker::make('site_theme.gray')
-                                            ->label(fn() => __('page.general_settings.fields.gray'))
+                                            ->label(fn () => __('page.general_settings.fields.gray'))
                                             ->helperText('Used for neutral backgrounds and text'),
                                     ])->columns(3),
                                 Forms\Components\Section::make('Status Colors')
@@ -135,16 +137,16 @@ class ManageGeneral extends SettingsPage
                                     ->compact()
                                     ->schema([
                                         Forms\Components\ColorPicker::make('site_theme.success')
-                                            ->label(fn() => __('page.general_settings.fields.success'))
+                                            ->label(fn () => __('page.general_settings.fields.success'))
                                             ->helperText('Used for success states and confirmations'),
                                         Forms\Components\ColorPicker::make('site_theme.danger')
-                                            ->label(fn() => __('page.general_settings.fields.danger'))
+                                            ->label(fn () => __('page.general_settings.fields.danger'))
                                             ->helperText('Used for errors and dangerous actions'),
                                         Forms\Components\ColorPicker::make('site_theme.info')
-                                            ->label(fn() => __('page.general_settings.fields.info'))
+                                            ->label(fn () => __('page.general_settings.fields.info'))
                                             ->helperText('Used for informational notifications'),
                                         Forms\Components\ColorPicker::make('site_theme.warning')
-                                            ->label(fn() => __('page.general_settings.fields.warning'))
+                                            ->label(fn () => __('page.general_settings.fields.warning'))
                                             ->helperText('Used for warnings and cautions'),
                                     ])->columns(2),
                             ]),
@@ -162,7 +164,7 @@ class ManageGeneral extends SettingsPage
                                         ->mode('javascript')
                                         ->height('24rem')
                                         ->helperText('Edit the Tailwind configuration (changes will be applied after saving)'),
-                                ])->columns(1)
+                                ])->columns(1),
                             ]),
                     ])
                     ->persistTabInQueryString()
@@ -206,26 +208,26 @@ class ManageGeneral extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.systems");
+        return __('menu.nav_group.systems');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __("page.general_settings.navigationLabel");
+        return __('page.general_settings.navigationLabel');
     }
 
     public function getTitle(): string|Htmlable
     {
-        return __("page.general_settings.title");
+        return __('page.general_settings.title');
     }
 
     public function getHeading(): string|Htmlable
     {
-        return __("page.general_settings.heading");
+        return __('page.general_settings.heading');
     }
 
     public function getSubheading(): string|Htmlable|null
     {
-        return __("page.general_settings.subheading");
+        return __('page.general_settings.subheading');
     }
 }

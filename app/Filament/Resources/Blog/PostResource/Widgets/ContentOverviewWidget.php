@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Blog\PostResource\Widgets;
 
 use App\Models\Blog\Post;
+use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
-use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,7 +28,7 @@ class ContentOverviewWidget extends ChartWidget
         if ($user && $user->hasRole('author')) {
             $postQuery->where(function ($q) use ($user) {
                 $q->where('blog_author_id', $user->id)
-                  ->orWhere('created_by', $user->id);
+                    ->orWhere('created_by', $user->id);
             });
         }
         // Generate data for the last 30 days
@@ -45,16 +45,18 @@ class ContentOverviewWidget extends ChartWidget
             ->where('updated_at', '>=', now()->subDays(30))
             ->groupBy('date')
             ->get()
-            ->mapWithKeys(fn($item) => [
-                Carbon::parse($item->date)->format('Y-m-d') => $item->total
+            ->mapWithKeys(fn ($item) => [
+                Carbon::parse($item->date)->format('Y-m-d') => $item->total,
             ]);
         // Combine the data sets
-        $labels = $data->map(fn($value) => Carbon::parse($value->date)->format('M d'));
-        $postCounts = $data->map(fn($value) => $value->aggregate);
+        $labels = $data->map(fn ($value) => Carbon::parse($value->date)->format('M d'));
+        $postCounts = $data->map(fn ($value) => $value->aggregate);
         $viewCounts = $data->map(function ($value) use ($viewData) {
             $date = Carbon::parse($value->date)->format('Y-m-d');
+
             return $viewData[$date] ?? 0;
         });
+
         return [
             'datasets' => [
                 [
@@ -65,7 +67,7 @@ class ContentOverviewWidget extends ChartWidget
                 ],
                 [
                     'label' => 'Views (÷10)',
-                    'data' => $viewCounts->map(fn($count) => round($count / 10)),
+                    'data' => $viewCounts->map(fn ($count) => round($count / 10)),
                     'backgroundColor' => 'rgba(16, 185, 129, 0.5)',
                     'borderColor' => 'rgb(16, 185, 129)',
                 ],
@@ -131,8 +133,8 @@ class ContentOverviewWidget extends ChartWidget
             ->perDay()
             ->count();
 
-        $labels = $data->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('M d'));
-        $postCounts = $data->map(fn(TrendValue $value) => $value->aggregate);
+        $labels = $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M d'));
+        $postCounts = $data->map(fn (TrendValue $value) => $value->aggregate);
 
         return [
             'datasets' => [

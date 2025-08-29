@@ -7,20 +7,25 @@ use App\Filament\Resources\ActividadResource\RelationManagers\ComentarioRelation
 use App\Models\Actividad;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ActividadResource extends Resource
 {
     protected static ?string $model = Actividad::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
+
     protected static ?string $pluralLabel = 'Actividades';
-    protected static ?string $label = 'Actividad'; //para el singular
+
+    protected static ?string $label = 'Actividad'; // para el singular
+
     protected static ?string $navigationLabel = 'Actividades';
+
     protected static ?string $slug = 'actividades';
 
     public static function form(Form $form): Form
@@ -233,7 +238,7 @@ class ActividadResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-bell')
                     ->falseIcon('heroicon-o-bell-slash')
-                    ->state(fn ($record) => !is_null($record->reminder_at)),
+                    ->state(fn ($record) => ! is_null($record->reminder_at)),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('estado')
@@ -256,9 +261,10 @@ class ActividadResource extends Resource
                         titleAttribute: 'firstname',
                         modifyQueryUsing: function (Builder $query) {
                             $user = auth()->user();
-                            if (!$user->hasRole(['Administrador', 'GOL'])) {
+                            if (! $user->hasRole(['Administrador', 'GOL'])) {
                                 $query->where('departamental_id', $user->departamental_id);
                             }
+
                             return $query;
                         }
                     )
@@ -303,7 +309,7 @@ class ActividadResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->visible(fn (Model $record) => auth()->user()->can('update_actividad'))
                     ->before(function (Model $record, Tables\Actions\EditAction $action) {
-                        if (!auth()->user()->can('update_actividad')) {
+                        if (! auth()->user()->can('update_actividad')) {
                             Notification::make()
                                 ->title('Permiso Denegado')
                                 ->body('No tienes permiso para editar esta actividad.')
@@ -315,7 +321,7 @@ class ActividadResource extends Resource
                 Tables\Actions\DeleteAction::make()
                     ->visible(fn (Model $record) => auth()->user()->can('delete_actividad'))
                     ->before(function (Model $record, Tables\Actions\DeleteAction $action) {
-                        if (!auth()->user()->can('delete_actividad')) {
+                        if (! auth()->user()->can('delete_actividad')) {
                             Notification::make()
                                 ->title('Permiso Denegado')
                                 ->body('No tienes permiso para eliminar esta actividad.')
@@ -324,7 +330,7 @@ class ActividadResource extends Resource
                             $action->halt();
                         }
                     }),
-                    Tables\Actions\Action::make('mark_as_completed')
+                Tables\Actions\Action::make('mark_as_completed')
                     ->label('Marcar como Completada')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
@@ -339,7 +345,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->default(fn ($record) => $record->asistentes_hombres ?? 0),
-                
+
                         Forms\Components\TextInput::make('asistentes_mujeres')
                             ->label('Asistentes Mujeres')
                             ->numeric()
@@ -349,7 +355,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->default(fn ($record) => $record->asistentes_mujeres ?? 0),
-                
+
                         Forms\Components\TextInput::make('asistencia_completa')
                             ->label('Asistencia Completa')
                             ->numeric()
@@ -363,7 +369,7 @@ class ActividadResource extends Resource
                             'asistentes_mujeres' => $data['asistentes_mujeres'],
                             'asistencia_completa' => $data['asistentes_hombres'] + $data['asistentes_mujeres'],
                         ]);
-                
+
                         Notification::make()
                             ->title('Actividad marcada como completada')
                             ->body('La actividad ha sido actualizada con éxito.')
@@ -374,9 +380,7 @@ class ActividadResource extends Resource
                     ->modalDescription('Ingresa los datos de asistencia para marcar la actividad como completada.')
                     ->modalSubmitActionLabel('Confirmar')
                     ->modalWidth('lg'),
-                
 
-                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -589,14 +593,14 @@ class ActividadResource extends Resource
                     ->label('Crear con Asistente')
                     ->icon('heroicon-o-sparkles')
                     ->color('primary')
-                    ->url(fn () => auth()->user()->can('create_actividad') 
-                        ? static::getUrl('create') 
+                    ->url(fn () => auth()->user()->can('create_actividad')
+                        ? static::getUrl('create')
                         : back()->with([
                             Notification::make()
                                 ->title('Permiso denegado')
                                 ->body('No puedes acceder al wizard de creación.')
                                 ->danger()
-                                ->send()
+                                ->send(),
                         ])
                     ),
             ])

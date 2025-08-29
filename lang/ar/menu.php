@@ -9,5 +9,5 @@ return [
     'nav_group.sites' => 'المواقع',
     'nav_group.settings' => 'إعدادات',
     'nav_group.systems' => 'الأنظمة',
-    'nav_group.item.log_viewer' => 'عارض السجل'
-    ];
+    'nav_group.item.log_viewer' => 'عارض السجل',
+];

@@ -17,9 +17,11 @@ use function Filament\Support\is_app_url;
 class ManageSiteScript extends SettingsPage
 {
     use HasPageShield;
+
     protected static string $settings = SiteScriptSettings::class;
 
     protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationIcon = 'heroicon-o-code-bracket-square';
 
     /**
@@ -168,7 +170,7 @@ class ManageSiteScript extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.sites");
+        return __('menu.nav_group.sites');
     }
 
     public static function getNavigationLabel(): string

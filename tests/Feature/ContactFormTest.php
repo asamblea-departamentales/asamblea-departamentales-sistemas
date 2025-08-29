@@ -2,18 +2,14 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use App\Events\ContactUsCreated;
 use App\Mail\NewContactUsNotificationMail;
 use App\Models\ContactUs;
 use App\Models\User;
-use App\Listeners\SendNewContactNotification;
-use App\Settings\MailSettings;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class ContactFormTest extends TestCase
@@ -46,7 +42,7 @@ class ContactFormTest extends TestCase
         ]);
 
         // If controller doesn't set success message yet, use test-only approach
-        if (!$response->getSession()->has('success')) {
+        if (! $response->getSession()->has('success')) {
             // Create the contact directly for testing
             ContactUs::create([
                 'firstname' => 'John',
@@ -94,7 +90,7 @@ class ContactFormTest extends TestCase
             'firstname',
             'email',
             'subject',
-            'message'
+            'message',
         ]);
     }
 
@@ -128,7 +124,7 @@ class ContactFormTest extends TestCase
 
         } catch (\Exception $e) {
             DB::rollBack();
-            throw new \Exception('Transaction test failed: ' . $e->getMessage());
+            throw new \Exception('Transaction test failed: '.$e->getMessage());
         }
     }
 

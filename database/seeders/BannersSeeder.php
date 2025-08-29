@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use Symfony\Component\Uid\Ulid;
 
@@ -18,7 +18,7 @@ class BannersSeeder extends Seeder
         $parentCategoryIds = [];
         for ($i = 0; $i < 5; $i++) {
             $name = $faker->words(3, true);
-            $id = (string) new Ulid();
+            $id = (string) new Ulid;
             $parentCategoryIds[] = $id;
 
             DB::table('banner_categories')->insert([
@@ -32,7 +32,7 @@ class BannersSeeder extends Seeder
                 'locale' => $faker->randomElement(['en', 'id', 'zh', 'ja']),
                 'options' => json_encode(['position' => $faker->randomElement(['top', 'side', 'bottom'])]),
                 'created_at' => $faker->dateTimeThisYear(),
-                'updated_at' => $faker->dateTimeThisYear()
+                'updated_at' => $faker->dateTimeThisYear(),
             ]);
         }
 
@@ -40,7 +40,7 @@ class BannersSeeder extends Seeder
         $allCategoryIds = $parentCategoryIds;
         for ($i = 0; $i < 5; $i++) {
             $name = $faker->words(3, true);
-            $id = (string) new Ulid();
+            $id = (string) new Ulid;
             $allCategoryIds[] = $id;
 
             DB::table('banner_categories')->insert([
@@ -55,7 +55,7 @@ class BannersSeeder extends Seeder
                 'locale' => $faker->randomElement(['en', 'id', 'zh', 'ja']),
                 'options' => json_encode(['position' => $faker->randomElement(['top', 'side', 'bottom'])]),
                 'created_at' => $faker->dateTimeThisYear(),
-                'updated_at' => $faker->dateTimeThisYear()
+                'updated_at' => $faker->dateTimeThisYear(),
             ]);
         }
 
@@ -65,7 +65,7 @@ class BannersSeeder extends Seeder
             $endDate = $faker->dateTimeBetween($startDate, '+3 months');
 
             DB::table('banner_contents')->insert([
-                'id' => (string) new Ulid(),
+                'id' => (string) new Ulid,
                 'banner_category_id' => $faker->randomElement($allCategoryIds),
                 'sort' => $i,
                 'title' => $faker->sentence,
@@ -80,7 +80,7 @@ class BannersSeeder extends Seeder
                 'options' => json_encode([
                     'display_type' => $faker->randomElement(['slide', 'static', 'popup']),
                     'transition' => $faker->randomElement(['fade', 'slide', 'none']),
-                    'priority' => $faker->numberBetween(1, 10)
+                    'priority' => $faker->numberBetween(1, 10),
                 ]),
                 'impression_count' => $faker->numberBetween(100, 10000),
                 'click_count' => $faker->numberBetween(10, 1000),

@@ -1,14 +1,15 @@
 <?php
+
 // app/Filament/Pages/Auth/Login.php
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Component;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\Login as BaseLogin;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class Login extends BaseLogin
 {

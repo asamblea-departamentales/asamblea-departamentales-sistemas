@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use App\Events\ContactUsCreated;
+use Exception;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Exception;
 
 class ContactUs extends Model
 {
@@ -76,8 +75,6 @@ class ContactUs extends Model
 
     /**
      * Get the full name.
-     *
-     * @return string
      */
     public function getNameAttribute(): string
     {
@@ -87,8 +84,7 @@ class ContactUs extends Model
     /**
      * Scope a query to search for text in multiple columns.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $searchTerm
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeSearch($query, string $searchTerm)
@@ -109,7 +105,7 @@ class ContactUs extends Model
                 $hasFulltextIndex = false;
                 $indexes = DB::select("SHOW INDEX FROM {$this->table} WHERE Index_type = 'FULLTEXT'");
 
-                if (!empty($indexes)) {
+                if (! empty($indexes)) {
                     $hasFulltextIndex = true;
                 }
 
@@ -143,19 +139,19 @@ class ContactUs extends Model
     /**
      * Fallback search using LIKE for when fulltext isn't available.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $searchTerm
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     private function searchWithLike($query, string $searchTerm)
     {
-        $searchTerm = '%' . $searchTerm . '%';
-        return $query->where(function($q) use ($searchTerm) {
+        $searchTerm = '%'.$searchTerm.'%';
+
+        return $query->where(function ($q) use ($searchTerm) {
             $q->where('firstname', 'LIKE', $searchTerm)
-              ->orWhere('lastname', 'LIKE', $searchTerm)
-              ->orWhere('email', 'LIKE', $searchTerm)
-              ->orWhere('subject', 'LIKE', $searchTerm)
-              ->orWhere('message', 'LIKE', $searchTerm);
+                ->orWhere('lastname', 'LIKE', $searchTerm)
+                ->orWhere('email', 'LIKE', $searchTerm)
+                ->orWhere('subject', 'LIKE', $searchTerm)
+                ->orWhere('message', 'LIKE', $searchTerm);
         });
     }
 
@@ -176,9 +172,6 @@ class ContactUs extends Model
     /**
      * Add a reply to the contact request.
      *
-     * @param string $subject
-     * @param string $message
-     * @param User|null $user
      * @return $this
      */
     public function addReply(string $subject, string $message, ?User $user = null)
@@ -188,7 +181,7 @@ class ContactUs extends Model
             'reply_message' => $message,
             'replied_at' => now(),
             'replied_by_user_id' => $user?->id,
-            'status' => 'responded'
+            'status' => 'responded',
         ]);
 
         return $this;

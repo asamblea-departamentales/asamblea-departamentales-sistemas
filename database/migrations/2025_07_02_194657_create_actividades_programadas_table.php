@@ -16,15 +16,15 @@ return new class extends Migration
             $table->foreignId('usuario_id')
                 ->constrained('usuarios_')
                 ->onDelete('cascade'); // Todo eso hace referencia al usuario que programa
-            $table->date('fecha'); //Fecha de la actividad programada
-            $table->string('dia', 20); //Día de la actividad programada
-            $table->string('mes',20); //Mes de la actividad programada
-            $table->string('programa'); //Programa de la actividad programada
-            $table->text('macroactividad'); //Macroactividad de la actividad programada
-            $table->text('actividad'); //Actividad de la actividad programada
-            $table->time('hora'); //Hora de la actividad programada
-            $table->string('departamental'); //Departamento de la actividad programada
-            $table->string('lugar'); //Lugar de la actividad programada
+            $table->date('fecha'); // Fecha de la actividad programada
+            $table->string('dia', 20); // Día de la actividad programada
+            $table->string('mes', 20); // Mes de la actividad programada
+            $table->string('programa'); // Programa de la actividad programada
+            $table->text('macroactividad'); // Macroactividad de la actividad programada
+            $table->text('actividad'); // Actividad de la actividad programada
+            $table->time('hora'); // Hora de la actividad programada
+            $table->string('departamental'); // Departamento de la actividad programada
+            $table->string('lugar'); // Lugar de la actividad programada
             $table->timestamps();
         });
     }

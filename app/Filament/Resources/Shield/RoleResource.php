@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Shield;
 
+use App\Filament\Resources\Shield\RoleResource\Pages;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BezhanSalleh\FilamentShield\Forms\ShieldSelectAllToggle;
-use App\Filament\Resources\Shield\RoleResource\Pages;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
@@ -14,15 +14,15 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Builder;
 
 class RoleResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static $permissionsCollection;
 
     public static function getPermissionPrefixes(): array
@@ -39,17 +39,15 @@ class RoleResource extends Resource implements HasShieldPermissions
 
     public static function getEloquentQuery(): Builder
     {
-        
-    $query = parent::getEloquentQuery()->withoutGlobalScopes();
 
-    \Log::info('Role Query SQL: ' . $query->toSql());
-    \Log::info('Role Query Bindings: ' . implode(', ', $query->getBindings()));
+        $query = parent::getEloquentQuery()->withoutGlobalScopes();
 
-    return $query;
+        \Log::info('Role Query SQL: '.$query->toSql());
+        \Log::info('Role Query Bindings: '.implode(', ', $query->getBindings()));
 
+        return $query;
 
     }
-    
 
     public static function form(Form $form): Form
     {
@@ -177,7 +175,7 @@ class RoleResource extends Resource implements HasShieldPermissions
     public static function getNavigationGroup(): ?string
     {
         return Utils::isResourceNavigationGroupEnabled()
-            ? __("menu.nav_group.access")
+            ? __('menu.nav_group.access')
             : '';
     }
 
@@ -230,7 +228,7 @@ class RoleResource extends Resource implements HasShieldPermissions
                 );
 
                 return Forms\Components\Section::make($sectionLabel)
-                    ->description(fn () => new HtmlString('<span style="word-break: break-word;">' . Utils::showModelPath($entity['fqcn']) . '</span>'))
+                    ->description(fn () => new HtmlString('<span style="word-break: break-word;">'.Utils::showModelPath($entity['fqcn']).'</span>'))
                     ->compact()
                     ->schema([
                         static::getCheckBoxListComponentForResource($entity),
@@ -252,7 +250,7 @@ class RoleResource extends Resource implements HasShieldPermissions
     {
         return collect(Utils::getResourcePermissionPrefixes($entity['fqcn']))
             ->flatMap(function ($permission) use ($entity) {
-                $name = $permission . '_' . $entity['resource'];
+                $name = $permission.'_'.$entity['resource'];
                 $label = static::shield()->hasLocalizedPermissionLabels()
                     ? FilamentShield::getLocalizedResourcePermissionLabel($permission)
                     : $name;

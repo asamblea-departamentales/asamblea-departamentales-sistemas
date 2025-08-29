@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\ContactUs;
 use App\Models\User;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class ContactUsSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class ContactUsSeeder extends Seeder
             '51-200',
             '201-500',
             '501-1000',
-            '1000+'
+            '1000+',
         ];
 
         // Define possible values for status with weighted distribution
@@ -32,7 +32,7 @@ class ContactUsSeeder extends Seeder
             'read' => 20,        // 20% chance for read
             'pending' => 15,      // 15% chance for pending
             'responded' => 25,    // 25% chance for responded
-            'closed' => 10        // 10% chance for closed
+            'closed' => 10,        // 10% chance for closed
         ];
 
         // Create weighted random status function
@@ -47,6 +47,7 @@ class ContactUsSeeder extends Seeder
                     return $status;
                 }
             }
+
             return 'new'; // fallback
         };
 
@@ -70,7 +71,7 @@ class ContactUsSeeder extends Seeder
         $dateDistribution = [
             'recent' => ['days' => [-7, 0], 'weight' => 40],         // 40% from last week
             'medium' => ['days' => [-30, -7], 'weight' => 35],       // 35% from previous month
-            'older' => ['days' => [-90, -30], 'weight' => 25]        // 25% from 1-3 months ago
+            'older' => ['days' => [-90, -30], 'weight' => 25],        // 25% from 1-3 months ago
         ];
 
         $getRandomDate = function () use ($dateDistribution, $faker) {
@@ -81,9 +82,10 @@ class ContactUsSeeder extends Seeder
             foreach ($dateDistribution as $period) {
                 $runningTotal += $period['weight'];
                 if ($rand <= $runningTotal) {
-                    return $faker->dateTimeBetween($period['days'][0] . ' days', $period['days'][1] . ' days');
+                    return $faker->dateTimeBetween($period['days'][0].' days', $period['days'][1].' days');
                 }
             }
+
             return now(); // fallback
         };
 
@@ -92,14 +94,14 @@ class ContactUsSeeder extends Seeder
             'website' => ['weight' => 50, 'utm_sources' => ['direct', 'organic', 'google', 'bing']],
             'social' => ['weight' => 25, 'utm_sources' => ['facebook', 'twitter', 'linkedin', 'instagram']],
             'email' => ['weight' => 15, 'utm_sources' => ['newsletter', 'drip_campaign', 'promotional']],
-            'referral' => ['weight' => 10, 'utm_sources' => ['partner', 'affiliate', 'customer']]
+            'referral' => ['weight' => 10, 'utm_sources' => ['partner', 'affiliate', 'customer']],
         ];
 
         $campaignOptions = [
             'spring_promo_2025' => ['start' => '-60 days', 'end' => '-30 days', 'weight' => 20],
             'website_relaunch' => ['start' => '-90 days', 'end' => '-60 days', 'weight' => 15],
             'product_launch' => ['start' => '-30 days', 'end' => 'now', 'weight' => 40],
-            'industry_event' => ['start' => '-14 days', 'end' => 'now', 'weight' => 25]
+            'industry_event' => ['start' => '-14 days', 'end' => 'now', 'weight' => 25],
         ];
 
         // Common inquiries for more realistic subjects and messages
@@ -108,43 +110,43 @@ class ContactUsSeeder extends Seeder
                 'subjects' => [
                     'General inquiry about your services',
                     'Question about your company',
-                    'Looking for more information'
+                    'Looking for more information',
                 ],
                 'templates' => [
                     "I came across your website and I'm interested in learning more about what you offer. Could you please provide additional information about your services?\n\nThank you,\n{name}",
                     "Hello,\n\nI'd like to know more about your company and what you specialize in. Do you have any brochures or additional resources you could share?\n\nBest regards,\n{name}",
-                    "Hi there,\n\nI'm researching options for {topic} and would appreciate any information you can provide about your offerings in this area.\n\nThanks,\n{name}"
+                    "Hi there,\n\nI'm researching options for {topic} and would appreciate any information you can provide about your offerings in this area.\n\nThanks,\n{name}",
                 ],
-                'topics' => ['your products', 'your services', 'your solutions', 'your company']
+                'topics' => ['your products', 'your services', 'your solutions', 'your company'],
             ],
             'support' => [
                 'subjects' => [
                     'Support needed for your product',
                     'Having trouble with my account',
-                    'Technical issue with your service'
+                    'Technical issue with your service',
                 ],
                 'templates' => [
                     "I'm experiencing an issue with {problem}. I've tried {solution} but it's still not working. Can someone from your technical team help me resolve this?\n\nThank you,\n{name}",
                     "Hello Support Team,\n\nI need assistance with my account. I'm unable to {problem} and it's preventing me from using your service effectively.\n\nRegards,\n{name}",
-                    "Hi,\n\nI've been having trouble with {problem} for the past few days. This is urgent as it's affecting my workflow. Please advise on next steps.\n\nBest,\n{name}"
+                    "Hi,\n\nI've been having trouble with {problem} for the past few days. This is urgent as it's affecting my workflow. Please advise on next steps.\n\nBest,\n{name}",
                 ],
-                'problems' => ['logging in', 'accessing my data', 'using a specific feature', 'connecting to the service']
+                'problems' => ['logging in', 'accessing my data', 'using a specific feature', 'connecting to the service'],
             ],
             'sales' => [
                 'subjects' => [
                     'Interested in purchasing your product',
                     'Request for pricing information',
-                    'Looking for a custom quote'
+                    'Looking for a custom quote',
                 ],
                 'templates' => [
                     "I'm interested in your {product} for my business. Could you please provide pricing details and information about different plans or packages?\n\nThanks,\n{name}",
                     "Hello Sales Team,\n\nOur company is considering implementing your solution. We have approximately {count} employees and would need {features}. Could you provide a custom quote?\n\nBest regards,\n{name}",
-                    "Hi,\n\nI'd like to schedule a demo of your product for my team. We're especially interested in {features}. What are your available times in the next week?\n\nRegards,\n{name}"
+                    "Hi,\n\nI'd like to schedule a demo of your product for my team. We're especially interested in {features}. What are your available times in the next week?\n\nRegards,\n{name}",
                 ],
                 'products' => ['your software', 'your platform', 'your solution', 'your service'],
                 'features' => ['advanced reporting', 'user management', 'API access', 'custom integrations'],
-                'counts' => ['25', '50', '100', '250', '500', '1000+']
-            ]
+                'counts' => ['25', '50', '100', '250', '500', '1000+'],
+            ],
         ];
 
         // Function to get realistic subject and message
@@ -159,7 +161,7 @@ class ContactUsSeeder extends Seeder
 
             // Replace placeholders
             $message = $messageTemplate;
-            $message = str_replace('{name}', $faker->firstName . ' ' . $faker->lastName, $message);
+            $message = str_replace('{name}', $faker->firstName.' '.$faker->lastName, $message);
 
             // Handle type-specific replacements
             switch ($type) {
@@ -179,7 +181,7 @@ class ContactUsSeeder extends Seeder
 
             return [
                 'subject' => $subject,
-                'message' => $message
+                'message' => $message,
             ];
         };
 
@@ -232,7 +234,7 @@ class ContactUsSeeder extends Seeder
                 $deviceInfo = [
                     'type' => $faker->randomElement(['desktop', 'mobile', 'tablet']),
                     'os' => $faker->randomElement(['Windows', 'MacOS', 'iOS', 'Android', 'Linux']),
-                    'browser' => $faker->randomElement(['Chrome', 'Firefox', 'Safari', 'Edge'])
+                    'browser' => $faker->randomElement(['Chrome', 'Firefox', 'Safari', 'Edge']),
                 ];
             }
 
@@ -290,7 +292,7 @@ class ContactUsSeeder extends Seeder
                 }
 
                 $contactUs->update([
-                    'reply_subject' => 'RE: ' . $subject,
+                    'reply_subject' => 'RE: '.$subject,
                     'reply_message' => $replyMessage,
                     'replied_at' => $repliedAt,
                     'replied_by_user_id' => $repliedBy->id,

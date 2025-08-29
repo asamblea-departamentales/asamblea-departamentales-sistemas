@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Blog\PostResource\Pages;
 
 use App\Filament\Resources\Blog\PostResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePost extends CreateRecord
@@ -17,7 +16,7 @@ class CreatePost extends CreateRecord
             foreach ($users as $user) {
                 \Filament\Notifications\Notification::make()
                     ->title('Post submitted for approval')
-                    ->body('The post "' . $this->record->title . '" has been submitted for approval.')
+                    ->body('The post "'.$this->record->title.'" has been submitted for approval.')
                     ->info()
                     ->sendToDatabase($user);
             }

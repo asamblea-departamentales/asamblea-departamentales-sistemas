@@ -73,7 +73,7 @@ class Category extends Model
         });
 
         static::updating(function ($category) {
-            if ($category->isDirty('name') && !$category->isDirty('slug')) {
+            if ($category->isDirty('name') && ! $category->isDirty('slug')) {
                 $category->slug = Str::slug($category->name);
             }
         });
@@ -158,7 +158,7 @@ class Category extends Model
         $ancestors = collect();
 
         $parent = $this->parent;
-        while (!is_null($parent)) {
+        while (! is_null($parent)) {
             $ancestors->push($parent);
             $parent = $parent->parent;
         }

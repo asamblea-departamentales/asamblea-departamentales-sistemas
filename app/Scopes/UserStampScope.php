@@ -15,10 +15,6 @@ class UserStampScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return void
      */
     public function apply(Builder $builder, Model $model): void
     {
@@ -30,16 +26,13 @@ class UserStampScope implements Scope
 
     /**
      * Extend the query builder with custom macros
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @return void
      */
     public function extend(Builder $builder): void
     {
         // Add updateWithUserstamps macro
         $builder->macro('updateWithUserstamps', function (Builder $builder, $values) {
             try {
-                if (!$builder->getModel()->isUserstamping()) {
+                if (! $builder->getModel()->isUserstamping()) {
                     return $builder->update($values);
                 }
 
@@ -56,11 +49,11 @@ class UserStampScope implements Scope
                 }
 
                 // Only set user ID if it's valid
-                if (UserStamp::isValidUserId($userId) && !is_null($builder->getModel()->getUpdatedByColumn())) {
+                if (UserStamp::isValidUserId($userId) && ! is_null($builder->getModel()->getUpdatedByColumn())) {
                     $values[$builder->getModel()->getUpdatedByColumn()] = $userId;
 
                     // Set team ID if team stamping is enabled
-                    if ($builder->getModel()->isTeamStamping() && !is_null($builder->getModel()->getUpdatedByTeamColumn())) {
+                    if ($builder->getModel()->isTeamStamping() && ! is_null($builder->getModel()->getUpdatedByTeamColumn())) {
                         $values[$builder->getModel()->getUpdatedByTeamColumn()] = UserStamp::getTeamId();
                     }
                 }
@@ -68,7 +61,7 @@ class UserStampScope implements Scope
                 return $builder->update($values);
             } catch (\Exception $e) {
                 if (config('userstamp.log_stamping_errors', true)) {
-                    Log::error('Error during updateWithUserstamps: ' . $e->getMessage());
+                    Log::error('Error during updateWithUserstamps: '.$e->getMessage());
                 }
 
                 // Fallback to standard update
@@ -79,7 +72,7 @@ class UserStampScope implements Scope
         // Add deleteWithUserstamps macro
         $builder->macro('deleteWithUserstamps', function (Builder $builder) {
             try {
-                if (!$builder->getModel()->isUserstamping()) {
+                if (! $builder->getModel()->isUserstamping()) {
                     return $builder->delete();
                 }
 
@@ -96,13 +89,13 @@ class UserStampScope implements Scope
                 }
 
                 // Only update deleted_by if user ID is valid and column exists
-                if (UserStamp::isValidUserId($userId) && !is_null($builder->getModel()->getDeletedByColumn())) {
+                if (UserStamp::isValidUserId($userId) && ! is_null($builder->getModel()->getDeletedByColumn())) {
                     $values = [
                         $builder->getModel()->getDeletedByColumn() => $userId,
                     ];
 
                     // Set team ID if team stamping is enabled
-                    if ($builder->getModel()->isTeamStamping() && !is_null($builder->getModel()->getDeletedByTeamColumn())) {
+                    if ($builder->getModel()->isTeamStamping() && ! is_null($builder->getModel()->getDeletedByTeamColumn())) {
                         $values[$builder->getModel()->getDeletedByTeamColumn()] = UserStamp::getTeamId();
                     }
 
@@ -112,7 +105,7 @@ class UserStampScope implements Scope
                 return $builder->delete();
             } catch (\Exception $e) {
                 if (config('userstamp.log_stamping_errors', true)) {
-                    Log::error('Error during deleteWithUserstamps: ' . $e->getMessage());
+                    Log::error('Error during deleteWithUserstamps: '.$e->getMessage());
                 }
 
                 // Fallback to standard delete

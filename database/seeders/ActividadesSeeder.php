@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class ActividadesSeeder extends Seeder
 {
@@ -39,8 +39,8 @@ class ActividadesSeeder extends Seeder
                     'due_date' => Carbon::now()->addDays(rand(11, 20)),
                     'reminder_at' => Carbon::now()->addDays(rand(1, 5)),
                     'atestados' => json_encode([
-                        'evidencia' => 'foto_' . Str::random(5) . '.jpg',
-                        'informe' => 'informe_' . Str::random(5) . '.pdf'
+                        'evidencia' => 'foto_'.Str::random(5).'.jpg',
+                        'informe' => 'informe_'.Str::random(5).'.pdf',
                     ]),
                     'created_at' => now(),
                     'updated_at' => now(),

@@ -2,8 +2,8 @@
 
 namespace App\Policies\Banner;
 
-use App\Models\User;
 use App\Models\Banner\Content;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ContentPolicy

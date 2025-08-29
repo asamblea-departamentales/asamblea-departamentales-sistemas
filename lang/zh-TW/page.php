@@ -68,5 +68,5 @@ return [
         'actions' => [
             'send_test_mail' => '發送測試郵件',
         ],
-    ]
-    ];
+    ],
+];

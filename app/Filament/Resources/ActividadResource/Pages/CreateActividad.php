@@ -1,25 +1,28 @@
 <?php
+
 // Declaración del namespace para la página de creación de actividades
+
 namespace App\Filament\Resources\ActividadResource\Pages;
 
 // Importación del recurso ActividadResource
 use App\Filament\Resources\ActividadResource;
 // Importación de la clase base para páginas de creación de registros
-use Filament\Resources\Pages\CreateRecord;
-// Importación de acciones de Filament
 use Filament\Actions;
-// Importación de componentes de formularios
+// Importación de acciones de Filament
 use Filament\Forms;
-// Importación de la clase Form
+// Importación de componentes de formularios
 use Filament\Forms\Form;
-// Importación del sistema de notificaciones
+// Importación de la clase Form
 use Filament\Notifications\Notification;
+// Importación del sistema de notificaciones
+use Filament\Resources\Pages\CreateRecord;
 
 // Declaración de la clase CreateActividad que extiende de CreateRecord
 class CreateActividad extends CreateRecord
 {
     // Propiedad protegida que asocia esta página con el recurso ActividadResource
     protected static string $resource = ActividadResource::class;
+
     // Propiedad que desactiva la opción de "crear otro" después de crear un registro
     protected static bool $canCreateAnother = false;
 
@@ -58,7 +61,7 @@ class CreateActividad extends CreateRecord
                                 ->disabled(),
                             // Campo oculto para la departamental (se asigna automáticamente)
                             Forms\Components\Hidden::make('departamental_id')
-                            ->default(fn () => auth()->user()->departamental_id),
+                                ->default(fn () => auth()->user()->departamental_id),
 
                             // Campo para seleccionar la fecha de la actividad
                             Forms\Components\DatePicker::make('fecha')
@@ -73,13 +76,13 @@ class CreateActividad extends CreateRecord
                                 // Formato de visualización
                                 ->displayFormat('d/m/Y'),
                             // Campo de texto para la oficina departamental
-                        Forms\Components\TextInput::make('departamental_display')
-                        // Etiqueta del campo
-                        ->label('Oficina Departamental')
-                        // Campo solo lectura
-                        ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
-                        ->disabled()
-                        ->dehydrated(false), // No se guarda en la base de datos
+                            Forms\Components\TextInput::make('departamental_display')
+                            // Etiqueta del campo
+                                ->label('Oficina Departamental')
+                            // Campo solo lectura
+                                ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
+                                ->disabled()
+                                ->dehydrated(false), // No se guarda en la base de datos
                             // Campo de texto para el programa
                             Forms\Components\TextInput::make('programa')
                                 // Etiqueta del campo
@@ -108,31 +111,31 @@ class CreateActividad extends CreateRecord
                         ])
                         // Este paso tendrá 2 columnas
                         ->columns(2),
-                  // Segundo paso del wizard: Detalles de la Actividad
-Forms\Components\Wizard\Step::make('Detalles de la Actividad')
-// Descripción del paso
-->description('Descripción detallada de la macroactividad')
-// Ícono del paso
-->icon('heroicon-o-document-text')
-// Esquema de campos para este paso
-->schema([
-    // Campo de área de texto para la macroactividad
-    Forms\Components\Textarea::make('macroactividad')
-        ->label('Macroactividad')
-        ->required()
-        ->rows(4)
-        ->columnSpanFull()
-        ->placeholder('Describe detalladamente la actividad a realizar...')
-        ->helperText('Proporciona una descripción completa de la actividad, objetivos y alcance.'),
+                    // Segundo paso del wizard: Detalles de la Actividad
+                    Forms\Components\Wizard\Step::make('Detalles de la Actividad')
+                    // Descripción del paso
+                        ->description('Descripción detallada de la macroactividad')
+                    // Ícono del paso
+                        ->icon('heroicon-o-document-text')
+                    // Esquema de campos para este paso
+                        ->schema([
+                            // Campo de área de texto para la macroactividad
+                            Forms\Components\Textarea::make('macroactividad')
+                                ->label('Macroactividad')
+                                ->required()
+                                ->rows(4)
+                                ->columnSpanFull()
+                                ->placeholder('Describe detalladamente la actividad a realizar...')
+                                ->helperText('Proporciona una descripción completa de la actividad, objetivos y alcance.'),
 
-    // Campo de texto para el lugar de la actividad
-    Forms\Components\TextInput::make('lugar')
-        ->label('Lugar')
-        ->required()
-        ->placeholder('Ingresa el lugar donde se realizará la actividad')
-        ->helperText('Indica el lugar físico o virtual de la actividad.')
-        ->columnSpanFull(),
-]),
+                            // Campo de texto para el lugar de la actividad
+                            Forms\Components\TextInput::make('lugar')
+                                ->label('Lugar')
+                                ->required()
+                                ->placeholder('Ingresa el lugar donde se realizará la actividad')
+                                ->helperText('Indica el lugar físico o virtual de la actividad.')
+                                ->columnSpanFull(),
+                        ]),
 
                     // Tercer paso del wizard: Programación y Fechas
                     Forms\Components\Wizard\Step::make('Programación y Fechas')
@@ -244,24 +247,24 @@ Forms\Components\Wizard\Step::make('Detalles de la Actividad')
                         ]),
                 ])
                 // Configuración del botón de submit del wizard
-                ->submitAction(
-                    // Crea una acción personalizada para el submit
-                    Forms\Components\Actions\Action::make('submit')
-                        // Etiqueta del botón
-                        ->label('Crear Actividad')
-                        // Color del botón
-                        ->color('primary')
-                        // Acción que ejecuta al hacer submit
-                        ->submit('create')
-                )
+                    ->submitAction(
+                        // Crea una acción personalizada para el submit
+                        Forms\Components\Actions\Action::make('submit')
+                            // Etiqueta del botón
+                            ->label('Crear Actividad')
+                            // Color del botón
+                            ->color('primary')
+                            // Acción que ejecuta al hacer submit
+                            ->submit('create')
+                    )
                 // Permite saltar pasos (opcional)
-                ->skippable()
+                    ->skippable()
                 // Mantiene el paso actual en la URL
-                ->persistStepInQueryString()
+                    ->persistStepInQueryString()
                 // Inicia en el paso 1
-                ->startOnStep(1)
+                    ->startOnStep(1)
                 // El wizard ocupa todo el ancho disponible
-                ->columnSpanFull(),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -281,6 +284,7 @@ Forms\Components\Wizard\Step::make('Detalles de la Actividad')
         }
         // Asigna el ID del usuario autenticado
         $data['user_id'] = auth()->id();
+
         // Retorna los datos modificados
         return $data;
     }
@@ -334,5 +338,5 @@ Forms\Components\Wizard\Step::make('Detalles de la Actividad')
                 ->icon('heroicon-o-x-mark'),
         ];
     }
-// Cierre de la clase CreateActividad
+    // Cierre de la clase CreateActividad
 }

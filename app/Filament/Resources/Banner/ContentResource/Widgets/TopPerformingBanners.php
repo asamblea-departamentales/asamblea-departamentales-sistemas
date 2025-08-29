@@ -3,13 +3,14 @@
 namespace App\Filament\Resources\Banner\ContentResource\Widgets;
 
 use App\Models\Banner\Content;
-use Filament\Widgets\TableWidget as BaseTableWidget;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Widgets\TableWidget as BaseTableWidget;
 
 class TopPerformingBanners extends BaseTableWidget
 {
     protected static ?int $sort = 3;
+
     protected static ?string $heading = 'Top Performing Banners';
 
     public function table(Table $table): Table
@@ -43,20 +44,18 @@ class TopPerformingBanners extends BaseTableWidget
                 Tables\Columns\TextColumn::make('ctr')
                     ->label('CTR')
                     ->formatStateUsing(
-                        fn(Content $record): string =>
-                        $record->impression_count > 0
-                        ? number_format(($record->click_count / $record->impression_count) * 100, 2) . '%'
+                        fn (Content $record): string => $record->impression_count > 0
+                        ? number_format(($record->click_count / $record->impression_count) * 100, 2).'%'
                         : '0.00%'
                     )
                     ->sortable(query: function ($query, $direction) {
-                        return $query->orderByRaw('click_count / impression_count ' . $direction);
+                        return $query->orderByRaw('click_count / impression_count '.$direction);
                     }),
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
                     ->url(
-                        fn(Content $record): string =>
-                        route('filament.admin.resources.banner.contents.edit', ['record' => $record->id])
+                        fn (Content $record): string => route('filament.admin.resources.banner.contents.edit', ['record' => $record->id])
                     )
                     ->icon('heroicon-m-pencil-square'),
             ]);

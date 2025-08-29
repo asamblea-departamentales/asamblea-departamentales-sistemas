@@ -10,5 +10,5 @@ return [
     'user.notifications.verify_warning' => [
         'title' => '无法发送电子邮件验证！',
         'description' => '请检查您的邮件配置或稍后再试。',
-    ]
-    ];
+    ],
+];

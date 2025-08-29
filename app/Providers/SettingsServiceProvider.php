@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
+use App\Settings\GeneralSettings;
+use App\Settings\SiteScriptSettings;
+use App\Settings\SiteSeoSettings;
+use App\Settings\SiteSettings;
+use App\Settings\SiteSocialSettings;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use App\Settings\GeneralSettings;
-use App\Settings\SiteSettings;
-use App\Settings\SiteSeoSettings;
-use App\Settings\SiteSocialSettings;
-use App\Settings\SiteScriptSettings;
 
 class SettingsServiceProvider extends ServiceProvider
 {

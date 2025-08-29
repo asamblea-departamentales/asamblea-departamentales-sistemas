@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles_acceso', function (Blueprint $table) {
-            $table->id(); //Llave primaria
-            $table->string('nombre', 100)->unique(); //Nombre del rol de acceso unico
-            $table->string('descripcion', 255)->nullable(); //Descripción del rol de acceso
+            $table->id(); // Llave primaria
+            $table->string('nombre', 100)->unique(); // Nombre del rol de acceso unico
+            $table->string('descripcion', 255)->nullable(); // Descripción del rol de acceso
             $table->timestamps(); // Timestamps para created_at y updated_at
         });
     }

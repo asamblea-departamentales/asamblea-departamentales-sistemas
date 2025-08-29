@@ -9,5 +9,5 @@ return [
     'nav_group.sites' => 'Sitios',
     'nav_group.settings' => 'Ajustes',
     'nav_group.systems' => 'Sistemas',
-    'nav_group.item.log_viewer' => 'Visor de registro'
-    ];
+    'nav_group.item.log_viewer' => 'Visor de registro',
+];

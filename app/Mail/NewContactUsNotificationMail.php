@@ -30,11 +30,11 @@ class NewContactUsNotificationMail extends Mailable
     public function build()
     {
         return $this->view('emails.contact.notification')
-                    ->subject('New Contact Form Submission')
-                    ->replyTo($this->contact->email, "{$this->contact->firstname} {$this->contact->lastname}")
-                    ->withSwiftMessage(function ($message) {
-                        $message->getHeaders()
-                                ->addTextHeader('X-Mailer', 'PHP/' . phpversion());
-                    });
+            ->subject('New Contact Form Submission')
+            ->replyTo($this->contact->email, "{$this->contact->firstname} {$this->contact->lastname}")
+            ->withSwiftMessage(function ($message) {
+                $message->getHeaders()
+                    ->addTextHeader('X-Mailer', 'PHP/'.phpversion());
+            });
     }
 }

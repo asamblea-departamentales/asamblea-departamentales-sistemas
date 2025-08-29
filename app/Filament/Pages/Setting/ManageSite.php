@@ -16,9 +16,11 @@ use function Filament\Support\is_app_url;
 class ManageSite extends SettingsPage
 {
     use HasPageShield;
+
     protected static string $settings = SiteSettings::class;
 
     protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
 
     /**
@@ -135,6 +137,7 @@ class ManageSite extends SettingsPage
                                     foreach (timezone_identifiers_list() as $timezone) {
                                         $timezones[$timezone] = $timezone;
                                     }
+
                                     return $timezones;
                                 })
                                 ->searchable()
@@ -223,7 +226,7 @@ class ManageSite extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.sites");
+        return __('menu.nav_group.sites');
     }
 
     public static function getNavigationLabel(): string

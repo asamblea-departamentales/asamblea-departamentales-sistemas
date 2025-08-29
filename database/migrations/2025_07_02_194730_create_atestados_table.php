@@ -17,7 +17,7 @@ return new class extends Migration
                 ->constrained('actividades_realizadas') // Hace referencia a la tabla actividades_realizadas
                 ->onDelete('cascade'); // Elimina el atestado si se elimina la actividad realizada
             $table->string('descripcion'); // Descripción del atestado
-            $table->string('archivo'); // Ruta del archivo del atestado (ej: PDF, imagen, etc.)    
+            $table->string('archivo'); // Ruta del archivo del atestado (ej: PDF, imagen, etc.)
             $table->timestamps();
         });
     }

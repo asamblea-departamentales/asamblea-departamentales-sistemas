@@ -13,14 +13,11 @@ class Creating
 {
     /**
      * Handle the creating event
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return void
      */
     public function handle(Model $model): void
     {
         // Skip if stamping is disabled or column doesn't exist
-        if (!$model->isUserstamping() || is_null($model->getCreatedByColumn())) {
+        if (! $model->isUserstamping() || is_null($model->getCreatedByColumn())) {
             return;
         }
 
@@ -43,27 +40,27 @@ class Creating
                 $model->{$model->getCreatedByColumn()} = $userId;
 
                 // Handle team stamping if enabled
-                if ($model->isTeamStamping() && !is_null($model->getCreatedByTeamColumn())) {
+                if ($model->isTeamStamping() && ! is_null($model->getCreatedByTeamColumn())) {
                     $model->{$model->getCreatedByTeamColumn()} = UserStamp::getTeamId();
                 }
             }
 
             // Set updated_by if not already set and column exists
             if (
-                !is_null($model->getUpdatedByColumn()) &&
+                ! is_null($model->getUpdatedByColumn()) &&
                 is_null($model->{$model->getUpdatedByColumn()}) &&
                 UserStamp::isValidUserId($userId)
             ) {
                 $model->{$model->getUpdatedByColumn()} = $userId;
 
                 // Handle team stamping if enabled
-                if ($model->isTeamStamping() && !is_null($model->getUpdatedByTeamColumn())) {
+                if ($model->isTeamStamping() && ! is_null($model->getUpdatedByTeamColumn())) {
                     $model->{$model->getUpdatedByTeamColumn()} = UserStamp::getTeamId();
                 }
             }
         } catch (\Exception $e) {
             if (config('userstamp.log_stamping_errors', true)) {
-                Log::error('Error during user stamping (creating): ' . $e->getMessage());
+                Log::error('Error during user stamping (creating): '.$e->getMessage());
             }
         }
     }

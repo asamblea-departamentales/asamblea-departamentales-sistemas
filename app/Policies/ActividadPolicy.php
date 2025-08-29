@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Actividad;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ActividadPolicy
@@ -23,18 +23,19 @@ class ActividadPolicy
      */
     public function view(User $user, Actividad $actividad): bool
     {
-       // Primero verificar permiso básico
-       if (!$user->can('view_actividad')) {
-        return false;
+        // Primero verificar permiso básico
+        if (! $user->can('view_actividad')) {
+            return false;
         }
 
-       // Si tiene rol Administrador o GOL, puede ver todo
+        // Si tiene rol Administrador o GOL, puede ver todo
         if ($user->hasRole(['Administrador', 'GOL'])) {
-        return true;
+            return true;
         }
 
-       // Si no, solo puede ver de su departamental
-        return $actividad->departamental_id === $user->departamental_id;    }
+        // Si no, solo puede ver de su departamental
+        return $actividad->departamental_id === $user->departamental_id;
+    }
 
     /**
      * Determine whether the user can create models.
@@ -49,36 +50,38 @@ class ActividadPolicy
      */
     public function update(User $user, Actividad $actividad): bool
     {
- // Primero verificar permiso básico
- if (!$user->can('update_actividad')) {
-    return false;
-}
+        // Primero verificar permiso básico
+        if (! $user->can('update_actividad')) {
+            return false;
+        }
 
-// Si tiene rol Administrador o GOL, puede editar todo
-if ($user->hasRole(['Administrador', 'GOL'])) {
-    return true;
-}
+        // Si tiene rol Administrador o GOL, puede editar todo
+        if ($user->hasRole(['Administrador', 'GOL'])) {
+            return true;
+        }
 
-// Si no, solo puede editar de su departamental
-return $actividad->departamental_id === $user->departamental_id;    }
+        // Si no, solo puede editar de su departamental
+        return $actividad->departamental_id === $user->departamental_id;
+    }
 
     /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Actividad $actividad): bool
     {
- // Primero verificar permiso básico
- if (!$user->can('delete_actividad')) {
-    return false;
-}
+        // Primero verificar permiso básico
+        if (! $user->can('delete_actividad')) {
+            return false;
+        }
 
-// Si tiene rol Administrador o GOL, puede eliminar todo
-if ($user->hasRole(['Administrador', 'GOL'])) {
-    return true;
-}
+        // Si tiene rol Administrador o GOL, puede eliminar todo
+        if ($user->hasRole(['Administrador', 'GOL'])) {
+            return true;
+        }
 
-// Si no, solo puede eliminar de su departamental
-return $actividad->departamental_id === $user->departamental_id;    }
+        // Si no, solo puede eliminar de su departamental
+        return $actividad->departamental_id === $user->departamental_id;
+    }
 
     /**
      * Determine whether the user can bulk delete.

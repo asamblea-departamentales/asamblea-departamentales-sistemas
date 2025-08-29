@@ -17,13 +17,13 @@ return new class extends Migration
                 ->constrained('usuarios_') // Hace referencia a la tabla usuarios_
                 ->onDelete('cascade'); // Hace referencia al usuario que realiza la bitácora
 
-            //Puede estar ligada o no a una actividad programada    
+            // Puede estar ligada o no a una actividad programada
             $table->foreignId('actividad_id')
                 ->constrained('actividades_programadas_') // Hace referencia a la tabla actividades_programadas_
                 ->onDelete('cascade'); // Elimina la bitácora si se elimina la actividad programada
 
             $table->string('accion'); // Acción realizada en la bitácora
-            $table->text('descripcion'); // Descripción de la acción realizada    
+            $table->text('descripcion'); // Descripción de la acción realizada
             $table->timestamps();
         });
     }

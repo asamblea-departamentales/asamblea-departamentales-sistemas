@@ -10,17 +10,17 @@ use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Filament\Notifications\Notification;
-use Illuminate\Support\HtmlString;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class PostResource extends Resource implements HasShieldPermissions
 {
@@ -55,7 +55,7 @@ class PostResource extends Resource implements HasShieldPermissions
             'schedule',
             'manage_seo',
             'bulk_publish',
-            'view_analytics'
+            'view_analytics',
         ];
     }
 
@@ -74,7 +74,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->live(onBlur: true)
                                     ->maxLength(255)
                                     ->placeholder('Enter post title')
-                                    ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
@@ -101,7 +101,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                                             $set('new_slug', Str::slug($state));
                                                         })
                                                         ->unique(Post::class, 'slug', ignoreRecord: true)
-                                                        ->helperText('The slug will be automatically formatted as you type.')
+                                                        ->helperText('The slug will be automatically formatted as you type.'),
                                                 ])
                                                 ->action(function (array $data, Forms\Set $set) {
                                                     $set('slug', $data['new_slug']);
@@ -112,6 +112,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                                         ->send();
                                                 });
                                         }
+
                                         return null;
                                     }),
 
@@ -149,6 +150,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->hint(function (Get $get): string {
                                         $wordCount = str_word_count(strip_tags($get('content_raw')));
                                         $readingTime = ceil($wordCount / 200); // Assuming 200 words per minute
+
                                         return "{$wordCount} words | ~{$readingTime} min read";
                                     })
                                     ->extraInputAttributes(['style' => 'min-height: 500px;']),
@@ -207,7 +209,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->live()
                                     ->required()
                                     ->afterStateUpdated(function (Get $get, Set $set, $state) {
-                                        if ($state === PostStatus::PUBLISHED->value && !$get('published_at')) {
+                                        if ($state === PostStatus::PUBLISHED->value && ! $get('published_at')) {
                                             $set('published_at', now());
                                         } elseif ($state === PostStatus::DRAFT->value) {
                                             $set('published_at', null);
@@ -219,24 +221,26 @@ class PostResource extends Resource implements HasShieldPermissions
                                         if ($user && $user->hasRole('author')) {
                                             return 'Authors can create drafts or submit for review. Only editors can publish.';
                                         }
+
                                         return 'Control the publication status of this post.';
                                     }),
 
                                 Forms\Components\DatePicker::make('published_at')
                                     ->label('Publication Date')
-                                    ->required(fn(Get $get): bool => $get('status') === PostStatus::PUBLISHED->value)
+                                    ->required(fn (Get $get): bool => $get('status') === PostStatus::PUBLISHED->value)
                                     ->placeholder('Select publication date')
                                     ->helperText('Date when the post will be published')
                                     ->default(now())
                                     ->disabled(function () {
                                         $user = Auth::user();
+
                                         return $user && $user->hasRole('author');
                                     }),
 
                                 Forms\Components\DateTimePicker::make('scheduled_at')
                                     ->label('Schedule For')
-                                    ->required(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
-                                    ->visible(fn(Get $get): bool => $get('status') === PostStatus::PENDING->value)
+                                    ->required(fn (Get $get): bool => $get('status') === PostStatus::PENDING->value)
+                                    ->visible(fn (Get $get): bool => $get('status') === PostStatus::PENDING->value)
                                     ->placeholder('Select scheduled date')
                                     ->seconds(false)
                                     ->timezone('UTC')
@@ -244,7 +248,8 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->hintIcon('heroicon-m-clock')
                                     ->disabled(function (?Post $record) {
                                         $user = Auth::user();
-                                        return $user && $user->hasRole('author') && !$user->can('schedule', $record ?? new Post());
+
+                                        return $user && $user->hasRole('author') && ! $user->can('schedule', $record ?? new Post);
                                     }),
 
                                 Forms\Components\Toggle::make('is_featured')
@@ -253,17 +258,19 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->default(false)
                                     ->visible(function (?Post $record) {
                                         $user = Auth::user();
-                                        return $user && $user->can('feature', $record ?? new Post());
+
+                                        return $user && $user->can('feature', $record ?? new Post);
                                     })
                                     ->disabled(function (?Post $record) {
                                         $user = Auth::user();
-                                        return !$user || !$user->can('feature', $record ?? new Post());
+
+                                        return ! $user || ! $user->can('feature', $record ?? new Post);
                                     }),
 
                                 Forms\Components\Placeholder::make('analytics')
                                     ->label('Post Analytics')
                                     ->content(function (?Post $record): HtmlString {
-                                        if (!$record) {
+                                        if (! $record) {
                                             return new HtmlString('<span class="text-sm text-gray-500">Analytics will be available after saving</span>');
                                         }
 
@@ -286,6 +293,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                     })
                                     ->visible(function (?Post $record) {
                                         $user = Auth::user();
+
                                         return $record && $user && $user->can('viewAnalytics', $record);
                                     }),
                             ]),
@@ -319,37 +327,42 @@ class PostResource extends Resource implements HasShieldPermissions
                                     ->label('Author')
                                     ->relationship(
                                         name: 'author',
-                                        modifyQueryUsing: fn(Builder $query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author'),
+                                        modifyQueryUsing: fn (Builder $query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author'),
                                     )
-                                    ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->firstname} {$record->lastname}")
+                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
                                     ->searchable(['firstname', 'lastname'])
                                     ->preload()
                                     ->required()
                                     ->disabled(function (?Post $record) {
                                         $user = Auth::user();
-                                        if (!$user) return true;
+                                        if (! $user) {
+                                            return true;
+                                        }
 
                                         if ($user->isSuperAdmin()) {
                                             return false;
                                         }
 
-                                        if (!$record) {
-                                            return !$user->can('change_author_blog::post');
+                                        if (! $record) {
+                                            return ! $user->can('change_author_blog::post');
                                         }
 
-                                        return !$user->can('changeAuthor', $record);
+                                        return ! $user->can('changeAuthor', $record);
                                     })
                                     ->helperText(function (?Post $record) {
                                         $user = Auth::user();
-                                        if (!$user) return '';
+                                        if (! $user) {
+                                            return '';
+                                        }
 
                                         if ($user->isSuperAdmin()) {
                                             return 'Super Admin can change any post author.';
                                         }
 
-                                        if (!$user->can('change_author_blog::post')) {
+                                        if (! $user->can('change_author_blog::post')) {
                                             return 'Only administrators can change the post author.';
                                         }
+
                                         return 'Select the author for this post.';
                                     }),
 
@@ -384,7 +397,7 @@ class PostResource extends Resource implements HasShieldPermissions
 
                                         return new HtmlString("<span class='text-sm text-gray-500 dark:text-gray-400'>Audit information will be available after saving</span>");
                                     })
-                                    ->visible(fn(string $operation): bool => $operation === 'edit'),
+                                    ->visible(fn (string $operation): bool => $operation === 'edit'),
                             ])
                             ->visible(function (?Post $record) {
                                 return Auth::user()->can('change_author', $record);
@@ -396,7 +409,8 @@ class PostResource extends Resource implements HasShieldPermissions
                             ->collapsed()
                             ->visible(function (?Post $record) {
                                 $user = Auth::user();
-                                return $user && $user->can('manageSeo', $record ?? new Post());
+
+                                return $user && $user->can('manageSeo', $record ?? new Post);
                             })
                             ->schema([
                                 Forms\Components\Textarea::make('meta_title')
@@ -418,7 +432,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                             ->content(function (Get $get): HtmlString {
                                                 $title = $get('meta_title') ?: $get('title');
                                                 $description = $get('meta_description') ?: $get('content_overview');
-                                                $url = config('app.url') . '/blog/' . ($get('slug') ?: Str::slug($get('title')));
+                                                $url = config('app.url').'/blog/'.($get('slug') ?: Str::slug($get('title')));
 
                                                 return new HtmlString("
                                                     <div class='text-base font-medium text-primary-600'>{$title}</div>
@@ -468,7 +482,7 @@ class PostResource extends Resource implements HasShieldPermissions
                 if ($user && $user->hasRole('author')) {
                     $query->where(function ($q) use ($user) {
                         $q->where('blog_author_id', $user->id)
-                          ->orWhere('created_by', $user->id);
+                            ->orWhere('created_by', $user->id);
                     });
                 }
 
@@ -487,12 +501,13 @@ class PostResource extends Resource implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->visible(function () {
                         $user = Auth::user();
+
                         return $user && $user->hasAnyRole(['super_admin', 'admin', 'editor']);
                     }),
 
                 Tables\Columns\TextColumn::make('author.firstname')
                     ->label('Author')
-                    ->formatStateUsing(fn(Model $record) => "{$record->author->firstname} {$record->author->lastname}")
+                    ->formatStateUsing(fn (Model $record) => "{$record->author->firstname} {$record->author->lastname}")
                     ->searchable(['firstname', 'lastname'])
                     ->sortable(),
 
@@ -516,6 +531,7 @@ class PostResource extends Resource implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: false)
                     ->visible(function () {
                         $user = auth()->user();
+
                         return $user->can('view_analytics_blog::post');
                     }),
 
@@ -530,7 +546,7 @@ class PostResource extends Resource implements HasShieldPermissions
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->recordClasses(fn(Post $record) => match ($record->is_featured) {
+            ->recordClasses(fn (Post $record) => match ($record->is_featured) {
                 true => '!border-x-2 !border-x-success-600 dark:!border-x-success-300',
                 default => '',
             })
@@ -548,27 +564,27 @@ class PostResource extends Resource implements HasShieldPermissions
                 Tables\Filters\SelectFilter::make('blog_author_id')
                     ->label('Author')
                     ->relationship('author', 'firstname')
-                    ->getOptionLabelFromRecordUsing(fn(Model $record) => "{$record->firstname} {$record->lastname}")
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
                     ->searchable()
                     ->preload()
-                    ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
+                    ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
 
                 Tables\Filters\Filter::make('is_featured')
                     ->label('Featured Posts')
-                    ->query(fn(Builder $query): Builder => $query->where('is_featured', true))
-                    ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
+                    ->query(fn (Builder $query): Builder => $query->where('is_featured', true))
+                    ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'admin', 'editor'])),
 
                 Tables\Filters\Filter::make('published')
                     ->label('Published Posts')
-                    ->query(fn(Builder $query): Builder => $query->published()),
+                    ->query(fn (Builder $query): Builder => $query->published()),
 
                 Tables\Filters\Filter::make('published_at')
                     ->label('Published This Month')
-                    ->query(fn(Builder $query): Builder => $query->whereMonth('published_at', now()->month)),
+                    ->query(fn (Builder $query): Builder => $query->whereMonth('published_at', now()->month)),
 
                 Tables\Filters\Filter::make('pending_approval')
                     ->label('Pending Approval')
-                    ->query(fn(Builder $query): Builder => $query->where('status', PostStatus::PENDING))
+                    ->query(fn (Builder $query): Builder => $query->where('status', PostStatus::PENDING))
                     ->toggle(),
             ])
             ->actions([
@@ -576,7 +592,7 @@ class PostResource extends Resource implements HasShieldPermissions
                     Tables\Actions\ViewAction::make(),
 
                     Tables\Actions\EditAction::make()
-                        ->visible(fn(Post $record) => auth()->user()->can('update', $record)),
+                        ->visible(fn (Post $record) => auth()->user()->can('update', $record)),
 
                     Tables\Actions\Action::make('publish')
                         ->label('Publish')
@@ -595,24 +611,23 @@ class PostResource extends Resource implements HasShieldPermissions
                                 ->send();
                         })
                         ->requiresConfirmation()
-                        ->visible(fn(Post $record) =>
-                            auth()->user()->can('publish', $record) &&
+                        ->visible(fn (Post $record) => auth()->user()->can('publish', $record) &&
                             $record->status !== PostStatus::PUBLISHED
                         ),
 
                     Tables\Actions\Action::make('feature')
-                        ->label($fn = fn(Post $record) => $record->is_featured ? 'Unfeature' : 'Feature')
-                        ->icon($fn = fn(Post $record) => $record->is_featured ? 'heroicon-o-star' : 'heroicon-o-star')
-                        ->color($fn = fn(Post $record) => $record->is_featured ? 'warning' : 'success')
+                        ->label($fn = fn (Post $record) => $record->is_featured ? 'Unfeature' : 'Feature')
+                        ->icon($fn = fn (Post $record) => $record->is_featured ? 'heroicon-o-star' : 'heroicon-o-star')
+                        ->color($fn = fn (Post $record) => $record->is_featured ? 'warning' : 'success')
                         ->action(function (Post $record) {
-                            $record->update(['is_featured' => !$record->is_featured]);
+                            $record->update(['is_featured' => ! $record->is_featured]);
 
                             Notification::make()
                                 ->title($record->is_featured ? 'Post featured' : 'Post unfeatured')
                                 ->success()
                                 ->send();
                         })
-                        ->visible(fn(Post $record) => auth()->user()->can('feature', $record)),
+                        ->visible(fn (Post $record) => auth()->user()->can('feature', $record)),
 
                     Tables\Actions\Action::make('duplicate')
                         ->icon('heroicon-o-document-duplicate')
@@ -620,7 +635,7 @@ class PostResource extends Resource implements HasShieldPermissions
                             $user = auth()->user();
 
                             $duplicate = $record->replicate();
-                            $duplicate->title = "Copy of " . $record->title;
+                            $duplicate->title = 'Copy of '.$record->title;
                             $duplicate->slug = Str::slug($duplicate->title);
                             $duplicate->status = PostStatus::DRAFT;
                             $duplicate->published_at = null;
@@ -660,7 +675,7 @@ class PostResource extends Resource implements HasShieldPermissions
                             if ($record->author) {
                                 Notification::make()
                                     ->title('Your post has been approved and published!')
-                                    ->body('The post "' . $record->title . '" is now live.')
+                                    ->body('The post "'.$record->title.'" is now live.')
                                     ->success()
                                     ->sendToDatabase($record->author);
                             }
@@ -671,19 +686,18 @@ class PostResource extends Resource implements HasShieldPermissions
                                 ->send();
                         })
                         ->requiresConfirmation()
-                        ->visible(fn(Post $record) =>
-                            auth()->user()->can('approve', $record) &&
+                        ->visible(fn (Post $record) => auth()->user()->can('approve', $record) &&
                             $record->status === PostStatus::PENDING
                         ),
 
                     Tables\Actions\DeleteAction::make()
-                        ->visible(fn(Post $record) => auth()->user()->can('delete', $record)),
+                        ->visible(fn (Post $record) => auth()->user()->can('delete', $record)),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->can('deleteAny', Post::class)),
+                        ->visible(fn () => auth()->user()->can('deleteAny', Post::class)),
 
                     Tables\Actions\BulkAction::make('publishSelected')
                         ->label('Publish Selected')
@@ -706,7 +720,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                 ->send();
                         })
                         ->requiresConfirmation()
-                        ->visible(fn() => auth()->user()->can('publish', Post::class)),
+                        ->visible(fn () => auth()->user()->can('publish', Post::class)),
 
                     Tables\Actions\BulkAction::make('featureSelected')
                         ->label('Feature Selected')
@@ -725,7 +739,7 @@ class PostResource extends Resource implements HasShieldPermissions
                                 ->send();
                         })
                         ->requiresConfirmation()
-                        ->visible(fn() => auth()->user()->can('feature', Post::class)),
+                        ->visible(fn () => auth()->user()->can('feature', Post::class)),
                 ]),
             ]);
     }
@@ -739,7 +753,7 @@ class PostResource extends Resource implements HasShieldPermissions
         if ($user && $user->hasRole('author')) {
             $query->where(function ($q) use ($user) {
                 $q->where('blog_author_id', $user->id)
-                  ->orWhere('created_by', $user->id);
+                    ->orWhere('created_by', $user->id);
             });
         }
 
@@ -764,7 +778,7 @@ class PostResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.blog");
+        return __('menu.nav_group.blog');
     }
 
     public static function getNavigationBadge(): ?string

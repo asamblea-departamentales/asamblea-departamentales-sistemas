@@ -5,15 +5,15 @@ namespace App\Filament\Resources\Blog;
 use App\Filament\Resources\Blog\CategoryResource\Pages;
 use App\Models\Blog\Category;
 use Filament\Forms;
-use Filament\Infolists;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
+use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\Tabs;
 
 class CategoryResource extends Resource
 {
@@ -24,6 +24,7 @@ class CategoryResource extends Resource
     protected static ?string $slug = 'blog/categories';
 
     protected static ?int $navigationSort = -1;
+
     protected static ?string $navigationIcon = 'fluentui-stack-20';
 
     public static function form(Form $form): Form
@@ -42,6 +43,7 @@ class CategoryResource extends Resource
                                         if (request()->route('record')) {
                                             $query->where('id', '!=', request()->route('record'));
                                         }
+
                                         return $query->pluck('name', 'id');
                                     })
                                     ->searchable()
@@ -53,8 +55,7 @@ class CategoryResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(string $operation, $state, Forms\Set $set) =>
-                                        $operation === 'create' ? $set('slug', Str::slug($state)) : null),
+                                    ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
                                 Forms\Components\TextInput::make('slug')
                                     ->required()
@@ -108,7 +109,7 @@ class CategoryResource extends Resource
                                     ->addable()
                                     ->reorderable()
                                     ->columnSpan('full')
-                                    ->helperText('Custom options for this category (JSON format)')
+                                    ->helperText('Custom options for this category (JSON format)'),
                             ]),
                     ])
                     ->columnSpan('full'),
@@ -153,7 +154,7 @@ class CategoryResource extends Resource
                     ->schema([
                         Infolists\Components\TextEntry::make('posts_count')
                             ->label('Number of Posts')
-                            ->state(fn(Category $record): int => $record->posts()->count()),
+                            ->state(fn (Category $record): int => $record->posts()->count()),
                         Infolists\Components\TextEntry::make('created_at')
                             ->dateTime(),
                         Infolists\Components\TextEntry::make('updated_at')
@@ -176,7 +177,7 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn(Category $record) => $record->parent ? "Child of {$record->parent->name}" : '')
+                    ->description(fn (Category $record) => $record->parent ? "Child of {$record->parent->name}" : '')
                     ->wrap(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable()
@@ -205,7 +206,7 @@ class CategoryResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('parent_id')
                     ->label('Parent Category')
-                    ->options(fn() => Category::pluck('name', 'id'))
+                    ->options(fn () => Category::pluck('name', 'id'))
                     ->searchable()
                     ->preload(),
                 Tables\Filters\SelectFilter::make('locale')
@@ -220,8 +221,8 @@ class CategoryResource extends Resource
                 Tables\Filters\TernaryFilter::make('root')
                     ->label('Root Categories Only')
                     ->queries(
-                        true: fn(Builder $query) => $query->whereNull('parent_id'),
-                        false: fn(Builder $query) => $query->whereNotNull('parent_id'),
+                        true: fn (Builder $query) => $query->whereNull('parent_id'),
+                        false: fn (Builder $query) => $query->whereNotNull('parent_id'),
                     ),
             ])
             ->actions([
@@ -231,7 +232,7 @@ class CategoryResource extends Resource
                     Tables\Actions\Action::make('view_posts')
                         ->label('View Posts')
                         ->icon('heroicon-m-photo')
-                        ->url(fn(Category $record): string => PostResource::getUrl('index', [
+                        ->url(fn (Category $record): string => PostResource::getUrl('index', [
                             'tableFilters[blog_category_id][value]' => $record->id,
                         ]))
                         ->openUrlInNewTab(),
@@ -269,12 +270,12 @@ class CategoryResource extends Resource
                         ->label('Set Active')
                         ->icon('heroicon-m-check-circle')
                         ->requiresConfirmation()
-                        ->action(fn(Category $records) => $records->each->update(['is_active' => true])),
+                        ->action(fn (Category $records) => $records->each->update(['is_active' => true])),
                     Tables\Actions\BulkAction::make('deactivate')
                         ->label('Set Inactive')
                         ->icon('heroicon-m-x-circle')
                         ->requiresConfirmation()
-                        ->action(fn(Category $records) => $records->each->update(['is_active' => false])),
+                        ->action(fn (Category $records) => $records->each->update(['is_active' => false])),
                 ]),
             ])
             ->defaultSort('updated_at', 'desc');
@@ -298,6 +299,6 @@ class CategoryResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __("menu.nav_group.blog");
+        return __('menu.nav_group.blog');
     }
 }
