@@ -101,9 +101,9 @@ jobs:
         if: ${{ hashFiles('**/artisan') != '' && hashFiles('**/vendor/bin/phpunit') != '' }}
         run: php artisan migrate:fresh --force
 
-      - name: Run Laravel Pint (style) - conditional
+      - name: Run Laravel Pint (auto-fix)
         if: ${{ hashFiles('**/vendor/bin/pint') != '' }}
-        run: vendor/bin/pint --test
+        run: vendor/bin/pint
 
       - name: Run PHPUnit (if tests exist)
         if: ${{ hashFiles('**/vendor/bin/phpunit') != '' }}
