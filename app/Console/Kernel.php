@@ -12,7 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Ejecuta cada minuto el comando de recordatorios de actividades
+        // Asegúrate de haber creado el comando con:
+        // php artisan make:command SendActividadReminders
+        $schedule->command('actividades:reminders')->everyMinute();
     }
 
     /**

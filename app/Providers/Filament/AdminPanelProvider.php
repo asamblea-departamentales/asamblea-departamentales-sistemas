@@ -6,8 +6,11 @@ use App\Filament\Pages\Auth\EmailVerification;
 use App\Filament\Pages\Auth\RequestPasswordReset;
 // RESOURCES del sistema (solo los que quieres ver)
 use App\Filament\Resources\ActividadResource;
+use App\Filament\Resources\ContratoResource;
 use App\Filament\Resources\DepartamentalResource;
+use App\Filament\Resources\RequisicionResource;
 use App\Filament\Resources\Shield\RoleResource;
+use App\Filament\Resources\TicketResource;
 use App\Filament\Resources\UserResource; // visible según permisos Shield
 // WIDGETS propios
 use App\Filament\Widgets\ActividadChart;
@@ -32,6 +35,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
+use Jeffgreco13\FilamentBreezy\BreezyCore; // Added use statement for Breezy
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -45,7 +49,6 @@ class AdminPanelProvider extends PanelProvider
             // Auth
             ->login(\App\Filament\Pages\Auth\Login::class)
             ->passwordReset(RequestPasswordReset::class)
-            ->emailVerification(EmailVerification::class)->passwordReset(RequestPasswordReset::class)
             ->emailVerification(EmailVerification::class)
 
             // Branding desde settings
@@ -64,31 +67,16 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(false) // Desactiva el modo oscuro por defecto
             ->viteTheme('resources/css/filament/admin/theme.css')
 
-            // 🚫 Sin auto-descubrimiento (mostramos SOLO lo registrado abajo)
-            // ->discoverResources(...)
-            // ->discoverPages(...)
-            // ->discoverWidgets(...)
-            // ->discoverClusters(...)
-
             // ✅ SOLO tus Resources
             ->resources([
                 UserResource::class,
                 DepartamentalResource::class,
                 ActividadResource::class,
                 RoleResource::class, // visible si el rol tiene 'view_any_role' (Shield)
-                // Agrega aquí tus demás módulos del sistema:
-                // ProgramaResource::class,
-                // MacroactividadResource::class,
-                // ActividadProyectadaResource::class,
-                // ActividadEjecutadaResource::class,
-                // AtestadoResource::class,
-                // CierreMensualResource::class,
-                // RequisicionResource::class,
-                // TicketResource::class,
-                // ContratoResource::class,
-                // ReporteResource::class,
-                // ParametroSistemaResource::class,
-                // LogAuditoriaResource::class,
+                RequisicionResource::class,
+                TicketResource::class,
+                ContratoResource::class,
+                
             ])
 
             // ✅ SOLO tus páginas
@@ -98,7 +86,6 @@ class AdminPanelProvider extends PanelProvider
 
             // ✅ SOLO tus widgets
             ->widgets([
-                // Widgets\FilamentInfoWidget::class, // <- quítalo si no lo quieres
                 ActividadOverview::class,
                 ActividadChart::class,
                 CalendarioWidget::class,
@@ -113,7 +100,7 @@ class AdminPanelProvider extends PanelProvider
                     ->sectionColumnSpan(1)
                     ->checkboxListColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
                     ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
-                \Jeffgreco13\FilamentBreezy\BreezyCore::make()
+                BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
                         shouldRegisterNavigation: false,

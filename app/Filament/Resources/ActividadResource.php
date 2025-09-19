@@ -649,6 +649,7 @@ class ActividadResource extends Resource
         return [
             'index' => Pages\ListActividades::route('/'),
             'create' => Pages\CreateActividad::route('/create'),
+            'view' => Pages\ViewActividad::route('/{record}'),
             'edit' => Pages\EditActividad::route('/{record}/edit'),
         ];
     }

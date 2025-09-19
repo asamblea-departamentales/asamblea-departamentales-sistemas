@@ -2,18 +2,27 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\ActividadResource;
 use App\Models\Actividad;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
+use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 
-class CalendarioWidget extends FullCalendarWidget
+class CalendarioWidget extends FullCalendarWidget implements HasActions
 {
+    use InteractsWithActions;
+
+    // Inicializa la propiedad $record para evitar el error
+    public Model|string|int|null $record = null;
     public function fetchEvents(array $fetchInfo): array
     {
         return Actividad::all()->map(function ($actividad) {
             return [
                 'id' => $actividad->id,
                 'title' => $actividad->macroactividad,
-                'start' => $actividad->star_date, // Ajusta el nombre del campo según tu BD
+                'start' => $actividad->star_date,
                 'end' => $actividad->due_date,
                 'backgroundColor' => match ($actividad->estado) {
                     'Completada' => '#10B981',
@@ -47,10 +56,19 @@ class CalendarioWidget extends FullCalendarWidget
             'aspectRatio' => 1.8,
         ];
     }
+    
+    // Sobrescribe el método onEventClick para manejar el clic en el evento
+    public function onEventClick(array $event): void
+  {
+    $this->record = Actividad::find($event['id']);
 
-    // Título del widget (opcional)
+    $this->redirect(
+        \App\Filament\Resources\ActividadResource::getUrl('view', ['record' => $this->record->id])
+    );
+  }
+
+
     protected static ?string $heading = 'Calendario de Actividades';
 
-    // Hacer el widget más ancho (opcional)
     protected int|string|array $columnSpan = 'full';
 }
