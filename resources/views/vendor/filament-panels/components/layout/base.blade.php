@@ -1,145 +1,96 @@
-@props([
-    'livewire' => null,
-])
+@props(['livewire' => null])
 
 <!DOCTYPE html>
-<html
-    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    dir="{{ __('filament-panels::layout.direction') ?? 'ltr' }}"
-    @class([
-        'fi min-h-screen',
-        'dark' => filament()->hasDarkModeForced(),
-    ])
->
-    <head>
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_START, scopes: $livewire?->getRenderHookScopes()) }}
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      dir="{{ __('filament-panels::layout.direction') ?? 'ltr' }}"
+      class="fi min-h-screen">
+<head>
+    <script>console.log('🔍 BASE.BLADE.PHP CARGADO');</script>
 
-        <meta charset="utf-8" />
-        <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_START, scopes: $livewire?->getRenderHookScopes()) }}
 
-        @if ($favicon = filament()->getFavicon())
-            <link rel="icon" href="{{ $favicon }}" />
-        @endif
+    <meta charset="utf-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="user-id" content="{{ auth()->user()?->getAuthIdentifier() }}">
 
-        @php
-            $title = trim(strip_tags(($livewire ?? null)?->getTitle() ?? ''));
-            $brandName = trim(strip_tags(filament()->getBrandName()));
-        @endphp
+    @if ($favicon = filament()->getFavicon())
+        <link rel="icon" href="{{ $favicon }}" />
+    @endif
 
-        <title>
-            {{ filled($title) ? "{$title} - " : null }} {{ $brandName }}
-        </title>
+    <title>{{ filled($livewire?->getTitle()) ? $livewire->getTitle() . ' - ' : '' }}{{ filament()->getBrandName() }}</title>
 
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::STYLES_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
+    @filamentStyles
+    {{ filament()->getTheme()->getHtml() }}
+    {{ filament()->getFontHtml() }}
+    <style>
+        :root { --font-family: '{!! filament()->getFontFamily() !!}'; }
+        [x-cloak] { display: none !important; }
 
-        <style>
-            [x-cloak=''],
-            [x-cloak='x-cloak'],
-            [x-cloak='1'] {
-                display: none !important;
-            }
+        /* Forzar modo claro */
+        body, .fi-body, .fi-main-ctn {
+            background-color: #f9fafb !important;
+            color: #111827 !important;
+        }
+    </style>
 
-            @media (max-width: 1023px) {
-                [x-cloak='-lg'] {
-                    display: none !important;
-                }
-            }
+    @stack('styles')
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_END, scopes: $livewire?->getRenderHookScopes()) }}
+</head>
+<body {{ $attributes->merge(($livewire ?? null)?->getExtraBodyAttributes() ?? [], escape: false)->class([
+    'fi-body',
+    'fi-panel-' . filament()->getId(),
+    'min-h-screen font-normal antialiased',
+]) }}>
 
-            @media (min-width: 1024px) {
-                [x-cloak='lg'] {
-                    display: none !important;
-                }
-            }
-        </style>
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_START, scopes: $livewire?->getRenderHookScopes()) }}
 
-        @filamentStyles
+    {{ $slot }}
 
-        {{ filament()->getTheme()->getHtml() }}
-        {{ filament()->getFontHtml() }}
+    {{-- Componente Livewire de notificaciones --}}
+    @livewire(\Filament\Notifications\Livewire\Notifications::class)
 
-        <style>
-            :root {
-                --font-family: '{!! filament()->getFontFamily() !!}';
-                --sidebar-width: {{ filament()->getSidebarWidth() }};
-                --collapsed-sidebar-width: {{ filament()->getCollapsedSidebarWidth() }};
-                --default-theme-mode: {{ filament()->getDefaultThemeMode()->value }};
-            }
-        </style>
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
 
-        @stack('styles')
+    @filamentScripts(withCore: true)
 
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::STYLES_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+    {{-- Configuración Echo / WebSocket --}}
+    @if (filament()->hasBroadcasting() && config('filament.broadcasting.echo'))
+        <script data-navigate-once>
+            window.Echo = new window.EchoFactory(@js(config('filament.broadcasting.echo')));
 
-        @if (! filament()->hasDarkMode())
-            <script>
-                localStorage.setItem('theme', 'light')
-            </script>
-        @elseif (filament()->hasDarkModeForced())
-            <script>
-                localStorage.setItem('theme', 'dark')
-            </script>
-        @else
-            <script>
-                const loadDarkMode = () => {
-                    window.theme = localStorage.getItem('theme') ?? @js(filament()->getDefaultThemeMode()->value)
+            document.addEventListener('livewire:load', () => {
+                const userId = document.querySelector('meta[name="user-id"]')?.content;
+                console.log('Echo cargado, usuario:', userId);
 
-                    if (
-                        window.theme === 'dark' ||
-                        (window.theme === 'system' &&
-                            window.matchMedia('(prefers-color-scheme: dark)')
-                                .matches)
-                    ) {
-                        document.documentElement.classList.add('dark')
-                    }
-                }
+                if (!userId) return;
 
-                loadDarkMode()
+                window.Echo.private(`notifications.${userId}`)
+                    .notification((notification) => {
+                        console.log('📬 Notificación recibida y procesada:', notification);
 
-                document.addEventListener('livewire:navigated', loadDarkMode)
-            </script>
-        @endif
+                        // Toast Filament
+                        window.showToastNotification?.({
+                            title: notification.title || 'Nueva Notificación',
+                            body: notification.body || '',
+                            icon: notification.icon || 'heroicon-o-bell',
+                            iconColor: notification.iconColor || 'primary',
+                            duration: notification.duration === 'persistent' ? null : 5000,
+                            actions: notification.actions || [],
+                        });
 
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_END, scopes: $livewire?->getRenderHookScopes()) }}
-    </head>
+                        // Badge y refresco Livewire
+                        window.updateFilamentBadge?.();
+                        window.refreshLivewireNotifications?.();
+                    });
+            });
+        </script>
+    @endif
 
-    <body
-        {{ $attributes
-                ->merge(($livewire ?? null)?->getExtraBodyAttributes() ?? [], escape: false)
-                ->class([
-                    'fi-body',
-                    'fi-panel-' . filament()->getId(),
-                    'min-h-screen bg-gray-50 font-normal text-gray-950 antialiased dark:bg-gray-950 dark:text-white',
-                ]) }}
-    >
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_START, scopes: $livewire?->getRenderHookScopes()) }}
+    @stack('scripts')
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
+    {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_END, scopes: $livewire?->getRenderHookScopes()) }}
 
-        {{ $slot }}
-
-        @livewire(Filament\Livewire\Notifications::class)
-
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_BEFORE, scopes: $livewire?->getRenderHookScopes()) }}
-
-        @filamentScripts(withCore: true)
-
-        @if (filament()->hasBroadcasting() && config('filament.broadcasting.echo'))
-            <script data-navigate-once>
-                window.Echo = new window.EchoFactory(@js(config('filament.broadcasting.echo')))
-
-                window.dispatchEvent(new CustomEvent('EchoLoaded'))
-            </script>
-        @endif
-
-        @if (filament()->hasDarkMode() && (! filament()->hasDarkModeForced()))
-            <script>
-                loadDarkMode()
-            </script>
-        @endif
-
-        @stack('scripts')
-
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SCRIPTS_AFTER, scopes: $livewire?->getRenderHookScopes()) }}
-
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::BODY_END, scopes: $livewire?->getRenderHookScopes()) }}
-    </body>
+    @vite('resources/js/app.js')
+</body>
 </html>

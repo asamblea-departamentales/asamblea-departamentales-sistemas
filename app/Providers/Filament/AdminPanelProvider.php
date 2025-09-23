@@ -60,8 +60,10 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => \Filament\Support\Colors\Color::hex('#0A2C65'), // azul institucional
             ])
 
-            // UX
-            ->databaseNotifications()->databaseNotificationsPolling('30s')
+            // UX y NOTIFICACIONES - ESTO ES LO IMPORTANTE PARA LAS NOTIS
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s') // Revisa cada 30 segundos
+            ->spa() // Modo SPA para mejor experiencia
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->darkMode(false) // Desactiva el modo oscuro por defecto
@@ -76,7 +78,6 @@ class AdminPanelProvider extends PanelProvider
                 RequisicionResource::class,
                 TicketResource::class,
                 ContratoResource::class,
-                
             ])
 
             // ✅ SOLO tus páginas

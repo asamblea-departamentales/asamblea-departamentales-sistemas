@@ -3,6 +3,7 @@
 /** @type {import('tailwindcss').Config} */
 
 export default {
+    darkMode: "class",
     // presets: [preset],
     content: [
         "./resources/**/*.blade.php",

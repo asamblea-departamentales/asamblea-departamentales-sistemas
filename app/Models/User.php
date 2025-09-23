@@ -153,4 +153,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
 
         return parent::getFallbackMediaUrl($collectionName, $conversion);
     }
+
+    /* ==============================
+ |  Notificaciones Broadcasted
+ ===============================*/
+/**
+ * Los canales de notificación de transmisión del usuario.
+ *
+ * //@return array<string, mixed>|string
+ */
+ // public function receivesBroadcastNotificationsOn(): string
+ //{
+   // return 'notifications.'.$this->id;
+ //}
 }

@@ -7,29 +7,41 @@ return [
     | Default Broadcaster
     |--------------------------------------------------------------------------
     |
-    | This option controls the default broadcaster that will be used by the
-    | framework when an event needs to be broadcast. You may set this to
-    | any of the connections defined in the "connections" array below.
-    |
-    | Supported: "pusher", "ably", "redis", "log", "null"
+    | Aquí se establece la conexión por defecto para el broadcasting.
+    | Lo cambiamos de 'null' o 'pusher' a 'reverb'.
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'null'),
+    'default' => env('BROADCAST_CONNECTION', 'reverb'), // 👈 Cambia aquí
 
     /*
     |--------------------------------------------------------------------------
     | Broadcast Connections
     |--------------------------------------------------------------------------
     |
-    | Here you may define all of the broadcast connections that will be used
-    | to broadcast events to other systems or over websockets. Samples of
-    | each available type of connection are provided inside this array.
+    | Aquí se definen todas las conexiones de broadcasting disponibles.
     |
     */
 
     'connections' => [
 
+        'reverb' => [ // 👈 Este es el nuevo bloque que debes agregar
+            'driver' => 'reverb',
+            'key' => env('REVERB_APP_KEY'),
+            'secret' => env('REVERB_APP_SECRET'),
+            'app_id' => env('REVERB_APP_ID'),
+            'options' => [
+                'host' => env('REVERB_HOST', 'localhost'),
+                'port' => env('REVERB_PORT', 9000),
+                'scheme' => env('REVERB_SCHEME', 'http'),
+                'ping' => env('REVERB_PING_INTERVAL', 10),
+                'tls' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ],
+        ],
+        
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
@@ -44,7 +56,7 @@ return [
                 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
             ],
             'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                //
             ],
         ],
 
