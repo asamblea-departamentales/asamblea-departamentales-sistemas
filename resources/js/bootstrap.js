@@ -155,24 +155,19 @@ function getCurrentUserId() {
 function setupEchoForCurrentUser() {
     const userId = getCurrentUserId();
     
-    if (!userId) {
-        console.error('❌ No se pudo obtener el User ID. Echo no se configurará.');
+    if (!userId || !window.Echo) {
+        console.error('❌ No se puede configurar Echo');
         return;
     }
-    
-    if (!window.Echo) {
-        console.error('❌ Echo no está disponible. No se puede configurar.');
-        return;
-    }
+
 
     console.log(`🔧 Configurando Echo para usuario: ${userId}`);
 
     // ✅ ESTE ES EL ÚNICO LISTENER DE ECHO QUE NECESITAS
-    window.Echo.private(`App.Models.User.${userId}`)
-        .notification('notification', (notification) => {
+    window.Echo.private(`notifications.${userId}`)
+        .listen('.notification', (notification) => {
             console.log('🔔 Notificación de Echo recibida:', notification);
             
-            // Muestra el toast usando la función unificada
             window.showToastNotification({
                 title: notification.title || 'Nueva notificación',
                 body: notification.body || 'Tienes una notificación pendiente',
@@ -180,7 +175,6 @@ function setupEchoForCurrentUser() {
                 duration: notification.duration
             });
             
-            // Actualiza el badge de la campanita
             window.updateFilamentBadge();
         })
         .error((error) => {
