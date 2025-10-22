@@ -162,8 +162,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
  *
  * //@return array<string, mixed>|string
  */
- // public function receivesBroadcastNotificationsOn(): string
- //{
-   // return 'notifications.'.$this->id;
- //}
+ public function receivesBroadcastNotificationsOn(): string
+ {
+    return 'notifications.'.$this->id;
+ }
 }

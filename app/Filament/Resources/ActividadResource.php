@@ -57,11 +57,16 @@ class ActividadResource extends Resource
                             ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
-                        Forms\Components\TextInput::make('programa')
+                        Forms\Components\Select::make('programa')
                             ->label('Programa')
                             ->required()
-                            ->maxLength(255)
-                            ->placeholder('Ej: Programa de Desarrollo'),
+                            ->options([
+                                'Programa de Educacion Civica' => 'Programa de Educacion Civica',
+                                'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
+                                'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana'
+                            ])
+                            ->native(false)
+                            ->placeholder('Seleccione un programa'),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Detalles de la Actividad')

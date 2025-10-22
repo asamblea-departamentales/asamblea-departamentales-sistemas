@@ -5,7 +5,7 @@ import '../css/app.css';
 window.showToastNotification = function({ title, body, iconColor, duration }) {
     console.log('🔔 Mostrando toast:', { title, body, iconColor, duration });
 
-    // Usar directamente los toasts HTML que sabemos que funcionan
+    // Usar directamente los toasts HTML que funcionan
     createCustomToast({ title, body, iconColor, duration });
 };
 

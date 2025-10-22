@@ -84,15 +84,22 @@ class CreateActividad extends CreateRecord
                                 ->disabled()
                                 ->dehydrated(false), // No se guarda en la base de datos
                             // Campo de texto para el programa
-                            Forms\Components\TextInput::make('programa')
+                            Forms\Components\Select::make('programa')
                                 // Etiqueta del campo
                                 ->label('Programa')
                                 // Campo obligatorio
                                 ->required()
-                                // Longitud máxima permitida
-                                ->maxLength(255)
-                                // Texto placeholder
-                                ->placeholder('Ej: Programa de Desarrollo'),
+                                // Opciones de Programas
+                                ->options([
+                                    'Programa de Educacion Civica'=> 'Programa de Educacion Civica',
+                                    'Programa de Participacion Ciudadana'=> 'Programa de Participacion Ciudadana',
+                                    'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadanda',
+                                    'Otro'=> 'Otros'
+                                ])
+                                ->placeholder('Seleccione un programa')
+                                ->searchable()
+                                ->native(false),
+                        
                             // Campo select para el estado de la actividad
                             Forms\Components\Select::make('estado')
                                 // Etiqueta del campo

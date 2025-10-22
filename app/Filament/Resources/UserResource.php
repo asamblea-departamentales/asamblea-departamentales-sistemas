@@ -172,7 +172,7 @@ class UserResource extends Resource
                                         $u = Filament::auth()->user();
 
                                         // TI, GOL o SuperAdmin pueden cambiar la oficina
-                                        return ! ($u && ($u->hasAnyRole(['Administrador', 'GOL']) || $u->hasRole(config('filament-shield.super_admin.name'))));
+                                        return ! ($u && ($u->hasAnyRole(['Administrador', 'GOL', 'SuperAdmin']) || $u->hasRole(config('filament-shield.super_admin.name'))));
                                     }),
 
                                 // === Marcar email verificado (solo en crear) ===

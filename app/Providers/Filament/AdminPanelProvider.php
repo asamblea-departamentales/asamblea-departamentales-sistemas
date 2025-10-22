@@ -4,15 +4,13 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EmailVerification;
 use App\Filament\Pages\Auth\RequestPasswordReset;
-// RESOURCES del sistema (solo los que quieres ver)
 use App\Filament\Resources\ActividadResource;
 use App\Filament\Resources\ContratoResource;
 use App\Filament\Resources\DepartamentalResource;
 use App\Filament\Resources\RequisicionResource;
 use App\Filament\Resources\Shield\RoleResource;
 use App\Filament\Resources\TicketResource;
-use App\Filament\Resources\UserResource; // visible según permisos Shield
-// WIDGETS propios
+use App\Filament\Resources\UserResource;
 use App\Filament\Widgets\ActividadChart;
 use App\Filament\Widgets\ActividadOverview;
 use App\Filament\Widgets\CalendarioWidget;
@@ -35,7 +33,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
-use Jeffgreco13\FilamentBreezy\BreezyCore; // Added use statement for Breezy
+use Jeffgreco13\FilamentBreezy\BreezyCore;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -57,45 +55,52 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn (GeneralSettings $s) => $s->brand_logo ? asset($s->brand_logo) : asset('images/logo-azul-fondo-transparente (002).png'))
             ->brandLogoHeight(fn (GeneralSettings $s) => $s->brand_logoHeight ?: '15rem')
             ->colors(fn (GeneralSettings $s) => $s->site_theme ?: [
-                'primary' => \Filament\Support\Colors\Color::hex('#0A2C65'), // azul institucional
+                'primary' => \Filament\Support\Colors\Color::hex('#0A2C65'),
             ])
 
-            // UX y NOTIFICACIONES - ESTO ES LO IMPORTANTE PARA LAS NOTIS
-            ->databaseNotifications()
-            ->databaseNotificationsPolling('30s') // Revisa cada 30 segundos
-            ->spa() // Modo SPA para mejor experiencia
+            // 🔔 NOTIFICACIONES
+            ->databaseNotifications()              // Habilita notificaciones en BD
+            ->databaseNotificationsPolling('30s')  // Polling cada 30 segundos
+            // NO existe ->broadcastNotifications() en tu versión
+            // El broadcasting funciona automáticamente si está configurado
+            
+            // UX
+            ->spa()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
-            ->darkMode(false) // Desactiva el modo oscuro por defecto
+            ->darkMode(false)
             ->viteTheme('resources/css/filament/admin/theme.css')
 
-            // ✅ SOLO tus Resources
+            // Resources
             ->resources([
                 UserResource::class,
                 DepartamentalResource::class,
                 ActividadResource::class,
-                RoleResource::class, // visible si el rol tiene 'view_any_role' (Shield)
+                RoleResource::class,
                 RequisicionResource::class,
                 TicketResource::class,
                 ContratoResource::class,
             ])
 
-            // ✅ SOLO tus páginas
+            // Pages
             ->pages([
                 Pages\Dashboard::class,
             ])
 
-            // ✅ SOLO tus widgets
+            // Widgets
             ->widgets([
                 ActividadOverview::class,
                 ActividadChart::class,
                 CalendarioWidget::class,
             ])
 
-            // Plugins necesarios
+            // Plugins
             ->plugins([
-                FilamentFullCalendarPlugin::make()->selectable(true)->editable(true),
-                FilamentMediaManagerPlugin::make()->allowSubFolders(),
+                FilamentFullCalendarPlugin::make()
+                    ->selectable(true)
+                    ->editable(true),
+                FilamentMediaManagerPlugin::make()
+                    ->allowSubFolders(),
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns(['default' => 2, 'sm' => 1])
                     ->sectionColumnSpan(1)
