@@ -202,7 +202,7 @@ class ActividadResource extends Resource
                     ->searchable()
                     ->limit(50)
                     ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
-                Tables\Columns\BadgeColumn::make('estado')
+                    Tables\Columns\BadgeColumn::make('estado')
                     ->label('Estado')
                     ->colors([
                         'primary' => 'Pendiente',
@@ -210,12 +210,13 @@ class ActividadResource extends Resource
                         'success' => 'Completada',
                         'danger' => 'Cancelada',
                     ])
-                    ->icons([
-                        'heroicon-o-clock' => 'Pendiente',
-                        'heroicon-o-arrow-path' => 'En Progreso',
-                        'heroicon-o-check-circle' => 'Completada',
-                        'heroicon-o-x-circle' => 'Cancelada',
-                    ]),
+                    ->icon(fn (string $state): string => match ($state) {
+                        'Pendiente' => 'heroicon-o-clock',
+                        'En Progreso' => 'heroicon-o-arrow-path',
+                        'Completada' => 'heroicon-o-lock-closed', // 🔒 Candado
+                        'Cancelada' => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-document-text',
+                    }),
                 Tables\Columns\TextColumn::make('lugar')
                     ->label('Lugar de la Actividad')
                     ->searchable()
@@ -311,9 +312,22 @@ class ActividadResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+            
                 Tables\Actions\EditAction::make()
-                    ->visible(fn (Model $record) => auth()->user()->can('update_actividad'))
+                    ->visible(fn (Model $record) =>
+                        auth()->user()->can('update_actividad')
+                        && $record->estado !== 'Completada'
+                    )
                     ->before(function (Model $record, Tables\Actions\EditAction $action) {
+                        if ($record->estado === 'Completada') {
+                            Notification::make()
+                                ->title('Acción no permitida')
+                                ->body('Esta actividad está completada y no puede ser editada.')
+                                ->danger()
+                                ->send();
+                            $action->halt();
+                        }
+            
                         if (! auth()->user()->can('update_actividad')) {
                             Notification::make()
                                 ->title('Permiso Denegado')
@@ -323,9 +337,22 @@ class ActividadResource extends Resource
                             $action->halt();
                         }
                     }),
+            
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn (Model $record) => auth()->user()->can('delete_actividad'))
+                    ->visible(fn (Model $record) =>
+                        auth()->user()->can('delete_actividad')
+                        && $record->estado !== 'Completada'
+                    )
                     ->before(function (Model $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->estado === 'Completada') {
+                            Notification::make()
+                                ->title('Acción no permitida')
+                                ->body('Esta actividad está completada y no puede ser eliminada.')
+                                ->danger()
+                                ->send();
+                            $action->halt();
+                        }
+            
                         if (! auth()->user()->can('delete_actividad')) {
                             Notification::make()
                                 ->title('Permiso Denegado')
@@ -624,12 +651,15 @@ class ActividadResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()->can('update_actividad');
+        //Verificar permiso y que no este completada
+        return auth()->user()->can('update_actividad')
+        && $record->estado !== 'Completada';
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()->can('delete_actividad');
+        return auth()->user()->can('delete_actividad')
+        && $record->estado !== 'Completada';
     }
 
     public static function canDeleteAny(): bool
