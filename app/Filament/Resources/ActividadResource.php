@@ -110,6 +110,7 @@ class ActividadResource extends Resource
                                     }
                                 };
                             }), //version top
+                            //probando
                         Forms\Components\Textarea::make('macroactividad')
                             ->label('Macroactividad')
                             ->required()
