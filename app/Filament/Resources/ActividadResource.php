@@ -100,16 +100,16 @@ class ActividadResource extends Resource
                             ->inputMode('integer')
                             ->live()
                             ->placeholder('0')
-                            ->rules([
-                                'integer',
-                                function ($attribute, $value, $fail, $get) {
-                                    $hombres = (int) $get('asistentes_hombres') ?? 0;
-                                    $mujeres = (int) $get('asistentes_mujeres') ?? 0;
-                                    if ($value !== ($hombres + $mujeres)) {
+                            ->rule(function (Forms\Get $get) {
+                                return function (string $attribute, $value, $fail) use ($get) {
+                                    $hombres = (int) $get('asistentes_hombres');
+                                    $mujeres = (int) $get('asistentes_mujeres');
+                            
+                                    if ($value != $hombres + $mujeres) {
                                         $fail('La asistencia completa debe ser igual a la suma de asistentes hombres y mujeres.');
                                     }
-                                },
-                            ]),
+                                };
+                            }), //version top
                         Forms\Components\Textarea::make('macroactividad')
                             ->label('Macroactividad')
                             ->required()
@@ -254,12 +254,26 @@ class ActividadResource extends Resource
                         'Completada' => 'Completada',
                         'Cancelada' => 'Cancelada',
                     ]),
-                Tables\Filters\SelectFilter::make('departamental')
+                    Tables\Filters\SelectFilter::make('departamental')
                     ->label('Departamental')
                     ->relationship('departamental', 'nombre')
                     ->searchable()
                     ->preload()
-                    ->visible(fn () => auth()->user()->can('view_any_actividad') && auth()->user()->hasRole('Administrador|GOL')),
+                    ->visible(function () {
+                        $user = auth()->user();
+                
+                        // Permiso normal
+                        $allowed = $user->can('view_any_actividad') && $user->hasRole('Administrador|GOL');
+                
+                        // Si la URL incluye un filtro por departamental, lo activamos
+                        // Ejemplo recibido desde notificación:
+                        // ?tableFilters[departamental][value]=2
+                        $tableFilters = request()->query('tableFilters', []);
+                        $hasDepartamentalFilter = isset($tableFilters['departamental']['value']);
+                
+                        return $allowed || $hasDepartamentalFilter;
+                    }),
+                
                 Tables\Filters\SelectFilter::make('user_id')
                     ->label('Usuario')
                     ->relationship(
