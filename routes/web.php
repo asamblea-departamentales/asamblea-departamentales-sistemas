@@ -1,26 +1,34 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use Lab404\Impersonate\Services\ImpersonateManager;
 use App\Http\Controllers\ContactController;
+use App\Models\Departamental;
+use App\Models\User;
 use App\Notifications\ActividadReminderNotification;
 
-// Rutas de contacto PRIMERO
+/* -----------------------------
+|  CONTACTO
+------------------------------*/
 Route::get('/contact', fn() => view('contact'))->name('contact.form');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-// Home → login del panel
+/* -----------------------------
+|  HOME → REDIRECT A PANEL
+------------------------------*/
 Route::redirect('/', '/admin/login')->name('home');
 
-// Impersonate leave
-Route::get('impersonate/leave', function () {
-    if (! app(ImpersonateManager::class)->isImpersonating()) {
-        return redirect('/');
-    }
-    app(ImpersonateManager::class)->leave();
-    return redirect(session()->pull('impersonate.back_to', '/'));
-})->name('impersonate.leave');
+/* -----------------------------
+|  RUTA DE LOGIN NECESARIA
+|  (Filament USE login ROUTE)
+------------------------------*/
+Route::middleware('web')->get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
 
-// RUTA DE PRUEBA - DEBE IR ANTES DEL FALLBACK
+/* -----------------------------
+|  TEST DE NOTIFICACIONES
+------------------------------*/
 Route::post('/test-notification', function () {
     try {
         $user = auth()->user();
@@ -53,16 +61,58 @@ Route::post('/test-notification', function () {
     }
 })->middleware('web');
 
-// RUTA PARA CONTEO DE NOTIFICACIONES
+/* -----------------------------
+|  API → CONTEO DE NOTIFICACIONES
+------------------------------*/
 Route::middleware(['web', 'auth'])->get('/api/notifications/unread-count', function () {
-    if (!auth()->check()) {
-        return response()->json(['count' => 0]);
-    }
-    
     return response()->json([
-        'count' => auth()->user()->unreadNotifications()->count()
+        'count' => auth()->check()
+            ? auth()->user()->unreadNotifications()->count()
+            : 0
     ]);
 });
 
-// Fallback SIEMPRE AL FINAL
+/* -----------------------------
+|  IMPERSONATE DE DEPARTAMENTAL
+------------------------------*/
+Route::middleware(['web', 'auth'])
+    ->get('/admin/impersonate-departamental/{departamental}', function (Departamental $departamental) {
+
+        $super = auth()->user();
+
+        if (!$super || !$super->canImpersonate()) {
+            abort(403, 'No autorizado.');
+        }
+
+        $user = User::where('departamental_id', $departamental->id)->firstOrFail();
+
+        session()->put('impersonate.back_to', url()->previous());
+
+        $super->impersonate($user);
+
+        return redirect('/admin');
+    })
+    ->name('admin.impersonate.departamental');
+
+/* -----------------------------
+|  SALIR DEL IMPERSONATE
+------------------------------*/
+Route::middleware(['web', 'auth'])->get('/admin/impersonate/leave', function () {
+    $impersonate = app(\Lab404\Impersonate\Services\ImpersonateManager::class);
+
+    if (! $impersonate->isImpersonating()) {
+        return redirect('/admin');
+    }
+
+    $impersonate->leave(); // Sal del impersonate
+    request()->session()->regenerate(); // Regenera la sesión por seguridad
+
+    return redirect(session()->pull('impersonate.back_to', '/admin'))
+        ->with('success', 'Has salido del modo de suplantación');
+})->name('impersonate.leave');
+
+
+/* -----------------------------
+|  FALLBACK
+------------------------------*/
 Route::fallback(fn () => redirect('/admin/login'));

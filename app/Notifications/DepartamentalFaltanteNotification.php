@@ -52,7 +52,7 @@ class DepartamentalFaltanteNotification extends Notification implements ShouldQu
             ->actions([
                 Action::make('view')
                     ->label('Ver Departamental')
-                    ->url("/admin/departamentales/{$this->departamental_id}")
+                    ->url(route('admin.impersonate.departamental', ['departamental' => $this->departamental_id]))
                     ->button(),
                 Action::make('activities')
                     ->label('Ver Actividades')  

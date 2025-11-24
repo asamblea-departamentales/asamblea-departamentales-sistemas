@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
 
             // Auth
-            ->login(\App\Filament\Pages\Auth\Login::class)
+            ->login(action: \App\Filament\Pages\Auth\Login::class)
             ->passwordReset(RequestPasswordReset::class)
             ->emailVerification(EmailVerification::class)
 
@@ -117,6 +117,15 @@ class AdminPanelProvider extends PanelProvider
                     ->myProfileComponents([
                         'personal_info' => \App\Livewire\MyProfileExtended::class,
                     ]),
+            ])
+
+            // Boton para salir del impersonate (NUEVO)
+            ->userMenuItems([
+                \Filament\Navigation\UserMenuItem::make()
+                ->label('Salir de la departamental')
+                ->icon('heroicon-o-arrow-left-on-rectangle')
+                ->url(fn () => route('impersonate.leave'))
+                ->visible(fn () => app(\Lab404\Impersonate\Services\ImpersonateManager::class)->isImpersonating()),
             ])
 
             // Middlewares
