@@ -92,7 +92,7 @@ class UserResource extends Resource
                                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                                     ->dehydrated(fn (?string $state): bool => filled($state))
                                     ->revealable()
-                                    ->same('password')
+                                    ->same('Contraseña')
                                     ->required(),
                             ])
                             ->compact()
