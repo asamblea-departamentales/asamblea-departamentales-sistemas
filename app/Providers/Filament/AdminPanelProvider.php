@@ -43,6 +43,8 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->defaultLocale('es')
+            ->locales(['es'])
 
             // Auth
             ->login(action: \App\Filament\Pages\Auth\Login::class)
