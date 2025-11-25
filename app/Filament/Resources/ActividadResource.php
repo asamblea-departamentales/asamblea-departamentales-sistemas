@@ -73,7 +73,7 @@ class ActividadResource extends Resource
                             ->native(false)
                             ->columnSpanFull()
                             ->placeholder('Seleccione un programa')
-                            ->extraAttributes(['data-dropdown-parent' => 'body']);
+                            ->extraAttributes(['data-dropdown-parent' => 'body']),
                         
                     ])
                     ->columns(2),
