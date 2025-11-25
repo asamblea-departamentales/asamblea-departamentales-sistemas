@@ -70,10 +70,9 @@ class ActividadResource extends Resource
                                 'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
                                 'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
                             ])
-                            ->native(false)
-                            ->columnSpanFull()
+                            ->native(true) // ← Usa el select nativo del navegador
                             ->placeholder('Seleccione un programa')
-                            ->extraAttributes(['data-dropdown-parent' => 'body']),
+                            ->columnSpanFull(),
                         
                     ])
                     ->columns(2),
