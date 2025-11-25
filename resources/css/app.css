@@ -93,3 +93,18 @@
         @apply bg-background-light dark:bg-primary-700 rounded-md;
     }
 }
+
+/* Fix for Filament Select dropdown cutting off */
+.choices__list--dropdown {
+    position: absolute !important;
+    z-index: 9999 !important;
+}
+
+.filament-tabs {
+    overflow: visible !important;
+}
+
+.filament-forms-section {
+    overflow: visible !important;
+}
+
