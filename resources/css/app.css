@@ -63,6 +63,7 @@
 .header-scrolled .mobile-menu-close {
     @apply text-white;
 }
+
 /* Explicitly ensure transparent background on desktop */
 @media (min-width: 1024px) {
     .menu-block {
@@ -94,17 +95,39 @@
     }
 }
 
-/* Fix for Filament Select dropdown cutting off */
-.choices__list--dropdown {
-    position: absolute !important;
-    z-index: 9999 !important;
+/* ------------------------------ */
+/*     FIX COMPLETO PARA FILAMENT */
+/* ------------------------------ */
+
+/* Asegura que los dropdowns (selects, menus, filters) no se corten */
+.fi-dropdown-panel,
+.fi-select-panel {
+    z-index: 999999 !important;
 }
 
-.filament-tabs {
-    overflow: visible !important;
-}
-
+/* Evita que las secciones corten el contenido */
 .filament-forms-section {
     overflow: visible !important;
 }
 
+.filament-forms-section .fi-section-content {
+    overflow: visible !important;
+}
+
+/* Tabs en Filament (por si tienes wizard u otros tabs) */
+.filament-tabs {
+    overflow: visible !important;
+}
+
+/* Fix general contra cualquier contenedor que corte dropdowns */
+.fi-input,
+.fi-fo-field-wrp,
+.fi-forms-component {
+    overflow: visible !important;
+}
+
+/* (Opcional pero recomendado)
+   Si tienes FileUploads o inputs dentro de grids que se cortan */
+.fi-grid {
+    overflow: visible !important;
+}
