@@ -62,18 +62,19 @@ class ActividadResource extends Resource
                             ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
-                        Forms\Components\Select::make('programa')
+                            Forms\Components\Select::make('programa')
                             ->label('Programa')
                             ->required()
                             ->options([
                                 'Programa de Educacion Civica' => 'Programa de Educacion Civica',
                                 'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
-                                'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana'
+                                'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
                             ])
                             ->native(false)
                             ->columnSpanFull()
-                            ->extraAttributes(['class' => 'z-50'])
-                            ->placeholder('Seleccione un programa'),
+                            ->placeholder('Seleccione un programa')
+                            ->extraAttributes(['data-dropdown-parent' => 'body']);
+                        
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Detalles de la Actividad')
