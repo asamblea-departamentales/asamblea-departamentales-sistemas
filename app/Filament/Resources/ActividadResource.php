@@ -41,7 +41,12 @@ class ActividadResource extends Resource
                             ->searchable()
                             ->preload()
                             ->default(auth()->id())
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated(false),
+
+                            Forms\Components\Hidden::make('user_id')
+                            ->default(fn () => auth()->id())
+                            ->required(),
                         Forms\Components\DatePicker::make('fecha')
                             ->label('Fecha de la Actividad')
                             ->required()

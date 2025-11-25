@@ -16,4 +16,16 @@ class EditActividad extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    // REDIRECT después de guardar
+    protected function getSavedNotificationRedirectUrl(): ?string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    // (opcional) redirect genérico de la página
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
