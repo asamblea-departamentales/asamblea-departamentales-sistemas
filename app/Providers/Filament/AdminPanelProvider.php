@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
             ->emailVerification(EmailVerification::class)
 
             // Branding desde settings
-            ->favicon(fn (GeneralSettings $s) => $s->site_favicon ? Storage::url($s->site_favicon) : asset('images/favicon.png'))            ->brandName(fn (GeneralSettings $s) => $s->brand_name ?: 'Asamblea Legislativa')
+            ->favicon(fn (GeneralSettings $s) => $s->site_favicon ? Storage::url($s->site_favicon) : asset('images/logo-asamblea.png'))            ->brandName(fn (GeneralSettings $s) => $s->brand_name ?: 'Asamblea Legislativa')
             ->brandLogo(fn (GeneralSettings $s) => $s->brand_logo ? asset($s->brand_logo) : asset('images/logo-azul-fondo-transparente (002).png'))
             ->brandLogoHeight(fn (GeneralSettings $s) => $s->brand_logoHeight ?: '15rem')
             ->colors(fn (GeneralSettings $s) => $s->site_theme ?: [
