@@ -87,13 +87,12 @@ class UserResource extends Resource
                                     ->dehydrated(fn (?string $state): bool => filled($state))
                                     ->revealable()
                                     ->required(),
-                                Forms\Components\TextInput::make('Confirmar Contraseña')
+                                    Forms\Components\TextInput::make('Confirmar Contraseña')
                                     ->password()
-                                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                                    ->dehydrated(fn (?string $state): bool => filled($state))
                                     ->revealable()
-                                    ->same('Contraseña')
-                                    ->required(),
+                                    ->required()
+                                    ->same('Contraseña') // ← este sí funciona
+                                    ->dehydrated(false), // ← NO se manda al modelo (importante)
                             ])
                             ->compact()
                             ->hidden(fn (string $operation): bool => $operation === 'edit'),
