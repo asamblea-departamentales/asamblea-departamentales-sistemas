@@ -128,6 +128,7 @@ class UserResource extends Resource
                             ->icon('heroicon-o-information-circle')
                             ->schema([
                                 Forms\Components\TextInput::make('username')
+                                    ->label('Nombre de Usuario')
                                     ->required()
                                     ->maxLength(255)
                                     ->live()
@@ -140,6 +141,7 @@ class UserResource extends Resource
                                     }),
 
                                 Forms\Components\TextInput::make('email')
+                                    ->label('Correo')
                                     ->email()
                                     ->required()
                                     ->maxLength(255)
@@ -154,10 +156,12 @@ class UserResource extends Resource
                                     ->helperText(fn () => new HtmlString('<div class="text-gray-300">'.__('resource.user.email_edit_warning').'</div>')),
 
                                 Forms\Components\TextInput::make('firstname')
+                                    ->label('Primer nombre')
                                     ->required()
                                     ->maxLength(255),
 
                                 Forms\Components\TextInput::make('lastname')
+                                    ->label('Apellido')
                                     ->required()
                                     ->maxLength(255),
 
