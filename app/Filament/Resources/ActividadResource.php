@@ -62,24 +62,18 @@ class ActividadResource extends Resource
                             ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
-                            // CAMPO PROGRAMA: USANDO ToggleButtons PARA UNA MEJOR ESTÉTICA
-                        Forms\Components\ToggleButtons::make('programa')
-                        ->label('Programa')
-                        ->required()
-                        ->options([
-                            'Programa de Educacion Civica' => 'Cívica', // Etiqueta más corta para el botón
-                            'Programa de Participacion Ciudadana' => 'Participación',
-                            'Programa de Atencion Ciudadana' => 'Atención',
-                        ])
-                        ->inline()
-                        ->colors([
-                            'Cívica' => 'info',
-                            'Participación' => 'warning',
-                            'Atención' => 'success',
-                        ])
-                        ->grouped()
-                        ->columnSpanFull()
-                        ->default('Programa de Educacion Civica'), // Opcional, establece una opción por defecto
+                        Forms\Components\Select::make('programa')
+                            ->label('Programa')
+                            ->required()
+                            ->options([
+                                'Programa de Educacion Civica' => 'Programa de Educacion Civica',
+                                'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
+                                'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana'
+                            ])
+                            ->native(false)
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'z-50'])
+                            ->placeholder('Seleccione un programa'),
                     ])
                     ->columns(2),
                 Forms\Components\Section::make('Detalles de la Actividad')
