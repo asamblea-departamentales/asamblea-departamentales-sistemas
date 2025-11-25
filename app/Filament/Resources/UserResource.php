@@ -125,7 +125,8 @@ class UserResource extends Resource
                         Forms\Components\Tabs\Tab::make('Detalles del Usuario')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Forms\Components\TextInput::make('Nombre de usuario')
+                                Forms\Components\TextInput::make('username')
+                                    ->label('Nombre de usuario')
                                     ->required()
                                     ->maxLength(255)
                                     ->live()
