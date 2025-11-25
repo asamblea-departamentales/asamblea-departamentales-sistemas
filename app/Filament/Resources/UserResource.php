@@ -177,7 +177,7 @@ class UserResource extends Resource
                                     ->default(true)
                                     ->visible(fn (string $operation) => $operation === 'create'),
                             ])
-                            ->columns(2),
+                            ->columns(2);
 
                         Forms\Components\Tabs\Tab::make('Roles')
                             ->icon('fluentui-shield-task-48')
