@@ -81,17 +81,19 @@ class UserResource extends Resource
 
                         Forms\Components\Section::make()
                             ->schema([
-                                Forms\Components\TextInput::make('Contraseña')
+                                Forms\Components\TextInput::make('password')
+                                    ->label('Contraseña')
                                     ->password()
                                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                                     ->dehydrated(fn (?string $state): bool => filled($state))
                                     ->revealable()
                                     ->required(),
-                                    Forms\Components\TextInput::make('Confirmar Contraseña')
+                                    Forms\Components\TextInput::make('password_confirmation')
+                                    ->label('Confirmar Contraseña')
                                     ->password()
                                     ->revealable()
                                     ->required()
-                                    ->same('Contraseña') // ← este sí funciona
+                                    ->same('password') // ← este sí funciona
                                     ->dehydrated(false), // ← NO se manda al modelo (importante)
                             ])
                             ->compact()
