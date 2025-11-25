@@ -120,22 +120,19 @@ class UserResource extends Resource
                     ])
                     ->columnSpan(1),
 
-                Forms\Components\Tabs::make()
-                    ->schema([
-                        Forms\Components\Tabs\Tab::make('Detalles del Usuario')
-                            ->icon('heroicon-o-information-circle')
-                            ->schema([
-                                Forms\Components\TextInput::make('Nombre de usuario')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live()
-                                    ->rules(function ($record) {
-                                        $userId = $record?->id;
-
-                                        return $userId
-                                            ? ['unique:users,username,'.$userId]
-                                            : ['unique:users,username'];
-                                    }),
+                    Forms\Components\TextInput::make('username')
+                    ->label('Nombre de usuario')
+                    ->required()
+                    ->maxLength(255)
+                    ->live()
+                    ->rules(function ($record) {
+                        $userId = $record?->id;
+                
+                        return $userId
+                            ? ['unique:users,username,' . $userId]
+                            : ['unique:users,username'];
+                    }),
+                
 
                                 Forms\Components\TextInput::make('correo')
                                     ->email()
