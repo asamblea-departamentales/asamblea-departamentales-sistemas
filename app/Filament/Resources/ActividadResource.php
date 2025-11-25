@@ -62,7 +62,7 @@ class ActividadResource extends Resource
                             ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
-                        Forms\Components\Select::make('programa')
+                            Forms\Components\Select::make('programa')
                             ->label('Programa')
                             ->required()
                             ->options([
@@ -70,9 +70,11 @@ class ActividadResource extends Resource
                                 'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
                                 'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana'
                             ])
-                            ->native(false)
+                            // ->native(false) <--- ¡ELIMINA ESTA LÍNEA!
+                            // ->extraAttributes(['class' => 'z-50']) <--- ¡ELIMINA ESTA LÍNEA!
+                            // Agrega native(true) para asegurar el comportamiento nativo
+                            ->native(true)
                             ->columnSpanFull()
-                            ->extraAttributes(['class' => 'z-50'])
                             ->placeholder('Seleccione un programa'),
                     ])
                     ->columns(2),
