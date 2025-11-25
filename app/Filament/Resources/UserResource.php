@@ -125,7 +125,7 @@ class UserResource extends Resource
                         Forms\Components\Tabs\Tab::make('Detalles del Usuario')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Forms\Components\TextInput::make('Nombre de usuario')
+                                Forms\Components\TextInput::make('username')
                                     ->required()
                                     ->maxLength(255)
                                     ->live()
@@ -137,7 +137,7 @@ class UserResource extends Resource
                                             : ['unique:users,username'];
                                     }),
 
-                                Forms\Components\TextInput::make('correo')
+                                Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->required()
                                     ->maxLength(255)
@@ -151,11 +151,11 @@ class UserResource extends Resource
                                     ->disabled(fn (string $operation) => $operation === 'edit')
                                     ->helperText(fn () => new HtmlString('<div class="text-gray-300">'.__('resource.user.email_edit_warning').'</div>')),
 
-                                Forms\Components\TextInput::make('Primer Nombre')
+                                Forms\Components\TextInput::make('firstname')
                                     ->required()
                                     ->maxLength(255),
 
-                                Forms\Components\TextInput::make('Apellido')
+                                Forms\Components\TextInput::make('lastname')
                                     ->required()
                                     ->maxLength(255),
 
