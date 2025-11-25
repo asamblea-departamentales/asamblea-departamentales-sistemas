@@ -72,6 +72,7 @@ class ActividadResource extends Resource
                             ])
                             ->native(false)
                             ->columnSpanFull()
+                            ->extraAttributes(['class' => 'z-50'])
                             ->placeholder('Seleccione un programa'),
                     ])
                     ->columns(2),
