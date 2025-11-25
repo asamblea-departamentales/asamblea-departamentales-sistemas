@@ -59,7 +59,7 @@ class ActividadResource extends Resource
                             ->rules(['exists:departamentales,id']),
                         Forms\Components\TextInput::make('departamental_display')
                             ->label('Oficina Departamental')
-                            ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
+                            ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
                         Forms\Components\Select::make('programa')
@@ -71,6 +71,7 @@ class ActividadResource extends Resource
                                 'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana'
                             ])
                             ->native(false)
+                            ->columnSpanFull()
                             ->placeholder('Seleccione un programa'),
                     ])
                     ->columns(2),
