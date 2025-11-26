@@ -187,3 +187,37 @@
     border-color: #374151 !important;
 }
 
+/* ============================================================= */
+/*           AJUSTE FINAL PARA EVITAR SOLAPAMIENTO               */
+/* ============================================================= */
+
+/* 1. Bajamos un poco el z-index del "panel" interno */
+.fi-select-panel {
+    z-index: 30 !important;
+}
+
+/* 2. El menú desplegable de Choices.js (searchable) tendrá z-index alto, 
+      pero NO absurdo como 999999 */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+    z-index: 500 !important;
+    position: absolute !important;
+}
+
+/* 3. Evitar que el dropdown se pegue demasiado al input */
+.choices__list--dropdown {
+    margin-top: 4px !important;
+}
+
+/* 4. Asegurar que el contenedor NO empuje el dropdown hacia arriba */
+.choices {
+    overflow: visible !important;
+}
+
+/* 5. Evitar que sections o grid contengan el dropdown dentro del "flow" */
+.fi-section-content,
+.fi-grid {
+    overflow: visible !important;
+}
+
+
