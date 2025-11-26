@@ -47,7 +47,7 @@ class ContratoResource extends Resource
         'MANTENIMIENTO' => 'Mantenimiento',
         'ARRENDAMIENTO' => 'Arrendamiento',
     ])
-    ->native(true) // ← usa el select nativo del navegador
+    ->native(false) // ← usa el select nativo del navegador
     ->placeholder('Seleccione un tipo de contrato')
     ->columnSpanFull(),
 
