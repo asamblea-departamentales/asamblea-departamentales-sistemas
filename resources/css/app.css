@@ -131,3 +131,48 @@
 .fi-grid {
     overflow: visible !important;
 }
+
+/* ------------------------------ */
+/*  FIX COMPLETO PARA SELECT CON BUSQUEDA EN FILAMENT */
+/* ------------------------------ */
+
+/* Paneles del select buscable */
+.filament-forms-select-panel,
+.fi-select-panel,
+.fi-dropdown-panel {
+    z-index: 999999 !important;
+}
+
+/* Lista interna del select */
+.filament-forms-select-list,
+.fi-select-list {
+    overflow: visible !important;
+    z-index: 999999 !important;
+}
+
+/* Input del Select */
+.filament-forms-select,
+.fi-forms-select {
+    overflow: visible !important;
+}
+
+/* Wrappers del campo */
+.filament-forms-field-wrapper,
+.fi-fo-field-wrp,
+.fi-forms-component,
+.fi-field-wrp {
+    overflow: visible !important;
+}
+
+/* ------------------------------ */
+/*  FIX ESPECÍFICO PARA CHOICES.JS */
+/* ------------------------------ */
+
+.choices {
+    overflow: visible !important;
+}
+
+.choices__list--dropdown {
+    position: fixed !important;
+    z-index: 999999 !important;
+}
