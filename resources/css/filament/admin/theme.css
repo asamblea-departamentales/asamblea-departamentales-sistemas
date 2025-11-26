@@ -561,3 +561,39 @@ body {
 .fi-fo-field-wrp-helper-text {
     @apply overflow-hidden break-words text-sm text-gray-500 dark:text-gray-300;
 }
+
+/* ============================================================= */
+/*     FIX DROPDOWNS CORTADOS EN SELECT/FILTROS                  */
+/* ============================================================= */
+
+.fi-body,
+.fi-modal,
+.fi-modal-content,
+.fi-section,
+.fi-section-content,
+.fi-form,
+.fi-grid {
+    overflow: visible !important;
+}
+
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+    z-index: 9999 !important;
+    position: absolute !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgb(229 231 235) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+    margin-top: 4px !important;
+    max-height: 320px !important;
+    overflow-y: auto !important;
+}
+
+.dark .choices__list--dropdown {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+.choices {
+    overflow: visible !important;
+}
