@@ -48,8 +48,7 @@ class ContratoResource extends Resource
         'ARRENDAMIENTO' => 'Arrendamiento',
     ])
     ->native(false) // ← usa el select nativo del navegador
-    ->placeholder('Seleccione un tipo de contrato')
-    ->columnSpanFull(),
+    ->placeholder('Seleccione un tipo de contrato'),
 
                         
                         Forms\Components\TextInput::make('proveedor')
