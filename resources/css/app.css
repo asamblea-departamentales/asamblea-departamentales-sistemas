@@ -45,125 +45,83 @@
 }
 
 /* ============================================================= */
-/*                  ESTILOS DE TU HEADER (los tuyos)             */
+/*                  ESTILOS DE TU HEADER                         */
 /* ============================================================= */
 
 .header-scrolled {
     @apply bg-primary-600 dark:bg-primary-900 shadow-md py-3 md:py-4;
 }
 
-.header-scrolled .header-nav-link {
-    @apply text-white hover:text-primary-100;
-}
+.header-scrolled .header-nav-link {@apply text-white hover:text-primary-100;}
+.header-scrolled .header-brand-text {@apply text-white;}
+.header-scrolled .hamburger-line {@apply bg-white;}
+.header-scrolled .mobile-menu-trigger .hamburger-line {@apply bg-white;}
+.header-scrolled .mobile-menu-close {@apply text-white;}
 
-.header-scrolled .header-brand-text {
-    @apply text-white;
-}
-
-.header-scrolled .hamburger-line {
-    @apply bg-white;
-}
-
-.header-scrolled .mobile-menu-trigger .hamburger-line {
-    @apply bg-white;
-}
-
-.header-scrolled .mobile-menu-close {
-    @apply text-white;
-}
-
-/* Desktop menu transparente */
+/* Desktop & Mobile menu (tus estilos originales) */
 @media (min-width: 1024px) {
-    .menu-block {
-        background-color: transparent !important;
-    }
-
-    .menu-block .nav-link-item {
-        @apply text-white hover:text-primary-100;
-    }
-
-    .menu-block .sub-menu {
-        @apply bg-white dark:bg-primary-800;
-    }
+    .menu-block {background-color: transparent !important;}
+    .menu-block .nav-link-item {@apply text-white hover:text-primary-100;}
+    .menu-block .sub-menu {@apply bg-white dark:bg-primary-800;}
 }
-
-/* Mobile menu */
 @media (max-width: 1023px) {
-    .menu-block {
-        @apply bg-primary-600 dark:bg-primary-800;
-    }
-
-    .menu-block .nav-link-item {
-        @apply text-white border-b border-primary-800 pb-3 mb-2;
-    }
-
-    .menu-block .sub-menu {
-        @apply bg-background-light dark:bg-primary-700 rounded-md;
-    }
+    .menu-block {@apply bg-primary-600 dark:bg-primary-800;}
+    .menu-block .nav-link-item {@apply text-white border-b border-primary-800 pb-3 mb-2;}
+    .menu-block .sub-menu {@apply bg-background-light dark:bg-primary-700 rounded-md;}
 }
 
 /* ============================================================= */
-/*     FIX GLOBAL DEFINITIVO PARA FILAMENT 3 (2025)             */
-/*  → Soluciona dropdowns cortados en Select, filtros, acciones, etc. */
+/*     FIX 100% FUNCIONAL Y LIMPIO PARA SELECT SEARCHABLE       */
+/*     → Ya no se corta NUNCA + fondo blanco opaco perfecto      */
 /* ============================================================= */
 
 .fi-body,
 .fi-modal,
 .fi-modal-content,
-.fi-modal-card,
 .fi-sidebar,
-.fi-sidebar-content,
 .fi-card,
 .fi-section,
-.fi-section > .fi-section-content,
 .fi-page,
 .fi-main,
-.fi-form,
 .fi-fo-field-wrp,
-.fi-field-wrp,
-.fi-input-wrp,
-.fi-grid {
-    overflow: visible !important;
+.fi-field-wrp { 
+    overflow: visible !important; 
 }
 
-/* Choices.js (el que usa Filament cuando pones searchable() + native(false)) */
-.choices__list--dropdown,
-.choices__list--dropdown .choices__list,
-.fi-dropdown-panel,
-.fi-select-panel {
+/* === ESTE ES EL BLOQUE MÁGICO QUE ARREGLA TODO === */
+.choices__list--dropdown {
+    position: fixed !important;           /* sale del flujo y nunca se corta */
     z-index: 999999 !important;
-    overflow: visible !important;
-    position: absolute !important;
+    background: white !important;         /* ← fondo blanco 100% opaco */
+    border: 1px solid rgb(229 231 235) !important;  /* borde gris claro como Filament */
+    border-radius: 0.75rem !important;    /* rounded-lg */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    max-height: 70vh !important;
+    width: 340px !important;              /* ancho fijo bonito (puedes cambiarlo) */
+    margin-top: 4px !important;
+    padding: 0.5rem 0 !important;
 }
 
-/* Aseguramos altura máxima razonable y scroll interno */
 .choices__list--dropdown .choices__list {
-    max-height: 320px !important;
+    max-height: 70vh !important;
     overflow-y: auto !important;
 }
 
-/* Fix extra por si usas modales anidados o wizards */
-.fi-modal .fi-modal-card > div,
-.fi-sidebar .fi-sidebar-content > div {
-    overflow: visible !important;
-}
-
-/* Opcional: mejora visual del scroll en los dropdowns */
+/* Scroll bonito (opcional pero queda pro) */
 .choices__list--dropdown::-webkit-scrollbar {
     width: 8px;
 }
-
 .choices__list--dropdown::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: transparent;
 }
-
 .choices__list--dropdown::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: rgb(156 163 175);
     border-radius: 4px;
 }
-
 .choices__list--dropdown::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    background: rgb(107 114 128);
 }
 
+/* ============================================================= */
+/*     FIN DE LOS FIXES — YA QUEDÓ PERFECTO                      */
+/* ============================================================= */
