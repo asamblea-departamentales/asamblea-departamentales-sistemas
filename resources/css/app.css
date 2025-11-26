@@ -173,6 +173,6 @@
 }
 
 .choices__list--dropdown {
-    position: fixed !important;
+    position: absolute !important;
     z-index: 999999 !important;
 }
