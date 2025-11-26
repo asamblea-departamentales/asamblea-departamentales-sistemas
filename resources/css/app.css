@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================= */
+/*                  TUS COLORES PERSONALIZADOS                   */
+/* ============================================================= */
+
 :root {
   /* Primary Colors */
   --color-primary-50: #EEEEFB;
@@ -40,6 +44,10 @@
   --color-info: #3B82F6;
 }
 
+/* ============================================================= */
+/*                  ESTILOS DE TU HEADER (los tuyos)             */
+/* ============================================================= */
+
 .header-scrolled {
     @apply bg-primary-600 dark:bg-primary-900 shadow-md py-3 md:py-4;
 }
@@ -64,7 +72,7 @@
     @apply text-white;
 }
 
-/* Explicitly ensure transparent background on desktop */
+/* Desktop menu transparente */
 @media (min-width: 1024px) {
     .menu-block {
         background-color: transparent !important;
@@ -74,13 +82,12 @@
         @apply text-white hover:text-primary-100;
     }
 
-    /* Make sure dropdown menus have the right background */
     .menu-block .sub-menu {
         @apply bg-white dark:bg-primary-800;
     }
 }
 
-/* For mobile only */
+/* Mobile menu */
 @media (max-width: 1023px) {
     .menu-block {
         @apply bg-primary-600 dark:bg-primary-800;
@@ -95,84 +102,67 @@
     }
 }
 
-/* ------------------------------ */
-/*     FIX COMPLETO PARA FILAMENT */
-/* ------------------------------ */
+/* ============================================================= */
+/*     FIX GLOBAL DEFINITIVO PARA FILAMENT 3 (2025)             */
+/*  → Soluciona dropdowns cortados en Select, filtros, acciones, etc. */
+/* ============================================================= */
 
-/* Asegura que los dropdowns (selects, menus, filters) no se corten */
-.fi-dropdown-panel,
-.fi-select-panel {
-    z-index: 999999 !important;
-}
-
-/* Evita que las secciones corten el contenido */
-.filament-forms-section {
-    overflow: visible !important;
-}
-
-.filament-forms-section .fi-section-content {
-    overflow: visible !important;
-}
-
-/* Tabs en Filament (por si tienes wizard u otros tabs) */
-.filament-tabs {
-    overflow: visible !important;
-}
-
-/* Fix general contra cualquier contenedor que corte dropdowns */
-.fi-input,
+.fi-body,
+.fi-modal,
+.fi-modal-content,
+.fi-modal-card,
+.fi-sidebar,
+.fi-sidebar-content,
+.fi-card,
+.fi-section,
+.fi-section > .fi-section-content,
+.fi-page,
+.fi-main,
+.fi-form,
 .fi-fo-field-wrp,
-.fi-forms-component {
-    overflow: visible !important;
-}
-
-/* (Opcional pero recomendado)
-   Si tienes FileUploads o inputs dentro de grids que se cortan */
+.fi-field-wrp,
+.fi-input-wrp,
 .fi-grid {
     overflow: visible !important;
 }
 
-/* ------------------------------ */
-/*  FIX COMPLETO PARA SELECT CON BUSQUEDA EN FILAMENT */
-/* ------------------------------ */
-
-/* Paneles del select buscable */
-.filament-forms-select-panel,
-.fi-select-panel,
-.fi-dropdown-panel {
+/* Choices.js (el que usa Filament cuando pones searchable() + native(false)) */
+.choices__list--dropdown,
+.choices__list--dropdown .choices__list,
+.fi-dropdown-panel,
+.fi-select-panel {
     z-index: 999999 !important;
-}
-
-/* Lista interna del select */
-.filament-forms-select-list,
-.fi-select-list {
     overflow: visible !important;
-    z-index: 999999 !important;
-}
-
-/* Input del Select */
-.filament-forms-select,
-.fi-forms-select {
-    overflow: visible !important;
-}
-
-/* Wrappers del campo */
-.filament-forms-field-wrapper,
-.fi-fo-field-wrp,
-.fi-forms-component,
-.fi-field-wrp {
-    overflow: visible !important;
-}
-
-/* ------------------------------ */
-/*  FIX ESPECÍFICO PARA CHOICES.JS */
-/* ------------------------------ */
-
-.choices {
-    overflow: visible !important;
-}
-
-.choices__list--dropdown {
     position: absolute !important;
-    z-index: 999999 !important;
+}
+
+/* Aseguramos altura máxima razonable y scroll interno */
+.choices__list--dropdown .choices__list {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+}
+
+/* Fix extra por si usas modales anidados o wizards */
+.fi-modal .fi-modal-card > div,
+.fi-sidebar .fi-sidebar-content > div {
+    overflow: visible !important;
+}
+
+/* Opcional: mejora visual del scroll en los dropdowns */
+.choices__list--dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
 }
