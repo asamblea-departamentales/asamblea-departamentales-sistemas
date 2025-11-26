@@ -47,7 +47,8 @@ class ContratoResource extends Resource
                                 'ARRENDAMIENTO' => 'Arrendamiento',
                             ])
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->native(false),
                         
                         Forms\Components\TextInput::make('proveedor')
                             ->label('Proveedor/Contratista')
