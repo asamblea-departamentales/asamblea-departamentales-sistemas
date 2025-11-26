@@ -37,18 +37,20 @@ class ContratoResource extends Resource
                 Forms\Components\Section::make('Información del Contrato')
                     ->schema([
                         Forms\Components\Select::make('tipo')
-                            ->label('Tipo de Contrato')
-                            ->options([
-                                'SERVICIOS' => 'Servicios',
-                                'SUMINISTROS' => 'Suministros',
-                                'OBRAS' => 'Obras',
-                                'CONSULTORIA' => 'Consultoría',
-                                'MANTENIMIENTO' => 'Mantenimiento',
-                                'ARRENDAMIENTO' => 'Arrendamiento',
-                            ])
-                            ->required()
-                            ->searchable()
-                            ->native(false),
+    ->label('Tipo de Contrato')
+    ->required()
+    ->options([
+        'SERVICIOS'     => 'Servicios',
+        'SUMINISTROS'   => 'Suministros',
+        'OBRAS'         => 'Obras',
+        'CONSULTORIA'   => 'Consultoría',
+        'MANTENIMIENTO' => 'Mantenimiento',
+        'ARRENDAMIENTO' => 'Arrendamiento',
+    ])
+    ->native(true) // ← usa el select nativo del navegador
+    ->placeholder('Seleccione un tipo de contrato')
+    ->columnSpanFull(),
+
                         
                         Forms\Components\TextInput::make('proveedor')
                             ->label('Proveedor/Contratista')
