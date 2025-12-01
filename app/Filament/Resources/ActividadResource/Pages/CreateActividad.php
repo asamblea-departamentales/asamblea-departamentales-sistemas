@@ -158,6 +158,8 @@ class CreateActividad extends CreateRecord
                                 ->label('Fecha de Inicio')
                                 // Campo obligatorio
                                 ->required()
+                                //Formato
+                                ->format('d/m/Y H:i')
                                 // No usar selector nativo
                                 ->native(false)
                                 // Formato de visualización
@@ -173,6 +175,8 @@ class CreateActividad extends CreateRecord
                                 // Campo obligatorio
                                 ->required()
                                 // No usar selector nativo
+                                //Formato
+                                ->format('Y-m-d H:i:s')
                                 ->native(false)
                                 // Formato de visualización
                                 ->displayFormat('d/m/Y H:i')
@@ -186,6 +190,8 @@ class CreateActividad extends CreateRecord
                             Forms\Components\DateTimePicker::make('reminder_at')
                                 // Etiqueta del campo
                                 ->label('Recordatorio')
+                                //Formato
+                                ->format('Y-m-d H:i:s')
                                 // No usar selector nativo
                                 ->native(false)
                                 // Formato de visualización
