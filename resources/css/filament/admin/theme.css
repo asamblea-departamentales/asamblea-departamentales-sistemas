@@ -759,3 +759,25 @@ div[wire\:ignore] > div,
 [data-type="datetime"] {
     overflow: visible !important;
 }
+
+/* ============================================================= */
+/*     FIX FLATPICKR EN WIZARD/MODAL                            */
+/* ============================================================= */
+
+/* Para wizards y modales */
+.fi-modal-content,
+.fi-modal-content > div,
+.fi-wizard,
+.fi-wizard > div,
+.fi-wizard-step,
+.fi-wizard-step > div {
+    overflow: visible !important;
+}
+
+/* Forzar altura automática en contenedores de wizard */
+.fi-wizard-step-content,
+.fi-wizard-step-content > div {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
