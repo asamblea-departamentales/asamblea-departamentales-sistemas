@@ -699,3 +699,25 @@ body {
   border-color: #374151 !important;
   color: #f9fafb !important;
 }
+
+/* Fuerza que absolutamente nada de Filament corte el Flatpickr */
+.fi-form,
+.fi-section,
+.fi-section-content,
+.fi-input-wrp,
+.fi-field-wrp,
+.fi-date-time-picker,
+.flatpickr-calendar {
+    overflow: visible !important;
+}
+
+/* Time picker completo visible */
+.flatpickr-time {
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Evita que Filament meta scroll y recorte contenido */
+.fi-field-wrp > div {
+    overflow: visible !important;
+}
