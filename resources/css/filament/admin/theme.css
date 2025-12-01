@@ -6,34 +6,6 @@
 @tailwind utilities;
 
 /* ============================================================= */
-/* FIX PARA SELECTOR DE HORA EN DateTimePicker (flatpickr)       */
-/* ============================================================= */
-
-.flatpickr-calendar {
-  z-index: 1050 !important;
-  overflow: visible !important;
-  background-color: #ffffff !important;
-  border-radius: 0.5rem !important;
-  border: 1px solid rgb(229 231 235) !important;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1),
-              0 2px 4px rgba(0,0,0,0.06) !important;
-}
-
-/* Modo oscuro */
-.dark .flatpickr-calendar {
-  background-color: #1f2937 !important;
-  border-color: #374151 !important;
-}
-
-/* Asegura que el contenedor no lo corte */
-.fi-section-content,
-.fi-grid,
-.fi-form,
-.fi-card {
-  overflow: visible !important;
-}
-
-/* ============================================================= */
 /* FIX ESPECÍFICO PARA EL PANEL DE HORAS EN FLATPICKR            */
 /* ============================================================= */
 
@@ -666,39 +638,6 @@ body {
     overflow: visible !important;
 }
 
-/* ============================================================= */
-/* FORZAR VISIBILIDAD COMPLETA DEL PANEL DE HORAS EN FLATPICKR   */
-/* ============================================================= */
-
-.flatpickr-calendar .flatpickr-time {
-  height: auto !important;
-  min-height: 3rem !important;
-  overflow: visible !important;
-  display: flex !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  padding: 0.5rem !important;
-}
-
-.flatpickr-calendar .flatpickr-time .numInputWrapper {
-  flex: none !important;
-}
-
-.flatpickr-calendar .flatpickr-time input {
-  width: 3rem !important;
-  height: 2rem !important;
-  line-height: 2rem !important;
-  text-align: center !important;
-  border: 1px solid rgb(229 231 235) !important;
-  border-radius: 0.25rem !important;
-  background-color: #ffffff !important;
-}
-
-.dark .flatpickr-calendar .flatpickr-time input {
-  background-color: #111827 !important;
-  border-color: #374151 !important;
-  color: #f9fafb !important;
-}
 
 /* Fuerza que absolutamente nada de Filament corte el Flatpickr */
 .fi-form,
