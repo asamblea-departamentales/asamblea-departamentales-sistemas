@@ -136,27 +136,36 @@ class ActividadResource extends Resource
                             ->default('Pendiente'),
                     ])
                     ->columns(2),
-                Forms\Components\Section::make('Fechas Importantes y Recordatorios')
+                    Forms\Components\Section::make('Fechas Importantes y Recordatorios')
                     ->schema([
                         Forms\Components\DateTimePicker::make('start_date')
                             ->label('Fecha de Inicio')
                             ->required()
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false),
+                            ->native(false)
+                            ->extraAttributes(['class' => 'overflow-visible'])
+                            ->extraInputAttributes(['class' => 'overflow-visible']),
+                            
                         Forms\Components\DateTimePicker::make('due_date')
                             ->label('Fecha de Vencimiento')
                             ->required()
                             ->after('start_date')
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false),
+                            ->native(false)
+                            ->extraAttributes(['class' => 'overflow-visible'])
+                            ->extraInputAttributes(['class' => 'overflow-visible']),
+                            
                         Forms\Components\DateTimePicker::make('reminder_at')
                             ->label('Recordatorio')
                             ->helperText('Opcional: Establece un recordatorio.')
                             ->before('due_date')
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false),
+                            ->native(false)
+                            ->extraAttributes(['class' => 'overflow-visible'])
+                            ->extraInputAttributes(['class' => 'overflow-visible']),
                     ])
-                    ->columns(3),
+                    ->columns(3)
+                    ->extraAttributes(['class' => 'overflow-visible']),
                 Forms\Components\Section::make('Atestados')
                     ->schema([
                         Forms\Components\FileUpload::make('atestados')

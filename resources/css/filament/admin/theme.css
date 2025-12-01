@@ -603,24 +603,80 @@ body {
 }
 
 
-/* Fuerza que absolutamente nada de Filament corte el Flatpickr */
-.fi-form,
-.fi-section,
-.fi-section-content,
+/* ============================================================= */
+/*     FIX FLATPICKR TIME PICKER CORTADO - SOLUCIÓN COMPLETA    */
+/* ============================================================= */
+
+/* Forzar overflow visible en TODOS los contenedores de Filament */
+.fi-fo-field-wrp,
+.fi-fo-date-time-picker,
 .fi-input-wrp,
-.fi-field-wrp,
-.fi-date-time-picker,
-.flatpickr-calendar {
+.fi-input-wrp > div,
+div[x-data*="dateTimePicker"],
+div[wire\:ignore],
+.fi-section-content,
+.fi-grid,
+.fi-grid > div {
     overflow: visible !important;
 }
 
-/* Time picker completo visible */
+/* El calendario Flatpickr con máxima prioridad */
+.flatpickr-calendar {
+    z-index: 99999 !important;
+    position: absolute !important;
+}
+
+.flatpickr-calendar.open {
+    display: block !important;
+}
+
+/* Time picker - eliminar cualquier restricción de altura */
 .flatpickr-time {
     height: auto !important;
+    min-height: 40px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Contenedores de inputs de tiempo */
+.flatpickr-time .numInputWrapper {
+    height: 38px !important;
     overflow: visible !important;
 }
 
-/* Evita que Filament meta scroll y recorte contenido */
-.fi-field-wrp > div {
-    overflow: visible !important;
+/* Inputs de hora, minuto, segundo */
+.flatpickr-time input.flatpickr-hour,
+.flatpickr-time input.flatpickr-minute,
+.flatpickr-time input.flatpickr-second {
+    height: 38px !important;
+    line-height: 38px !important;
+}
+
+/* Flechas de incremento/decremento */
+.flatpickr-time .arrowUp,
+.flatpickr-time .arrowDown {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: 14px !important;
+}
+
+/* AM/PM selector */
+.flatpickr-time .flatpickr-am-pm {
+    height: 38px !important;
+    line-height: 38px !important;
+}
+
+/* Dark mode */
+.dark .flatpickr-calendar {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #fff !important;
+}
+
+.dark .flatpickr-time input {
+    background-color: #374151 !important;
+    color: #fff !important;
 }
