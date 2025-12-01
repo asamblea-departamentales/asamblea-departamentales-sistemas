@@ -1,10 +1,74 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+@config 'tailwind.config.js';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import '/vendor/filament/filament/resources/css/theme.css';
+/* ============================================================= */
+/* FIX PARA SELECTOR DE HORA EN DateTimePicker (flatpickr)       */
+/* ============================================================= */
 
-@config 'tailwind.config.js';
+.flatpickr-calendar {
+  z-index: 1050 !important;
+  overflow: visible !important;
+  background-color: #ffffff !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid rgb(229 231 235) !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1),
+              0 2px 4px rgba(0,0,0,0.06) !important;
+}
+
+/* Modo oscuro */
+.dark .flatpickr-calendar {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+/* Asegura que el contenedor no lo corte */
+.fi-section-content,
+.fi-grid,
+.fi-form,
+.fi-card {
+  overflow: visible !important;
+}
+
+/* ============================================================= */
+/* FIX ESPECÍFICO PARA EL PANEL DE HORAS EN FLATPICKR            */
+/* ============================================================= */
+
+.flatpickr-time {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 0.5rem !important;
+  background-color: #ffffff !important;
+  border-top: 1px solid rgb(229 231 235) !important;
+}
+
+.flatpickr-time input {
+  height: 2rem !important;
+  line-height: 2rem !important;
+  border-radius: 0.25rem !important;
+  border: 1px solid rgb(229 231 235) !important;
+  text-align: center !important;
+}
+
+.flatpickr-time .numInputWrapper {
+  flex: 1 !important;
+  margin: 0 0.25rem !important;
+}
+
+.dark .flatpickr-time {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+.dark .flatpickr-time input {
+  background-color: #111827 !important;
+  border-color: #374151 !important;
+  color: #f9fafb !important;
+}
+
 
 /* GLOBAL STYLES */
 :root {
@@ -600,68 +664,4 @@ body {
 
 .choices {
     overflow: visible !important;
-}
-
-/* ============================================================= */
-/* FIX PARA SELECTOR DE HORA EN DateTimePicker (flatpickr)       */
-/* ============================================================= */
-
-.flatpickr-calendar {
-  z-index: 1050 !important;
-  overflow: visible !important;
-  background-color: #ffffff !important;
-  border-radius: 0.5rem !important;
-  border: 1px solid rgb(229 231 235) !important;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1),
-              0 2px 4px rgba(0,0,0,0.06) !important;
-}
-
-/* Modo oscuro */
-.dark .flatpickr-calendar {
-  background-color: #1f2937 !important;
-  border-color: #374151 !important;
-}
-
-/* Asegura que el contenedor no lo corte */
-.fi-section-content,
-.fi-grid,
-.fi-form,
-.fi-card {
-  overflow: visible !important;
-}
-
-/* ============================================================= */
-/* FIX ESPECÍFICO PARA EL PANEL DE HORAS EN FLATPICKR            */
-/* ============================================================= */
-
-.flatpickr-time {
-  display: flex !important;
-  justify-content: space-between !important;
-  padding: 0.5rem !important;
-  background-color: #ffffff !important;
-  border-top: 1px solid rgb(229 231 235) !important;
-}
-
-.flatpickr-time input {
-  height: 2rem !important;
-  line-height: 2rem !important;
-  border-radius: 0.25rem !important;
-  border: 1px solid rgb(229 231 235) !important;
-  text-align: center !important;
-}
-
-.flatpickr-time .numInputWrapper {
-  flex: 1 !important;
-  margin: 0 0.25rem !important;
-}
-
-.dark .flatpickr-time {
-  background-color: #1f2937 !important;
-  border-color: #374151 !important;
-}
-
-.dark .flatpickr-time input {
-  background-color: #111827 !important;
-  border-color: #374151 !important;
-  color: #f9fafb !important;
 }
