@@ -141,55 +141,36 @@ class ActividadResource extends Resource
                         Forms\Components\DateTimePicker::make('start_date')
                             ->label('Fecha de Inicio')
                             ->required()
+                            ->format('Y-m-d H:i:s') // IMPORTANTE: esto fuerza Flatpickr
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false)
                             ->seconds(false)
                             ->extraAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
-                            ])
-                            ->extraInputAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
+                                'x-on:click' => '$el.querySelector(\'input\').focus()',
                             ]),
                             
                         Forms\Components\DateTimePicker::make('due_date')
                             ->label('Fecha de Vencimiento')
                             ->required()
                             ->after('start_date')
+                            ->format('Y-m-d H:i:s')
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false)
                             ->seconds(false)
                             ->extraAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
-                            ])
-                            ->extraInputAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
+                                'x-on:click' => '$el.querySelector(\'input\').focus()',
                             ]),
                             
                         Forms\Components\DateTimePicker::make('reminder_at')
                             ->label('Recordatorio')
                             ->helperText('Opcional: Establece un recordatorio.')
                             ->before('due_date')
+                            ->format('Y-m-d H:i:s')
                             ->displayFormat('d/m/Y H:i')
-                            ->native(false)
                             ->seconds(false)
                             ->extraAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
-                            ])
-                            ->extraInputAttributes([
-                                'class' => 'overflow-visible',
-                                'style' => 'overflow: visible !important;'
+                                'x-on:click' => '$el.querySelector(\'input\').focus()',
                             ]),
                     ])
-                    ->columns(3)
-                    ->extraAttributes([
-                        'class' => 'overflow-visible',
-                        'style' => 'overflow: visible !important;'
-                    ]),
+                    ->columns(3),
                 Forms\Components\Section::make('Atestados')
                     ->schema([
                         Forms\Components\FileUpload::make('atestados')
