@@ -597,3 +597,31 @@ body {
 .choices {
     overflow: visible !important;
 }
+
+/* ============================================================= */
+/* FIX PARA SELECTOR DE HORA EN DateTimePicker (flatpickr)       */
+/* ============================================================= */
+
+.flatpickr-calendar {
+  z-index: 1050 !important;
+  overflow: visible !important;
+  background-color: #ffffff !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid rgb(229 231 235) !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1),
+              0 2px 4px rgba(0,0,0,0.06) !important;
+}
+
+/* Modo oscuro */
+.dark .flatpickr-calendar {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+}
+
+/* Asegura que el contenedor no lo corte */
+.fi-section-content,
+.fi-grid,
+.fi-form,
+.fi-card {
+  overflow: visible !important;
+}
