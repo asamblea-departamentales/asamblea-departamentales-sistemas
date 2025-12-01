@@ -143,8 +143,15 @@ class ActividadResource extends Resource
                             ->required()
                             ->displayFormat('d/m/Y H:i')
                             ->native(false)
-                            ->extraAttributes(['class' => 'overflow-visible'])
-                            ->extraInputAttributes(['class' => 'overflow-visible']),
+                            ->seconds(false)
+                            ->extraAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ])
+                            ->extraInputAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ]),
                             
                         Forms\Components\DateTimePicker::make('due_date')
                             ->label('Fecha de Vencimiento')
@@ -152,8 +159,15 @@ class ActividadResource extends Resource
                             ->after('start_date')
                             ->displayFormat('d/m/Y H:i')
                             ->native(false)
-                            ->extraAttributes(['class' => 'overflow-visible'])
-                            ->extraInputAttributes(['class' => 'overflow-visible']),
+                            ->seconds(false)
+                            ->extraAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ])
+                            ->extraInputAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ]),
                             
                         Forms\Components\DateTimePicker::make('reminder_at')
                             ->label('Recordatorio')
@@ -161,11 +175,21 @@ class ActividadResource extends Resource
                             ->before('due_date')
                             ->displayFormat('d/m/Y H:i')
                             ->native(false)
-                            ->extraAttributes(['class' => 'overflow-visible'])
-                            ->extraInputAttributes(['class' => 'overflow-visible']),
+                            ->seconds(false)
+                            ->extraAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ])
+                            ->extraInputAttributes([
+                                'class' => 'overflow-visible',
+                                'style' => 'overflow: visible !important;'
+                            ]),
                     ])
                     ->columns(3)
-                    ->extraAttributes(['class' => 'overflow-visible']),
+                    ->extraAttributes([
+                        'class' => 'overflow-visible',
+                        'style' => 'overflow: visible !important;'
+                    ]),
                 Forms\Components\Section::make('Atestados')
                     ->schema([
                         Forms\Components\FileUpload::make('atestados')

@@ -604,46 +604,79 @@ body {
 
 
 /* ============================================================= */
-/*     FIX FLATPICKR TIME PICKER CORTADO - SOLUCIÓN COMPLETA    */
+/*     FIX FLATPICKR TIME PICKER CORTADO - SOLO CSS             */
 /* ============================================================= */
 
-/* Forzar overflow visible en TODOS los contenedores de Filament */
+/* Forzar overflow visible en absolutamente TODO */
 .fi-fo-field-wrp,
+.fi-fo-field-wrp > div,
+.fi-fo-field-wrp > div > div,
 .fi-fo-date-time-picker,
+.fi-fo-date-time-picker > div,
 .fi-input-wrp,
 .fi-input-wrp > div,
+.fi-input-wrp > div > div,
 div[x-data*="dateTimePicker"],
+div[x-data*="dateTimePicker"] > div,
 div[wire\:ignore],
+div[wire\:ignore] > div,
 .fi-section-content,
+.fi-section-content > div,
 .fi-grid,
-.fi-grid > div {
+.fi-grid > div,
+.fi-grid > div > div,
+.fi-fieldset,
+.fi-fieldset > div {
+    overflow: visible !important;
+    max-height: none !important;
+}
+
+/* Contenedor específico del input */
+.fi-input-wrp:has(.flatpickr-input),
+.fi-input-wrp:has(.flatpickr-input) > div {
     overflow: visible !important;
 }
 
-/* El calendario Flatpickr con máxima prioridad */
+/* El calendario Flatpickr */
 .flatpickr-calendar {
     z-index: 99999 !important;
     position: absolute !important;
+    overflow: visible !important;
 }
 
 .flatpickr-calendar.open {
     display: block !important;
+    overflow: visible !important;
 }
 
-/* Time picker - eliminar cualquier restricción de altura */
+/* Contenedor interno del calendario */
+.flatpickr-innerContainer,
+.flatpickr-rContainer {
+    overflow: visible !important;
+}
+
+/* Time picker - LA CLAVE ESTÁ AQUÍ */
 .flatpickr-time {
     height: auto !important;
     min-height: 40px !important;
     max-height: none !important;
     overflow: visible !important;
-    display: flex !important;
-    align-items: center !important;
+    display: block !important;
+    border-top: 1px solid #e5e7eb;
+    padding: 10px 0 !important;
 }
 
-/* Contenedores de inputs de tiempo */
+.dark .flatpickr-time {
+    border-top-color: #374151;
+}
+
+/* Contenedor de cada input de tiempo */
 .flatpickr-time .numInputWrapper {
-    height: 38px !important;
+    height: auto !important;
+    min-height: 38px !important;
     overflow: visible !important;
+    position: relative !important;
+    display: inline-block !important;
 }
 
 /* Inputs de hora, minuto, segundo */
@@ -652,31 +685,77 @@ div[wire\:ignore],
 .flatpickr-time input.flatpickr-second {
     height: 38px !important;
     line-height: 38px !important;
+    padding: 0 4px !important;
 }
 
-/* Flechas de incremento/decremento */
+/* Las flechas - ASEGURAR QUE SE VEAN */
 .flatpickr-time .arrowUp,
 .flatpickr-time .arrowDown {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    height: 14px !important;
+    position: relative !important;
+    height: 16px !important;
+    width: 100% !important;
+    cursor: pointer !important;
+}
+
+.flatpickr-time .arrowUp {
+    top: 0 !important;
+    border-bottom: 4px solid #374151 !important;
+    border-left: 4px solid transparent !important;
+    border-right: 4px solid transparent !important;
+}
+
+.flatpickr-time .arrowDown {
+    bottom: 0 !important;
+    border-top: 4px solid #374151 !important;
+    border-left: 4px solid transparent !important;
+    border-right: 4px solid transparent !important;
+}
+
+.dark .flatpickr-time .arrowUp,
+.dark .flatpickr-time .arrowDown {
+    border-color: #9ca3af transparent transparent transparent !important;
+}
+
+.dark .flatpickr-time .arrowDown {
+    border-color: transparent transparent #9ca3af transparent !important;
+}
+
+/* Separador de tiempo */
+.flatpickr-time-separator {
+    display: inline-block !important;
+    margin: 0 4px !important;
+    line-height: 38px !important;
 }
 
 /* AM/PM selector */
 .flatpickr-time .flatpickr-am-pm {
     height: 38px !important;
     line-height: 38px !important;
+    padding: 0 8px !important;
 }
 
-/* Dark mode */
+/* Dark mode para el calendario completo */
 .dark .flatpickr-calendar {
     background-color: #1f2937 !important;
     border-color: #374151 !important;
-    color: #fff !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
 }
 
 .dark .flatpickr-time input {
     background-color: #374151 !important;
     color: #fff !important;
+    border-color: #4b5563 !important;
+}
+
+.dark .flatpickr-time .flatpickr-am-pm {
+    background-color: #374151 !important;
+    color: #fff !important;
+}
+
+/* Asegurar que el contenedor padre del flatpickr no corte */
+[data-type="datetime"] {
+    overflow: visible !important;
 }
