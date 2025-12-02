@@ -278,3 +278,18 @@ body { @apply antialiased; }
   z-index: 999999 !important;
   position: absolute !important;
 }
+
+/* Contenedor flex del selector de hora dentro del DateTimePicker */
+.flatpickr-time,
+.flatpickr-time .flex.items-center.justify-center,
+.flatpickr-time .flex.items-center.justify-center.rtl\:flex-row-reverse {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* Asegurar que no haya scroll interno en la parte de hora */
+.flatpickr-time .numInputWrapper {
+    overflow: visible !important;
+    height: auto !important;
+}
