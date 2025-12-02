@@ -817,3 +817,16 @@ div[wire\:ignore] > div,
 .fi-fo-component-ctn {
     overflow: visible !important;
 }
+
+/* FIX para que los DateTimePicker NO se corten */
+.fi-section,
+.fi-fo-repeater-item,
+.fi-input-wrp,
+.fi-input-wrapper,
+.fi-form {
+    overflow: visible !important;
+}
+
+.flatpickr-calendar {
+  z-index: 999999 !important;
+}
