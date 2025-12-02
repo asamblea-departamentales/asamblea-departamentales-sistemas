@@ -830,3 +830,20 @@ div[wire\:ignore] > div,
 .flatpickr-calendar {
   z-index: 999999 !important;
 }
+
+/* Fix: evitar que los calendarios de DatePicker/DateTimePicker se corten */
+.fi-fo-field-wrp,
+.fi-fo-component-container,
+.fi-section,
+.fi-main,
+.fi-content,
+.fi-body {
+    overflow: visible !important;
+}
+
+/* Popovers encima de todo */
+.flatpickr-calendar,
+.fi-fo-popover,
+.fi-popover {
+    z-index: 999999 !important;
+}
