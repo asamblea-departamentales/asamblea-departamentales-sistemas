@@ -142,8 +142,9 @@ body { @apply antialiased; }
    SECTIONS & CARDS
 --------------------------------*/
 .fi-section {
-  @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm transition-all;
+  @apply rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  overflow: visible !important; /* Fix para DateTimePicker */
 }
 
 .dark .fi-section {
@@ -155,7 +156,10 @@ body { @apply antialiased; }
   background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.05), transparent);
 }
 
-.fi-section-content { @apply p-6; }
+.fi-section-content {
+  @apply p-6;
+  overflow: visible !important; /* Fix para DateTimePicker */
+}
 
 
 /* ------------------------------
@@ -223,114 +227,82 @@ body { @apply antialiased; }
 }
 
 
-/* Fix DateTimePicker / Flatpickr not being cut off */
+/* ============================================
+   FIX DEFINITIVO: DateTimePicker cortado
+   Soluciona overflow:clip de @tailwindcss/forms
+============================================ */
+
+/* 1. Sobrescribir overflow:clip en todos los inputs */
+input:not([type="image"], [type="range"], [type="checkbox"], [type="radio"]) {
+  overflow: visible !important;
+  overflow-clip-margin: 0 !important;
+}
+
+/* 2. Inputs específicos de Flatpickr */
+input.flatpickr-input,
+input[data-input],
+input[readonly].flatpickr-input {
+  overflow: visible !important;
+  overflow-clip-margin: 0 !important;
+}
+
+/* 3. Contenedores del DateTimePicker */
 .fi-fo-date-time-picker,
 .fi-fo-date-time-picker .fi-input-wrp,
-.fi-fo-field-wrp,
-.fi-input-wrp {
-    overflow: visible !important;
+.fi-fo-date-time-picker > div,
+.fi-input-wrp:has(.flatpickr-input),
+.fi-fo-field-wrp:has(.flatpickr-input),
+.fi-fo-field-wrp {
+  overflow: visible !important;
+  contain: none !important;
 }
 
-.flatpickr-calendar {
-    z-index: 999999 !important;
-    position: absolute !important;
+/* 4. Contenedores de formularios y secciones */
+.fi-section-content-ctn,
+.fi-form,
+.fi-form-component-ctn {
+  overflow: visible !important;
 }
 
-/* 1) Secciones normales con DateTimePicker */
-.fi-section,
-.fi-section-content,
-.fi-fo-field-wrp,
-.fi-input-wrp,
-.fi-fo-date-time-picker {
-    overflow: visible !important;
-}
-
-/* 2) Wizard: pasos y contenido no deben recortar */
+/* 5. Modales y wizards */
+.fi-modal,
+.fi-modal-content,
+.fi-modal-window,
 .fi-wizard,
 .fi-wizard-step,
 .fi-wizard-step-content,
 .fi-wizard-step-content > div {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
-/* 3) Popups de fecha/hora siempre por encima */
+/* 6. Calendario Flatpickr siempre visible */
 .flatpickr-calendar,
 .fi-fo-popover,
 .fi-popover {
-    z-index: 999999 !important;
-    position: absolute !important;
-}
-
-/* Contenedor principal del DateTimePicker de Filament */
-.fi-fo-date-time-picker {
-  overflow: visible !important;
-}
-
-/* Por si el popup se monta en un div hijo directo */
-.fi-fo-date-time-picker > div {
-  overflow: visible !important;
-}
-
-/* Asegurar que el popup quede por encima de todo */
-.flatpickr-calendar,
-.fi-fo-popover,
-.fi-popover {
-  z-index: 999999 !important;
-  position: absolute !important;
-}
-
-/* Contenedor flex del selector de hora dentro del DateTimePicker */
-.flatpickr-time,
-.flatpickr-time .flex.items-center.justify-center,
-.flatpickr-time .flex.items-center.justify-center.rtl\:flex-row-reverse {
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
-}
-
-/* Asegurar que no haya scroll interno en la parte de hora */
-.flatpickr-time .numInputWrapper {
-    overflow: visible !important;
-    height: auto !important;
-}
-
-
-/* ============================================
-   FIX OVERFLOW CLIP EN INPUTS
-============================================ */
-
-/* Sobrescribir el overflow:clip que corta el DateTimePicker */
-input:not([type="image"], [type="range"], [type="checkbox"], [type="radio"]) {
-  overflow: visible !important;
-  overflow-clip-margin: unset !important;
-}
-
-/* Específicamente para inputs de DateTimePicker */
-input.flatpickr-input,
-input[readonly].flatpickr-input {
-  overflow: visible !important;
-  overflow-clip-margin: unset !important;
-}
-
-/* Contenedor padre del input también debe ser visible */
-.fi-fo-date-time-picker,
-.fi-fo-date-time-picker .fi-input-wrp,
-.fi-input-wrp:has(input.flatpickr-input) {
-  overflow: visible !important;
-}
-
-/* El calendario siempre por encima con position fixed */
-.flatpickr-calendar {
   z-index: 99999 !important;
   position: fixed !important;
   overflow: visible !important;
 }
 
-/* Selector de hora sin recortar */
+/* 7. Selector de hora sin restricciones */
 .flatpickr-time,
 .flatpickr-time *,
-.numInputWrapper {
+.flatpickr-time .flex,
+.numInputWrapper,
+.flatpickr-hour,
+.flatpickr-minute,
+.flatpickr-second,
+.flatpickr-am-pm {
   overflow: visible !important;
   max-height: none !important;
   height: auto !important;
+  clip-path: none !important;
+  contain: none !important;
+}
+
+/* 8. Componentes Alpine.js/Livewire */
+[x-data],
+[wire\:id],
+[x-data*="dateTimePicker"] {
+  overflow: visible !important;
 }
