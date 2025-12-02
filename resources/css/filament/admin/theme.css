@@ -847,3 +847,50 @@ div[wire\:ignore] > div,
 .fi-popover {
     z-index: 999999 !important;
 }
+
+/* WIZARD STEPS */
+.fi-wizard-header {
+  @apply rounded-xl border border-gray-200 dark:border-gray-800 p-4 mb-6;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+}
+
+.dark .fi-wizard-header {
+  background: linear-gradient(145deg, #1f2937, #111827);
+}
+
+.fi-wizard-step {
+  @apply flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-200 cursor-pointer;
+}
+
+.fi-wizard-step-active {
+  background: var(--primary-gradient);
+  @apply text-white shadow-md;
+}
+
+.fi-wizard-step-active .fi-wizard-step-label {
+  @apply text-white;
+}
+
+.fi-wizard-step:hover:not(.fi-wizard-step-active) {
+  background: rgba(var(--primary-rgb), 0.08);
+}
+
+.fi-wizard-step-label {
+  @apply font-medium text-primary-800 dark:text-primary-300;
+}
+
+.fi-wizard-step-icon {
+  @apply w-6 h-6 text-primary-500 dark:text-primary-300;
+}
+
+.fi-wizard-step-active .fi-wizard-step-icon {
+  @apply text-white;
+}
+
+.fi-wizard-content {
+  @apply mt-4;
+}
+
+.fi-wizard-footer {
+  @apply flex justify-end gap-3 pt-6;
+}
