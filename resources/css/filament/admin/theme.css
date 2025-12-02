@@ -894,3 +894,25 @@ div[wire\:ignore] > div,
 .fi-wizard-footer {
   @apply flex justify-end gap-3 pt-6;
 }
+
+/* Evitar clipping global de los popups (datetimepickers, selects, etc.) */
+.fi-layout,
+.fi-page,
+.fi-body,
+.fi-main,
+.fi-content {
+    overflow: visible !important;
+}
+
+/* Asegurar que el contenedor inmediato del DateTimePicker no recorte */
+.fi-fo-date-time-picker,
+.fi-fo-date-time-picker .fi-input-wrp,
+.fi-fo-date-time-picker .fi-input-wrapper {
+    overflow: visible !important;
+}
+
+/* Flatpickr siempre por encima */
+.flatpickr-calendar {
+    z-index: 999999 !important;
+    position: absolute !important;
+}
