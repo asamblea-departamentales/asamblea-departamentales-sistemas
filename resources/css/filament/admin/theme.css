@@ -235,3 +235,28 @@ body { @apply antialiased; }
     z-index: 999999 !important;
     position: absolute !important;
 }
+
+/* 1) Secciones normales con DateTimePicker */
+.fi-section,
+.fi-section-content,
+.fi-fo-field-wrp,
+.fi-input-wrp,
+.fi-fo-date-time-picker {
+    overflow: visible !important;
+}
+
+/* 2) Wizard: pasos y contenido no deben recortar */
+.fi-wizard,
+.fi-wizard-step,
+.fi-wizard-step-content,
+.fi-wizard-step-content > div {
+    overflow: visible !important;
+}
+
+/* 3) Popups de fecha/hora siempre por encima */
+.flatpickr-calendar,
+.fi-fo-popover,
+.fi-popover {
+    z-index: 999999 !important;
+    position: absolute !important;
+}
