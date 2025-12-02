@@ -916,3 +916,22 @@ div[wire\:ignore] > div,
     z-index: 999999 !important;
     position: absolute !important;
 }
+
+/* Evitar scroll horizontal en el layout principal */
+html,
+body,
+.fi-layout,
+.fi-page,
+.fi-main,
+.fi-content {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+/* Dentro de los wizards, que el contenido se ajuste y no genere ancho extra */
+.fi-wizard,
+.fi-wizard-step-content,
+.fi-section,
+.fi-section-content {
+    width: 100%;
+}
