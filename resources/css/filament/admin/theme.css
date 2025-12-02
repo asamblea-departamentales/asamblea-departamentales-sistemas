@@ -330,3 +330,15 @@ div[class*="flatpickr-time"] {
   height: auto !important;
   overflow: visible !important;
 }
+
+
+/* TEMPORAL - Solo para debug */
+.flatpickr-time,
+.flatpickr-time * {
+  outline: 2px solid red !important;
+  background: rgba(255, 0, 0, 0.1) !important;
+}
+
+.flatpickr-calendar {
+  outline: 3px solid lime !important;
+}
