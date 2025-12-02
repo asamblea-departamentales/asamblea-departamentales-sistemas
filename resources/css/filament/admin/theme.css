@@ -293,3 +293,44 @@ body { @apply antialiased; }
     overflow: visible !important;
     height: auto !important;
 }
+
+
+/* ============================================
+   FIX OVERFLOW CLIP EN INPUTS
+============================================ */
+
+/* Sobrescribir el overflow:clip que corta el DateTimePicker */
+input:not([type="image"], [type="range"], [type="checkbox"], [type="radio"]) {
+  overflow: visible !important;
+  overflow-clip-margin: unset !important;
+}
+
+/* Específicamente para inputs de DateTimePicker */
+input.flatpickr-input,
+input[readonly].flatpickr-input {
+  overflow: visible !important;
+  overflow-clip-margin: unset !important;
+}
+
+/* Contenedor padre del input también debe ser visible */
+.fi-fo-date-time-picker,
+.fi-fo-date-time-picker .fi-input-wrp,
+.fi-input-wrp:has(input.flatpickr-input) {
+  overflow: visible !important;
+}
+
+/* El calendario siempre por encima con position fixed */
+.flatpickr-calendar {
+  z-index: 99999 !important;
+  position: fixed !important;
+  overflow: visible !important;
+}
+
+/* Selector de hora sin recortar */
+.flatpickr-time,
+.flatpickr-time *,
+.numInputWrapper {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+}
