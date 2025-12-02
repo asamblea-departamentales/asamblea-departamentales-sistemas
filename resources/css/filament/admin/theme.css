@@ -226,64 +226,61 @@ body { @apply antialiased; }
   .fi-main { @apply mx-2 mb-2; }
 }
 
-
 /* ============================================
-   FIX DEFINITIVO: DateTimePicker cortado
-   El problema era altura fija de 36px en el
-   contenedor flex del time picker
+   FIX DEFINITIVO: Time Picker inputs cortados
 ============================================ */
 
-/* 1. Sobrescribir overflow:clip de @tailwindcss/forms */
-input:not([type="image"], [type="range"], [type="checkbox"], [type="radio"]) {
-  overflow: visible !important;
-  overflow-clip-margin: 0 !important;
-}
-
-/* 2. Contenedores del DateTimePicker */
-.fi-fo-date-time-picker,
-.fi-fo-date-time-picker-panel,
-.fi-fo-field-wrp {
-  overflow: visible !important;
-}
-
-/* 3. El contenedor flex que tenía altura fija de 36px */
+/* 1. Contenedor flex del time picker - altura proporcional */
 .fi-fo-date-time-picker .flex.items-center.justify-center,
 .fi-fo-date-time-picker .flex.items-center.justify-center.rtl\:flex-row-reverse,
 .fi-fo-date-time-picker-panel .flex.items-center.justify-center,
 .fi-fo-date-time-picker-panel .flex.items-center.justify-center.rtl\:flex-row-reverse {
   height: auto !important;
-  min-height: 40px !important;
+  min-height: 48px !important;
   max-height: none !important;
   overflow: visible !important;
+  padding: 4px 0 !important;
+  gap: 0.5rem !important;
 }
 
-/* 4. Panel y grid */
-.fi-fo-date-time-picker-panel .grid {
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-/* 5. Inputs del time picker */
+/* 2. Inputs del time picker - tamaño apropiado */
 .fi-fo-date-time-picker input,
 .fi-fo-date-time-picker-panel input {
-  overflow: visible !important;
+  height: 40px !important;
   min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  text-align: center !important;
+  font-size: 14px !important;
 }
 
-/* 6. Spans y labels */
+/* 3. Input específico w-10 */
+.fi-fo-date-time-picker input.w-10,
+.fi-fo-date-time-picker-panel input.w-10 {
+  width: 3rem !important; /* Aumentar de 2.5rem a 3rem */
+  height: 40px !important;
+  line-height: 38px !important;
+}
+
+/* 4. Separador ":" y labels */
 .fi-fo-date-time-picker .text-sm.font-medium,
 .fi-fo-date-time-picker-panel .text-sm.font-medium {
+  height: 40px !important;
   line-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-/* 7. Formularios y secciones */
-.fi-section-content-ctn,
-.fi-form,
-.fi-form-component-ctn,
-.fi-modal,
-.fi-modal-content,
-.fi-wizard,
-.fi-wizard-step,
-.fi-wizard-step-content {
+/* 5. Panel principal */
+.fi-fo-date-time-picker-panel {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* 6. Grid container */
+.fi-fo-date-time-picker-panel .grid {
   overflow: visible !important;
 }
