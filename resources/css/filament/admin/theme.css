@@ -221,3 +221,17 @@ body { @apply antialiased; }
 
   .fi-main { @apply mx-2 mb-2; }
 }
+
+
+/* Fix DateTimePicker / Flatpickr not being cut off */
+.fi-fo-date-time-picker,
+.fi-fo-date-time-picker .fi-input-wrp,
+.fi-fo-field-wrp,
+.fi-input-wrp {
+    overflow: visible !important;
+}
+
+.flatpickr-calendar {
+    z-index: 999999 !important;
+    position: absolute !important;
+}
