@@ -1,7 +1,4 @@
 import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-
-window.Pusher = Pusher;
 
 // ✅ Configurar Echo para Reverb
 if (import.meta.env.VITE_REVERB_APP_KEY) {
