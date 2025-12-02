@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Broadcasting\Channel;
 
 class ActividadReminderNotification extends Notification implements ShouldBroadcast
 {
@@ -79,12 +80,10 @@ class ActividadReminderNotification extends Notification implements ShouldBroadc
 
     public function broadcastOn()
 {
-    // ✅ CORRECCIÓN: Añadir un punto (.) antes de $this->actividad->user_id
-    $channelName = 'App.Models.User.' . $this->actividad->user_id;
-
+    // Cambia a canal público y alinea con el frontend
+    $channelName = 'notifications.' . $this->actividad->user_id;
     \Log::error('=== CANAL DEBUG ===', ['canal' => $channelName]);
-
-    return new PrivateChannel($channelName);
+    return new Channel($channelName);  // En lugar de PrivateChannel
 }
 
 

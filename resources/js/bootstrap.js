@@ -177,7 +177,7 @@ function setupEchoForCurrentUser() {
 
     console.log(`🔧 Configurando Echo para usuario: ${userId}`);
 
-    window.Echo.private(`notifications.${userId}`)
+    window.Echo.channel(`notifications.${userId}`)
         .listen('.notification', (notification) => {
             console.log('🔔 Notificación de Echo recibida:', notification);
             
