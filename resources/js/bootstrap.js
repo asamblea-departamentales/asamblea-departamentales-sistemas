@@ -1,15 +1,34 @@
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
+
+// ✅ Configurar Echo para Reverb
+if (import.meta.env.VITE_REVERB_APP_KEY) {
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: import.meta.env.VITE_REVERB_APP_KEY,
+        wsHost: import.meta.env.VITE_REVERB_HOST,
+        wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+        enabledTransports: ['ws', 'wss'],
+    });
+    console.log('✅ Echo configurado con Reverb');
+} else {
+    console.warn('⚠️ Echo no configurado - faltan credenciales de Reverb en .env');
+}
+
 import './bootstrap';
 import '../css/app.css';
 
 // ✅ Función GLOBAL para mostrar un toast
 window.showToastNotification = function({ title, body, iconColor, duration }) {
     console.log('🔔 Mostrando toast:', { title, body, iconColor, duration });
-
-    // Usar directamente los toasts HTML que funcionan
     createCustomToast({ title, body, iconColor, duration });
 };
 
-// Funciones auxiliares para crear el toast HTML (no necesitan ser globales)
+// Funciones auxiliares para crear el toast HTML
 function createCustomToast({ title, body, iconColor, duration }) {
     console.log('🎨 Creando toast HTML:', { title, body, iconColor });
     
@@ -141,7 +160,6 @@ function getIconForType(type) {
 // ✅ Función GLOBAL para actualizar el badge de la campanita
 window.updateFilamentBadge = function() {
     if (window.Livewire) {
-        // Cambiar el evento a este:
         window.Livewire.dispatch('databaseNotificationsSent');
         console.log('🔔 Badge actualizado con databaseNotificationsSent');
     }
@@ -160,10 +178,8 @@ function setupEchoForCurrentUser() {
         return;
     }
 
-
     console.log(`🔧 Configurando Echo para usuario: ${userId}`);
 
-    // ✅ ESTE ES EL ÚNICO LISTENER DE ECHO QUE NECESITAS
     window.Echo.private(`notifications.${userId}`)
         .listen('.notification', (notification) => {
             console.log('🔔 Notificación de Echo recibida:', notification);
@@ -182,9 +198,8 @@ function setupEchoForCurrentUser() {
         });
 }
 
-// Inicializa Echo cuando el DOM esté listo o tan pronto como sea posible
+// Inicializa Echo cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    // Pequeño retraso para asegurar que Echo esté completamente cargado
     setTimeout(setupEchoForCurrentUser, 500);
 });
 
