@@ -260,3 +260,21 @@ body { @apply antialiased; }
     z-index: 999999 !important;
     position: absolute !important;
 }
+
+/* Contenedor principal del DateTimePicker de Filament */
+.fi-fo-date-time-picker {
+  overflow: visible !important;
+}
+
+/* Por si el popup se monta en un div hijo directo */
+.fi-fo-date-time-picker > div {
+  overflow: visible !important;
+}
+
+/* Asegurar que el popup quede por encima de todo */
+.flatpickr-calendar,
+.fi-fo-popover,
+.fi-popover {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
