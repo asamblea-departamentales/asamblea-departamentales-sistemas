@@ -145,64 +145,41 @@ class CreateActividad extends CreateRecord
                         ]),
 
                     // Tercer paso del wizard: Programación y Fechas
-                    Forms\Components\Wizard\Step::make('Programación y Fechas')
-                        // Descripción del paso
-                        ->description('Fechas importantes y recordatorios')
-                        // Ícono del paso
-                        ->icon('heroicon-o-calendar-days')
-                        // Esquema de campos para este paso
-                        ->schema([
-                            // Campo para fecha y hora de inicio
-                            Forms\Components\DateTimePicker::make('star_date')
-                                // Etiqueta del campo
-                                ->label('Fecha de Inicio')
-                                // Campo obligatorio
-                                ->required()
-                                //Formato
-                                ->format('d/m/Y H:i')
-                                // No usar selector nativo
-                                ->native(false)
-                                // Formato de visualización
-                                ->displayFormat('d/m/Y H:i')
-                                // Valor por defecto es ahora
-                                ->default(now())
-                                // Texto de ayuda
-                                ->helperText('Fecha y hora de inicio de la actividad'),
-                            // Campo para fecha y hora de vencimiento
-                            Forms\Components\DateTimePicker::make('due_date')
-                                // Etiqueta del campo
-                                ->label('Fecha de Vencimiento')
-                                // Campo obligatorio
-                                ->required()
-                                // No usar selector nativo
-                                //Formato
-                                ->format('Y-m-d H:i:s')
-                                ->native(false)
-                                // Formato de visualización
-                                ->displayFormat('d/m/Y H:i')
-                                // Valor por defecto es 7 días desde ahora
-                                ->default(now()->addDays(7))
-                                // Validación: debe ser posterior a star_date
-                                ->after('star_date')
-                                // Texto de ayuda
-                                ->helperText('Fecha límite para completar la actividad'),
-                            // Campo opcional para recordatorio
-                            Forms\Components\DateTimePicker::make('reminder_at')
-                                // Etiqueta del campo
-                                ->label('Recordatorio')
-                                //Formato
-                                ->format('Y-m-d H:i:s')
-                                // No usar selector nativo
-                                ->native(false)
-                                // Formato de visualización
-                                ->displayFormat('d/m/Y H:i')
-                                // Texto de ayuda
-                                ->helperText('Opcional: Fecha y hora del recordatorio')
-                                // Validación: debe ser anterior a due_date
-                                ->before('due_date'),
-                        ])
-                        // Este paso tendrá 3 columnas
-                        ->columns(3),
+Forms\Components\Wizard\Step::make('Programación y Fechas')
+->description('Fechas importantes y recordatorios')
+->icon('heroicon-o-calendar-days')
+->schema([
+    Forms\Components\DateTimePicker::make('star_date')
+        ->label('Fecha de Inicio')
+        ->required()
+        ->format('Y-m-d H:i:s') // <- CORREGIDO (era 'd/m/Y H:i')
+        ->displayFormat('d/m/Y H:i')
+        ->native(false)
+        ->seconds(false) // <- AGREGADO
+        ->default(now())
+        ->helperText('Fecha y hora de inicio de la actividad'),
+        
+    Forms\Components\DateTimePicker::make('due_date')
+        ->label('Fecha de Vencimiento')
+        ->required()
+        ->format('Y-m-d H:i:s')
+        ->displayFormat('d/m/Y H:i')
+        ->native(false)
+        ->seconds(false) // <- AGREGADO
+        ->default(now()->addDays(7))
+        ->after('star_date')
+        ->helperText('Fecha límite para completar la actividad'),
+        
+    Forms\Components\DateTimePicker::make('reminder_at')
+        ->label('Recordatorio')
+        ->format('Y-m-d H:i:s')
+        ->displayFormat('d/m/Y H:i')
+        ->native(false)
+        ->seconds(false) // <- AGREGADO
+        ->helperText('Opcional: Fecha y hora del recordatorio')
+        ->before('due_date'),
+])
+->columns(3),
                     // Cuarto paso del wizard: Documentos y Atestados
                     Forms\Components\Wizard\Step::make('Documentos y Atestados')
                         // Descripción del paso
