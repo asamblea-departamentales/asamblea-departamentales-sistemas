@@ -3,20 +3,21 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-// ✅ CONFIGURAR PUSHER AQUÍ
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    wsHost: import.meta.env.VITE_PUSHER_HOST,
-    wsPort: import.meta.env.VITE_PUSHER_PORT,
-    wssPort: import.meta.env.VITE_PUSHER_PORT,
-    forceTLS: true,
-    encrypted: true,
-});
-
-console.log('✅ Echo configurado con Pusher');
-
+// ✅ Configurar Echo para Reverb
+if (import.meta.env.VITE_REVERB_APP_KEY) {
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: import.meta.env.VITE_REVERB_APP_KEY,
+        wsHost: import.meta.env.VITE_REVERB_HOST,
+        wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
+        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+        enabledTransports: ['ws', 'wss'],
+    });
+    console.log('✅ Echo configurado con Reverb');
+} else {
+    console.warn('⚠️ Echo no configurado - faltan credenciales de Reverb en .env');
+}
 
 import './bootstrap';
 import '../css/app.css';
