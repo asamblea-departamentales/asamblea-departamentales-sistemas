@@ -7,25 +7,22 @@ return [
     | Default Broadcaster
     |--------------------------------------------------------------------------
     |
-    | Aquí se establece la conexión por defecto para el broadcasting.
-    | Lo cambiamos de 'null' o 'pusher' a 'reverb'.
+    | Ahora debe ser "pusher", porque dejamos de usar Reverb.
     |
     */
 
-    'default' => env('BROADCAST_CONNECTION', 'reverb'), // 👈 Cambia aquí
+    'default' => env('BROADCAST_CONNECTION', 'pusher'),
 
     /*
     |--------------------------------------------------------------------------
     | Broadcast Connections
     |--------------------------------------------------------------------------
-    |
-    | Aquí se definen todas las conexiones de broadcasting disponibles.
-    |
     */
 
     'connections' => [
 
-        'reverb' => [ // 👈 Este es el nuevo bloque que debes agregar
+        // ❌ REVERB — opcional si quieres dejarlo, pero NO se usará
+        'reverb' => [
             'driver' => 'reverb',
             'key' => env('REVERB_APP_KEY'),
             'secret' => env('REVERB_APP_SECRET'),
@@ -34,14 +31,10 @@ return [
                 'host' => env('REVERB_HOST', 'localhost'),
                 'port' => env('REVERB_PORT', 9000),
                 'scheme' => env('REVERB_SCHEME', 'http'),
-                'ping' => env('REVERB_PING_INTERVAL', 10),
-                'tls' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
             ],
         ],
-        
+
+        // ✔ PUSHER — el que sí vas a usar
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
@@ -49,14 +42,7 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
-                'port' => env('PUSHER_PORT', 443),
-                'scheme' => env('PUSHER_SCHEME', 'https'),
-                'encrypted' => true,
-                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
-            ],
-            'client_options' => [
-                //
+                'useTLS' => true,
             ],
         ],
 
