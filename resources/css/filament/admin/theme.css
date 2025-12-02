@@ -144,7 +144,7 @@ body { @apply antialiased; }
 .fi-section {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  overflow: visible !important; /* Fix para DateTimePicker */
+  overflow: visible !important;
 }
 
 .dark .fi-section {
@@ -158,7 +158,7 @@ body { @apply antialiased; }
 
 .fi-section-content {
   @apply p-6;
-  overflow: visible !important; /* Fix para DateTimePicker */
+  overflow: visible !important;
 }
 
 
@@ -229,116 +229,61 @@ body { @apply antialiased; }
 
 /* ============================================
    FIX DEFINITIVO: DateTimePicker cortado
-   Soluciona overflow:clip de @tailwindcss/forms
+   El problema era altura fija de 36px en el
+   contenedor flex del time picker
 ============================================ */
 
-/* 1. Sobrescribir overflow:clip en todos los inputs */
+/* 1. Sobrescribir overflow:clip de @tailwindcss/forms */
 input:not([type="image"], [type="range"], [type="checkbox"], [type="radio"]) {
   overflow: visible !important;
   overflow-clip-margin: 0 !important;
 }
 
-/* 2. Inputs específicos de Flatpickr */
-input.flatpickr-input,
-input[data-input],
-input[readonly].flatpickr-input {
-  overflow: visible !important;
-  overflow-clip-margin: 0 !important;
-}
-
-/* 3. Contenedores del DateTimePicker */
+/* 2. Contenedores del DateTimePicker */
 .fi-fo-date-time-picker,
-.fi-fo-date-time-picker .fi-input-wrp,
-.fi-fo-date-time-picker > div,
-.fi-input-wrp:has(.flatpickr-input),
-.fi-fo-field-wrp:has(.flatpickr-input),
+.fi-fo-date-time-picker-panel,
 .fi-fo-field-wrp {
   overflow: visible !important;
-  contain: none !important;
 }
 
-/* 4. Contenedores de formularios y secciones */
+/* 3. El contenedor flex que tenía altura fija de 36px */
+.fi-fo-date-time-picker .flex.items-center.justify-center,
+.fi-fo-date-time-picker .flex.items-center.justify-center.rtl\:flex-row-reverse,
+.fi-fo-date-time-picker-panel .flex.items-center.justify-center,
+.fi-fo-date-time-picker-panel .flex.items-center.justify-center.rtl\:flex-row-reverse {
+  height: auto !important;
+  min-height: 40px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* 4. Panel y grid */
+.fi-fo-date-time-picker-panel .grid {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* 5. Inputs del time picker */
+.fi-fo-date-time-picker input,
+.fi-fo-date-time-picker-panel input {
+  overflow: visible !important;
+  min-height: 40px !important;
+}
+
+/* 6. Spans y labels */
+.fi-fo-date-time-picker .text-sm.font-medium,
+.fi-fo-date-time-picker-panel .text-sm.font-medium {
+  line-height: 40px !important;
+}
+
+/* 7. Formularios y secciones */
 .fi-section-content-ctn,
 .fi-form,
-.fi-form-component-ctn {
-  overflow: visible !important;
-}
-
-/* 5. Modales y wizards */
+.fi-form-component-ctn,
 .fi-modal,
 .fi-modal-content,
-.fi-modal-window,
 .fi-wizard,
 .fi-wizard-step,
-.fi-wizard-step-content,
-.fi-wizard-step-content > div {
+.fi-wizard-step-content {
   overflow: visible !important;
-}
-
-/* 6. Calendario Flatpickr siempre visible */
-.flatpickr-calendar,
-.fi-fo-popover,
-.fi-popover {
-  z-index: 99999 !important;
-  position: fixed !important;
-  overflow: visible !important;
-}
-
-/* 7. Selector de hora sin restricciones */
-.flatpickr-time,
-.flatpickr-time *,
-.flatpickr-time .flex,
-.numInputWrapper,
-.flatpickr-hour,
-.flatpickr-minute,
-.flatpickr-second,
-.flatpickr-am-pm {
-  overflow: visible !important;
-  max-height: none !important;
-  height: auto !important;
-  clip-path: none !important;
-  contain: none !important;
-}
-
-/* 8. Componentes Alpine.js/Livewire */
-[x-data],
-[wire\:id],
-[x-data*="dateTimePicker"] {
-  overflow: visible !important;
-}
-
-/* FIX NUCLEAR para time picker */
-.flatpickr-calendar .flatpickr-time {
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-.flatpickr-calendar .flatpickr-time * {
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-/* Forzar que el wrapper sea visible */
-.flatpickr-calendar {
-  overflow: visible !important;
-  height: auto !important;
-}
-
-/* Contenedor específico del time picker */
-div[class*="flatpickr-time"] {
-  height: auto !important;
-  overflow: visible !important;
-}
-
-
-/* TEMPORAL - Solo para debug */
-.flatpickr-time,
-.flatpickr-time * {
-  outline: 2px solid red !important;
-  background: rgba(255, 0, 0, 0.1) !important;
-}
-
-.flatpickr-calendar {
-  outline: 3px solid lime !important;
 }
