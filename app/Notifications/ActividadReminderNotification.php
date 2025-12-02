@@ -79,9 +79,14 @@ class ActividadReminderNotification extends Notification implements ShouldBroadc
 
     public function broadcastOn()
 {
-    \Log::error('=== CANAL DEBUG ===', ['canal' => 'App.Models.User' . $this->actividad->user_id]);
-    return new PrivateChannel('App.Models.User' . $this->actividad->user_id);
+    // ✅ CORRECCIÓN: Añadir un punto (.) antes de $this->actividad->user_id
+    $channelName = 'App.Models.User.' . $this->actividad->user_id;
+
+    \Log::error('=== CANAL DEBUG ===', ['canal' => $channelName]);
+
+    return new PrivateChannel($channelName);
 }
+
 
     public function broadcastAs()
     {
