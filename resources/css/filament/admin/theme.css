@@ -781,3 +781,39 @@ div[wire\:ignore] > div,
     max-height: none !important;
     height: auto !important;
 }
+
+/* ============================================================= */
+/*     FIX ADICIONAL PARA DATETIMEPICKERS                       */
+/* ============================================================= */
+
+/* Evita que los datetimepickers se recorten */
+.fi-dropdown-panel,
+.flatpickr-calendar {
+    z-index: 999999 !important;
+}
+
+/* Evita clipping del contenedor del campo */
+.fi-fo-field-wrp, 
+.fi-input-wrp,
+.fi-fo-select {
+    overflow: visible !important;
+}
+
+/* Asegura que las columnas no recorten contenido */
+.field-container,
+.fi-fo-field,
+.fi-fo-layout {
+    overflow: visible !important;
+}
+
+/* Específicamente para wizards */
+.fi-wizard,
+.fi-wizard-step,
+.fi-wizard-step-content {
+    overflow: visible !important;
+}
+
+/* Contenedores de formulario */
+.fi-fo-component-ctn {
+    overflow: visible !important;
+}
