@@ -6,23 +6,26 @@
 @tailwind utilities;
 
 
-/* GLOBAL STYLES */
+/* ------------------------------
+   GLOBAL VARIABLES
+--------------------------------*/
 :root {
   --sidebar-width: 280px;
   --transition-speed: 0.2s;
-  --primary-rgb: 45, 43, 141; /* #2D2B8D */
+
+  --primary-rgb: 45, 43, 141;   /* #2D2B8D */
   --secondary-rgb: 255, 201, 3; /* #FFC903 */
+
   --primary-gradient: linear-gradient(145deg, #524ED5, #2D2B8D);
   --secondary-gradient: linear-gradient(145deg, #FFD333, #FFC903);
-  --hover-gradient: linear-gradient(145deg, rgba(var(--primary-rgb), 0.08), rgba(var(--secondary-rgb), 0.08));
-  --dark-hover-gradient: linear-gradient(145deg, rgba(var(--primary-rgb), 0.15), rgba(var(--secondary-rgb), 0.05));
 }
 
-body {
-  @apply antialiased;
-}
+body { @apply antialiased; }
 
-/* TYPOGRAPHY */
+
+/* ------------------------------
+   TYPOGRAPHY
+--------------------------------*/
 .fi-header-heading {
   @apply !text-2xl font-bold text-primary-800 dark:text-primary-300;
 }
@@ -31,170 +34,115 @@ body {
   @apply !text-sm text-gray-600 dark:text-gray-400 max-w-3xl;
 }
 
-/* LAYOUT & STRUCTURE */
-.fi-layout {
-    @apply bg-white;
-}
+
+/* ------------------------------
+   LAYOUT
+--------------------------------*/
+.fi-layout { @apply bg-white; }
+
 .fi-main {
   @apply mt-0 mb-0 bg-white dark:bg-gray-900 shadow-none transition-all duration-300;
 }
 
-.dark .fi-main {
-  /* Input your customization */
-}
-
-/* Logo */
 .fi-logo {
   @apply !h-10 transition-all duration-300 hover:scale-105;
 }
 
-/* SIDEBAR */
+
+/* ------------------------------
+   SIDEBAR
+--------------------------------*/
 .fi-sidebar {
-  @apply transition-all duration-300 ease-in-out;
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02) 0%, rgba(var(--primary-rgb), 0.05) 100%);
+  @apply transition-all duration-300 ease-in-out border-r border-gray-100/50 dark:border-gray-800/50;
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
 }
 
 .dark .fi-sidebar {
-  background: linear-gradient(180deg, #181A20 0%, #23263A 100%);
+  background: linear-gradient(180deg, #181A20, #23263A);
 }
 
 .fi-sidebar.fi-sidebar-open {
   width: var(--sidebar-width);
-  @apply border-r border-gray-100/50 dark:border-gray-800/50;
 }
 
 .fi-sidebar-header {
-  @apply py-4 !ring-0 !shadow-none sticky top-0 z-10;
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02) 0%, rgba(var(--primary-rgb), 0.05) 100%);
+  @apply py-4 !shadow-none sticky top-0 z-10;
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.03), rgba(var(--primary-rgb), 0.07));
   border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
 }
 
 .dark .fi-sidebar-header {
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1) 0%, rgba(15, 15, 20, 0.9) 100%);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1), rgba(15,15,20,0.9));
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.15);
 }
 
+
+/* ------------------------------
+   TOPBAR
+--------------------------------*/
 .fi-topbar nav {
   @apply !ring-0 py-3 !border-none !shadow-none bg-white sticky top-0 z-10;
   border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
 }
 
-.fi-topbar,
-.fi-topbar input,
-.fi-topbar svg,
-.fi-topbar .fi-icon-btn svg,
-.fi-topbar .fi-btn svg {
+.fi-topbar * {
   @apply text-primary-400 dark:text-primary-300;
 }
 
-.fi-sidebar-nav-groups {
-  @apply gap-y-6 px-3 py-4;
-}
 
-.fi-sidebar-group {
-  @apply space-y-1.5;
-}
+/* ------------------------------
+   SIDEBAR GROUPS
+--------------------------------*/
+.fi-sidebar-nav-groups { @apply gap-y-6 px-3 py-4; }
+
+.fi-sidebar-group { @apply space-y-1.5; }
 
 .fi-sidebar-group-label {
-  @apply text-xs font-bold text-primary-600 dark:text-primary-400 uppercase tracking-wider px-4 mb-2;
+  @apply text-xs font-bold uppercase tracking-wider px-4 mb-2 text-primary-600 dark:text-primary-400;
 }
 
-.dark .fi-sidebar-group-label {
-  @apply text-primary-300;
-}
 
-/* SIDEBAR ITEMS */
+/* ------------------------------
+   SIDEBAR ITEMS
+--------------------------------*/
 .fi-sidebar-item a {
-  @apply px-4 py-2.5 rounded-xl flex items-center gap-x-3 transition-all duration-300;
-  border-left: 2px solid transparent;
-}
-
-.fi-sidebar-item a > span,
-.fi-sidebar-item a > svg {
-  @apply font-medium transition-all duration-200;
+  @apply px-4 py-2.5 rounded-xl flex items-center gap-x-3 transition-all duration-300 border-l-2 border-transparent;
 }
 
 .fi-sidebar-item a > svg {
-  @apply w-5 h-5 shrink-0 text-primary-400 dark:text-primary-300;
+  @apply w-5 h-5 text-primary-400 dark:text-primary-300 transition-all;
 }
 
-.fi-sidebar-item a:focus,
-.fi-sidebar-item a:hover {
-  background: rgba(var(--primary-rgb), 0.12); /* More visible solid color */
-  /* Or use a custom gradient for more pop: */
-  /* background: linear-gradient(90deg, #FFD33322 0%, #2D2B8D11 100%); */
-  @apply shadow-sm transform transition-all duration-200 ease-out border-l-2 border-l-secondary-500;
-  box-shadow: 0 3px 10px -2px rgba(var(--primary-rgb), 0.15), 0 1px 2px rgba(var(--secondary-rgb), 0.1);
+.fi-sidebar-item a:hover,
+.fi-sidebar-item a:focus {
+  background: rgba(var(--primary-rgb), 0.12);
+  @apply shadow-sm border-secondary-500;
 }
 
-.dark .fi-sidebar-item a {
-  @apply text-primary-200;
-  background: transparent;
-}
-
-.dark .fi-sidebar-item a:focus,
-.dark .fi-sidebar-item a:hover {
+.dark .fi-sidebar-item a:hover,
+.dark .fi-sidebar-item a:focus {
   background: linear-gradient(90deg, rgba(var(--secondary-rgb), 0.08), rgba(var(--primary-rgb), 0.18));
-  @apply text-primary-100 border-l-secondary-600;
+  @apply border-secondary-600;
 }
 
-.fi-sidebar-item a:hover > svg,
-.fi-sidebar-item a:focus > svg {
-  @apply text-secondary-600 dark:text-secondary-500 translate-x-0.5 scale-110;
-}
 
-.fi-sidebar-item a:hover > span,
-.fi-sidebar-item a:focus > span {
-  @apply text-primary-700 dark:text-primary-200 font-medium;
-  text-shadow: 0px 0.5px 0px rgba(var(--primary-rgb), 0.3);
-}
-
-/* Active state */
+/* --- Active State --- */
 .fi-sidebar-item-active a {
   background: var(--primary-gradient);
   @apply text-white shadow-md border-l-0;
-  box-shadow: 0 4px 12px -2px rgba(var(--primary-rgb), 0.6), 0 2px 4px rgba(var(--secondary-rgb), 0.15);
 }
 
-.dark .fi-sidebar-item-active a {
-    background: linear-gradient(90deg, rgba(var(--secondary-rgb), 0.08), rgba(var(--primary-rgb), 0.18));
-    @apply text-primary-100 border-l-secondary-600;
-    box-shadow: none;
-}
-
-.fi-sidebar-item-active a > svg {
-  @apply text-white scale-110;
-}
-
+.fi-sidebar-item-active a > svg,
 .fi-sidebar-item-active a > span {
   @apply text-white font-semibold;
-  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
-/* Active hover state */
-.fi-sidebar-item-active a:hover,
-.fi-sidebar-item-active a:focus {
-  background: var(--primary-gradient);
-  @apply text-white shadow-md border-l-0;
-  box-shadow: 0 4px 12px -2px rgba(var(--primary-rgb), 0.4), 0 2px 4px rgba(var(--secondary-rgb), 0.1);
-  filter: none;
-}
 
-/* Prevent icon movement and keep text white for active sidebar item on hover/focus */
-.fi-sidebar-item-active a:hover > svg,
-.fi-sidebar-item-active a:focus > svg {
-  @apply text-white scale-110; /* No translate-x, keep scale if you want */
-}
-
-.fi-sidebar-item-active a:hover > span,
-.fi-sidebar-item-active a:focus > span {
-  @apply text-white font-semibold; /* No color change, always white */
-  text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.2);
-}
-
-/* CONTENT SECTIONS */
+/* ------------------------------
+   SECTIONS & CARDS
+--------------------------------*/
 .fi-section {
-  @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md;
+  @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm transition-all;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
 }
 
@@ -203,735 +151,73 @@ body {
 }
 
 .fi-section-header {
-  @apply px-6 py-4;
+  @apply px-6 py-4 border-b border-primary-100/30;
   background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.05), transparent);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
 }
 
-.dark .fi-section-header {
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.1), transparent);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.15);
-}
+.fi-section-content { @apply p-6; }
 
-.fi-section-header-heading {
-  @apply text-base font-semibold text-primary-800 dark:text-primary-300;
-}
 
-.fi-section-content {
-  @apply p-6;
-}
-
-/* CARDS & CONTAINERS */
-.fi-ta-ctn,
-.fi-wi-stats-overview-stat,
-.fi-fo-repeater-item {
-  @apply rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-200;
-  background: white;
-}
-
-.dark .fi-ta-ctn,
-.dark .fi-wi-stats-overview-stat,
-.dark .fi-fo-repeater-item {
-  background: #111827;
-}
-
-.fi-wi-stats-overview-stat {
-  @apply hover:shadow-md dark:hover:border-primary-800/30;
-  border-top: 3px solid rgba(var(--secondary-rgb), 0.8);
-}
-
-.fi-wi-stats-overview-stat-description {
-  @apply text-sm text-gray-500 dark:text-gray-400;
-}
-
-.fi-wi-stats-overview-stat-value {
-  @apply text-2xl font-bold text-primary-800 dark:text-primary-300;
-}
-
-/* FORM ELEMENTS */
+/* ------------------------------
+   FORM ELEMENTS (FIX DATETIME / SELECT)
+--------------------------------*/
 .fi-input-wrapper {
-  @apply transition-all duration-200;
+  @apply transition-all duration-200 ring-0;
 }
 
 .fi-input,
-.fi-select select {
-  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm;
-  @apply focus:border-primary-500;
+.fi-select select,
+.fi-date-time-picker input {
+  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500;
 }
 
-.fi-input-wrp:focus-within {
-  @apply ring-2 ring-primary-100 dark:ring-primary-900/30 rounded-lg;
+.fi-input-wrapper:focus-within {
+  @apply ring-2 ring-primary-200 dark:ring-primary-900/30 rounded-lg;
 }
 
+
+/* ------------------------------
+   BUTTONS
+--------------------------------*/
 .fi-btn {
-  @apply rounded-lg shadow-sm transition-all duration-200 transform;
+  @apply rounded-lg shadow-sm transition-all duration-200;
 }
 
-.fi-btn:not(:disabled):hover {
-  @apply shadow translate-y-[-1px];
-}
+.fi-btn:not(:disabled):hover { @apply shadow translate-y-[-1px]; }
+.fi-btn:not(:disabled):active { @apply shadow-inner translate-y-[1px]; }
 
-.fi-btn:not(:disabled):active {
-  @apply shadow-inner translate-y-[1px];
-}
-
-/* Primary button styling */
 .fi-btn.fi-btn-color-primary {
   background: var(--primary-gradient);
-  @apply text-white border-0;
-  box-shadow: 0 2px 6px -2px rgba(var(--primary-rgb), 0.25);
+  @apply text-white;
 }
 
-.fi-btn.fi-btn-color-primary:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 3px 8px -2px rgba(var(--primary-rgb), 0.18);
-}
-
-/* Secondary button styling */
 .fi-btn.fi-btn-color-secondary {
   background: var(--secondary-gradient);
-  @apply text-gray-900 border-0;
-  box-shadow: 0 4px 10px -3px rgba(var(--secondary-rgb), 0.5);
-}
-
-.fi-btn.fi-btn-color-secondary:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 6px 15px -3px rgba(var(--secondary-rgb), 0.6);
-}
-
-/* Success button styling */
-.fi-btn.fi-btn-color-success {
-  background: linear-gradient(145deg, #34D399, #10B981);
-  @apply text-white border-0;
-  box-shadow: 0 2px 6px -2px rgba(16, 185, 129, 0.18);
-}
-.fi-btn.fi-btn-color-success:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 3px 8px -2px rgba(16, 185, 129, 0.22);
-}
-
-/* Error button styling */
-.fi-btn.fi-btn-color-danger {
-  background: linear-gradient(145deg, #F87171, #EF4444);
-  @apply text-white border-0;
-  box-shadow: 0 2px 6px -2px rgba(239, 68, 68, 0.18);
-}
-.fi-btn.fi-btn-color-danger:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 3px 8px -2px rgba(239, 68, 68, 0.22);
-}
-
-/* Warning button styling */
-.fi-btn.fi-btn-color-warning {
-  background: linear-gradient(145deg, #FBBF24, #F59E0B);
-  @apply text-gray-900 border-0;
-  box-shadow: 0 2px 6px -2px rgba(245, 158, 11, 0.18);
-}
-.fi-btn.fi-btn-color-warning:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 3px 8px -2px rgba(245, 158, 11, 0.22);
-}
-
-/* Info button styling */
-.fi-btn.fi-btn-color-info {
-  background: linear-gradient(145deg, #60A5FA, #3B82F6);
-  @apply text-white border-0;
-  box-shadow: 0 2px 6px -2px rgba(59, 130, 246, 0.18);
-}
-.fi-btn.fi-btn-color-info:hover {
-  filter: brightness(1.05);
-  box-shadow: 0 3px 8px -2px rgba(59, 130, 246, 0.22);
-}
-
-/* Gray button styling */
-.fi-btn.fi-btn-color-gray {
-  background: linear-gradient(145deg, #f4f4f5, #e5e7eb); /* subtle gray gradient */
-  @apply text-gray-900 border-0 shadow-sm;
-}
-
-.fi-btn.fi-btn-color-gray:hover {
-  filter: brightness(1.04);
-  background: linear-gradient(145deg, #e5e7eb, #f4f4f5);
   @apply text-gray-900;
 }
 
-.dark .fi-btn.fi-btn-color-gray {
-  background: linear-gradient(145deg, #23263A 5%, #181A20 95%);
-  @apply text-white border-0 shadow-sm;
-}
 
-.dark .fi-btn.fi-btn-color-gray:hover {
-  filter: brightness(1.08);
-  background: linear-gradient(145deg, #23263A 10%, #23263A 90%);
-  @apply text-white;
-}
-
-/* DROPDOWN MENUS */
+/* ------------------------------
+   DROPDOWNS
+--------------------------------*/
 .fi-dropdown-panel {
-  @apply rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden;
-  background: white;
+  @apply rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800;
 }
 
-.dark .fi-dropdown-panel {
-  background: #1f2937;
-}
 
-.fi-dropdown-panel-heading {
-  @apply text-sm font-medium text-primary-700 dark:text-primary-300 px-4 pt-2 pb-0;
-}
+/* ------------------------------
+   BADGES
+--------------------------------*/
+.fi-badge { @apply ring-1; }
 
-.fi-dropdown-list {
-  @apply p-1;
-}
 
-.fi-dropdown-list-item-label {
-  @apply text-sm;
-}
-
-.fi-dropdown-list-item button:hover,
-.fi-dropdown-list-item a:hover {
-  @apply bg-primary-50 dark:bg-primary-900/30;
-}
-
-.fi-dropdown-trigger button.fi-btn {
-  @apply !p-2 rounded-lg;
-}
-
-/* TABLES */
-.fi-ta-header-cell {
-  /* @apply  ; */
-}
-
-.fi-ta-row {
-  @apply transition-colors duration-150;
-}
-
-.fi-ta-row:nth-child(even) {
-  /* @apply ; */
-}
-
-/* BADGES */
-.fi-badge.fi-badge-color-primary {
-  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300 ring-1 ring-primary-200 dark:ring-primary-800/50;
-}
-
-.fi-badge.fi-badge-color-secondary {
-  @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900/30 dark:text-secondary-300 ring-1 ring-secondary-200 dark:ring-secondary-800/50;
-}
-
-.fi-badge.fi-badge-color-success {
-  @apply bg-success-50 text-success-700 dark:bg-success-900/30 dark:text-success-300 ring-1 ring-success-200 dark:ring-success-800/50;
-}
-
-.fi-badge.fi-badge-color-danger {
-  @apply bg-error-50 text-error-700 dark:bg-error-900/30 dark:text-error-300 ring-1 ring-error-200 dark:ring-error-800/50;
-}
-
-.fi-badge.fi-badge-color-warning {
-  @apply bg-warning-50 text-warning-700 dark:bg-warning-900/30 dark:text-warning-300 ring-1 ring-warning-200 dark:ring-warning-800/50;
-}
-
-.fi-badge.fi-badge-color-info {
-  @apply bg-info-50 text-info-700 dark:bg-info-900/30 dark:text-info-300 ring-1 ring-info-200 dark:ring-info-800/50;
-}
-
-/* RESPONSIVE ADJUSTMENTS */
+/* ------------------------------
+   RESPONSIVE
+--------------------------------*/
 @media (max-width: 768px) {
   .fi-sidebar.fi-sidebar-open {
     @apply fixed z-40 w-[280px] shadow-xl;
-    box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.15);
   }
 
-  .fi-main {
-    @apply mx-2 mb-2;
-  }
-}
-
-/* TABS */
-.fi-tabs {
-  @apply border-b border-gray-200 dark:border-gray-800;
-}
-
-.fi-tabs-item {
-  @apply text-sm font-medium rounded-t-lg transition-colors duration-150;
-}
-
-/* Improved Tabs Hover */
-.fi-tabs-item:not(.fi-tabs-item-active):hover {
-    @apply border-t-2 border-t-secondary-500 text-primary-700 dark:text-primary-400 relative;
-  box-shadow: inset 0 1px 0 rgba(var(--secondary-rgb), 0.3);
-}
-
-.fi-tabs-item-active {
-  @apply border-t-2 border-t-secondary-500 text-primary-700 dark:text-primary-400 relative;
-}
-
-.fi-tabs-item-active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: white;
-}
-
-.dark .fi-tabs-item-active::after {
-  background-color: #111827; /* dark mode background color */
-}
-
-.fi-tabs-item:not(.fi-tabs-item-active) {
-  @apply text-gray-500 dark:text-gray-400;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fi-page {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* MODALS */
-.fi-modal-window {
-  @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-100 dark:border-gray-800;
-}
-
-.fi-modal-header {
-  @apply px-6 py-4;
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.05), transparent);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
-}
-
-.dark .fi-modal-header {
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.1), transparent);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.15);
-}
-
-.fi-modal-heading {
-  @apply text-lg font-semibold text-primary-800 dark:text-primary-300;
-}
-
-/* NOTIFICATIONS */
-.fi-notification {
-  @apply rounded-xl shadow-lg border border-gray-100 dark:border-gray-800;
-  background: white;
-}
-
-.dark .fi-notification {
-  background: #1f2937;
-}
-
-/* PROGRESS INDICATORS */
-.fi-loading-indicator {
-  @apply text-primary-600 dark:text-primary-400;
-}
-
-/* Custom scrollbar for sidebar */
-.fi-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.fi-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.fi-sidebar::-webkit-scrollbar-thumb {
-  @apply bg-primary-200 dark:bg-primary-800 rounded-full;
-}
-
-.fi-sidebar::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-300 dark:bg-primary-700;
-}
-
-/* Global navigation hover improvements */
-.fi-topbar button:hover,
-.fi-icon-btn:hover {
-  /* @apply bg-primary-50 dark:bg-primary-900/30; */
-}
-
-/* Breadcrumb item hover */
-.fi-breadcrumbs-item:not(:last-child):hover a {
-  @apply text-secondary-600 dark:text-secondary-500;
-}
-
-.dark .fi-sidebar-item-active a > span,
-.dark .fi-sidebar-item-active a > svg {
-  @apply text-white;
-}
-
-.fi-fo-field-wrp-helper-text {
-    @apply overflow-hidden break-words text-sm text-gray-500 dark:text-gray-300;
-}
-
-/* ============================================================= */
-/*     FIX DROPDOWNS CORTADOS EN SELECT/FILTROS                  */
-/* ============================================================= */
-
-.fi-body,
-.fi-modal,
-.fi-modal-content,
-.fi-section,
-.fi-section-content,
-.fi-form,
-.fi-grid {
-    overflow: visible !important;
-}
-
-.choices__list--dropdown,
-.choices__list[role="listbox"] {
-    z-index: 9999 !important;
-    position: absolute !important;
-    background-color: #ffffff !important;
-    border: 1px solid rgb(229 231 235) !important;
-    border-radius: 0.5rem !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
-    margin-top: 4px !important;
-    max-height: 320px !important;
-    overflow-y: auto !important;
-}
-
-.dark .choices__list--dropdown {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
-}
-
-.choices {
-    overflow: visible !important;
-}
-
-
-/* ============================================================= */
-/*     FIX FLATPICKR TIME PICKER CORTADO - SOLO CSS             */
-/* ============================================================= */
-
-/* Forzar overflow visible en absolutamente TODO */
-.fi-fo-field-wrp,
-.fi-fo-field-wrp > div,
-.fi-fo-field-wrp > div > div,
-.fi-fo-date-time-picker,
-.fi-fo-date-time-picker > div,
-.fi-input-wrp,
-.fi-input-wrp > div,
-.fi-input-wrp > div > div,
-div[x-data*="dateTimePicker"],
-div[x-data*="dateTimePicker"] > div,
-div[wire\:ignore],
-div[wire\:ignore] > div,
-.fi-section-content,
-.fi-section-content > div,
-.fi-grid,
-.fi-grid > div,
-.fi-grid > div > div,
-.fi-fieldset,
-.fi-fieldset > div {
-    overflow: visible !important;
-    max-height: none !important;
-}
-
-/* Contenedor específico del input */
-.fi-input-wrp:has(.flatpickr-input),
-.fi-input-wrp:has(.flatpickr-input) > div {
-    overflow: visible !important;
-}
-
-/* El calendario Flatpickr */
-.flatpickr-calendar {
-    z-index: 99999 !important;
-    position: absolute !important;
-    overflow: visible !important;
-}
-
-.flatpickr-calendar.open {
-    display: block !important;
-    overflow: visible !important;
-}
-
-/* Contenedor interno del calendario */
-.flatpickr-innerContainer,
-.flatpickr-rContainer {
-    overflow: visible !important;
-}
-
-/* Time picker - LA CLAVE ESTÁ AQUÍ */
-.flatpickr-time {
-    height: auto !important;
-    min-height: 40px !important;
-    max-height: none !important;
-    overflow: visible !important;
-    display: block !important;
-    border-top: 1px solid #e5e7eb;
-    padding: 10px 0 !important;
-}
-
-.dark .flatpickr-time {
-    border-top-color: #374151;
-}
-
-/* Contenedor de cada input de tiempo */
-.flatpickr-time .numInputWrapper {
-    height: auto !important;
-    min-height: 38px !important;
-    overflow: visible !important;
-    position: relative !important;
-    display: inline-block !important;
-}
-
-/* Inputs de hora, minuto, segundo */
-.flatpickr-time input.flatpickr-hour,
-.flatpickr-time input.flatpickr-minute,
-.flatpickr-time input.flatpickr-second {
-    height: 38px !important;
-    line-height: 38px !important;
-    padding: 0 4px !important;
-}
-
-/* Las flechas - ASEGURAR QUE SE VEAN */
-.flatpickr-time .arrowUp,
-.flatpickr-time .arrowDown {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: relative !important;
-    height: 16px !important;
-    width: 100% !important;
-    cursor: pointer !important;
-}
-
-.flatpickr-time .arrowUp {
-    top: 0 !important;
-    border-bottom: 4px solid #374151 !important;
-    border-left: 4px solid transparent !important;
-    border-right: 4px solid transparent !important;
-}
-
-.flatpickr-time .arrowDown {
-    bottom: 0 !important;
-    border-top: 4px solid #374151 !important;
-    border-left: 4px solid transparent !important;
-    border-right: 4px solid transparent !important;
-}
-
-.dark .flatpickr-time .arrowUp,
-.dark .flatpickr-time .arrowDown {
-    border-color: #9ca3af transparent transparent transparent !important;
-}
-
-.dark .flatpickr-time .arrowDown {
-    border-color: transparent transparent #9ca3af transparent !important;
-}
-
-/* Separador de tiempo */
-.flatpickr-time-separator {
-    display: inline-block !important;
-    margin: 0 4px !important;
-    line-height: 38px !important;
-}
-
-/* AM/PM selector */
-.flatpickr-time .flatpickr-am-pm {
-    height: 38px !important;
-    line-height: 38px !important;
-    padding: 0 8px !important;
-}
-
-/* Dark mode para el calendario completo */
-.dark .flatpickr-calendar {
-    background-color: #1f2937 !important;
-    border-color: #374151 !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
-}
-
-.dark .flatpickr-time input {
-    background-color: #374151 !important;
-    color: #fff !important;
-    border-color: #4b5563 !important;
-}
-
-.dark .flatpickr-time .flatpickr-am-pm {
-    background-color: #374151 !important;
-    color: #fff !important;
-}
-
-/* Asegurar que el contenedor padre del flatpickr no corte */
-[data-type="datetime"] {
-    overflow: visible !important;
-}
-
-/* ============================================================= */
-/*     FIX FLATPICKR EN WIZARD/MODAL                            */
-/* ============================================================= */
-
-/* Para wizards y modales */
-.fi-modal-content,
-.fi-modal-content > div,
-.fi-wizard,
-.fi-wizard > div,
-.fi-wizard-step,
-.fi-wizard-step > div {
-    overflow: visible !important;
-}
-
-/* Forzar altura automática en contenedores de wizard */
-.fi-wizard-step-content,
-.fi-wizard-step-content > div {
-    overflow: visible !important;
-    max-height: none !important;
-    height: auto !important;
-}
-
-/* ============================================================= */
-/*     FIX ADICIONAL PARA DATETIMEPICKERS                       */
-/* ============================================================= */
-
-/* Evita que los datetimepickers se recorten */
-.fi-dropdown-panel,
-.flatpickr-calendar {
-    z-index: 999999 !important;
-}
-
-/* Evita clipping del contenedor del campo */
-.fi-fo-field-wrp, 
-.fi-input-wrp,
-.fi-fo-select {
-    overflow: visible !important;
-}
-
-/* Asegura que las columnas no recorten contenido */
-.field-container,
-.fi-fo-field,
-.fi-fo-layout {
-    overflow: visible !important;
-}
-
-/* Específicamente para wizards */
-.fi-wizard,
-.fi-wizard-step,
-.fi-wizard-step-content {
-    overflow: visible !important;
-}
-
-/* Contenedores de formulario */
-.fi-fo-component-ctn {
-    overflow: visible !important;
-}
-
-/* FIX para que los DateTimePicker NO se corten */
-.fi-section,
-.fi-fo-repeater-item,
-.fi-input-wrp,
-.fi-input-wrapper,
-.fi-form {
-    overflow: visible !important;
-}
-
-.flatpickr-calendar {
-  z-index: 999999 !important;
-}
-
-/* Fix: evitar que los calendarios de DatePicker/DateTimePicker se corten */
-.fi-fo-field-wrp,
-.fi-fo-component-container,
-.fi-section,
-.fi-main,
-.fi-content,
-.fi-body {
-    overflow: visible !important;
-}
-
-/* Popovers encima de todo */
-.flatpickr-calendar,
-.fi-fo-popover,
-.fi-popover {
-    z-index: 999999 !important;
-}
-
-/* WIZARD STEPS */
-.fi-wizard-header {
-  @apply rounded-xl border border-gray-200 dark:border-gray-800 p-4 mb-6;
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
-}
-
-.dark .fi-wizard-header {
-  background: linear-gradient(145deg, #1f2937, #111827);
-}
-
-.fi-wizard-step {
-  @apply flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-200 cursor-pointer;
-}
-
-.fi-wizard-step-active {
-  background: var(--primary-gradient);
-  @apply text-white shadow-md;
-}
-
-.fi-wizard-step-active .fi-wizard-step-label {
-  @apply text-white;
-}
-
-.fi-wizard-step:hover:not(.fi-wizard-step-active) {
-  background: rgba(var(--primary-rgb), 0.08);
-}
-
-.fi-wizard-step-label {
-  @apply font-medium text-primary-800 dark:text-primary-300;
-}
-
-.fi-wizard-step-icon {
-  @apply w-6 h-6 text-primary-500 dark:text-primary-300;
-}
-
-.fi-wizard-step-active .fi-wizard-step-icon {
-  @apply text-white;
-}
-
-.fi-wizard-content {
-  @apply mt-4;
-}
-
-.fi-wizard-footer {
-  @apply flex justify-end gap-3 pt-6;
-}
-
-/* Evitar clipping global de los popups (datetimepickers, selects, etc.) */
-.fi-layout,
-.fi-page,
-.fi-body,
-.fi-main,
-.fi-content {
-    overflow: visible !important;
-}
-
-/* Asegurar que el contenedor inmediato del DateTimePicker no recorte */
-.fi-fo-date-time-picker,
-.fi-fo-date-time-picker .fi-input-wrp,
-.fi-fo-date-time-picker .fi-input-wrapper {
-    overflow: visible !important;
-}
-
-/* Flatpickr siempre por encima */
-.flatpickr-calendar {
-    z-index: 999999 !important;
-    position: absolute !important;
-}
-
-/* Evitar scroll horizontal en el layout principal */
-html,
-body,
-.fi-layout,
-.fi-page,
-.fi-main,
-.fi-content {
-    max-width: 100vw;
-    overflow-x: hidden;
-}
-
-/* Dentro de los wizards, que el contenido se ajuste y no genere ancho extra */
-.fi-wizard,
-.fi-wizard-step-content,
-.fi-section,
-.fi-section-content {
-    width: 100%;
+  .fi-main { @apply mx-2 mb-2; }
 }
