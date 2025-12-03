@@ -1,13 +1,9 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 @config 'tailwind.config.js';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ------------------------------
+/* ===================================================
    GLOBAL VARIABLES
---------------------------------*/
+=================================================== */
 :root {
   --sidebar-width: 280px;
   --transition-speed: 0.2s;
@@ -26,9 +22,9 @@ body {
   @apply antialiased;
 }
 
-/* ------------------------------
+/* ===================================================
    TYPOGRAPHY
---------------------------------*/
+=================================================== */
 .fi-header-heading {
   @apply !text-2xl font-bold text-primary-800 dark:text-primary-300;
 }
@@ -37,32 +33,27 @@ body {
   @apply !text-sm text-gray-600 dark:text-gray-400 max-w-3xl;
 }
 
-/* ------------------------------
+/* ===================================================
    LAYOUT
---------------------------------*/
+=================================================== */
 .fi-layout {
-  @apply bg-white;
+  @apply bg-white dark:bg-gray-900;
 }
 
 .fi-main {
   @apply mt-0 mb-0 bg-white dark:bg-gray-900 shadow-none transition-all duration-300;
 }
 
-/* Logo */
-.fi-logo {
-  @apply !h-10 transition-all duration-300 hover:scale-105;
-}
-
-/* ------------------------------
+/* ===================================================
    SIDEBAR
---------------------------------*/
+=================================================== */
 .fi-sidebar {
   @apply transition-all duration-300 ease-in-out;
   background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
 }
 
 .dark .fi-sidebar {
-  background: linear-gradient(180deg, #181A20, #23263A);
+  background: linear-gradient(180deg, #181A20 0%, #23263A 100%);
 }
 
 .fi-sidebar.fi-sidebar-open {
@@ -70,6 +61,7 @@ body {
   @apply border-r border-gray-100/50 dark:border-gray-800/50;
 }
 
+/* Sidebar header */
 .fi-sidebar-header {
   @apply py-4 !ring-0 !shadow-none sticky top-0 z-10;
   background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
@@ -81,15 +73,7 @@ body {
   border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
 }
 
-.fi-sidebar-nav-groups {
-  @apply gap-y-6 px-3 py-4;
-}
-
-.fi-sidebar-group-label {
-  @apply text-xs font-bold text-primary-600 dark:text-primary-300 uppercase tracking-wider px-4 mb-2;
-}
-
-/* Sidebar item */
+/* Sidebar items */
 .fi-sidebar-item a {
   @apply px-4 py-2.5 rounded-xl flex items-center gap-x-3 transition-all duration-300;
   border-left: 2px solid transparent;
@@ -97,7 +81,7 @@ body {
 
 .fi-sidebar-item a:hover {
   background: rgba(var(--primary-rgb), 0.12);
-  @apply shadow-sm border-l-2 border-l-secondary-500;
+  @apply shadow-sm border-l-2 border-secondary-500 transform;
 }
 
 /* Active */
@@ -106,21 +90,9 @@ body {
   @apply text-white shadow-md border-l-0;
 }
 
-.fi-sidebar-item-active a:hover {
-  background: var(--primary-gradient);
-}
-
-/* ------------------------------
-   TOPBAR
---------------------------------*/
-.fi-topbar nav {
-  @apply !ring-0 py-3 !border-none !shadow-none bg-white sticky top-0 z-10;
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
-}
-
-/* ------------------------------
+/* ===================================================
    CONTENT SECTIONS
---------------------------------*/
+=================================================== */
 .fi-section {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
@@ -130,169 +102,169 @@ body {
   background: linear-gradient(145deg, #1f2937, #111827);
 }
 
-.fi-section-header {
-  @apply px-6 py-4;
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.05), transparent);
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
-}
-
-.fi-section-content {
-  @apply p-6;
-}
-
-/* ------------------------------
-   CARDS
---------------------------------*/
+/* ===================================================
+   CARDS & STATS
+=================================================== */
 .fi-wi-stats-overview-stat {
-  @apply rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm transition-all duration-200;
-  background: white;
+  @apply rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all;
   border-top: 3px solid rgba(var(--secondary-rgb), 0.8);
 }
 
-/* ------------------------------
-   FORM ELEMENTS
---------------------------------*/
+/* ===================================================
+   FORMS
+=================================================== */
 .fi-input,
 .fi-select select {
-  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm;
+  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500;
 }
 
 .fi-input-wrp:focus-within {
-  @apply ring-2 ring-primary-100 dark:ring-primary-900/30 rounded-lg;
+  @apply ring-2 ring-primary-100 dark:ring-primary-900/40 rounded-lg;
 }
 
-/* Buttons */
+/* ===================================================
+   BUTTONS
+=================================================== */
 .fi-btn {
-  @apply rounded-lg shadow-sm transition-all duration-200 transform;
-}
-
-.fi-btn:not(:disabled):hover {
-  @apply shadow translate-y-[-1px];
-}
-
-.fi-btn:not(:disabled):active {
-  @apply shadow-inner translate-y-[1px];
+  @apply rounded-lg shadow-sm transform transition-all duration-200;
 }
 
 /* Primary */
-.fi-btn-color-primary {
+.fi-btn.fi-btn-color-primary {
   background: var(--primary-gradient);
   @apply text-white border-0;
 }
 
-/* Secondary */
-.fi-btn-color-secondary {
-  background: var(--secondary-gradient);
-  @apply text-gray-900 border-0;
+/* ===================================================
+   BADGES (optimización)
+=================================================== */
+.fi-badge {
+  @apply px-2 py-1 text-xs font-semibold rounded-md border shadow-sm;
 }
 
-/* ------------------------------
-   DROPDOWNS
---------------------------------*/
-.fi-dropdown-panel {
-  @apply rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 overflow-hidden;
-  background: white;
+.fi-badge-color-primary {
+  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
 }
 
-.dark .fi-dropdown-panel {
-  background: #1f2937;
+.fi-badge-color-secondary {
+  @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900/40 dark:text-secondary-300;
 }
 
-/* ------------------------------
-   TABS
---------------------------------*/
-.fi-tabs {
-  @apply border-b border-gray-200 dark:border-gray-800;
+.fi-badge-color-success {
+  @apply bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300;
 }
 
-.fi-tabs-item {
-  @apply text-sm font-medium rounded-t-lg transition-colors duration-150;
+.fi-badge-color-danger {
+  @apply bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300;
 }
 
-.fi-tabs-item-active {
-  @apply border-t-2 border-t-secondary-500 text-primary-700 dark:text-primary-300 relative;
+.fi-badge-color-warning {
+  @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300;
 }
 
-/* ------------------------------
-   TABLES
---------------------------------*/
-.fi-ta-row {
-  @apply transition-colors duration-150;
+.fi-badge-color-info {
+  @apply bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300;
 }
 
-/* ------------------------------
-   BADGES
---------------------------------*/
-.fi-badge.fi-badge-color-primary {
-  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300;
+/* ===================================================
+   NOTIFICATIONS (MEGA MEJORADAS)
+=================================================== */
+
+/* Panel */
+.filament-notifications {
+  @apply z-[9999];
 }
 
-/* ------------------------------
-   MODALS
---------------------------------*/
-.fi-modal {
-  @apply bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800;
-  animation: fadeIn 0.25s ease-out;
+.filament-notifications-notification {
+  @apply rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 backdrop-blur-md transition-all;
+  background: linear-gradient(145deg, #ffffffee, #f8f9faee);
 }
 
+.dark .filament-notifications-notification {
+  background: linear-gradient(145deg, #1f2937ee, #111827ee);
+}
+
+/* Icon */
+.filament-notifications-notification-icon {
+  @apply scale-110 mr-3;
+}
+
+/* Title */
+.filament-notifications-notification-title {
+  @apply text-sm font-semibold text-primary-700 dark:text-primary-300;
+}
+
+/* Body */
+.filament-notifications-notification-body {
+  @apply text-gray-600 dark:text-gray-300 text-sm;
+}
+
+/* Bar indicator */
+.filament-notifications-notification .filament-notifications-status-icon {
+  @apply w-2.5 h-2.5 rounded-full;
+}
+
+/* Status colors */
+.filament-notifications-status-success {
+  @apply bg-green-500;
+}
+.filament-notifications-status-danger {
+  @apply bg-red-500;
+}
+.filament-notifications-status-warning {
+  @apply bg-yellow-500;
+}
+.filament-notifications-status-info {
+  @apply bg-blue-500;
+}
+
+/* ===================================================
+   MODALS (GLASS + ANIMACIÓN)
+=================================================== */
+.fi-modal-window {
+  @apply rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden;
+  backdrop-filter: blur(12px);
+
+  background: linear-gradient(145deg, #ffffffdd, #f3f4f6dd);
+}
+
+.dark .fi-modal-window {
+  background: linear-gradient(145deg, #111827dd, #0f172add);
+}
+
+/* Header */
 .fi-modal-header {
-  @apply px-6 py-4 border-b border-gray-200 dark:border-gray-700;
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.08), transparent);
+  @apply px-6 py-4 border-b border-gray-200 dark:border-gray-800;
+  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.06), transparent);
 }
 
-.fi-modal-close-btn {
-  @apply text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-300 transition;
+.fi-modal-heading {
+  @apply text-lg font-bold text-primary-800 dark:text-primary-300;
 }
 
-/* ------------------------------
-   NOTIFICATIONS
---------------------------------*/
-.fi-notification {
-  @apply rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 px-4 py-3;
+/* Body */
+.fi-modal-content {
+  @apply p-6 text-gray-700 dark:text-gray-300;
+}
+
+/* Footer */
+.fi-modal-footer {
+  @apply px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900;
+}
+
+/* Overlay */
+.fi-modal {
   animation: fadeIn 0.25s ease-out;
 }
 
-.fi-notification.success {
-  background: linear-gradient(145deg, #34D39922, #10B98122);
-  @apply border-green-300;
-}
-
-.fi-notification.error {
-  background: linear-gradient(145deg, #F8717122, #EF444422);
-  @apply border-red-300;
-}
-
-.fi-notification.warning {
-  background: linear-gradient(145deg, #FBBF2433, #F59E0B22);
-  @apply border-yellow-300;
-}
-
-.fi-notification.info {
-  background: linear-gradient(145deg, #60A5FA22, #3B82F622);
-  @apply border-blue-300;
-}
-
-/* ------------------------------
+/* ===================================================
    ANIMATIONS
---------------------------------*/
+=================================================== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .fi-page {
   animation: fadeIn 0.3s ease-out;
-}
-
-/* ------------------------------
-   RESPONSIVE
---------------------------------*/
-@media (max-width: 768px) {
-  .fi-sidebar.fi-sidebar-open {
-    @apply fixed z-40 w-[280px] shadow-xl;
-  }
-
-  .fi-main {
-    @apply mx-2 mb-2;
-  }
 }
