@@ -268,3 +268,38 @@ body {
 .fi-page {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* ============================
+   SIDEBAR FIX
+============================ */
+
+.fi-sidebar {
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.05), rgba(var(--primary-rgb), 0.12)) !important;
+}
+
+.dark .fi-sidebar {
+  background: linear-gradient(180deg, #13151c 0%, #1b1e2b 100%) !important;
+}
+
+/* Items */
+.fi-sidebar-item a {
+  padding: 0.60rem 1rem !important;
+}
+
+/* Hover */
+.fi-sidebar-item a:hover {
+  background: rgba(var(--primary-rgb), 0.15) !important;
+}
+
+/* Active */
+.fi-sidebar-item-active a {
+  background: var(--primary-gradient) !important;
+  color: white !important;
+}
+/* ============================
+   BADGE FIX (Tamaño óptimo)
+============================ */
+
+.fi-badge {
+  @apply px-1.5 py-0.5 text-[10px] rounded-md font-medium !important;
+}
