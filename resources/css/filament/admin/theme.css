@@ -284,3 +284,123 @@ body { @apply antialiased; }
 .fi-fo-date-time-picker-panel .grid {
   overflow: visible !important;
 }
+
+/* ============================================================= */
+/*     FIX GLOBAL DEFINITIVO PARA FILAMENT 3 (2025)             */
+/*  → Soluciona dropdowns cortados en Select, filtros, acciones, etc. */
+/* ============================================================= */
+
+.fi-body,
+.fi-modal,
+.fi-modal-content,
+.fi-modal-card,
+.fi-sidebar,
+.fi-sidebar-content,
+.fi-card,
+.fi-section,
+.fi-section > .fi-section-content,
+.fi-page,
+.fi-main,
+.fi-form,
+.fi-fo-field-wrp,
+.fi-field-wrp,
+.fi-input-wrp,
+.fi-grid {
+    overflow: visible !important;
+}
+
+/* Choices.js (el que usa Filament cuando pones searchable() + native(false)) */
+.choices__list--dropdown,
+.choices__list--dropdown .choices__list,
+.fi-dropdown-panel,
+.fi-select-panel {
+    z-index: 999999 !important;
+    overflow: visible !important;
+    position: absolute !important;
+}
+
+/* Aseguramos altura máxima razonable y scroll interno */
+.choices__list--dropdown .choices__list {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+}
+
+/* Fix extra por si usas modales anidados o wizards */
+.fi-modal .fi-modal-card > div,
+.fi-sidebar .fi-sidebar-content > div {
+    overflow: visible !important;
+}
+
+/* Opcional: mejora visual del scroll en los dropdowns */
+.choices__list--dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+/* ============================================================= */
+/* Estilo visual para dropdown de Choices.js                     */
+/* ============================================================= */
+
+.choices__list--dropdown {
+    background-color: #ffffff !important; /* fondo sólido blanco */
+    border: 1px solid rgb(229 231 235) !important; /* borde gris claro */
+    border-radius: 0.5rem !important;     /* esquinas redondeadas */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1),
+                0 2px 4px rgba(0,0,0,0.06) !important; /* sombra suave */
+    margin-top: 0.25rem !important;       /* espacio debajo del input */
+    padding: 0.25rem 0 !important;
+    width: 100% !important;               /* se adapta al ancho del input */
+}
+
+/* Modo oscuro */
+.dark .choices__list--dropdown {
+    background-color: #1f2937 !important; /* gris oscuro */
+    border-color: #374151 !important;
+}
+
+/* ============================================================= */
+/*           AJUSTE FINAL PARA EVITAR SOLAPAMIENTO               */
+/* ============================================================= */
+
+/* 1. Bajamos un poco el z-index del "panel" interno */
+.fi-select-panel {
+    z-index: 30 !important;
+}
+
+/* 2. El menú desplegable de Choices.js (searchable) tendrá z-index alto, 
+      pero NO absurdo como 999999 */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+    z-index: 500 !important;
+    position: absolute !important;
+}
+
+/* 3. Evitar que el dropdown se pegue demasiado al input */
+.choices__list--dropdown {
+    margin-top: 4px !important;
+}
+
+/* 4. Asegurar que el contenedor NO empuje el dropdown hacia arriba */
+.choices {
+    overflow: visible !important;
+}
+
+/* 5. Evitar que sections o grid contengan el dropdown dentro del "flow" */
+.fi-section-content,
+.fi-grid {
+    overflow: visible !important;
+}
+
+
