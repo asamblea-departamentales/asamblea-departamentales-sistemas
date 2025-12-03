@@ -134,7 +134,7 @@ audio, canvas, embed, iframe, img, object, svg, video {
     vertical-align: middle;
 }
 img, video {
-    max-width: 100%;
+    max-width: 30%;
     height: auto;
 }
 [hidden] {
