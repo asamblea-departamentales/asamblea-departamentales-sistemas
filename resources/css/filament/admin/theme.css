@@ -6,26 +6,28 @@
 @tailwind utilities;
 
 
-/* ------------------------------
+/* ----------------------------------------------
    GLOBAL VARIABLES
---------------------------------*/
+---------------------------------------------- */
 :root {
   --sidebar-width: 280px;
   --transition-speed: 0.2s;
 
-  --primary-rgb: 45, 43, 141;   /* #2D2B8D */
-  --secondary-rgb: 255, 201, 3; /* #FFC903 */
+  --primary-rgb: 45, 43, 141;    /* #2D2B8D */
+  --secondary-rgb: 255, 201, 3;  /* #FFC903 */
 
   --primary-gradient: linear-gradient(145deg, #524ED5, #2D2B8D);
   --secondary-gradient: linear-gradient(145deg, #FFD333, #FFC903);
 }
 
-body { @apply antialiased; }
+body {
+  @apply antialiased;
+}
 
 
-/* ------------------------------
+/* ----------------------------------------------
    TYPOGRAPHY
---------------------------------*/
+---------------------------------------------- */
 .fi-header-heading {
   @apply !text-2xl font-bold text-primary-800 dark:text-primary-300;
 }
@@ -35,10 +37,12 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    LAYOUT
---------------------------------*/
-.fi-layout { @apply bg-white; }
+---------------------------------------------- */
+.fi-layout {
+  @apply bg-white;
+}
 
 .fi-main {
   @apply mt-0 mb-0 bg-white dark:bg-gray-900 shadow-none transition-all duration-300;
@@ -49,12 +53,12 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    SIDEBAR
---------------------------------*/
+---------------------------------------------- */
 .fi-sidebar {
   @apply transition-all duration-300 ease-in-out border-r border-gray-100/50 dark:border-gray-800/50;
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
+  background: linear-gradient(180deg, rgba(var(--primary-rgb),0.02), rgba(var(--primary-rgb),0.05));
 }
 
 .dark .fi-sidebar {
@@ -67,22 +71,22 @@ body { @apply antialiased; }
 
 .fi-sidebar-header {
   @apply py-4 !shadow-none sticky top-0 z-10;
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.03), rgba(var(--primary-rgb), 0.07));
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+  background: linear-gradient(180deg, rgba(var(--primary-rgb),0.03), rgba(var(--primary-rgb),0.07));
+  border-bottom: 1px solid rgba(var(--primary-rgb),0.1);
 }
 
 .dark .fi-sidebar-header {
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1), rgba(15,15,20,0.9));
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.15);
+  background: linear-gradient(180deg, rgba(var(--primary-rgb),0.1), rgba(15,15,20,0.9));
+  border-bottom: 1px solid rgba(var(--primary-rgb),0.15);
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    TOPBAR
---------------------------------*/
+---------------------------------------------- */
 .fi-topbar nav {
   @apply !ring-0 py-3 !border-none !shadow-none bg-white sticky top-0 z-10;
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
+  border-bottom: 1px solid rgba(var(--primary-rgb),0.1);
 }
 
 .fi-topbar * {
@@ -90,21 +94,17 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
-   SIDEBAR GROUPS
---------------------------------*/
-.fi-sidebar-nav-groups { @apply gap-y-6 px-3 py-4; }
-
-.fi-sidebar-group { @apply space-y-1.5; }
+/* ----------------------------------------------
+   SIDEBAR GROUPS & ITEMS
+---------------------------------------------- */
+.fi-sidebar-nav-groups {
+  @apply gap-y-6 px-3 py-4;
+}
 
 .fi-sidebar-group-label {
   @apply text-xs font-bold uppercase tracking-wider px-4 mb-2 text-primary-600 dark:text-primary-400;
 }
 
-
-/* ------------------------------
-   SIDEBAR ITEMS
---------------------------------*/
 .fi-sidebar-item a {
   @apply px-4 py-2.5 rounded-xl flex items-center gap-x-3 transition-all duration-300 border-l-2 border-transparent;
 }
@@ -115,18 +115,17 @@ body { @apply antialiased; }
 
 .fi-sidebar-item a:hover,
 .fi-sidebar-item a:focus {
-  background: rgba(var(--primary-rgb), 0.12);
+  background: rgba(var(--primary-rgb),0.12);
   @apply shadow-sm border-secondary-500;
 }
 
 .dark .fi-sidebar-item a:hover,
 .dark .fi-sidebar-item a:focus {
-  background: linear-gradient(90deg, rgba(var(--secondary-rgb), 0.08), rgba(var(--primary-rgb), 0.18));
+  background: linear-gradient(90deg, rgba(var(--secondary-rgb),0.08), rgba(var(--primary-rgb),0.18));
   @apply border-secondary-600;
 }
 
-
-/* --- Active State --- */
+/* Active */
 .fi-sidebar-item-active a {
   background: var(--primary-gradient);
   @apply text-white shadow-md border-l-0;
@@ -138,37 +137,33 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
-   SECTIONS & CARDS
---------------------------------*/
+/* ----------------------------------------------
+   SECTIONS & CONTENT
+---------------------------------------------- */
 .fi-section {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all;
-  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  background: linear-gradient(145deg,#ffffff,#f8f9fa);
+  overflow: visible !important;
 }
 
 .dark .fi-section {
-  background: linear-gradient(145deg, #1f2937, #111827);
+  background: linear-gradient(145deg,#1f2937,#111827);
 }
 
 .fi-section-header {
   @apply px-6 py-4 border-b border-primary-100/30;
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.05), transparent);
+  background: linear-gradient(90deg, rgba(var(--primary-rgb),0.05), transparent);
 }
 
 .fi-section-content {
   @apply p-6;
-}
-
-/* SOLO aplicar overflow visible a secciones que CONTENGAN DateTimePickers */
-.fi-section:has(.fi-fo-date-time-picker),
-.fi-section:has(.fi-fo-date-time-picker) .fi-section-content {
   overflow: visible !important;
 }
 
 
-/* ------------------------------
-   FORM ELEMENTS (FIX DATETIME / SELECT)
---------------------------------*/
+/* ----------------------------------------------
+   FORM ELEMENTS
+---------------------------------------------- */
 .fi-input-wrapper {
   @apply transition-all duration-200 ring-0;
 }
@@ -176,7 +171,8 @@ body { @apply antialiased; }
 .fi-input,
 .fi-select select,
 .fi-date-time-picker input {
-  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500;
+  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500 
+         focus:ring-primary-500;
 }
 
 .fi-input-wrapper:focus-within {
@@ -184,9 +180,9 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    BUTTONS
---------------------------------*/
+---------------------------------------------- */
 .fi-btn {
   @apply rounded-lg shadow-sm transition-all duration-200;
 }
@@ -205,86 +201,73 @@ body { @apply antialiased; }
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    DROPDOWNS
---------------------------------*/
+---------------------------------------------- */
 .fi-dropdown-panel {
   @apply rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800;
 }
 
 
-/* ------------------------------
+/* ----------------------------------------------
    BADGES
---------------------------------*/
-.fi-badge { @apply ring-1; }
+---------------------------------------------- */
+.fi-badge {
+  @apply ring-1;
+}
 
 
-/* ------------------------------
+/* ----------------------------------------------
    RESPONSIVE
---------------------------------*/
+---------------------------------------------- */
 @media (max-width: 768px) {
   .fi-sidebar.fi-sidebar-open {
     @apply fixed z-40 w-[280px] shadow-xl;
   }
 
-  .fi-main { @apply mx-2 mb-2; }
+  .fi-main {
+    @apply mx-2 mb-2;
+  }
 }
 
-/* ============================================
-   FIX DEFINITIVO: Time Picker inputs cortados
-============================================ */
 
-/* 1. Contenedor flex del time picker - altura proporcional */
-.fi-fo-date-time-picker .flex.items-center.justify-center,
-.fi-fo-date-time-picker .flex.items-center.justify-center.rtl\:flex-row-reverse,
-.fi-fo-date-time-picker-panel .flex.items-center.justify-center,
-.fi-fo-date-time-picker-panel .flex.items-center.justify-center.rtl\:flex-row-reverse {
-  height: auto !important;
+/* ============================================================
+   FIX DEFINITIVO Y DE ALTA COMPATIBILIDAD PARA DATETIME PICKER
+=============================================================== */
+
+/* Contenedor de horas */
+.fi-fo-date-time-picker .flex.items-center,
+.fi-fo-date-time-picker-panel .flex.items-center {
   min-height: 48px !important;
-  max-height: none !important;
   overflow: visible !important;
-  padding: 4px 0 !important;
   gap: 0.5rem !important;
 }
 
-/* 2. Inputs del time picker - tamaño apropiado */
+/* Inputs de hora */
 .fi-fo-date-time-picker input,
 .fi-fo-date-time-picker-panel input {
   height: 40px !important;
-  min-height: 40px !important;
-  max-height: 40px !important;
   line-height: 40px !important;
-  padding: 0 !important;
-  overflow: visible !important;
   text-align: center !important;
   font-size: 14px !important;
 }
 
-/* 3. Input específico w-10 */
+/* Inputs pequeños */
 .fi-fo-date-time-picker input.w-10,
 .fi-fo-date-time-picker-panel input.w-10 {
   width: 3rem !important;
-  height: 40px !important;
-  line-height: 38px !important;
 }
 
-/* 4. Separador ":" y labels */
+/* Separadores ":" */
 .fi-fo-date-time-picker .text-sm.font-medium,
 .fi-fo-date-time-picker-panel .text-sm.font-medium {
   height: 40px !important;
   line-height: 40px !important;
   display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
 }
 
-/* 5. Panel principal */
+/* Panel */
 .fi-fo-date-time-picker-panel {
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-/* 6. Grid container */
-.fi-fo-date-time-picker-panel .grid {
   overflow: visible !important;
 }
