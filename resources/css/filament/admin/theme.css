@@ -144,7 +144,6 @@ body { @apply antialiased; }
 .fi-section {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  overflow: visible !important;
 }
 
 .dark .fi-section {
@@ -158,6 +157,11 @@ body { @apply antialiased; }
 
 .fi-section-content {
   @apply p-6;
+}
+
+/* SOLO aplicar overflow visible a secciones que CONTENGAN DateTimePickers */
+.fi-section:has(.fi-fo-date-time-picker),
+.fi-section:has(.fi-fo-date-time-picker) .fi-section-content {
   overflow: visible !important;
 }
 
@@ -259,7 +263,7 @@ body { @apply antialiased; }
 /* 3. Input específico w-10 */
 .fi-fo-date-time-picker input.w-10,
 .fi-fo-date-time-picker-panel input.w-10 {
-  width: 3rem !important; /* Aumentar de 2.5rem a 3rem */
+  width: 3rem !important;
   height: 40px !important;
   line-height: 38px !important;
 }
@@ -284,4 +288,3 @@ body { @apply antialiased; }
 .fi-fo-date-time-picker-panel .grid {
   overflow: visible !important;
 }
-
