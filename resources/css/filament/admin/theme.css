@@ -242,15 +242,30 @@ body { @apply antialiased; }
   padding: 0.5rem 1rem !important;
 }
 
-.fi-sidebar-item-active a {
+/* ============================
+   SIDEBAR - ITEM ACTIVO FIX
+============================ */
+.fi-sidebar-item-active {
   background: var(--primary-gradient) !important;
-  color: #ffffff !important;
-  @apply shadow-md border-l-0 text-base font-semibold;
-
-  /* Mejora de legibilidad */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem 1rem !important; /* Ajusta tamaño visual */
+  margin: 4px 8px !important; /* Evita que se “pegue” arriba */
+  @apply shadow-md;
 }
 
+/* El enlace interno debe ocupar TODO el espacio */
+.fi-sidebar-item-active a {
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+/* Ícono blanco */
 .fi-sidebar-item-active a svg {
-  @apply text-white;
+  color: #fff !important;
+  width: 20px;
+  height: 20px;
 }
