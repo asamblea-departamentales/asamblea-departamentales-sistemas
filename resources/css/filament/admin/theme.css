@@ -12,10 +12,8 @@
 :root {
   --sidebar-width: 280px;
   --transition-speed: 0.2s;
-
   --primary-rgb: 45, 43, 141;   /* #2D2B8D */
   --secondary-rgb: 255, 201, 3; /* #FFC903 */
-
   --primary-gradient: linear-gradient(145deg, #524ED5, #2D2B8D);
   --secondary-gradient: linear-gradient(145deg, #FFD333, #FFC903);
 }
@@ -125,8 +123,6 @@ body { @apply antialiased; }
   @apply border-secondary-600;
 }
 
-
-/* --- Active State --- */
 .fi-sidebar-item-active a {
   background: var(--primary-gradient);
   @apply text-white shadow-md border-l-0;
@@ -144,7 +140,6 @@ body { @apply antialiased; }
 .fi-section {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm transition-all;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
-  overflow: visible !important;
 }
 
 .dark .fi-section {
@@ -158,20 +153,18 @@ body { @apply antialiased; }
 
 .fi-section-content {
   @apply p-6;
-  overflow: visible !important;
 }
 
 
 /* ------------------------------
-   FORM ELEMENTS (FIX DATETIME / SELECT)
+   FORM ELEMENTS
 --------------------------------*/
 .fi-input-wrapper {
   @apply transition-all duration-200 ring-0;
 }
 
 .fi-input,
-.fi-select select,
-.fi-date-time-picker input {
+.fi-select select {
   @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500;
 }
 
@@ -222,185 +215,72 @@ body { @apply antialiased; }
   .fi-sidebar.fi-sidebar-open {
     @apply fixed z-40 w-[280px] shadow-xl;
   }
-
   .fi-main { @apply mx-2 mb-2; }
 }
 
-/* ============================================
-   FIX DEFINITIVO: Time Picker inputs cortados
-============================================ */
-
-/* 1. Contenedor flex del time picker - altura proporcional */
-.fi-fo-date-time-picker .flex.items-center.justify-center,
-.fi-fo-date-time-picker .flex.items-center.justify-center.rtl\:flex-row-reverse,
-.fi-fo-date-time-picker-panel .flex.items-center.justify-center,
-.fi-fo-date-time-picker-panel .flex.items-center.justify-center.rtl\:flex-row-reverse {
-  height: auto !important;
-  min-height: 48px !important;
-  max-height: none !important;
-  overflow: visible !important;
-  padding: 4px 0 !important;
-  gap: 0.5rem !important;
-}
-
-/* 2. Inputs del time picker - tamaño apropiado */
-.fi-fo-date-time-picker input,
-.fi-fo-date-time-picker-panel input {
-  height: 40px !important;
-  min-height: 40px !important;
-  max-height: 40px !important;
-  line-height: 40px !important;
-  padding: 0 !important;
-  overflow: visible !important;
-  text-align: center !important;
-  font-size: 14px !important;
-}
-
-/* 3. Input específico w-10 */
-.fi-fo-date-time-picker input.w-10,
-.fi-fo-date-time-picker-panel input.w-10 {
-  width: 3rem !important; /* Aumentar de 2.5rem a 3rem */
-  height: 40px !important;
-  line-height: 38px !important;
-}
-
-/* 4. Separador ":" y labels */
-.fi-fo-date-time-picker .text-sm.font-medium,
-.fi-fo-date-time-picker-panel .text-sm.font-medium {
-  height: 40px !important;
-  line-height: 40px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* 5. Panel principal */
-.fi-fo-date-time-picker-panel {
-  overflow: visible !important;
-  max-height: none !important;
-}
-
-/* 6. Grid container */
-.fi-fo-date-time-picker-panel .grid {
-  overflow: visible !important;
-}
 
 /* ============================================================= */
-/*     FIX GLOBAL DEFINITIVO PARA FILAMENT 3 (2025)             */
-/*  → Soluciona dropdowns cortados en Select, filtros, acciones, etc. */
+/*     FIX SELECT DROPDOWNS (Choices.js)                        */
 /* ============================================================= */
-
-.fi-body,
-.fi-modal,
-.fi-modal-content,
-.fi-modal-card,
-.fi-sidebar,
-.fi-sidebar-content,
-.fi-card,
-.fi-section,
-.fi-section > .fi-section-content,
-.fi-page,
-.fi-main,
-.fi-form,
-.fi-fo-field-wrp,
-.fi-field-wrp,
-.fi-input-wrp,
-.fi-grid {
-    overflow: visible !important;
-}
-
-/* Choices.js (el que usa Filament cuando pones searchable() + native(false)) */
-.choices__list--dropdown,
-.choices__list--dropdown .choices__list,
-.fi-dropdown-panel,
-.fi-select-panel {
-    z-index: 999999 !important;
-    overflow: visible !important;
-    position: absolute !important;
-}
-
-/* Aseguramos altura máxima razonable y scroll interno */
-.choices__list--dropdown .choices__list {
-    max-height: 320px !important;
-    overflow-y: auto !important;
-}
-
-/* Fix extra por si usas modales anidados o wizards */
-.fi-modal .fi-modal-card > div,
-.fi-sidebar .fi-sidebar-content > div {
-    overflow: visible !important;
-}
-
-/* Opcional: mejora visual del scroll en los dropdowns */
-.choices__list--dropdown::-webkit-scrollbar {
-    width: 8px;
-}
-
-.choices__list--dropdown::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.choices__list--dropdown::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
-}
-
-.choices__list--dropdown::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-/* ============================================================= */
-/* Estilo visual para dropdown de Choices.js                     */
-/* ============================================================= */
-
-.choices__list--dropdown {
-    background-color: #ffffff !important; /* fondo sólido blanco */
-    border: 1px solid rgb(229 231 235) !important; /* borde gris claro */
-    border-radius: 0.5rem !important;     /* esquinas redondeadas */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1),
-                0 2px 4px rgba(0,0,0,0.06) !important; /* sombra suave */
-    margin-top: 0.25rem !important;       /* espacio debajo del input */
-    padding: 0.25rem 0 !important;
-    width: 100% !important;               /* se adapta al ancho del input */
-}
-
-/* Modo oscuro */
-.dark .choices__list--dropdown {
-    background-color: #1f2937 !important; /* gris oscuro */
-    border-color: #374151 !important;
-}
-
-/* ============================================================= */
-/*           AJUSTE FINAL PARA EVITAR SOLAPAMIENTO               */
-/* ============================================================= */
-
-/* 1. Bajamos un poco el z-index del "panel" interno */
-.fi-select-panel {
-    z-index: 30 !important;
-}
-
-/* 2. El menú desplegable de Choices.js (searchable) tendrá z-index alto, 
-      pero NO absurdo como 999999 */
-.choices__list--dropdown,
-.choices__list[role="listbox"] {
-    z-index: 500 !important;
-    position: absolute !important;
-}
-
-/* 3. Evitar que el dropdown se pegue demasiado al input */
-.choices__list--dropdown {
-    margin-top: 4px !important;
-}
-
-/* 4. Asegurar que el contenedor NO empuje el dropdown hacia arriba */
 .choices {
     overflow: visible !important;
 }
 
-/* 5. Evitar que sections o grid contengan el dropdown dentro del "flow" */
-.fi-section-content,
-.fi-grid {
-    overflow: visible !important;
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+    z-index: 9999 !important;
+    position: absolute !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgb(229 231 235) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+    margin-top: 4px !important;
+    max-height: 320px !important;
+    overflow-y: auto !important;
+}
+
+.dark .choices__list--dropdown {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
 }
 
 
+/* ============================================================= */
+/*     FIX DATETIMEPICKER TIME INPUTS CORTADOS                  */
+/* ============================================================= */
+
+/* 1. Contenedor del time picker */
+.fi-fo-date-time-picker .flex.items-center {
+  height: auto !important;
+  min-height: 48px !important;
+  overflow: visible !important;
+  padding: 4px 0 !important;
+}
+
+/* 2. Inputs del time picker */
+.fi-fo-date-time-picker input {
+  height: 40px !important;
+  min-height: 40px !important;
+  line-height: 40px !important;
+  text-align: center !important;
+}
+
+/* 3. Input w-10 específico */
+.fi-fo-date-time-picker input.w-10 {
+  width: 3rem !important;
+  height: 40px !important;
+}
+
+/* 4. Separadores y labels */
+.fi-fo-date-time-picker .text-sm.font-medium {
+  height: 40px !important;
+  line-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* 5. Panel del picker */
+.fi-fo-date-time-picker-panel {
+  overflow: visible !important;
+  max-height: none !important;
+}
