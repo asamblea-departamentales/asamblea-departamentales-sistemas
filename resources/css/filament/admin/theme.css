@@ -18,77 +18,42 @@
   --dark-hover-gradient: linear-gradient(145deg, rgba(var(--primary-rgb), 0.15), rgba(var(--secondary-rgb), 0.05));
 }
 
-body {
-  @apply antialiased;
-}
+body { @apply antialiased; }
 
 /* ===================================================
    TYPOGRAPHY
 =================================================== */
-.fi-header-heading {
-  @apply !text-2xl font-bold text-primary-800 dark:text-primary-300;
-}
-
-.fi-header-subheading {
-  @apply !text-sm text-gray-600 dark:text-gray-400 max-w-3xl;
-}
+.fi-header-heading { @apply !text-2xl font-bold text-primary-800 dark:text-primary-300; }
+.fi-header-subheading { @apply !text-sm text-gray-600 dark:text-gray-400 max-w-3xl; }
 
 /* ===================================================
    LAYOUT
 =================================================== */
-.fi-layout {
-  @apply bg-white dark:bg-gray-900;
-}
-
-.fi-main {
-  @apply mt-0 mb-0 bg-white dark:bg-gray-900 shadow-none transition-all duration-300;
-}
+.fi-layout, .fi-main { @apply bg-white dark:bg-gray-900 shadow-none transition-all duration-300; }
 
 /* ===================================================
    SIDEBAR
 =================================================== */
 .fi-sidebar {
   @apply transition-all duration-300 ease-in-out;
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.05), rgba(var(--primary-rgb), 0.12)) !important;
 }
+.dark .fi-sidebar { background: linear-gradient(180deg, #13151c 0%, #1b1e2b 100%) !important; }
 
-.dark .fi-sidebar {
-  background: linear-gradient(180deg, #181A20 0%, #23263A 100%);
-}
-
-.fi-sidebar.fi-sidebar-open {
-  width: var(--sidebar-width);
-  @apply border-r border-gray-100/50 dark:border-gray-800/50;
-}
-
-/* Sidebar header */
+.fi-sidebar.fi-sidebar-open { width: var(--sidebar-width); @apply border-r border-gray-100/50 dark:border-gray-800/50; }
 .fi-sidebar-header {
   @apply py-4 !ring-0 !shadow-none sticky top-0 z-10;
   background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.02), rgba(var(--primary-rgb), 0.05));
   border-bottom: 1px solid rgba(var(--primary-rgb), 0.1);
 }
+.dark .fi-sidebar-header { background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1), rgba(15,15,20,0.9)); border-bottom: 1px solid rgba(var(--primary-rgb), 0.2); }
 
-.dark .fi-sidebar-header {
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.1), rgba(15, 15, 20, 0.9));
-  border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
-}
-
-/* Sidebar items */
 .fi-sidebar-item a {
-  @apply px-4 py-2.5 rounded-xl flex items-center gap-x-3 transition-all duration-300;
-  border-left: 2px solid transparent;
+  padding: 0.60rem 1rem !important;
+  @apply rounded-xl flex items-center gap-x-3 transition-all duration-300 border-l-2 border-transparent;
 }
-
-.fi-sidebar-item a:hover {
-  background: rgba(var(--primary-rgb), 0.12);
-  @apply shadow-sm border-l-2 border-secondary-500 transform;
-}
-
-/* Active */
-.fi-sidebar-item-active a {
-  background: var(--primary-gradient);
-  @apply text-white shadow-md border-l-0;
-}
+.fi-sidebar-item a:hover { background: rgba(var(--primary-rgb), 0.15) !important; @apply shadow-sm border-secondary-500; }
+.fi-sidebar-item-active a { background: var(--primary-gradient) !important; color: white !important; @apply shadow-md; }
 
 /* ===================================================
    CONTENT SECTIONS
@@ -97,10 +62,7 @@ body {
   @apply rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md;
   background: linear-gradient(145deg, #ffffff, #f8f9fa);
 }
-
-.dark .fi-section {
-  background: linear-gradient(145deg, #1f2937, #111827);
-}
+.dark .fi-section { background: linear-gradient(145deg, #1f2937, #111827); }
 
 /* ===================================================
    CARDS & STATS
@@ -113,193 +75,118 @@ body {
 /* ===================================================
    FORMS
 =================================================== */
-.fi-input,
-.fi-select select {
-  @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500;
-}
-
-.fi-input-wrp:focus-within {
-  @apply ring-2 ring-primary-100 dark:ring-primary-900/40 rounded-lg;
-}
+.fi-input, .fi-select select { @apply rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:border-primary-500; }
+.fi-input-wrp:focus-within { @apply ring-2 ring-primary-100 dark:ring-primary-900/40 rounded-lg; }
 
 /* ===================================================
    BUTTONS
 =================================================== */
-.fi-btn {
-  @apply rounded-lg shadow-sm transform transition-all duration-200;
-}
-
-/* Primary */
-.fi-btn.fi-btn-color-primary {
-  background: var(--primary-gradient);
-  @apply text-white border-0;
-}
+.fi-btn { @apply rounded-lg shadow-sm transform transition-all duration-200; }
+.fi-btn.fi-btn-color-primary { background: var(--primary-gradient); @apply text-white border-0; }
 
 /* ===================================================
-   BADGES (optimización)
+   BADGES
 =================================================== */
-.fi-badge {
-  @apply px-2 py-1 text-xs font-semibold rounded-md border shadow-sm;
-}
-
-.fi-badge-color-primary {
-  @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300;
-}
-
-.fi-badge-color-secondary {
-  @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900/40 dark:text-secondary-300;
-}
-
-.fi-badge-color-success {
-  @apply bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300;
-}
-
-.fi-badge-color-danger {
-  @apply bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300;
-}
-
-.fi-badge-color-warning {
-  @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300;
-}
-
-.fi-badge-color-info {
-  @apply bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300;
-}
+.fi-badge { @apply px-1.5 py-0.5 text-[10px] rounded-md font-medium !important; }
+.fi-badge-color-primary { @apply bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300; }
+.fi-badge-color-secondary { @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900/40 dark:text-secondary-300; }
+.fi-badge-color-success { @apply bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300; }
+.fi-badge-color-danger { @apply bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300; }
+.fi-badge-color-warning { @apply bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-300; }
+.fi-badge-color-info { @apply bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300; }
 
 /* ===================================================
-   NOTIFICATIONS (MEGA MEJORADAS)
+   NOTIFICATIONS
 =================================================== */
-
-/* Panel */
-.filament-notifications {
-  @apply z-[9999];
-}
-
+.filament-notifications { @apply z-[9999]; }
 .filament-notifications-notification {
   @apply rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 backdrop-blur-md transition-all;
   background: linear-gradient(145deg, #ffffffee, #f8f9faee);
 }
-
-.dark .filament-notifications-notification {
-  background: linear-gradient(145deg, #1f2937ee, #111827ee);
-}
-
-/* Icon */
-.filament-notifications-notification-icon {
-  @apply scale-110 mr-3;
-}
-
-/* Title */
-.filament-notifications-notification-title {
-  @apply text-sm font-semibold text-primary-700 dark:text-primary-300;
-}
-
-/* Body */
-.filament-notifications-notification-body {
-  @apply text-gray-600 dark:text-gray-300 text-sm;
-}
-
-/* Bar indicator */
-.filament-notifications-notification .filament-notifications-status-icon {
-  @apply w-2.5 h-2.5 rounded-full;
-}
-
-/* Status colors */
-.filament-notifications-status-success {
-  @apply bg-green-500;
-}
-.filament-notifications-status-danger {
-  @apply bg-red-500;
-}
-.filament-notifications-status-warning {
-  @apply bg-yellow-500;
-}
-.filament-notifications-status-info {
-  @apply bg-blue-500;
-}
+.dark .filament-notifications-notification { background: linear-gradient(145deg, #1f2937ee, #111827ee); }
+.filament-notifications-notification-icon { @apply scale-110 mr-3; }
+.filament-notifications-notification-title { @apply text-sm font-semibold text-primary-700 dark:text-primary-300; }
+.filament-notifications-notification-body { @apply text-gray-600 dark:text-gray-300 text-sm; }
+.filament-notifications-status-success { @apply bg-green-500; }
+.filament-notifications-status-danger { @apply bg-red-500; }
+.filament-notifications-status-warning { @apply bg-yellow-500; }
+.filament-notifications-status-info { @apply bg-blue-500; }
 
 /* ===================================================
-   MODALS (GLASS + ANIMACIÓN)
+   MODALS
 =================================================== */
 .fi-modal-window {
   @apply rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden;
   backdrop-filter: blur(12px);
-
   background: linear-gradient(145deg, #ffffffdd, #f3f4f6dd);
 }
-
-.dark .fi-modal-window {
-  background: linear-gradient(145deg, #111827dd, #0f172add);
-}
-
-/* Header */
-.fi-modal-header {
-  @apply px-6 py-4 border-b border-gray-200 dark:border-gray-800;
-  background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.06), transparent);
-}
-
-.fi-modal-heading {
-  @apply text-lg font-bold text-primary-800 dark:text-primary-300;
-}
-
-/* Body */
-.fi-modal-content {
-  @apply p-6 text-gray-700 dark:text-gray-300;
-}
-
-/* Footer */
-.fi-modal-footer {
-  @apply px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900;
-}
-
-/* Overlay */
-.fi-modal {
-  animation: fadeIn 0.25s ease-out;
-}
+.dark .fi-modal-window { background: linear-gradient(145deg, #111827dd, #0f172add); }
+.fi-modal-header { @apply px-6 py-4 border-b border-gray-200 dark:border-gray-800; background: linear-gradient(90deg, rgba(var(--primary-rgb), 0.06), transparent); }
+.fi-modal-heading { @apply text-lg font-bold text-primary-800 dark:text-primary-300; }
+.fi-modal-content { @apply p-6 text-gray-700 dark:text-gray-300; }
+.fi-modal-footer { @apply px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900; }
+.fi-modal { animation: fadeIn 0.25s ease-out; }
 
 /* ===================================================
    ANIMATIONS
 =================================================== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.fi-page { animation: fadeIn 0.3s ease-out; }
+
+/* ===================================================
+   DATETIME PICKERS FIX
+=================================================== */
+/* Overflow visible solo en secciones con DateTimePicker */
+.fi-section:has(.fi-fo-date-time-picker),
+.fi-section:has(.fi-fo-date-time-picker) .fi-section-content { overflow: visible !important; }
+
+/* Contenedor flex */
+.fi-fo-date-time-picker .flex.items-center.justify-center,
+.fi-fo-date-time-picker .flex.items-center.justify-center.rtl\:flex-row-reverse,
+.fi-fo-date-time-picker-panel .flex.items-center.justify-center,
+.fi-fo-date-time-picker-panel .flex.items-center.justify-center.rtl\:flex-row-reverse {
+  height: auto !important; min-height: 48px !important; overflow: visible !important;
+  padding: 4px 0 !important; gap: 0.5rem !important;
 }
 
-.fi-page {
-  animation: fadeIn 0.3s ease-out;
+/* Inputs */
+.fi-fo-date-time-picker input,
+.fi-fo-date-time-picker-panel input {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  text-align: center !important;
+  font-size: 14px !important;
 }
 
-/* ============================
-   SIDEBAR FIX
-============================ */
-
-.fi-sidebar {
-  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.05), rgba(var(--primary-rgb), 0.12)) !important;
+/* Input específico w-10 */
+.fi-fo-date-time-picker input.w-10,
+.fi-fo-date-time-picker-panel input.w-10 {
+  width: 3rem !important;
+  height: 40px !important;
+  line-height: 38px !important;
 }
 
-.dark .fi-sidebar {
-  background: linear-gradient(180deg, #13151c 0%, #1b1e2b 100%) !important;
+/* Separador ":" y labels */
+.fi-fo-date-time-picker .text-sm.font-medium,
+.fi-fo-date-time-picker-panel .text-sm.font-medium {
+  height: 40px !important;
+  line-height: 40px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-/* Items */
-.fi-sidebar-item a {
-  padding: 0.60rem 1rem !important;
+/* Panel principal */
+.fi-fo-date-time-picker-panel {
+  overflow: visible !important;
+  max-height: none !important;
 }
 
-/* Hover */
-.fi-sidebar-item a:hover {
-  background: rgba(var(--primary-rgb), 0.15) !important;
-}
-
-/* Active */
-.fi-sidebar-item-active a {
-  background: var(--primary-gradient) !important;
-  color: white !important;
-}
-/* ============================
-   BADGE FIX (Tamaño óptimo)
-============================ */
-
-.fi-badge {
-  @apply px-1.5 py-0.5 text-[10px] rounded-md font-medium !important;
+/* Grid container */
+.fi-fo-date-time-picker-panel .grid {
+  overflow: visible !important;
 }
