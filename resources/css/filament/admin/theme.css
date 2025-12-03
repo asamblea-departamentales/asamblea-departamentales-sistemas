@@ -310,3 +310,10 @@ body { @apply antialiased; }
 .dark .fi-user-menu-dropdown {
   background: linear-gradient(145deg, #1f2937ee, #111827ee);
 }
+
+/* Cuando las notificaciones están abiertas */
+.notificaciones-abiertas .fi-user-menu-dropdown {
+  z-index: 1 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
