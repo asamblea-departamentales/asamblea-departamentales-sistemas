@@ -285,3 +285,28 @@ body { @apply antialiased; }
   margin: 0 auto !important;
   display: block !important;
 }
+
+
+/* Contenedor del avatar y dropdown */
+.fi-dropdown-trigger,
+.fi-user-menu,
+.fi-topbar {
+  overflow: visible !important;
+  position: relative !important;
+  z-index: 50 !important;
+}
+
+/* Dropdown del usuario */
+.fi-user-menu-dropdown {
+  position: absolute !important;
+  top: 100% !important; /* fuerza apertura hacia abajo */
+  bottom: auto !important;
+  z-index: 9999 !important;
+  @apply mt-2 rounded-xl shadow-xl border border-gray-200 dark:border-gray-800 backdrop-blur-md;
+
+  background: linear-gradient(145deg, #ffffffee, #f8f9faee);
+}
+
+.dark .fi-user-menu-dropdown {
+  background: linear-gradient(145deg, #1f2937ee, #111827ee);
+}
