@@ -190,3 +190,45 @@ body { @apply antialiased; }
 .fi-fo-date-time-picker-panel .grid {
   overflow: visible !important;
 }
+
+/* Sidebar fondo y transición */
+.fi-sidebar {
+  background: linear-gradient(180deg, rgba(var(--primary-rgb), 0.04), rgba(var(--primary-rgb), 0.10)) !important;
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Sidebar oscuro */
+.dark .fi-sidebar {
+  background: linear-gradient(180deg, #12141b 0%, #1a1d29 100%) !important;
+}
+
+/* Ítems */
+.fi-sidebar-item a {
+  padding: 0.5rem 1rem !important;
+  @apply rounded-lg flex items-center gap-x-3 transition-all duration-200 border-l-2 border-transparent text-sm font-medium;
+}
+
+/* Hover */
+.fi-sidebar-item a:hover {
+  background: rgba(var(--primary-rgb), 0.12) !important;
+  @apply shadow-sm border-secondary-500;
+}
+
+/* Activo */
+.fi-sidebar-item-active a {
+  background: var(--primary-gradient) !important;
+  color: #fff !important;
+  @apply shadow-md border-l-0;
+}
+
+/* Separador visual entre sidebar y contenido */
+.fi-sidebar.fi-sidebar-open {
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.fi-sidebar-item a svg {
+  @apply w-5 h-5 text-gray-500 dark:text-gray-400;
+}
+.fi-sidebar-item-active a svg {
+  @apply text-white;
+}
