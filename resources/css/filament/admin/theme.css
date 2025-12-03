@@ -311,9 +311,18 @@ body { @apply antialiased; }
   background: linear-gradient(145deg, #1f2937ee, #111827ee);
 }
 
-/* Cuando las notificaciones están abiertas */
-.notificaciones-abiertas .fi-user-menu-dropdown {
-  z-index: 1 !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+.fi-notification-panel {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 3.5rem; /* ajusta según tu topbar */
+  right: 1rem;
+  width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  @apply rounded-xl shadow-2xl backdrop-blur-md border border-gray-200 dark:border-gray-800;
+  background: linear-gradient(145deg, #ffffffee, #f8f9faee);
+}
+
+.dark .fi-notification-panel {
+  background: linear-gradient(145deg, #1f2937ee, #111827ee);
 }
