@@ -276,3 +276,12 @@ body { @apply antialiased; }
 .fi-sidebar-item-active a svg {
   @apply text-white w-5 h-5;
 }
+
+/* Logo en el login */
+.fi-simple-header img.fi-logo {
+  max-height: 80px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+  display: block !important;
+}
