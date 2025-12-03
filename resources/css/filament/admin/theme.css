@@ -232,3 +232,12 @@ body { @apply antialiased; }
 .fi-sidebar-item-active a svg {
   @apply text-white;
 }
+
+/* Logo dentro del header del sidebar */
+.fi-sidebar-header img {
+  max-height: 40px !important;
+  width: auto !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+  padding: 0.5rem 1rem !important;
+}
