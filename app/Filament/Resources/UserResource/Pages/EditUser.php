@@ -70,7 +70,14 @@ class EditUser extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    public function getTitle(): string|Htmlable
+    // Este es para el <title> del navegador (solo texto)
+    public function getTitle(): string
+    {
+        return 'Editar Usuario: ' . $this->record->name;
+    }
+
+    // Este es para el heading visual en la página (puede tener HTML)
+    public function getHeading(): string|Htmlable
     {
         $title = $this->record->name;
         $badge = $this->getBadgeStatus();
