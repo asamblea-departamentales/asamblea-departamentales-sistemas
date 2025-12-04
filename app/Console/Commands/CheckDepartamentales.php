@@ -18,11 +18,14 @@ class CheckDepartamentales extends Command
     {
         $proximoMes = Carbon::now()->addMonth()->month;
 
-        // Buscar todos los usuarios con rol superadmin (usando Spatie + Filament Shield)
-        $superadmins = User::role(config('filament-shield.super_admin.name'))->get();
+        // Buscar usuarios con rol superadmin y GOL
+        $notificarUsuarios = User::role([
+            config('filament-shield.super_admin.name'),
+            'GOL'
+        ])->get();
 
-        if ($superadmins->isEmpty()) {
-            $this->error('No se encontró ningún usuario con rol superadmin.');
+        if ($notificarUsuarios->isEmpty()) {
+            $this->error('No se encontró ningún usuario con rol superadmin o GOL.');
             return;
         }
 
@@ -35,8 +38,9 @@ class CheckDepartamentales extends Command
                               ->count();
 
             if ($count === 0) {
-                foreach ($superadmins as $superadmin) {
-                    $superadmin->notify(new DepartamentalFaltanteNotification(
+                // Notificar a SuperAdmins y GOL
+                foreach ($notificarUsuarios as $usuario) {
+                    $usuario->notify(new DepartamentalFaltanteNotification(
                         $departamental->id,
                         $departamental->nombre
                     ));
@@ -49,3 +53,5 @@ class CheckDepartamentales extends Command
         $this->info('Revisión completada.');
     }
 }
+
+//Modificado para que a los GOL tambien les caiga la notificacion

@@ -285,7 +285,7 @@ class ActividadResource extends Resource
                         $user = auth()->user();
                 
                         // Permiso normal
-                        $allowed = $user->can('view_any_actividad') && $user->hasRole('Administrador|GOL');
+                        $allowed = $user->can('view_any_actividad') && $user->hasRole('Administrador, GOL');
                 
                         // Si la URL incluye un filtro por departamental, lo activamos
                         // Ejemplo recibido desde notificación:

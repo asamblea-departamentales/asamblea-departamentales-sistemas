@@ -28,12 +28,12 @@ class ActividadPolicy
             return false;
         }
 
-        // Si tiene rol Administrador o GOL, puede ver todo
+        // GOL o Administrador → pueden ver todas
         if ($user->hasRole(['Administrador', 'GOL'])) {
             return true;
         }
 
-        // Si no, solo puede ver de su departamental
+        // Usuarios normales → solo su departamental
         return $actividad->departamental_id === $user->departamental_id;
     }
 
@@ -42,6 +42,11 @@ class ActividadPolicy
      */
     public function create(User $user): bool
     {
+        // GOL NO puede crear
+        if ($user->hasRole('GOL')) {
+            return false;
+        }
+
         return $user->can('create_actividad');
     }
 
@@ -50,17 +55,22 @@ class ActividadPolicy
      */
     public function update(User $user, Actividad $actividad): bool
     {
+        // GOL NO puede editar
+        if ($user->hasRole('GOL')) {
+            return false;
+        }
+
         // Primero verificar permiso básico
         if (! $user->can('update_actividad')) {
             return false;
         }
 
-        // Si tiene rol Administrador o GOL, puede editar todo
-        if ($user->hasRole(['Administrador', 'GOL'])) {
+        // Administrador sí puede editar todo
+        if ($user->hasRole('Administrador')) {
             return true;
         }
 
-        // Si no, solo puede editar de su departamental
+        // Usuarios normales → solo su departamental
         return $actividad->departamental_id === $user->departamental_id;
     }
 
@@ -69,71 +79,55 @@ class ActividadPolicy
      */
     public function delete(User $user, Actividad $actividad): bool
     {
+        // GOL NO puede eliminar
+        if ($user->hasRole('GOL')) {
+            return false;
+        }
+
         // Primero verificar permiso básico
         if (! $user->can('delete_actividad')) {
             return false;
         }
 
-        // Si tiene rol Administrador o GOL, puede eliminar todo
-        if ($user->hasRole(['Administrador', 'GOL'])) {
+        // Administrador sí puede eliminar todo
+        if ($user->hasRole('Administrador')) {
             return true;
         }
 
-        // Si no, solo puede eliminar de su departamental
+        // Usuarios normales → solo su departamental
         return $actividad->departamental_id === $user->departamental_id;
     }
 
-    /**
-     * Determine whether the user can bulk delete.
-     */
     public function deleteAny(User $user): bool
     {
         return $user->can('delete_any_actividad');
     }
 
-    /**
-     * Determine whether the user can permanently delete.
-     */
     public function forceDelete(User $user, Actividad $actividad): bool
     {
         return $user->can('force_delete_actividad');
     }
 
-    /**
-     * Determine whether the user can permanently bulk delete.
-     */
     public function forceDeleteAny(User $user): bool
     {
         return $user->can('force_delete_any_actividad');
     }
 
-    /**
-     * Determine whether the user can restore.
-     */
     public function restore(User $user, Actividad $actividad): bool
     {
         return $user->can('restore_actividad');
     }
 
-    /**
-     * Determine whether the user can bulk restore.
-     */
     public function restoreAny(User $user): bool
     {
         return $user->can('restore_any_actividad');
     }
 
-    /**
-     * Determine whether the user can replicate.
-     */
     public function replicate(User $user, Actividad $actividad): bool
     {
         return $user->can('replicate_actividad');
     }
 
-    /**
-     * Determine whether the user can reorder.
-     */
     public function reorder(User $user): bool
     {
         return $user->can('reorder_actividad');
