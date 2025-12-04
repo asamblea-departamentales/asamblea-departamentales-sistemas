@@ -373,3 +373,66 @@ body { @apply antialiased; }
 .fi-notifications {
   z-index: 30 !important;
 }
+
+/* ============================================================= */
+/*     FIX DROPDOWNS CON FONDO TRANSPARENTE                     */
+/* ============================================================= */
+
+/* Choices.js (Select searchable) */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+    z-index: 9999 !important;
+    position: absolute !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgb(229 231 235) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    margin-top: 4px !important;
+    max-height: 320px !important;
+    overflow-y: auto !important;
+    backdrop-filter: none !important;
+}
+
+.dark .choices__list--dropdown {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+/* Items dentro del dropdown */
+.choices__list--dropdown .choices__item,
+.choices__list[role="listbox"] .choices__item {
+    background-color: transparent !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.choices__list--dropdown .choices__item:hover,
+.choices__list[role="listbox"] .choices__item:hover {
+    background-color: rgba(var(--primary-rgb), 0.08) !important;
+}
+
+/* Select de Filament nativo */
+.fi-select-panel,
+[x-data*="select"] .fi-dropdown-panel {
+    z-index: 9999 !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgb(229 231 235) !important;
+    backdrop-filter: none !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .fi-select-panel,
+.dark [x-data*="select"] .fi-dropdown-panel {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+}
+
+/* Asegurar que el contenedor padre permita overflow */
+.choices {
+    overflow: visible !important;
+}
+
+.fi-fo-select,
+.fi-select-wrapper {
+    overflow: visible !important;
+    position: relative !important;
+}
