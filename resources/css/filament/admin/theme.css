@@ -326,3 +326,28 @@ body { @apply antialiased; }
 .dark .fi-notification-panel {
   background: linear-gradient(145deg, #1f2937ee, #111827ee);
 }
+
+/* ============================================
+   FIX: Avatar superpuesto sobre notificaciones
+============================================ */
+
+/* El avatar NO debe tener un z-index más alto que el panel */
+.fi-user-menu,
+.fi-dropdown-trigger {
+  z-index: 20 !important; /* antes estaba en 50 */
+}
+
+/* El contenedor de la topbar también debe estar abajo */
+.fi-topbar {
+  z-index: 25 !important;
+}
+
+/* El panel de notificaciones DEBE ir arriba */
+.fi-notification-panel {
+  z-index: 9999 !important;
+}
+
+/* Incluso el wrapper del trigger de notificaciones debe estar abajo */
+.fi-notifications {
+  z-index: 30 !important;
+}
