@@ -21,7 +21,7 @@ class CheckDepartamentales extends Command
         // Buscar usuarios con rol superadmin y GOL
         $notificarUsuarios = User::role([
             config('filament-shield.super_admin.name'),
-            'GOL'
+            'gol'
         ])->get();
 
         if ($notificarUsuarios->isEmpty()) {

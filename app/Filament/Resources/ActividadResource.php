@@ -285,7 +285,7 @@ class ActividadResource extends Resource
                         $user = auth()->user();
                 
                         // Permiso normal
-                        $allowed = $user->can('view_any_actividad') && $user->hasRole(['Administrador', 'GOL']);
+                        $allowed = $user->can('view_any_actividad') && $user->hasRole(['Administrador', 'gol']);
                 
                         // Si la URL incluye un filtro por departamental, lo activamos
                         // Ejemplo recibido desde notificación:
@@ -303,7 +303,7 @@ class ActividadResource extends Resource
                         titleAttribute: 'firstname',
                         modifyQueryUsing: function (Builder $query) {
                             $user = auth()->user();
-                            if (! $user->hasRole(['Administrador', 'GOL'])) {
+                            if (! $user->hasRole(['Administrador', 'gol'])) {
                                 $query->where('departamental_id', $user->departamental_id);
                             }
 
@@ -312,7 +312,7 @@ class ActividadResource extends Resource
                     )
                     ->searchable()
                     ->preload()
-                    ->visible(fn () => auth()->user()->hasRole(['Administrador', 'GOL'])),
+                    ->visible(fn () => auth()->user()->hasRole(['Administrador', 'gol'])),
                 Tables\Filters\Filter::make('asistencia_completa')
                     ->form([
                         Forms\Components\TextInput::make('min_asistencia')

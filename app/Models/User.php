@@ -112,7 +112,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     /** Roles “centrales” con vista global (ajusta nombres si usas otros) */
     public function isCentralRole(): bool
     {
-        return $this->hasAnyRole(['Administrador', 'GOL']) || $this->isSuperAdmin();
+        return $this->hasAnyRole(['Administrador', 'gol']) || $this->isSuperAdmin();
     }
 
     /* ==============================

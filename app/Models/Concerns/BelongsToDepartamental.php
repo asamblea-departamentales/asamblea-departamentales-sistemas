@@ -26,7 +26,7 @@ trait BelongsToDepartamental
             return $query;
         }
 
-        $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
+        $isCentral = $u->hasAnyRole(['Administrador', 'gol'])
                      || $u->hasRole(config('filament-shield.super_admin.name'));
         $table = $query->getModel()->getTable();
 
@@ -46,7 +46,7 @@ trait BelongsToDepartamental
                 return;
             }
 
-            $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
+            $isCentral = $u->hasAnyRole(['Administrador', 'gol'])
                           || $u->hasRole(config('filament-shield.super_admin.name'));
 
             if (! $isCentral
@@ -63,7 +63,7 @@ trait BelongsToDepartamental
                 return;
             }
 
-            $isCentral = $u->hasAnyRole(['Administrador', 'GOL'])
+            $isCentral = $u->hasAnyRole(['Administrador', 'gol'])
                           || $u->hasRole(config('filament-shield.super_admin.name'));
             $table = $query->getModel()->getTable();
 

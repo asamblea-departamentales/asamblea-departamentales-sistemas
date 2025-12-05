@@ -15,6 +15,11 @@ class ActividadPolicy
      */
     public function viewAny(User $user): bool
     {
+        //GOL y Administrador siempre pueden ver todas
+        if($user->hasRole(['Administrador', 'gol'])){
+            return true;
+        }
+        //Otros roles depende del permiso
         return $user->can('view_any_actividad');
     }
 
@@ -29,7 +34,7 @@ class ActividadPolicy
         }
 
         // GOL o Administrador → pueden ver todas
-        if ($user->hasRole(['Administrador', 'GOL'])) {
+        if ($user->hasRole(['Administrador', 'gol'])) {
             return true;
         }
 
@@ -43,7 +48,7 @@ class ActividadPolicy
     public function create(User $user): bool
     {
         // GOL NO puede crear
-        if ($user->hasRole('GOL')) {
+        if ($user->hasRole('gol')) {
             return false;
         }
 
@@ -56,7 +61,7 @@ class ActividadPolicy
     public function update(User $user, Actividad $actividad): bool
     {
         // GOL NO puede editar
-        if ($user->hasRole('GOL')) {
+        if ($user->hasRole('gol')) {
             return false;
         }
 
@@ -80,7 +85,7 @@ class ActividadPolicy
     public function delete(User $user, Actividad $actividad): bool
     {
         // GOL NO puede eliminar
-        if ($user->hasRole('GOL')) {
+        if ($user->hasRole('gol')) {
             return false;
         }
 
