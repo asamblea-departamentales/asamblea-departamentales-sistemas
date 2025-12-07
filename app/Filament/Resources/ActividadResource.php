@@ -246,7 +246,7 @@ class ActividadResource extends Resource
                     ->searchable()
                     ->limit(50)
                     ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
-                Tables\Columns\TextColumn::make('asistencia_total')
+                Tables\Columns\TextColumn::make('asistencia_completa')
                     ->label('Asistencia Total')
                     ->getStateUsing(fn ($record) => $record->asistentes_hombres + $record->asistentes_mujeres)
                     ->sortable(),
@@ -570,7 +570,7 @@ class ActividadResource extends Resource
                                     ->placeholder('0')
                                     ->required(fn ($get) => $get('estado') === 'Completada'),
                                 
-                                Forms\Components\TextInput::make('asistencia_total')
+                                Forms\Components\TextInput::make('asistencia_completa')
                                     ->label('Asistencia Total')
                                     ->numeric()
                                     ->disabled()
@@ -651,7 +651,7 @@ class ActividadResource extends Resource
                                 $data['user_id'] = auth()->id();
                     
                                 // Calcular asistencia_total
-                                $data['asistencia_total'] = 
+                                $data['asistencia_completa'] = 
                                     ((int) ($data['asistentes_hombres'] ?? 0)) + 
                                     ((int) ($data['asistentes_mujeres'] ?? 0));
                     
