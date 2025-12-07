@@ -516,7 +516,7 @@ class ActividadResource extends Resource
                                     ->label('Fecha de Vencimiento')
                                     ->required()
                                     ->default(now()->addDays(7))
-                                    ->after('start_date')
+                                    ->after('star_date')
                                     ->displayFormat('d/m/Y H:i')
                                     ->native(false),
                                 Forms\Components\Select::make('estado')
