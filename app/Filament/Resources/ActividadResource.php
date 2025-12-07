@@ -255,7 +255,6 @@ class ActividadResource extends Resource
                 Tables\Columns\TextColumn::make('fecha')
                     ->label('Fecha de la Actividad')
                     ->date('d/m/Y')
-                    ->format('Y-m-d')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('star_date')
                     ->label('Fecha de Inicio')
