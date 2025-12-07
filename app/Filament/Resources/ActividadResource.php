@@ -54,6 +54,7 @@ class ActividadResource extends Resource
                             ->required()
                             ->default(now())
                             ->displayFormat('d/m/Y')
+                            ->format('Y-m-d')
                             ->native(false)
                             ->dehydrated(true),
                         Forms\Components\Hidden::make('departamental_id')
@@ -254,6 +255,7 @@ class ActividadResource extends Resource
                 Tables\Columns\TextColumn::make('fecha')
                     ->label('Fecha de la Actividad')
                     ->date('d/m/Y')
+                    ->format('Y-m-d')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('star_date')
                     ->label('Fecha de Inicio')
@@ -623,6 +625,9 @@ class ActividadResource extends Resource
         // Forzamos defaults si Filament QuickCreate no manda los campos
         $data['star_date'] = $data['star_date'] ?? now();
         $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
+
+        //Forzamos la fecha
+        $data['fecha'] = $data['fecha'] ?? now()->format('Y-m-d');
 
         //Obtener departamental desde el usuario logueado
         $data['departamental_id'] = auth()->user()->departamental_id ?? null;
