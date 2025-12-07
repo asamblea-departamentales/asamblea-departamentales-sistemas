@@ -479,6 +479,7 @@ class ActividadResource extends Resource
     ->form([
         Forms\Components\Grid::make(2)
             ->schema([
+                // Usuario
                 Forms\Components\Select::make('user_id')
                     ->label('Usuario')
                     ->relationship('user', 'firstname')
@@ -487,6 +488,7 @@ class ActividadResource extends Resource
                     ->disabled()
                     ->dehydrated(),
 
+                // Departamental
                 Forms\Components\Hidden::make('departamental_id')
                     ->default(fn () => auth()->user()->departamental_id)
                     ->required()
@@ -498,6 +500,7 @@ class ActividadResource extends Resource
                     ->disabled()
                     ->dehydrated(false),
 
+                // Fecha simple
                 Forms\Components\DatePicker::make('fecha')
                     ->label('Fecha de la Actividad')
                     ->required()
@@ -506,6 +509,7 @@ class ActividadResource extends Resource
                     ->native(false)
                     ->dehydrated(true),
 
+                // Programa
                 Forms\Components\Select::make('programa')
                     ->label('Programa')
                     ->required()
@@ -520,6 +524,7 @@ class ActividadResource extends Resource
                     ->native(false)
                     ->dehydrated(),
 
+                // Estado
                 Forms\Components\Select::make('estado')
                     ->label('Estado')
                     ->options([
@@ -533,27 +538,30 @@ class ActividadResource extends Resource
                     ->live()
                     ->dehydrated(),
 
+                // Fecha y hora inicio
                 Forms\Components\DateTimePicker::make('star_date')
                     ->label('Fecha de Inicio')
                     ->required()
                     ->default(now())
                     ->displayFormat('d/m/Y H:i')
-                    ->format('Y-m-d H:i') // IMPORTANTE: esto fuerza Flatpickr
+                    ->format('Y-m-d H:i')
                     ->seconds(false)
                     ->native(false)
                     ->dehydrated(),
 
+                // Fecha y hora fin
                 Forms\Components\DateTimePicker::make('due_date')
                     ->label('Fecha de Vencimiento')
                     ->required()
                     ->default(now()->addDays(7))
                     ->after('star_date')
                     ->displayFormat('d/m/Y H:i')
-                    ->format('Y-m-d H:i') // IMPORTANTE: esto fuerza Flatpickr
+                    ->format('Y-m-d H:i')
                     ->seconds(false)
                     ->native(false)
                     ->dehydrated(),
 
+                // Lugar
                 Forms\Components\TextInput::make('lugar')
                     ->label('Lugar de la Actividad')
                     ->required()
@@ -561,6 +569,7 @@ class ActividadResource extends Resource
                     ->placeholder('Ej: Auditorio Principal')
                     ->dehydrated(),
 
+                // Asistentes hombres
                 Forms\Components\TextInput::make('asistentes_hombres')
                     ->label('Asistentes Hombres')
                     ->numeric()
@@ -571,6 +580,7 @@ class ActividadResource extends Resource
                     ->required(fn ($get) => $get('estado') === 'Completada')
                     ->dehydrated(),
 
+                // Asistentes mujeres
                 Forms\Components\TextInput::make('asistentes_mujeres')
                     ->label('Asistentes Mujeres')
                     ->numeric()
@@ -581,12 +591,13 @@ class ActividadResource extends Resource
                     ->required(fn ($get) => $get('estado') === 'Completada')
                     ->dehydrated(),
 
+                // Total asistencia
                 Forms\Components\TextInput::make('asistencia_completa')
                     ->label('Asistencia Total')
                     ->numeric()
                     ->disabled()
-                    ->default(fn ($get) => 
-                        ((int) ($get('asistentes_hombres') ?? 0)) + 
+                    ->default(fn ($get) =>
+                        ((int) ($get('asistentes_hombres') ?? 0)) +
                         ((int) ($get('asistentes_mujeres') ?? 0))
                     )
                     ->live()
@@ -594,6 +605,7 @@ class ActividadResource extends Resource
                     ->dehydrated(),
             ]),
 
+        // Macroactividad
         Forms\Components\Textarea::make('macroactividad')
             ->label('Macroactividad')
             ->required()
@@ -602,6 +614,7 @@ class ActividadResource extends Resource
             ->placeholder('Describe brevemente la actividad...')
             ->dehydrated(true),
 
+        // Atestados
         Forms\Components\FileUpload::make('atestados')
             ->label('Adjuntar Atestados (Opcional)')
             ->multiple()
@@ -612,6 +625,7 @@ class ActividadResource extends Resource
             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.')
             ->dehydrated(),
     ])
+
     ->modalSubmitAction(false) // Está bien
     ->modalFooterActions([
 
