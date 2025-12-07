@@ -600,10 +600,12 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.'),
                     ])
-                    ->modalSubmitAction(
+                    ->modalSubmitAction(false) // Deshabilitar el botón de submit por defecto
+                    ->modalFooterActions([
                         Tables\Actions\Action::make('submit')
                             ->label('Crear Rápido')
                             ->color('success')
+                            ->icon('heroicon-o-bolt')
                             ->action(function (array $data, Tables\Actions\Action $action) {
                                 // Validar que existan los campos requeridos
                                 if (!isset($data['due_date']) || !isset($data['star_date'])) {
@@ -615,7 +617,7 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-            
+                    
                                 // Validar fecha de vencimiento
                                 if (\Carbon\Carbon::parse($data['due_date']) < now()) {
                                     Notification::make()
@@ -626,7 +628,7 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-            
+                    
                                 // Validar departamental
                                 if (empty($data['departamental_id'])) {
                                     Notification::make()
@@ -637,15 +639,15 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-            
+                    
                                 // Asegurar user_id
                                 $data['user_id'] = auth()->id();
-            
+                    
                                 // Calcular asistencia_total
                                 $data['asistencia_total'] = 
                                     ((int) ($data['asistentes_hombres'] ?? 0)) + 
                                     ((int) ($data['asistentes_mujeres'] ?? 0));
-            
+                    
                                 try {
                                     $record = Actividad::create($data);
                                     
@@ -654,7 +656,9 @@ class ActividadResource extends Resource
                                         ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
                                         ->success()
                                         ->send();
-            
+                    
+                                    $action->success(); // Cierra el modal automáticamente
+                    
                                 } catch (\Illuminate\Validation\ValidationException $e) {
                                     Notification::make()
                                         ->title('Error de Validación')
@@ -671,28 +675,22 @@ class ActividadResource extends Resource
                                     $action->halt();
                                 }
                             })
-                    )
-                    ->modalCancelAction(
-                        Tables\Actions\Action::make('cancel')
-                            ->label('Cancelar')
-                            ->color('gray')
-                    )
-                    ->modalFooterActions([
+                            ->submit('submit'), // Importante: esto hace que funcione como submit del formulario
+                            
                         Tables\Actions\Action::make('create_wizard')
                             ->label('Crear con Asistente Completo')
                             ->icon('heroicon-o-sparkles')
                             ->color('primary')
                             ->url(fn () => static::getUrl('create'))
-                            ->tooltip('Crear actividad paso a paso con todas las opciones'),
+                            ->tooltip('Crear actividad paso a paso con todas las opciones')
+                            ->openUrlInNewTab(false),
+                            
+                        Tables\Actions\Action::make('cancel')
+                            ->label('Cancelar')
+                            ->color('gray')
+                            ->modalAction('close'),
                     ]),
-                    
-                Tables\Actions\CreateAction::make()
-                    ->label('Crear con Asistente')
-                    ->icon('heroicon-o-sparkles')
-                    ->color('primary')
-                    ->visible(fn () => auth()->user()->can('create_actividad')),
-            ])
-            ->defaultSort('due_date', 'asc');
+            ]);
         }
     public static function canViewAny(): bool
     {
