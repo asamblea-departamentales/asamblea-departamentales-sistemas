@@ -655,6 +655,8 @@ class ActividadResource extends Resource
             return $action->halt();
         }
 
+        dd($data);
+
           // Validar departamental
           if (empty($data['departamental_id'])) {
             Notification::make()
