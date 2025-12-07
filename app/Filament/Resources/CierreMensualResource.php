@@ -209,6 +209,8 @@ class CierreMensualResource extends Resource
             'index' => Pages\ListCierreMensuals::route('/'),
             'create' => Pages\CreateCierreMensual::route('/create'),
             'edit' => Pages\EditCierreMensual::route('/{record}/edit'),
+            'view' => Pages\ViewCierreMensual::route('/{record}'),
+
         ];
     }
 
