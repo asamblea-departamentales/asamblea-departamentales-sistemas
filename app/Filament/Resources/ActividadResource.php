@@ -600,7 +600,7 @@ class ActividadResource extends Resource
             ->rows(3)
             ->columnSpanFull()
             ->placeholder('Describe brevemente la actividad...')
-            ->dehydrated(),
+            ->dehydrated(true),
 
         Forms\Components\FileUpload::make('atestados')
             ->label('Adjuntar Atestados (Opcional)')
