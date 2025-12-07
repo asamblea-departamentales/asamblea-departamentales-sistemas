@@ -536,6 +536,7 @@ class ActividadResource extends Resource
                     ->required()
                     ->default(now())
                     ->displayFormat('d/m/Y H:i')
+                    ->format('Y-m-d H:i') // IMPORTANTE: esto fuerza Flatpickr
                     ->seconds(false)
                     ->native(false)
                     ->dehydrated(),
@@ -546,6 +547,7 @@ class ActividadResource extends Resource
                     ->default(now()->addDays(7))
                     ->after('star_date')
                     ->displayFormat('d/m/Y H:i')
+                    ->format('Y-m-d H:i') // IMPORTANTE: esto fuerza Flatpickr
                     ->seconds(false)
                     ->native(false)
                     ->dehydrated(),
@@ -683,8 +685,6 @@ class ActividadResource extends Resource
             ->color('gray')
             ->action(fn () => null),
     ])
-
-
             ]);
         }
     public static function canViewAny(): bool
