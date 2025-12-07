@@ -70,7 +70,6 @@ class ListActividades extends ListRecords
                         ->visible(fn ($get) => $get('tipo_cierre') === 'individual')
                         ->columnSpanFull(),
                 ])
-                ->columns(2)
                 
                 ->action(function (array $data) {
                     $this->generarCierreMensual($data);
