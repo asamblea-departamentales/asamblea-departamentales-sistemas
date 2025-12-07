@@ -494,11 +494,18 @@ class ActividadResource extends Resource
                                     ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
                                     ->disabled()
                                     ->dehydrated(false),
-                                Forms\Components\TextInput::make('programa')
+                                    Forms\Components\Select::make('programa')
                                     ->label('Programa')
                                     ->required()
-                                    ->maxLength(255)
-                                    ->placeholder('Ej: Programa de Desarrollo'),
+                                    ->options([
+                                        'Programa de Educacion Civica'        => 'Programa de Educacion Civica',
+                                        'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
+                                        'Programa de Atencion Ciudadana'      => 'Programa de Atencion Ciudadana',
+                                        'Otro'                                => 'Otros',
+                                    ])
+                                    ->placeholder('Seleccione un programa')
+                                    ->native(false),
+                                
                                 Forms\Components\DateTimePicker::make('start_date')
                                     ->label('Fecha de Inicio')
                                     ->required()
@@ -515,8 +522,10 @@ class ActividadResource extends Resource
                                 Forms\Components\Select::make('estado')
                                     ->label('Estado')
                                     ->options([
-                                        'Pendiente' => 'Pendiente',
+                                        'Pendiente'   => 'Pendiente',
                                         'En Progreso' => 'En Progreso',
+                                        'Completada'  => 'Completada',
+                                        'Cancelada'   => 'Cancelada',
                                     ])
                                     ->default('Pendiente')
                                     ->required(),
@@ -525,40 +534,43 @@ class ActividadResource extends Resource
                                     ->required()
                                     ->maxLength(255)
                                     ->placeholder('Ej: Auditorio Principal'),
-                                Forms\Components\TextInput::make('asistentes_hombres')
+                                    Forms\Components\TextInput::make('asistentes_hombres')
                                     ->label('Asistentes Hombres')
                                     ->numeric()
-                                    ->required()
-                                    ->minValue(0)
-                                    ->inputMode('integer')
-                                    ->live()
-                                    ->placeholder('0'),
-                                Forms\Components\TextInput::make('asistentes_mujeres')
-                                    ->label('Asistentes Mujeres')
-                                    ->numeric()
-                                    ->required()
-                                    ->minValue(0)
-                                    ->inputMode('integer')
-                                    ->live()
-                                    ->placeholder('0'),
-                                Forms\Components\TextInput::make('asistencia_completa')
-                                    ->label('Asistencia Completa')
-                                    ->numeric()
-                                    ->required()
                                     ->minValue(0)
                                     ->inputMode('integer')
                                     ->live()
                                     ->placeholder('0')
+                                    ->required(fn ($get) => $get('estado') === 'Completada'),
+                                
+                                Forms\Components\TextInput::make('asistentes_mujeres')
+                                    ->label('Asistentes Mujeres')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->inputMode('integer')
+                                    ->live()
+                                    ->placeholder('0')
+                                    ->required(fn ($get) => $get('estado') === 'Completada'),
+                                
+                                Forms\Components\TextInput::make('asistencia_completa')
+                                    ->label('Asistencia Completa')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->inputMode('integer')
+                                    ->live()
+                                    ->placeholder('0')
+                                    ->required(fn ($get) => $get('estado') === 'Completada')
                                     ->rules([
                                         'integer',
                                         function ($attribute, $value, $fail, $get) {
                                             $hombres = (int) $get('asistentes_hombres') ?? 0;
                                             $mujeres = (int) $get('asistentes_mujeres') ?? 0;
-                                            if ($value !== ($hombres + $mujeres)) {
+                                            if ($get('estado') === 'Completada' && $value !== ($hombres + $mujeres)) {
                                                 $fail('La asistencia completa debe ser igual a la suma de asistentes hombres y mujeres.');
                                             }
                                         },
                                     ]),
+                                
                             ]),
                         Forms\Components\Textarea::make('macroactividad')
                             ->label('Macroactividad')
@@ -566,6 +578,37 @@ class ActividadResource extends Resource
                             ->rows(3)
                             ->columnSpanFull()
                             ->placeholder('Describe brevemente la actividad...'),
+
+                            Forms\Components\FileUpload::make('atestados')
+                            ->label('Adjuntar Atestados')
+                            ->multiple()
+                            ->directory('actividades')
+                            ->acceptedFileTypes([
+                                'image/*',
+                                'application/pdf',
+                                'application/msword',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                'text/plain',
+                                'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/zip',
+                                'application/x-rar-compressed',
+                                'video/*',
+                                'audio/*',
+                            ])
+                            ->maxFiles(10)
+                            ->maxSize(10240)
+                            ->reorderable()
+                            ->downloadable()
+                            ->openable()
+                            ->previewable()
+                            ->columnSpanFull()
+                            ->helperText('Formatos aceptados: imágenes, PDF, Word, Excel, ZIP, video y audio. Máximo 10 archivos de 10MB cada uno.')
+                            ->uploadingMessage('Subiendo archivos...')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->uploadProgressIndicatorPosition('left'),
+                            
                     ])
                     ->modalSubmitAction(
                         Tables\Actions\Action::make('submit')
