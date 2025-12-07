@@ -459,15 +459,14 @@ class ActividadResource extends Resource
             ])
             ->headerActions([
                 Tables\Actions\Action::make('quick_add')
-                    ->label('Añadir Rapido')
+                    ->label('Añadir Rápido')
                     ->icon('heroicon-o-plus')
                     ->color('success')
                     ->visible(fn () => auth()->user()->can('create_actividad'))
-                    ->modal()
+                    ->slideOver()
                     ->modalHeading('Crear Nueva Actividad - Rápido')
                     ->modalDescription('Completa los campos básicos para crear una actividad rápidamente.')
-                    ->modalWidth('lg')
-                    ->slideOver()
+                    ->modalWidth('2xl')
                     ->form([
                         Forms\Components\Grid::make(2)
                             ->schema([
@@ -476,69 +475,81 @@ class ActividadResource extends Resource
                                     ->relationship('user', 'firstname')
                                     ->required()
                                     ->default(auth()->id())
-                                    ->searchable()
-                                    ->preload()
-                                    ->disabled(),
-                                Forms\Components\DatePicker::make('fecha')
-                                    ->label('Fecha')
-                                    ->required()
-                                    ->default(now())
-                                    ->displayFormat('d/m/Y')
-                                    ->native(false),
+                                    ->disabled()
+                                    ->dehydrated(),
+                                    
                                 Forms\Components\Hidden::make('departamental_id')
                                     ->default(fn () => auth()->user()->departamental_id)
-                                    ->required()
-                                    ->rules(['exists:departamentales,id']),
+                                    ->required(),
+                                    
                                 Forms\Components\TextInput::make('departamental_display')
                                     ->label('Oficina Departamental')
                                     ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
                                     ->disabled()
                                     ->dehydrated(false),
-                                    Forms\Components\Select::make('programa')
+                                    
+                                Forms\Components\DatePicker::make('fecha')
+                                    ->label('Fecha de la Actividad')
+                                    ->required()
+                                    ->default(now())
+                                    ->displayFormat('d/m/Y')
+                                    ->native(false),
+                                    
+                                Forms\Components\Select::make('programa')
                                     ->label('Programa')
                                     ->required()
                                     ->options([
-                                        'Programa de Educacion Civica'        => 'Programa de Educacion Civica',
-                                        'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
-                                        'Programa de Atencion Ciudadana'      => 'Programa de Atencion Ciudadana',
-                                        'Otro'                                => 'Otros',
+                                        'Programa de Educacion Civica' => 'Programa de Educación Cívica',
+                                        'Programa de Participacion Ciudadana' => 'Programa de Participación Ciudadana',
+                                        'Programa de Atencion Ciudadana' => 'Programa de Atención Ciudadana',
+                                        'Otro' => 'Otros',
                                     ])
                                     ->placeholder('Seleccione un programa')
+                                    ->searchable()
                                     ->native(false),
                                 
+                                Forms\Components\Select::make('estado')
+                                    ->label('Estado')
+                                    ->options([
+                                        'Pendiente' => 'Pendiente',
+                                        'En Progreso' => 'En Progreso',
+                                        'Completada' => 'Completada',
+                                        'Cancelada' => 'Cancelada',
+                                    ])
+                                    ->default('Pendiente')
+                                    ->required()
+                                    ->live(),
+                                    
                                 Forms\Components\DateTimePicker::make('star_date')
                                     ->label('Fecha de Inicio')
                                     ->required()
                                     ->default(now())
                                     ->displayFormat('d/m/Y H:i')
-                                    ->native(false),
+                                    ->seconds(false)
+                                    ->native(false)
+                                    ->dehydrated(),
+                                    
                                 Forms\Components\DateTimePicker::make('due_date')
                                     ->label('Fecha de Vencimiento')
                                     ->required()
                                     ->default(now()->addDays(7))
                                     ->after('star_date')
                                     ->displayFormat('d/m/Y H:i')
-                                    ->native(false),
-                                Forms\Components\Select::make('estado')
-                                    ->label('Estado')
-                                    ->options([
-                                        'Pendiente'   => 'Pendiente',
-                                        'En Progreso' => 'En Progreso',
-                                        'Completada'  => 'Completada',
-                                        'Cancelada'   => 'Cancelada',
-                                    ])
-                                    ->default('Pendiente')
-                                    ->required(),
+                                    ->seconds(false)
+                                    ->native(false)
+                                    ->dehydrated(),
+                                    
                                 Forms\Components\TextInput::make('lugar')
                                     ->label('Lugar de la Actividad')
                                     ->required()
                                     ->maxLength(255)
                                     ->placeholder('Ej: Auditorio Principal'),
-                                    Forms\Components\TextInput::make('asistentes_hombres')
+                                    
+                                Forms\Components\TextInput::make('asistentes_hombres')
                                     ->label('Asistentes Hombres')
                                     ->numeric()
                                     ->minValue(0)
-                                    ->inputMode('integer')
+                                    ->default(0)
                                     ->live()
                                     ->placeholder('0')
                                     ->required(fn ($get) => $get('estado') === 'Completada'),
@@ -547,40 +558,33 @@ class ActividadResource extends Resource
                                     ->label('Asistentes Mujeres')
                                     ->numeric()
                                     ->minValue(0)
-                                    ->inputMode('integer')
+                                    ->default(0)
                                     ->live()
                                     ->placeholder('0')
                                     ->required(fn ($get) => $get('estado') === 'Completada'),
                                 
-                                Forms\Components\TextInput::make('asistencia_completa')
-                                    ->label('Asistencia Completa')
+                                Forms\Components\TextInput::make('asistencia_total')
+                                    ->label('Asistencia Total')
                                     ->numeric()
-                                    ->minValue(0)
-                                    ->inputMode('integer')
+                                    ->disabled()
+                                    ->dehydrated()
+                                    ->default(fn ($get) => 
+                                        ((int) ($get('asistentes_hombres') ?? 0)) + 
+                                        ((int) ($get('asistentes_mujeres') ?? 0))
+                                    )
                                     ->live()
-                                    ->placeholder('0')
-                                    ->required(fn ($get) => $get('estado') === 'Completada')
-                                    ->rules([
-                                        'integer',
-                                        function ($attribute, $value, $fail, $get) {
-                                            $hombres = (int) $get('asistentes_hombres') ?? 0;
-                                            $mujeres = (int) $get('asistentes_mujeres') ?? 0;
-                                            if ($get('estado') === 'Completada' && $value !== ($hombres + $mujeres)) {
-                                                $fail('La asistencia completa debe ser igual a la suma de asistentes hombres y mujeres.');
-                                            }
-                                        },
-                                    ]),
-                                
+                                    ->placeholder('Se calcula automáticamente'),
                             ]),
+                            
                         Forms\Components\Textarea::make('macroactividad')
                             ->label('Macroactividad')
                             ->required()
                             ->rows(3)
                             ->columnSpanFull()
                             ->placeholder('Describe brevemente la actividad...'),
-
-                            Forms\Components\FileUpload::make('atestados')
-                            ->label('Adjuntar Atestados')
+            
+                        Forms\Components\FileUpload::make('atestados')
+                            ->label('Adjuntar Atestados (Opcional)')
                             ->multiple()
                             ->directory('actividades')
                             ->acceptedFileTypes([
@@ -588,27 +592,13 @@ class ActividadResource extends Resource
                                 'application/pdf',
                                 'application/msword',
                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                'text/plain',
                                 'application/vnd.ms-excel',
                                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                'application/zip',
-                                'application/x-rar-compressed',
-                                'video/*',
-                                'audio/*',
                             ])
-                            ->maxFiles(10)
-                            ->maxSize(10240)
-                            ->reorderable()
-                            ->downloadable()
-                            ->openable()
-                            ->previewable()
+                            ->maxFiles(5)
+                            ->maxSize(5120)
                             ->columnSpanFull()
-                            ->helperText('Formatos aceptados: imágenes, PDF, Word, Excel, ZIP, video y audio. Máximo 10 archivos de 10MB cada uno.')
-                            ->uploadingMessage('Subiendo archivos...')
-                            ->removeUploadedFileButtonPosition('right')
-                            ->uploadButtonPosition('left')
-                            ->uploadProgressIndicatorPosition('left'),
-                            
+                            ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.'),
                     ])
                     ->modalSubmitAction(
                         Tables\Actions\Action::make('submit')
@@ -625,7 +615,7 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-                    
+            
                                 // Validar fecha de vencimiento
                                 if (\Carbon\Carbon::parse($data['due_date']) < now()) {
                                     Notification::make()
@@ -636,7 +626,7 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-                    
+            
                                 // Validar departamental
                                 if (empty($data['departamental_id'])) {
                                     Notification::make()
@@ -647,15 +637,15 @@ class ActividadResource extends Resource
                                     $action->halt();
                                     return;
                                 }
-                    
+            
                                 // Asegurar user_id
                                 $data['user_id'] = auth()->id();
-                    
+            
                                 // Calcular asistencia_total
                                 $data['asistencia_total'] = 
                                     ((int) ($data['asistentes_hombres'] ?? 0)) + 
                                     ((int) ($data['asistentes_mujeres'] ?? 0));
-                    
+            
                                 try {
                                     $record = Actividad::create($data);
                                     
@@ -664,7 +654,7 @@ class ActividadResource extends Resource
                                         ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
                                         ->success()
                                         ->send();
-                    
+            
                                 } catch (\Illuminate\Validation\ValidationException $e) {
                                     Notification::make()
                                         ->title('Error de Validación')
@@ -688,35 +678,22 @@ class ActividadResource extends Resource
                             ->color('gray')
                     )
                     ->modalFooterActions([
-                            Tables\Actions\Action::make('create_wizard')
-                            ->label('Crear con Asistente')
+                        Tables\Actions\Action::make('create_wizard')
+                            ->label('Crear con Asistente Completo')
                             ->icon('heroicon-o-sparkles')
                             ->color('primary')
                             ->url(fn () => static::getUrl('create'))
                             ->tooltip('Crear actividad paso a paso con todas las opciones'),
-                        Tables\Actions\Action::make('cancel')
-                            ->label('Cancelar')
-                            ->color('gray')
-                            ->action(fn () => null),
                     ]),
+                    
                 Tables\Actions\CreateAction::make()
                     ->label('Crear con Asistente')
                     ->icon('heroicon-o-sparkles')
                     ->color('primary')
-                    ->url(fn () => auth()->user()->can('create_actividad')
-                        ? static::getUrl('create')
-                        : back()->with([
-                            Notification::make()
-                                ->title('Permiso denegado')
-                                ->body('No puedes acceder al wizard de creación.')
-                                ->danger()
-                                ->send(),
-                        ])
-                    ),
+                    ->visible(fn () => auth()->user()->can('create_actividad')),
             ])
             ->defaultSort('due_date', 'asc');
-    }
-
+        }
     public static function canViewAny(): bool
     {
         return auth()->user()->can('view_any_actividad');
