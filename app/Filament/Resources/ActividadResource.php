@@ -254,7 +254,7 @@ class ActividadResource extends Resource
                     ->label('Fecha de la Actividad')
                     ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('start_date')
+                Tables\Columns\TextColumn::make('star_date')
                     ->label('Fecha de Inicio')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
