@@ -13,6 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+//Agregado para el cierre mensual
+use App\Models\CierreMensual;
 
 class ActividadResource extends Resource
 {
@@ -687,17 +689,54 @@ class ActividadResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        //Verificar permiso y que no este completada
-        return auth()->user()->can('update_actividad')
-        && $record->estado !== 'Completada';
+        $user = auth()->user();
+    
+        // Permiso normal
+        if (! $user->can('update_actividad')) {
+            return false;
+        }
+    
+        // No editar si está completada
+        if ($record->estado === 'Completada') {
+            return false;
+        }
+    
+        // Obtener mes y año de la actividad
+        $mes = $record->fecha->month;
+        $año = $record->fecha->year;
+    
+        // Verificar si el mes está cerrado
+        if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
+            return false;
+        }
+    
+        return true;
     }
-
+    
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()->can('delete_actividad')
-        && $record->estado !== 'Completada';
+        $user = auth()->user();
+    
+        if (! $user->can('delete_actividad')) {
+            return false;
+        }
+    
+        // No borrar si está completada
+        if ($record->estado === 'Completada') {
+            return false;
+        }
+    
+        // Mes cerrado = no se puede borrar
+        $mes = $record->fecha->month;
+        $año = $record->fecha->year;
+    
+        if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
+            return false;
+        }
+    
+        return true;
     }
-
+    
     public static function canDeleteAny(): bool
     {
         return auth()->user()->can('delete_any_actividad');

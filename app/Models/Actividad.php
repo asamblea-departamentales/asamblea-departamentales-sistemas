@@ -131,4 +131,10 @@ class Actividad extends Model
      * usando el scope del trait:
      * Actividad::forCurrentUser()->get();
      */
+
+     //NUEVO para relacion con el Cierre Mensual
+     public function cierreMensual()
+     {
+         return $this->belongsTo(CierreMensual::class, 'cierre_mensual_id');
+     }
 }

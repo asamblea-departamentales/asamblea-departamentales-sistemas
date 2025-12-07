@@ -6,6 +6,8 @@ use App\Http\Controllers\ContactController;
 use App\Models\Departamental;
 use App\Models\User;
 use App\Notifications\ActividadReminderNotification;
+//Agregado para cierren mensual
+use App\Models\CierreMensual;
 
 /* -----------------------------
 |  CONTACTO
@@ -111,6 +113,18 @@ Route::middleware(['web', 'auth'])->get('/admin/impersonate/leave', function () 
         ->with('success', 'Has salido del modo de suplantación');
 })->name('impersonate.leave');
 
+
+
+/* -----------------------------
+|  NUEVO: RUTA PARA PDF DE CIERRE MENSUAL
+------------------------------*/
+Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
+    if (!$cierre->pdf_path) {
+        abort(404, 'PDF no generado.');
+    }
+
+    return response()->file(storage_path('app/public/'.$cierre->pdf_path));
+})->name('cierre.pdf');
 
 /* -----------------------------
 |  FALLBACK

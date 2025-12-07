@@ -15,6 +15,8 @@ use App\Filament\Widgets\ActividadChart;
 use App\Filament\Widgets\ActividadOverview;
 use App\Filament\Widgets\CalendarioWidget;
 use App\Http\Middleware\FilamentRobotsMiddleware;
+use App\Models\CierreMensual;
+use App\Filament\Resources\CierreMensualResource;
 use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -79,6 +81,7 @@ class AdminPanelProvider extends PanelProvider
                 RequisicionResource::class,
                 TicketResource::class,
                 ContratoResource::class,
+                CierreMensualResource::class,
             ])
 
             // Pages
