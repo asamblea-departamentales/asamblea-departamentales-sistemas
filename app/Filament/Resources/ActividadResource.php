@@ -458,6 +458,13 @@ class ActividadResource extends Resource
                 ]),
             ])
             ->headerActions([
+                Tables\Actions\CreateAction::make()
+    ->label('Crear con Asistente')
+    ->icon('heroicon-o-sparkles')
+    ->color('primary')
+    ->url(fn () => static::getUrl('create')),
+
+
                 Tables\Actions\Action::make('quick_add')
                     ->label('Añadir Rápido')
                     ->icon('heroicon-o-plus')
