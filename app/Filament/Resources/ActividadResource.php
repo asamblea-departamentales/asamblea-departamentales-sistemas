@@ -635,7 +635,12 @@ class ActividadResource extends Resource
     ->icon('heroicon-o-bolt')
     ->action(function (array $data, Tables\Actions\Action $action) {
 
-        // Forzamos defaults si Filament QuickCreate no manda los campos
+        //Esto asegura que todos los campos del form esten presentes
+        $livewire = $action->getLivewire();
+        $data = $livewire->form->getState();
+
+
+         //Asignacion y blindaje de valores ---------------------------
         $data['star_date'] = $data['star_date'] ?? now();
         $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
 
@@ -649,6 +654,8 @@ class ActividadResource extends Resource
         //Obtener departamental desde el usuario logueado
         $data['departamental_id'] = auth()->user()->departamental_id ?? null;
 
+
+        //-----------Validaciones------------------------------//
         // Validación de presencia
         if (empty($data['star_date']) || empty($data['due_date'])) {
             Notification::make()
@@ -669,7 +676,6 @@ class ActividadResource extends Resource
             return $action->halt();
         }
 
-        //dd($data);
 
           // Validar departamental
           if (empty($data['departamental_id'])) {
@@ -686,6 +692,9 @@ class ActividadResource extends Resource
                 $data['asistencia_completa'] =
                     ((int) ($data['asistentes_hombres'] ?? 0)) +
                     ((int) ($data['asistentes_mujeres'] ?? 0));
+
+                            //dd($data);
+
 
                 try {
                     $record = Actividad::create($data);
