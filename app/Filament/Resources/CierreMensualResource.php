@@ -174,7 +174,9 @@ class CierreMensualResource extends Resource
                 Tables\Actions\Action::make('descargar_consolidado')
     ->label('Descargar Consolidado')
     ->icon('heroicon-o-document-arrow-down')
-    ->url(fn ($record) => asset("storage/" . $record->pdf_path))    ->openUrlInNewTab(),
+    ->url(fn ($record) => asset("storage/" . $record->pdf_path))    
+    ->openUrlInNewTab()
+    ->visible(fn () => auth()->user()->hasRole('gol')),
 
             
                 // ✅ NUEVA ACCIÓN: APROBAR CIERRE
