@@ -54,7 +54,8 @@ class ActividadResource extends Resource
                             ->required()
                             ->default(now())
                             ->displayFormat('d/m/Y')
-                            ->native(false),
+                            ->native(false)
+                            ->dehydrated(true),
                         Forms\Components\Hidden::make('departamental_id')
                             ->default(fn () => auth()->user()->departamental_id)
                             ->required()
