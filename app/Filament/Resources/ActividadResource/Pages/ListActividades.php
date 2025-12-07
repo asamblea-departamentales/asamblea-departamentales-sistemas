@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ListActividades extends ListRecords
 {
@@ -128,7 +129,8 @@ class ListActividades extends ListRecords
                     $mes, 
                     $año, 
                     $user, 
-                    $data['observaciones'] ?? null
+                    $data['observaciones'] ?? null,
+                    true //Generar el PDF
                 );
                 
                 if ($resultado) {
@@ -146,11 +148,18 @@ class ListActividades extends ListRecords
                         $mes, 
                         $año, 
                         $user, 
-                        'Cierre consolidado generado automáticamente'
+                        'Cierre consolidado generado automáticamente',
+                        false // No generar PDF para consolidado
                     );
                     
                     if ($resultado) {
                         $cierresGenerados++;
+                        //Guardar el cierre creado
+                        $cierre = CierreMensual::where('departamental_id', $departamental->id)
+                            ->where('mes', $mes)
+                            ->where('año', $año)
+                            ->first();
+                        $cierresConsolidados[] = $cierre;
                     } else {
                         $cierresOmitidos++;
                     }
@@ -161,7 +170,7 @@ class ListActividades extends ListRecords
 
             $mensaje = $tipoCierre === 'individual'
                 ? "Se ha generado el cierre de {$this->getMesesDisponibles()[$mes]} {$año}."
-                : "Se generaron {$cierresGenerados} cierres para {$this->getMesesDisponibles()[$mes]} {$año}.";
+                : "Se generó el informe consolidado para {$this->getMesesDisponibles()[$mes]} {$año} con {$cierresGenerados} departamentales.";
 
             if ($cierresOmitidos > 0) {
                 $mensaje .= " {$cierresOmitidos} ya existían.";
@@ -205,7 +214,8 @@ class ListActividades extends ListRecords
         int $mes, 
         int $año, 
         $user, 
-        ?string $observaciones
+        ?string $observaciones,
+        bool $generarPDF = true
     ): bool {
         // Verificar si ya existe un cierre para este mes
         $cierreExistente = CierreMensual::where('departamental_id', $departamentalId)
@@ -259,9 +269,43 @@ class ListActividades extends ListRecords
             ->whereYear('fecha', $año)
             ->update(['cierre_mensual_id' => $cierre->id]);
 
-        // Generar PDF con actividades ya vinculadas
+        // Generar PDF con actividades ya vinculadas solo si se solicita el individual
+        if ($generarPDF){
         $cierre->generarPDF();
+        }
 
         return true; // Se generó exitosamente
     }
+
+ /**
+  * Genera un PDF consolidado con informacion de todas las departamentales
+  */
+  protected function generarPDFConsolidado($cierres, $mes, $año): void
+  {
+    $meses = $this->getMesesDisponibles();
+
+        
+    $pdf = Pdf::loadView('pdf.cierre-consolidado', [
+        'cierres' => $cierres,
+        'mes' => $mes,
+        'año' => $año,
+        'meses' => $meses,
+    ]);
+    
+    $nombreArchivo = "informe_consolidado_{$año}_{$mes}.pdf";
+    $rutaPDF = storage_path("app/public/cierres/{$nombreArchivo}");
+    
+    // Crear directorio si no existe
+    if (!file_exists(dirname($rutaPDF))) {
+        mkdir(dirname($rutaPDF), 0755, true);
+    }
+    
+    $pdf->save($rutaPDF);
+    
+    // Opcional: Guardar la ruta en algún lugar para poder descargarlo después
+    // Por ejemplo, en el primer cierre
+    if (!empty($cierres)) {
+        $cierres[0]->update(['pdf_path' => "cierres/{$nombreArchivo}"]);
+    }  
+  }
 }
