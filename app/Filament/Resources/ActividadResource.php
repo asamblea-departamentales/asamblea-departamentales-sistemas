@@ -607,99 +607,82 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.'),
                     ])
-                    ->modalSubmitAction(false) // Deshabilitar el botón de submit por defecto
+                    ->modalSubmitAction(false)
                     ->modalFooterActions([
                         Tables\Actions\Action::make('submit')
                             ->label('Crear Rápido')
                             ->color('success')
                             ->icon('heroicon-o-bolt')
                             ->action(function (array $data, Tables\Actions\Action $action) {
-                                // Validar que existan los campos requeridos
+                    
                                 if (!isset($data['due_date']) || !isset($data['star_date'])) {
                                     Notification::make()
                                         ->title('Error de Validación')
                                         ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
                                         ->danger()
                                         ->send();
-                                    $action->halt();
-                                    return;
+                                    return $action->halt();
                                 }
                     
-                                // Validar fecha de vencimiento
                                 if (\Carbon\Carbon::parse($data['due_date']) < now()) {
                                     Notification::make()
                                         ->title('Error de Validación')
                                         ->body('La fecha de vencimiento no puede ser en el pasado.')
                                         ->danger()
                                         ->send();
-                                    $action->halt();
-                                    return;
+                                    return $action->halt();
                                 }
                     
-                                // Validar departamental
                                 if (empty($data['departamental_id'])) {
                                     Notification::make()
                                         ->title('Error de Validación')
                                         ->body('El usuario debe estar asignado a una departamental.')
                                         ->danger()
                                         ->send();
-                                    $action->halt();
-                                    return;
+                                    return $action->halt();
                                 }
                     
-                                // Asegurar user_id
                                 $data['user_id'] = auth()->id();
                     
-                                // Calcular asistencia_total
-                                $data['asistencia_completa'] = 
-                                    ((int) ($data['asistentes_hombres'] ?? 0)) + 
+                                // Calcular asistencia total
+                                $data['asistencia_completa'] =
+                                    ((int) ($data['asistentes_hombres'] ?? 0)) +
                                     ((int) ($data['asistentes_mujeres'] ?? 0));
                     
                                 try {
                                     $record = Actividad::create($data);
-                                    
+                    
                                     Notification::make()
                                         ->title('¡Actividad creada exitosamente!')
                                         ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
                                         ->success()
                                         ->send();
                     
-                                    $action->success(); // Cierra el modal automáticamente
+                                    return $action->success();
                     
-                                } catch (\Illuminate\Validation\ValidationException $e) {
-                                    Notification::make()
-                                        ->title('Error de Validación')
-                                        ->body($e->getMessage())
-                                        ->danger()
-                                        ->send();
-                                    $action->halt();
                                 } catch (\Exception $e) {
                                     Notification::make()
                                         ->title('Error')
                                         ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
                                         ->danger()
                                         ->send();
-                                    $action->halt();
+                                    return $action->halt();
                                 }
-                            })
-                            ->submit('submit'), // Importante: esto hace que funcione como submit del formulario
-                            
+                            }),
+                    
                         Tables\Actions\Action::make('create_wizard')
                             ->label('Crear con Asistente Completo')
                             ->icon('heroicon-o-sparkles')
                             ->color('primary')
                             ->url(fn () => static::getUrl('create'))
-                            ->tooltip('Crear actividad paso a paso con todas las opciones')
                             ->openUrlInNewTab(false),
-                            
-                            Tables\Actions\Action::make('cancel')
+                    
+                        Tables\Actions\Action::make('cancel')
                             ->label('Cancelar')
                             ->color('gray')
                             ->action(fn () => null),
-                        
-                    ]),
-            ]);
-        }
+                    ])
+                    
     public static function canViewAny(): bool
     {
         return auth()->user()->can('view_any_actividad');
