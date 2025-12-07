@@ -693,7 +693,7 @@ class ActividadResource extends Resource
                     ((int) ($data['asistentes_hombres'] ?? 0)) +
                     ((int) ($data['asistentes_mujeres'] ?? 0));
 
-                            //dd($data);
+                            dd($data);
 
 
                 try {
