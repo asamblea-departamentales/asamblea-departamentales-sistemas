@@ -623,6 +623,9 @@ class ActividadResource extends Resource
         $data['star_date'] = $data['star_date'] ?? now();
         $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
 
+        //Obtener departamental desde el usuario logueado
+        $data['departamental_id'] = auth()->user()->departamental_id ?? null;
+
         // Validación de presencia
         if (empty($data['star_date']) || empty($data['due_date'])) {
             Notification::make()
@@ -643,11 +646,11 @@ class ActividadResource extends Resource
             return $action->halt();
         }
 
-        // Validar departamental
-        if (empty($data['departamental_id'])) {
+          // Validar departamental
+          if (empty($data['departamental_id'])) {
             Notification::make()
                 ->title('Error de Validación')
-                ->body('El usuario debe estar asignado a una departamental.')
+                ->body('El usuario no tiene departamental asignada.')
                 ->danger()
                 ->send();
             return $action->halt();
