@@ -60,11 +60,11 @@
     {{-- Encabezado institucional --}}
     <div class="logo">
         <img src="{{ public_path('images/logo-azul-fondo-transparente (002).png') }}" 
-        alt="Logo Asamblea"     
+        alt="Logo Asamblea">    
     </div>
     <h2>Sistema de Información Estadístico</h2>
     <h3>Departamento de Oficinas Departamentales</h3>
-    <p>Fecha de cierre: {{ $cierre->fecha_cierre->format('d/m/Y') }}</p>
+    <p>Fecha de cierre: {{ optional($cierre->fecha_cierre)->format('d/m/Y') }}</p>
     <hr>
 
     {{-- Resumen global --}}
@@ -91,6 +91,10 @@
     </table>
 
     {{-- Actividades por programa --}}
+    @php
+        $actividadesPorPrograma = $cierre->actividades->groupBy('programa');
+    @endphp
+
     @foreach(['Atención Ciudadana','Participación Ciudadana','Educación Cívica'] as $programa)
         <div class="section-title">Programa de {{ $programa }}</div>
         <table>
@@ -102,7 +106,7 @@
                 <th>Hombres</th>
                 <th>Mujeres</th>
             </tr>
-            @foreach($cierre->actividades()->where('programa',$programa)->get() as $i => $actividad)
+            @forelse($actividadesPorPrograma[$programa] ?? collect() as $i => $actividad)
                 <tr>
                     <td>{{ $i+1 }}</td>
                     <td>{{ $actividad->macroactividad }}</td>
@@ -111,7 +115,11 @@
                     <td>{{ $actividad->asistentes_hombres }}</td>
                     <td>{{ $actividad->asistentes_mujeres }}</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="6">No hay actividades registradas para este programa.</td>
+                </tr>
+            @endforelse
         </table>
     @endforeach
 
@@ -128,7 +136,7 @@
         </tr>
         @foreach($cierre->actividades as $actividad)
             <tr>
-                <td>{{ $actividad->fecha->format('d/m/Y') }}</td>
+                <td>{{ optional($actividad->fecha)->format('d/m/Y') }}</td>
                 <td>{{ $actividad->programa }}</td>
                 <td>{{ $actividad->macroactividad }}</td>
                 <td>{{ $actividad->estado }}</td>
