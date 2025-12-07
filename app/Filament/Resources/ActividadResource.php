@@ -685,10 +685,11 @@ class ActividadResource extends Resource
                             ->tooltip('Crear actividad paso a paso con todas las opciones')
                             ->openUrlInNewTab(false),
                             
-                        Tables\Actions\Action::make('cancel')
+                            Tables\Actions\Action::make('cancel')
                             ->label('Cancelar')
                             ->color('gray')
-                            ->modalAction('close'),
+                            ->action(fn () => null),
+                        
                     ]),
             ]);
         }
