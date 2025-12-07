@@ -514,10 +514,10 @@ class ActividadResource extends Resource
                     ->label('Programa')
                     ->required()
                     ->options([
-                        'Programa de Educacion Cívica' => 'Programa de Educación Cívica',
-                        'Programa de Participación Ciudadana' => 'Programa de Participación Ciudadana',
-                        'Programa de Atención Ciudadana' => 'Programa de Atención Ciudadana',
-                        'Otros' => 'Otros',
+                        'Programa de Educacion Civica'=> 'Programa de Educacion Civica',
+                        'Programa de Participacion Ciudadana'=> 'Programa de Participacion Ciudadana',
+                        'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadanda',
+                        'Otro'=> 'Otros'
                     ])
                     ->placeholder('Seleccione un programa')
                     ->searchable()
@@ -669,7 +669,7 @@ class ActividadResource extends Resource
             return $action->halt();
         }
 
-        dd($data);
+        //dd($data);
 
           // Validar departamental
           if (empty($data['departamental_id'])) {
