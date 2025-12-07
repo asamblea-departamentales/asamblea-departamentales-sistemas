@@ -510,10 +510,10 @@ class ActividadResource extends Resource
                     ->label('Programa')
                     ->required()
                     ->options([
-                        'Programa de Educacion Civica' => 'Programa de Educación Cívica',
-                        'Programa de Participacion Ciudadana' => 'Programa de Participación Ciudadana',
-                        'Programa de Atencion Ciudadana' => 'Programa de Atención Ciudadana',
-                        'Otro' => 'Otros',
+                        'Programa de Educacion Cívica' => 'Programa de Educación Cívica',
+                        'Programa de Participación Ciudadana' => 'Programa de Participación Ciudadana',
+                        'Programa de Atención Ciudadana' => 'Programa de Atención Ciudadana',
+                        'Otros' => 'Otros',
                     ])
                     ->placeholder('Seleccione un programa')
                     ->searchable()
@@ -627,6 +627,10 @@ class ActividadResource extends Resource
 
         //Forzamos la fecha
         $data['fecha'] = $data['fecha'] ?? now()->format('Y-m-d');
+
+        //Se blinda la opcion del programa a elegir
+        $data['programa'] = $data['programa'] ?? 'Otros';
+
 
         //Obtener departamental desde el usuario logueado
         $data['departamental_id'] = auth()->user()->departamental_id ?? null;
