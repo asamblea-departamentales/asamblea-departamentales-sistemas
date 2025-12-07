@@ -503,7 +503,7 @@ class ActividadResource extends Resource
                     ->default(now())
                     ->displayFormat('d/m/Y')
                     ->native(false)
-                    ->dehydrated(),
+                    ->dehydrated(true),
 
                 Forms\Components\Select::make('programa')
                     ->label('Programa')
