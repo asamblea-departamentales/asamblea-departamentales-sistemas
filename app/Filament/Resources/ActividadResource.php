@@ -636,8 +636,8 @@ class ActividadResource extends Resource
     ->action(function (array $data, Tables\Actions\Action $action) {
 
         //Esto asegura que todos los campos del form esten presentes
-        $livewire = $action->getLivewire();
-        $data = $livewire->form->getState();
+       // $livewire = $action->getLivewire();
+        //$data = $livewire->form->getState();
 
 
          //Asignacion y blindaje de valores ---------------------------
