@@ -64,8 +64,12 @@
     </div>
     <h2>Sistema de Información Estadístico</h2>
     <h3>Departamento de Oficinas Departamentales</h3>
+
+    <p><strong>Departamental:</strong> {{ $cierre->departamental->nombre }}</p>
+<p><strong>Responsable del cierre:</strong> {{ $cierre->user->name }}</p>
     <p>Fecha de cierre: {{ optional($cierre->fecha_cierre)->format('d/m/Y') }}</p>
     <hr>
+
 
     {{-- Resumen global --}}
     <div class="section-title">Resumen del Cierre Mensual</div>
