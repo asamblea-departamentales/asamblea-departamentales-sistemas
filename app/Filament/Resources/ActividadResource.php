@@ -615,14 +615,29 @@ class ActividadResource extends Resource
                             ->label('Crear Rápido')
                             ->color('success')
                             ->action(function (array $data, Tables\Actions\Action $action) {
-                                if ($data['due_date'] < now()) {
+                                // Validar que existan los campos requeridos
+                                if (!isset($data['due_date']) || !isset($data['star_date'])) {
+                                    Notification::make()
+                                        ->title('Error de Validación')
+                                        ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
+                                        ->danger()
+                                        ->send();
+                                    $action->halt();
+                                    return;
+                                }
+                    
+                                // Validar fecha de vencimiento
+                                if (\Carbon\Carbon::parse($data['due_date']) < now()) {
                                     Notification::make()
                                         ->title('Error de Validación')
                                         ->body('La fecha de vencimiento no puede ser en el pasado.')
                                         ->danger()
                                         ->send();
                                     $action->halt();
+                                    return;
                                 }
+                    
+                                // Validar departamental
                                 if (empty($data['departamental_id'])) {
                                     Notification::make()
                                         ->title('Error de Validación')
@@ -630,18 +645,37 @@ class ActividadResource extends Resource
                                         ->danger()
                                         ->send();
                                     $action->halt();
+                                    return;
                                 }
+                    
+                                // Asegurar user_id
                                 $data['user_id'] = auth()->id();
+                    
+                                // Calcular asistencia_total
+                                $data['asistencia_total'] = 
+                                    ((int) ($data['asistentes_hombres'] ?? 0)) + 
+                                    ((int) ($data['asistentes_mujeres'] ?? 0));
+                    
                                 try {
                                     $record = Actividad::create($data);
+                                    
                                     Notification::make()
                                         ->title('¡Actividad creada exitosamente!')
+                                        ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
                                         ->success()
                                         ->send();
+                    
                                 } catch (\Illuminate\Validation\ValidationException $e) {
                                     Notification::make()
                                         ->title('Error de Validación')
                                         ->body($e->getMessage())
+                                        ->danger()
+                                        ->send();
+                                    $action->halt();
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->title('Error')
+                                        ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
                                         ->danger()
                                         ->send();
                                     $action->halt();
@@ -652,46 +686,9 @@ class ActividadResource extends Resource
                         Tables\Actions\Action::make('cancel')
                             ->label('Cancelar')
                             ->color('gray')
-                            ->action(fn () => null)
                     )
                     ->modalFooterActions([
-                        Tables\Actions\Action::make('submit')
-                            ->label('Crear Rápido')
-                            ->color('success')
-                            ->action(function (array $data, Tables\Actions\Action $action) {
-                                if ($data['due_date'] < now()) {
-                                    Notification::make()
-                                        ->title('Error de Validación')
-                                        ->body('La fecha de vencimiento no puede ser en el pasado.')
-                                        ->danger()
-                                        ->send();
-                                    $action->halt();
-                                }
-                                if (empty($data['departamental_id'])) {
-                                    Notification::make()
-                                        ->title('Error de Validación')
-                                        ->body('El usuario debe estar asignado a una departamental.')
-                                        ->danger()
-                                        ->send();
-                                    $action->halt();
-                                }
-                                $data['user_id'] = auth()->id();
-                                try {
-                                    $record = Actividad::create($data);
-                                    Notification::make()
-                                        ->title('¡Actividad creada exitosamente!')
-                                        ->success()
-                                        ->send();
-                                } catch (\Illuminate\Validation\ValidationException $e) {
-                                    Notification::make()
-                                        ->title('Error de Validación')
-                                        ->body($e->getMessage())
-                                        ->danger()
-                                        ->send();
-                                    $action->halt();
-                                }
-                            }),
-                        Tables\Actions\Action::make('create_wizard')
+                            Tables\Actions\Action::make('create_wizard')
                             ->label('Crear con Asistente')
                             ->icon('heroicon-o-sparkles')
                             ->color('primary')
