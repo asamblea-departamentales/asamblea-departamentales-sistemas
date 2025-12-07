@@ -614,37 +614,44 @@ class ActividadResource extends Resource
     ->modalFooterActions([
 
         Tables\Actions\Action::make('submit')
-            ->label('Crear Rápido')
-            ->color('success')
-            ->icon('heroicon-o-bolt')
-            ->action(function (array $data, Tables\Actions\Action $action) {
+    ->label('Crear Rápido')
+    ->color('success')
+    ->icon('heroicon-o-bolt')
+    ->action(function (array $data, Tables\Actions\Action $action) {
 
-                if (!isset($data['due_date']) || !isset($data['star_date'])) {
-                    Notification::make()
-                        ->title('Error de Validación')
-                        ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
-                        ->danger()
-                        ->send();
-                    return $action->halt();
-                }
+        // Forzamos defaults si Filament QuickCreate no manda los campos
+        $data['star_date'] = $data['star_date'] ?? now();
+        $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
 
-                if (\Carbon\Carbon::parse($data['due_date']) < now()) {
-                    Notification::make()
-                        ->title('Error de Validación')
-                        ->body('La fecha de vencimiento no puede ser en el pasado.')
-                        ->danger()
-                        ->send();
-                    return $action->halt();
-                }
+        // Validación de presencia
+        if (empty($data['star_date']) || empty($data['due_date'])) {
+            Notification::make()
+                ->title('Error de Validación')
+                ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
+                ->danger()
+                ->send();
+            return $action->halt();
+        }
 
-                if (empty($data['departamental_id'])) {
-                    Notification::make()
-                        ->title('Error de Validación')
-                        ->body('El usuario debe estar asignado a una departamental.')
-                        ->danger()
-                        ->send();
-                    return $action->halt();
-                }
+        // Validar fecha de vencimiento
+        if (\Carbon\Carbon::parse($data['due_date']) < now()) {
+            Notification::make()
+                ->title('Error de Validación')
+                ->body('La fecha de vencimiento no puede ser en el pasado.')
+                ->danger()
+                ->send();
+            return $action->halt();
+        }
+
+        // Validar departamental
+        if (empty($data['departamental_id'])) {
+            Notification::make()
+                ->title('Error de Validación')
+                ->body('El usuario debe estar asignado a una departamental.')
+                ->danger()
+                ->send();
+            return $action->halt();
+        }
 
                 $data['user_id'] = auth()->id();
 
