@@ -506,7 +506,7 @@ class ActividadResource extends Resource
                                     ->placeholder('Seleccione un programa')
                                     ->native(false),
                                 
-                                Forms\Components\DateTimePicker::make('start_date')
+                                Forms\Components\DateTimePicker::make('star_date')
                                     ->label('Fecha de Inicio')
                                     ->required()
                                     ->default(now())
