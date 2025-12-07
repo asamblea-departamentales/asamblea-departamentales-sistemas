@@ -517,7 +517,7 @@ class ActividadResource extends Resource
                         'Programa de Educacion Civica'=> 'Programa de Educacion Civica',
                         'Programa de Participacion Ciudadana'=> 'Programa de Participacion Ciudadana',
                         'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadanda',
-                        'Otro'=> 'Otros'
+                        'Otro'=> 'Otros',
                     ])
                     ->placeholder('Seleccione un programa')
                     ->searchable()
@@ -625,112 +625,76 @@ class ActividadResource extends Resource
             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.')
             ->dehydrated(),
     ])
-
-    ->modalSubmitAction(false) // Está bien
-    ->modalFooterActions([
-
-        Tables\Actions\Action::make('submit')
-    ->label('Crear Rápido')
-    ->color('success')
-    ->icon('heroicon-o-bolt')
     ->action(function (array $data, Tables\Actions\Action $action) {
 
-        //Esto asegura que todos los campos del form esten presentes
-       // $livewire = $action->getLivewire();
-        //$data = $livewire->form->getState();
-
-
-         //Asignacion y blindaje de valores ---------------------------
+        // Defaults y blindajes
         $data['star_date'] = $data['star_date'] ?? now();
         $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
-
-        //Forzamos la fecha
-        $data['fecha'] = $data['fecha'] ?? now()->format('Y-m-d');
-
-        //Se blinda la opcion del programa a elegir
-        $data['programa'] = $data['programa'] ?? 'Otros';
-
-
-        //Obtener departamental desde el usuario logueado
+        $data['fecha']     = $data['fecha'] ?? now()->format('Y-m-d');
+        $data['programa']  = $data['programa'] ?? 'Otros';
         $data['departamental_id'] = auth()->user()->departamental_id ?? null;
+        $data['user_id'] = auth()->id();
 
+        $data['asistencia_completa'] =
+            ((int) ($data['asistentes_hombres'] ?? 0)) +
+            ((int) ($data['asistentes_mujeres'] ?? 0));
 
-        //-----------Validaciones------------------------------//
-        // Validación de presencia
+        // Validaciones rápidas
         if (empty($data['star_date']) || empty($data['due_date'])) {
             Notification::make()
                 ->title('Error de Validación')
                 ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
                 ->danger()
                 ->send();
+
             return $action->halt();
         }
 
-        // Validar fecha de vencimiento
         if (\Carbon\Carbon::parse($data['due_date']) < now()) {
             Notification::make()
                 ->title('Error de Validación')
                 ->body('La fecha de vencimiento no puede ser en el pasado.')
                 ->danger()
                 ->send();
+
             return $action->halt();
         }
 
-
-          // Validar departamental
-          if (empty($data['departamental_id'])) {
+        if (empty($data['departamental_id'])) {
             Notification::make()
                 ->title('Error de Validación')
                 ->body('El usuario no tiene departamental asignada.')
                 ->danger()
                 ->send();
+
             return $action->halt();
         }
 
-                $data['user_id'] = auth()->id();
+        try {
+            $record = Actividad::create($data);
 
-                $data['asistencia_completa'] =
-                    ((int) ($data['asistentes_hombres'] ?? 0)) +
-                    ((int) ($data['asistentes_mujeres'] ?? 0));
+            Notification::make()
+                ->title('¡Actividad creada exitosamente!')
+                ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
+                ->success()
+                ->send();
 
-                            dd($data);
+            $action->success();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
+                ->danger()
+                ->send();
 
-
-                try {
-                    $record = Actividad::create($data);
-
-                    Notification::make()
-                        ->title('¡Actividad creada exitosamente!')
-                        ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
-                        ->success()
-                        ->send();
-
-                    return $action->success();
-
-                } catch (\Exception $e) {
-                    Notification::make()
-                        ->title('Error')
-                        ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
-                        ->danger()
-                        ->send();
-                    return $action->halt();
-                }
-            }),
-
-        Tables\Actions\Action::make('create_wizard')
-            ->label('Crear con Asistente Completo')
-            ->icon('heroicon-o-sparkles')
-            ->color('primary')
-            ->url(fn () => static::getUrl('create'))
-            ->openUrlInNewTab(false),
-
-        Tables\Actions\Action::make('cancel')
-            ->label('Cancelar')
-            ->color('gray')
-            ->action(fn () => null),
-    ])
-            ]);
+            $action->halt();
         }
+    }),
+            ]);
+    }  
+
+
+    
     public static function canViewAny(): bool
     {
         return auth()->user()->can('view_any_actividad');
