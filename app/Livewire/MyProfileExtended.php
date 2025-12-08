@@ -126,62 +126,21 @@ class MyProfileExtended extends MyProfileComponent
                     ->schema([
                         \Filament\Forms\Components\Placeholder::make('password_info')
                             ->label('')
-                            ->content('Haga clic en el botón de abajo para crear una solicitud de cambio de contraseña que será procesada por el departamento de TI.'),
-                
-                        \Filament\Forms\Components\Actions::make([
-                            Action::make('request_password_change')
-                                ->label('Solicitar Cambio de Contraseña')
-                                ->icon('heroicon-o-key')
-                                ->color('primary')
-                                ->requiresConfirmation()
-                                ->modalHeading('Solicitar Cambio de Contraseña')
-                                ->modalDescription('¿Está seguro que desea solicitar un cambio de contraseña? Se creará un ticket para el departamento de TI.')
-                                ->modalSubmitActionLabel('Sí, solicitar')
-                                ->action(function () {
-                                    $user = $this->getUser();
-                
-                                    try {
-                                        // Verificar si ya existe solicitud pendiente
-                                        $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
-                                            ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
-                                            ->where('estado_interno', 'PENDIENTE')
-                                            ->exists();
-                
-                                        if ($existingRequest) {
-                                            Notification::make()
-                                                ->title('Solicitud Pendiente')
-                                                ->warning()
-                                                ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
-                                                ->send();
-                                            return;
-                                        }
-                
-                                        Ticket::create([
-                                            'tipo_ticket' => 'SOLICITUD',
-                                            'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
-                                            'fecha_solicitud' => Carbon::now(),
-                                            'estado_interno' => 'PENDIENTE',
-                                            'oficina' => $user->oficina ?? 'No especificada',
-                                            'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
-                                        ]);
-                
-                                        Notification::make()
-                                            ->title('Solicitud Enviada')
-                                            ->success()
-                                            ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI lo procesará pronto.')
-                                            ->send();
-                
-                                    } catch (\Exception $e) {
-                                        \Log::error('Error al crear ticket de cambio de contraseña: '.$e->getMessage());
-                
-                                        Notification::make()
-                                            ->title('Error')
-                                            ->danger()
-                                            ->body('No se pudo crear la solicitud. Por favor intente nuevamente.')
-                                            ->send();
-                                    }
-                                }),
-                        ]),
+                            ->content(new \Illuminate\Support\HtmlString('
+                                <div class="space-y-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Haga clic en el botón de abajo para crear una solicitud de cambio de contraseña que será procesada por el departamento de TI.</p>
+                                    <button 
+                                        type="button"
+                                        wire:click="solicitarCambioPassword"
+                                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                        </svg>
+                                        Solicitar Cambio de Contraseña
+                                    </button>
+                                </div>
+                            ')),
                     ])
                     ->visible(fn () => !$this->isUserTI()),
             ])
@@ -227,6 +186,51 @@ class MyProfileExtended extends MyProfileComponent
         return $record;
     }
 
+    public function solicitarCambioPassword()
+{
+    $user = $this->getUser();
+
+    try {
+        // Verificar si ya existe solicitud pendiente
+        $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
+            ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
+            ->where('estado_interno', 'PENDIENTE')
+            ->exists();
+
+        if ($existingRequest) {
+            Notification::make()
+                ->title('Solicitud Pendiente')
+                ->warning()
+                ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
+                ->send();
+            return;
+        }
+
+        Ticket::create([
+            'tipo_ticket' => 'SOLICITUD',
+            'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
+            'fecha_solicitud' => Carbon::now(),
+            'estado_interno' => 'PENDIENTE',
+            'oficina' => $user->oficina ?? 'No especificada',
+            'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
+        ]);
+
+        Notification::make()
+            ->title('Solicitud Enviada')
+            ->success()
+            ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI lo procesará pronto.')
+            ->send();
+
+    } catch (\Exception $e) {
+        \Log::error('Error al crear ticket de cambio de contraseña: '.$e->getMessage());
+
+        Notification::make()
+            ->title('Error')
+            ->danger()
+            ->body('No se pudo crear la solicitud. Error: ' . $e->getMessage())
+            ->send();
+    }
+}
 
 
     public function render(): View
