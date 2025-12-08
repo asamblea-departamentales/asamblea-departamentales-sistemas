@@ -118,6 +118,11 @@ class AdminPanelProvider extends PanelProvider
                         hasAvatars: true,
                         slug: 'my-profile'
                     )
+                    // 1. 🛑 EXCLUIR el componente de cambio de contraseña por defecto
+                    ->withoutMyProfileComponents([
+                        'update_password',
+                    ])
+                    // 2. ✅ REGISTRAR solo tu componente extendido
                     ->myProfileComponents([
                         'personal_info' => \App\Livewire\MyProfileExtended::class,
                     ]),
