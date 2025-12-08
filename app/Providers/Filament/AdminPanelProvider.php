@@ -125,7 +125,6 @@ class AdminPanelProvider extends PanelProvider
                     // 2. ✅ REGISTRAR solo tu componente extendido
                     ->myProfileComponents([
                         'personal_info' => \App\Livewire\MyProfileExtended::class,
-                        'contraseña'    => \App\Livewire\MyProfileExtended::class, // 👈 añade tu componente aquí
                     ]),
             ])
                 
