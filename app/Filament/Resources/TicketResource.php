@@ -129,21 +129,23 @@ class TicketResource extends Resource
                         'secondary' => 'Baja',
                     ]),
                 
-                Tables\Columns\TextColumn::make('oficina')
+                    Tables\Columns\TextColumn::make('oficina')
                     ->label('Departamental')
-                    ->default('No especificada')
+                    ->formatStateUsing(fn ($state) => is_array($state) ? ($state['nombre'] ?? 'N/A') : $state)
                     ->sortable()
                     ->searchable(),
                 
+                
                     Tables\Columns\TextColumn::make('dias_creacion')
-                    ->label('Días')
-                    ->getStateUsing(fn (Ticket $record): string => 
-                        $record->diasDesdeCreacion() === 0 
-                            ? 'Hoy' 
-                            : $record->diasDesdeCreacion() . ' días'
-                    )
-                    ->sortable(query: function (Builder $query, string $direction): Builder {
-                        return $query->orderBy('fecha_solicitud', $direction === 'asc' ? 'desc' : 'asc');
+    ->label('Días')
+    ->getStateUsing(fn (Ticket $record): string =>
+        $record->diasDesdeCreacion() === 0 
+            ? 'Hoy' 
+            : $record->diasDesdeCreacion() . ' días'
+    )
+    ->sortable(false)
+    ->searchable(false),
+
                     }),
                 
                 Tables\Columns\TextColumn::make('created_at')
