@@ -178,7 +178,7 @@ class ActividadResource extends Resource
                             ]),
                     ])
                     ->columns(3),
-                    Forms\Components\Section::make('Atestados')
+                Forms\Components\Section::make('Atestados')
                     ->schema([
                         Forms\Components\FileUpload::make('atestados')
                             ->label('Adjuntar Atestados')
@@ -207,36 +207,36 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
                             ->afterStateUpdated(function ($state) {
-                                dd($state);
-                
-                                // $folder = Folder::firstOrCreate([
-                                //     'name' => 'actividades',
-                                // ]);
-                
-                                // foreach ((array) $state as $file) {
-                                //     $path = $file;
-                
-                                //     Media::firstOrCreate(
-                                //         [
-                                //             'disk' => 'public',
-                                //             'path' => $path,
-                                //         ],
-                                //         [
-                                //             'name' => basename($path),
-                                //             'type' => 'file',
-                                //             'mime_type' => Storage::disk('public')->mimeType($path),
-                                //             'size' => Storage::disk('public')->size($path),
-                                //             'folder_id' => $folder->id,
-                                //             'user_id' => auth()->id(),
-                                //         ]
-                                //     );
-                                // }
-                            }),
-                        ]),
+                                if (blank($state)) {
+                                    return;
+                                }
+                            
+                                $folder = Folder::firstOrCreate([
+                                    'name' => 'actividades',
+                                ]);
+                            
+                                foreach ((array) $state as $file) {
+                                    $path = $file;
+                            
+                                    Media::firstOrCreate(
+                                        [
+                                            'disk' => 'public',
+                                            'path' => $path,
+                                        ],
+                                        [
+                                            'name' => basename($path),
+                                            'type' => 'file',
+                                            'mime_type' => Storage::disk('public')->mimeType($path),
+                                            'size' => Storage::disk('public')->size($path),
+                                            'folder_id' => $folder->id,
+                                            'user_id' => auth()->id(),
+                                        ]
+                                        );
+                                    }
+                                }),
+                            ]),
             ]);
-        }      
-                     // 👈 cierre correcto del Section
-                
+    }    
                             
                     
 
@@ -387,60 +387,67 @@ class ActividadResource extends Resource
                 Tables\Actions\ViewAction::make(),
             
                 Tables\Actions\EditAction::make()
-                    ->visible(fn (Model $record) =>
-                        auth()->user()->can('update_actividad')
-                        && $record->estado !== 'Completada'
-                    )
-                    ->before(function (Model $record, Tables\Actions\EditAction $action) {
-                        if ($record->estado === 'Completada') {
-                            Notification::make()
-                                ->title('Acción no permitida')
-                                ->body('Esta actividad está completada y no puede ser editada.')
-                                ->danger()
-                                ->send();
-                            $action->halt();
-                        }
+    ->visible(fn (Model $record) =>
+        auth()->user()->can('update_actividad')
+        && $record->estado !== 'Completada'
+        && $record->estado !== 'Cancelada'
+    )
+    ->before(function (Model $record, Tables\Actions\EditAction $action) {
+        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
+            Notification::make()
+                ->title('Acción no permitida')
+                ->body('Esta actividad está ' . strtolower($record->estado) . ' y no puede ser editada.')
+                ->danger()
+                ->send();
+            $action->halt();
+        }
+
+        if (! auth()->user()->can('update_actividad')) {
+            Notification::make()
+                ->title('Permiso Denegado')
+                ->body('No tienes permiso para editar esta actividad.')
+                ->danger()
+                ->send();
+            $action->halt();
+        }
+    }),
+
             
-                        if (! auth()->user()->can('update_actividad')) {
-                            Notification::make()
-                                ->title('Permiso Denegado')
-                                ->body('No tienes permiso para editar esta actividad.')
-                                ->danger()
-                                ->send();
-                            $action->halt();
-                        }
-                    }),
-            
-                Tables\Actions\DeleteAction::make()
-                    ->visible(fn (Model $record) =>
-                        auth()->user()->can('delete_actividad')
-                        && $record->estado !== 'Completada'
-                    )
-                    ->before(function (Model $record, Tables\Actions\DeleteAction $action) {
-                        if ($record->estado === 'Completada') {
-                            Notification::make()
-                                ->title('Acción no permitida')
-                                ->body('Esta actividad está completada y no puede ser eliminada.')
-                                ->danger()
-                                ->send();
-                            $action->halt();
-                        }
-            
-                        if (! auth()->user()->can('delete_actividad')) {
-                            Notification::make()
-                                ->title('Permiso Denegado')
-                                ->body('No tienes permiso para eliminar esta actividad.')
-                                ->danger()
-                                ->send();
-                            $action->halt();
-                        }
-                    }),
+    Tables\Actions\DeleteAction::make()
+    ->visible(fn (Model $record) =>
+        auth()->user()->can('delete_actividad')
+        && $record->estado !== 'Completada'
+        && $record->estado !== 'Cancelada'
+    )
+    ->before(function (Model $record, Tables\Actions\DeleteAction $action) {
+        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
+            Notification::make()
+                ->title('Acción no permitida')
+                ->body('Esta actividad está ' . strtolower($record->estado) . ' y no puede ser eliminada.')
+                ->danger()
+                ->send();
+            $action->halt();
+        }
+
+        if (! auth()->user()->can('delete_actividad')) {
+            Notification::make()
+                ->title('Permiso Denegado')
+                ->body('No tienes permiso para eliminar esta actividad.')
+                ->danger()
+                ->send();
+            $action->halt();
+        }
+    }),
+
                 Tables\Actions\Action::make('mark_as_completed')
                     ->label('Marcar como Completada')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(fn (Model $record) => $record->estado !== 'Completada' && auth()->user()->can('update_actividad'))
-                    ->form([
+                    ->visible(fn (Model $record) =>
+                    $record->estado !== 'Completada'
+                    && $record->estado !== 'Cancelada'
+                    && auth()->user()->can('update_actividad')
+                )                    ->form([
                         Forms\Components\TextInput::make('asistentes_hombres')
                             ->label('Asistentes Hombres')
                             ->numeric()
