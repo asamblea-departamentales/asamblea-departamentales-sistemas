@@ -220,14 +220,16 @@ class ActividadResource extends Resource
                                     // crear registro en tabla media
                                     \TomatoPHP\FilamentMediaManager\Models\Media::firstOrCreate([
                                         'name' => basename($file),
-                                        'path' => 'public/actividades/' . basename($file),
-                                        'mime' => \Illuminate\Support\Facades\Storage::disk('public')->mimeType($file),
-                                        'disk' => 'public',
-                                        'folder_id' => $folder->id,
-                                        'user_id' => auth()->id(),
-                                    ]);
+                'path' => $file, // 👈 ruta relativa dentro del disk
+                'type' => 'file',
+                'mime_type' => \Illuminate\Support\Facades\Storage::disk('public')->mimeType($file),
+                'size' => \Illuminate\Support\Facades\Storage::disk('public')->size($file),
+                'disk' => 'public',
+                'folder_id' => $folder->id,
+                'user_id' => auth()->id(),
+            ]);
                                 }
-                            }),dame 
+                            }), 
                     ])
                     ->collapsible(),
             ]);
