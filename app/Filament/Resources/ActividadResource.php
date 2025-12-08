@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 //Agregado para el cierre mensual
 use App\Models\CierreMensual;
+use TomatoPHP\FilamentMediaManager\Models\Folder;
+use Illuminate\Support\Facades\Storage;
+use TomatoPHP\FilamentMediaManager\Models\Media;
 
 class ActividadResource extends Resource
 {
@@ -204,36 +207,38 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
                             ->afterStateUpdated(function ($state) {
-                                if (! $state) {
+                                if (blank($state)) {
                                     return;
                                 }
-                
-                                $folderName = 'actividades'; // nombre que aparecerá en Media Manager
-                
-                                // buscar o crear la carpeta
-                                $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate([
-                                    'name' => $folderName,
+                            
+                                $folder = Folder::firstOrCreate([
+                                    'name' => 'actividades',
                                 ]);
-                
+                            
                                 foreach ((array) $state as $file) {
-                
-                                    // crear registro en tabla media
-                                    \TomatoPHP\FilamentMediaManager\Models\Media::firstOrCreate([
-                                        'name' => basename($file),
-                'path' => $file, // 👈 ruta relativa dentro del disk
-                'type' => 'file',
-                'mime_type' => \Illuminate\Support\Facades\Storage::disk('public')->mimeType($file),
-                'size' => \Illuminate\Support\Facades\Storage::disk('public')->size($file),
-                'disk' => 'public',
-                'folder_id' => $folder->id,
-                'user_id' => auth()->id(),
+                                    $path = $file;
+                            
+                                    Media::firstOrCreate(
+                                        [
+                                            'disk' => 'public',
+                                            'path' => $path,
+                                        ],
+                                        [
+                                            'name' => basename($path),
+                                            'type' => 'file',
+                                            'mime_type' => Storage::disk('public')->mimeType($path),
+                                            'size' => Storage::disk('public')->size($path),
+                                            'folder_id' => $folder->id,
+                                            'user_id' => auth()->id(),
+                                        ]
+                                        );
+                                    }
+                                }),
+                            ]),
             ]);
-                                }
-                            }), 
-                    ])
-                    ->collapsible(),
-            ]);
-    }
+    }    
+                            
+                    
 
     public static function table(Table $table): Table
     {

@@ -16,6 +16,9 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 // Importación del sistema de notificaciones
 use Filament\Resources\Pages\CreateRecord;
+use TomatoPHP\FilamentMediaManager\Models\Folder;
+use Illuminate\Support\Facades\Storage;
+use TomatoPHP\FilamentMediaManager\Models\Media;
 
 // Declaración de la clase CreateActividad que extiende de CreateRecord
 class CreateActividad extends CreateRecord
@@ -233,7 +236,36 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                                 // Posición del botón de subir
                                 ->uploadButtonPosition('left')
                                 // Posición del indicador de progreso
-                                ->uploadProgressIndicatorPosition('left'),
+                                ->uploadProgressIndicatorPosition('left')
+                                ->afterStateUpdated(function ($state) {
+                                    if (blank($state)) {
+                                        return;
+                                    }
+                                
+                                    $folder = Folder::firstOrCreate([
+                                        'name' => 'actividades',
+                                    ]);
+                                
+                                    foreach ((array) $state as $file) {
+                                        $path = $file;
+                                
+                                        Media::firstOrCreate(
+                                            [
+                                                'disk' => 'public',
+                                                'path' => $path,
+                                            ],
+                                            [
+                                                'name' => basename($path),
+                                                'type' => 'file',
+                                                'mime_type' => Storage::disk('public')->mimeType($path),
+                                                'size' => Storage::disk('public')->size($path),
+                                                'folder_id' => $folder->id,
+                                                'user_id' => auth()->id(),
+                                            ]
+                                            );
+                        
+                                }
+                                }),
                         ]),
                 ])
                 // Configuración del botón de submit del wizard
