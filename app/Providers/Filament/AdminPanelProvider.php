@@ -120,9 +120,13 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->myProfileComponents([
                         'personal_info' => \App\Livewire\MyProfileExtended::class,
-                    ])
-                    // Deshabilitar el componente de contraseña por defecto
-                    ->enableSanctumTokens(false),
+                
+                        // ← ESTA ES LA CLAVE CORRECTA PARA BREEZY 2.6
+                        'update_password' => fn () => auth()->user()->hasAnyRole('ti')
+                            ? \Jeffgreco13\FilamentBreezy\Livewire\MyProfile\UpdatePassword::class
+                            : \App\Livewire\RequestPasswordChange::class,
+                    ]);
+                
             ])
 
             // Boton para salir del impersonate (NUEVO)
