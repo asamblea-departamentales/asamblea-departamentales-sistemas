@@ -50,8 +50,8 @@ class RequestPasswordChange extends Component
                 'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . auth()->user()->name,
                 'fecha_solicitud' => Carbon::now(),
                 'estado_interno' => 'PENDIENTE',
-                'oficina' => auth()->user()->departamental, // 👈 aquí guardas la departamental en la columna oficina               
-                 'observaciones' => 'El usuario ' . auth()->user()->email . ' ha solicitado un cambio de contraseña.'
+                'departamental_id' => auth()->user()->departamental_id,
+                'observaciones' => 'El usuario ' . auth()->user()->email . ' ha solicitado un cambio de contraseña.'
             ]);
 
             // Actualizar el estado
