@@ -173,7 +173,7 @@ class MyProfileExtended extends MyProfileComponent
                                 ->label('Solicitar Cambio de Contraseña')
                                 ->icon('heroicon-o-key')
                                 ->color('primary')
-                                ->action('request'),
+                                ->action('requestPasswordChange'),
                         ]),
                     ])
                     ->visible(fn () => !$this->isUserTI()),
