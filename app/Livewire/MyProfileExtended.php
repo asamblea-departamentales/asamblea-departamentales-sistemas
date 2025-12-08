@@ -50,24 +50,12 @@ class MyProfileExtended extends MyProfileComponent
     }
 
     protected function isUserTI(): bool
-    {
-        $user = $this->getUser();
-        
-        // Intenta diferentes métodos según tu sistema de roles
-        if (method_exists($user, 'hasRole')) {
-            return $user->hasRole('TI') || $user->hasRole('ti');
-        }
-        
-        if (method_exists($user, 'hasAnyRole')) {
-            return $user->hasAnyRole(['TI', 'ti']);
-        }
-        
-        if (property_exists($user, 'role')) {
-            return strtoupper($user->role ?? '') === 'TI';
-        }
-        
-        return false;
-    }
+{
+    $user = $this->getUser();
+    
+    // Spatie Permission
+    return $user->hasAnyRole(['ti', 'super_admin']);
+}
 
     public function requestPasswordChange()
     {
