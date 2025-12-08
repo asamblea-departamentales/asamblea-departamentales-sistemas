@@ -178,7 +178,7 @@ class ActividadResource extends Resource
                             ]),
                     ])
                     ->columns(3),
-                Forms\Components\Section::make('Atestados')
+                    Forms\Components\Section::make('Atestados')
                     ->schema([
                         Forms\Components\FileUpload::make('atestados')
                             ->label('Adjuntar Atestados')
@@ -207,35 +207,34 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
                             ->afterStateUpdated(function ($state) {
-                                  dd($state);
-                                }
-                            
-                                $folder = Folder::firstOrCreate([
-                                    'name' => 'actividades',
-                                ]);
-                            
-                                foreach ((array) $state as $file) {
-                                    $path = $file;
-                            
-                                    Media::firstOrCreate(
-                                        [
-                                            'disk' => 'public',
-                                            'path' => $path,
-                                        ],
-                                        [
-                                            'name' => basename($path),
-                                            'type' => 'file',
-                                            'mime_type' => Storage::disk('public')->mimeType($path),
-                                            'size' => Storage::disk('public')->size($path),
-                                            'folder_id' => $folder->id,
-                                            'user_id' => auth()->id(),
-                                        ]
-                                        );
-                                    }
-                                }),
-                            ]),
-            ]);
-    }    
+                                dd($state);
+                
+                                // $folder = Folder::firstOrCreate([
+                                //     'name' => 'actividades',
+                                // ]);
+                
+                                // foreach ((array) $state as $file) {
+                                //     $path = $file;
+                
+                                //     Media::firstOrCreate(
+                                //         [
+                                //             'disk' => 'public',
+                                //             'path' => $path,
+                                //         ],
+                                //         [
+                                //             'name' => basename($path),
+                                //             'type' => 'file',
+                                //             'mime_type' => Storage::disk('public')->mimeType($path),
+                                //             'size' => Storage::disk('public')->size($path),
+                                //             'folder_id' => $folder->id,
+                                //             'user_id' => auth()->id(),
+                                //         ]
+                                //     );
+                                // }
+                            }),
+                    ]);
+                     // 👈 cierre correcto del Section
+                
                             
                     
 
