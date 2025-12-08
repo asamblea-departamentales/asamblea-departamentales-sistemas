@@ -7,6 +7,8 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
@@ -14,19 +16,15 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Jeffgreco13\FilamentBreezy\Livewire\MyProfileComponent;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\ViewField;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Ticket;
+use Carbon\Carbon;
 
 use function Filament\Support\is_app_url;
 
 class MyProfileExtended extends MyProfileComponent
 {
-    /**
-     * @var array<string, mixed> | null
-     */
     public ?array $data = [];
-
     public $user;
 
     public function mount(): void
@@ -37,7 +35,6 @@ class MyProfileExtended extends MyProfileComponent
     protected function fillForm(): void
     {
         $data = $this->getUser()->attributesToArray();
-
         $this->form->fill($data);
     }
 
@@ -52,126 +49,189 @@ class MyProfileExtended extends MyProfileComponent
         return $user;
     }
 
-    public function form(Form $form): Form
-{
-    return $form
-        ->schema([
-            Section::make('Información del Perfil')
-                ->schema([
-                    SpatieMediaLibraryFileUpload::make('media')
-                        ->label('Avatar')
-                        ->collection('avatars')
-                        ->avatar()
-                        ->required(),
-                    Grid::make()->schema([
-                        TextInput::make('username')
-                            ->label('Usuario')
-                            ->disabled()
-                            ->required(),
-                        TextInput::make('email')
-                            ->label('Correo Electrónico')
-                            ->disabled()
-                            ->required(),
-                    ]),
-                    Grid::make()->schema([
-                        TextInput::make('firstname')
-                            ->label('Nombre')
-                            ->required(),
-                        TextInput::make('lastname')
-                            ->label('Apellido')
-                            ->required(),
-                    ]),
-                ]),
+    protected function isUserTI(): bool
+    {
+        $user = $this->getUser();
+        
+        // Intenta diferentes métodos según tu sistema de roles
+        if (method_exists($user, 'hasRole')) {
+            return $user->hasRole('TI') || $user->hasRole('ti');
+        }
+        
+        if (method_exists($user, 'hasAnyRole')) {
+            return $user->hasAnyRole(['TI', 'ti']);
+        }
+        
+        if (property_exists($user, 'role')) {
+            return strtoupper($user->role ?? '') === 'TI';
+        }
+        
+        return false;
+    }
 
-            // Solo mostrar cambio de contraseña si tiene rol de TI
-            Section::make('Seguridad')
-                ->description('Cambia tu contraseña de acceso al sistema.')
-                ->schema([
-                    TextInput::make('current_password')
-                        ->label('Contraseña Actual')
-                        ->password()
-                        ->required()
-                        ->currentPassword()
-                        ->revealable()
-                        ->dehydrated(false),
-                    
-                    Grid::make(2)->schema([
-                        TextInput::make('password')
-                            ->label('Nueva Contraseña')
+    public function requestPasswordChange()
+    {
+        try {
+            // Verificar si ya tiene una solicitud pendiente
+            $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
+                ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . auth()->user()->name . '%')
+                ->where('estado_interno', 'PENDIENTE')
+                ->exists();
+
+            if ($existingRequest) {
+                Notification::make()
+                    ->title('Solicitud Pendiente')
+                    ->warning()
+                    ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
+                    ->send();
+                return;
+            }
+
+            Ticket::create([
+                'tipo_ticket' => 'SOLICITUD',
+                'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . auth()->user()->name,
+                'fecha_solicitud' => Carbon::now(),
+                'estado_interno' => 'PENDIENTE',
+                'oficina' => auth()->user()->oficina ?? 'No especificada',
+                'observaciones' => 'El usuario ' . auth()->user()->email . ' ha solicitado un cambio de contraseña.'
+            ]);
+
+            Notification::make()
+                ->title('Solicitud Enviada')
+                ->success()
+                ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI lo procesará pronto.')
+                ->send();
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Error')
+                ->danger()
+                ->body('No se pudo crear la solicitud. Por favor intente nuevamente.')
+                ->send();
+        }
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Información del Perfil')
+                    ->schema([
+                        SpatieMediaLibraryFileUpload::make('media')
+                            ->label('Avatar')
+                            ->collection('avatars')
+                            ->avatar()
+                            ->required(),
+                        Grid::make()->schema([
+                            TextInput::make('username')
+                                ->label('Usuario')
+                                ->disabled()
+                                ->required(),
+                            TextInput::make('email')
+                                ->label('Correo Electrónico')
+                                ->disabled()
+                                ->required(),
+                        ]),
+                        Grid::make()->schema([
+                            TextInput::make('firstname')
+                                ->label('Nombre')
+                                ->required(),
+                            TextInput::make('lastname')
+                                ->label('Apellido')
+                                ->required(),
+                        ]),
+                    ]),
+
+                Section::make('Seguridad')
+                    ->description('Cambia tu contraseña de acceso al sistema.')
+                    ->schema([
+                        TextInput::make('current_password')
+                            ->label('Contraseña Actual')
                             ->password()
                             ->required()
-                            ->minLength(8)
-                            ->revealable()
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->confirmed(),
-                        
-                        TextInput::make('password_confirmation')
-                            ->label('Confirmar Nueva Contraseña')
-                            ->password()
-                            ->required()
+                            ->currentPassword()
                             ->revealable()
                             ->dehydrated(false),
-                    ]),
-                ])
-                ->visible(fn () => $this->getUser()->role === 'ti'), // Cambia esto según tu sistema de roles
+                        
+                        Grid::make(2)->schema([
+                            TextInput::make('password')
+                                ->label('Nueva Contraseña')
+                                ->password()
+                                ->required()
+                                ->minLength(8)
+                                ->revealable()
+                                ->dehydrated(fn ($state) => filled($state))
+                                ->confirmed(),
+                            
+                            TextInput::make('password_confirmation')
+                                ->label('Confirmar Nueva Contraseña')
+                                ->password()
+                                ->required()
+                                ->revealable()
+                                ->dehydrated(false),
+                        ]),
+                    ])
+                    ->visible(fn () => $this->isUserTI()),
 
-            // Botón para solicitar cambio de contraseña (para usuarios que NO son TI)
-            Section::make('Contraseña')
-                ->description('Para cambiar su contraseña, debe solicitar autorización del departamento de TI.')
-                ->schema([
-                    ViewField::make('password_request')
-                        ->view('livewire.request-password-change')
-                        ->label(''),
-                ])
-                ->visible(fn () => $this->getUser()->role !== 'ti'),
-        ])
-        ->operation('edit')
-        ->model($this->getUser())
-        ->statePath('data');
-}
+                Section::make('Contraseña')
+                    ->description('Para cambiar su contraseña, debe solicitar autorización del departamento de TI.')
+                    ->schema([
+                        \Filament\Forms\Components\Placeholder::make('password_info')
+                            ->label('')
+                            ->content('Haga clic en el botón de abajo para crear una solicitud de cambio de contraseña que será procesada por el departamento de TI.'),
+                        
+                        \Filament\Forms\Components\Actions::make([
+                            Action::make('request_password_change')
+                                ->label('Solicitar Cambio de Contraseña')
+                                ->icon('heroicon-o-key')
+                                ->color('primary')
+                                ->action('requestPasswordChange'),
+                        ]),
+                    ])
+                    ->visible(fn () => !$this->isUserTI()),
+            ])
+            ->operation('edit')
+            ->model($this->getUser())
+            ->statePath('data');
+    }
 
     public function submit()
     {
         try {
             $data = $this->form->getState();
-
             $this->handleRecordUpdate($this->getUser(), $data);
 
             Notification::make()
-                ->title('Profile updated')
+                ->title('Perfil actualizado')
+                ->body('Los cambios se han guardado exitosamente.')
                 ->success()
                 ->send();
 
             $this->redirect('my-profile', navigate: FilamentView::hasSpaMode() && is_app_url('my-profile'));
         } catch (\Throwable $th) {
             Notification::make()
-                ->title('Failed to update.')
+                ->title('Error al actualizar')
+                ->body('No se pudo guardar los cambios.')
                 ->danger()
                 ->send();
         }
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
     protected function handleRecordUpdate(Model $record, array $data): Model
-{
-    // Si el usuario es TI y está cambiando la contraseña
-    if ($record->role === 'ti' && filled($data['password'] ?? null)) {
-        $data['password'] = Hash::make($data['password']);
-    } else {
-        // Remover campos de contraseña si no es TI
-        unset($data['password']);
+    {
+        if ($this->isUserTI() && filled($data['password'] ?? null)) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        unset($data['current_password']);
+        unset($data['password_confirmation']);
+
+        $record->update($data);
+
+        return $record;
     }
-
-    // Remover campos que no deben guardarse
-    unset($data['current_password']);
-    unset($data['password_confirmation']);
-
-    $record->update($data);
-
-    return $record;
-}
 
     public function render(): View
     {
