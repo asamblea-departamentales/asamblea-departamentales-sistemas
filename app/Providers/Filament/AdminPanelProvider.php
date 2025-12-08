@@ -110,27 +110,19 @@ class AdminPanelProvider extends PanelProvider
                     ->sectionColumnSpan(1)
                     ->checkboxListColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
                     ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
-
                     BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
                         shouldRegisterNavigation: false,
                         navigationGroup: 'Settings',
                         hasAvatars: true,
-                        slug: 'my-profile',
-                        // 👇 usamos un closure para evitar el error cuando no hay usuario
-                        enablePasswordUpdate: fn () => auth()->check() && auth()->user()->hasAnyRole('ti')
+                        slug: 'my-profile'
                     )
                     ->myProfileComponents([
                         'personal_info' => \App\Livewire\MyProfileExtended::class,
-                
-                        // 👇 si NO es TI, mostramos tu propio componente
-                        'password' => fn () => auth()->check() && !auth()->user()->hasAnyRole('ti')
-                            ? \App\Livewire\RequestPasswordChange::class
-                            : null,
                     ])
-                
-                    
+                    // Deshabilitar el componente de contraseña por defecto
+                    ->enableSanctumTokens(false),
             ])
 
             // Boton para salir del impersonate (NUEVO)
