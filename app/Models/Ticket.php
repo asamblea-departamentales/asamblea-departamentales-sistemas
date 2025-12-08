@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class Ticket extends Model
 {
@@ -88,7 +89,7 @@ class Ticket extends Model
 
     public function diasDesdeCreacion()
     {
-        return $this->fecha_solicitud->diffInDays(now());
+        return Carbon::parse($this->fecha_solicitud)->startOfDay()->diffInDays(now()->startOfDay());
     }
 
     public function getPrioridadAttribute()
