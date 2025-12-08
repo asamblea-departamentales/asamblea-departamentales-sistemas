@@ -125,9 +125,9 @@ class AdminPanelProvider extends PanelProvider
                         'update_password' => fn () => auth()->user()->hasAnyRole('ti')
                             ? \Jeffgreco13\FilamentBreezy\Livewire\MyProfile\UpdatePassword::class
                             : \App\Livewire\RequestPasswordChange::class,
-                    ]);
-                
+                    ]),
             ])
+                
 
             // Boton para salir del impersonate (NUEVO)
             ->userMenuItems([
