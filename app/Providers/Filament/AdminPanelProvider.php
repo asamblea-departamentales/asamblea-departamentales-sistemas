@@ -36,6 +36,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Jeffgreco13\FilamentBreezy\Livewire\MyProfile\ChangePassword;
+
+
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -107,17 +110,26 @@ class AdminPanelProvider extends PanelProvider
                     ->sectionColumnSpan(1)
                     ->checkboxListColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
                     ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
-                BreezyCore::make()
-                    ->myProfile(
-                        shouldRegisterUserMenu: true,
-                        shouldRegisterNavigation: false,
-                        navigationGroup: 'Settings',
-                        hasAvatars: true,
-                        slug: 'my-profile'
-                    )
-                    ->myProfileComponents([
-                        'personal_info' => \App\Livewire\MyProfileExtended::class,
-                    ]),
+
+                    BreezyCore::make()
+                        ->myProfile(
+                            shouldRegisterUserMenu: true,
+                            shouldRegisterNavigation: false,
+                            navigationGroup: 'Settings',
+                            hasAvatars: true,
+                            slug: 'my-profile',
+                            // 👇 aquí condicionas si se muestra el bloque de cambio de contraseña
+                            enablePasswordUpdate: auth()->user()->hasAnyRole('ti')
+                        )
+                        ->myProfileComponents([
+                            'personal_info' => \App\Livewire\MyProfileExtended::class,
+                    
+                            // 👇 si NO es TI, mostramos tu propio componente
+                            'password' => fn () => !auth()->user()->hasAnyRole('ti')
+                                ? \App\Livewire\RequestPasswordChange::class
+                                : null,
+                        ])
+                    
             ])
 
             // Boton para salir del impersonate (NUEVO)

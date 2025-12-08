@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3d8b1f43fcb38798a2b3a3341fd56179",
+    "content-hash": "658a09ce71b155294b5bc6e977a7332d",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3168,12 +3168,12 @@
             "version": "v2.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jeffgreco13/filament-breezy.git",
+                "url": "https://github.com/Jacobtims/filament-breezy.git",
                 "reference": "3c59d37aaf907e97e02606c7bccb20bc62f71ecf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeffgreco13/filament-breezy/zipball/3c59d37aaf907e97e02606c7bccb20bc62f71ecf",
+                "url": "https://api.github.com/repos/Jacobtims/filament-breezy/zipball/3c59d37aaf907e97e02606c7bccb20bc62f71ecf",
                 "reference": "3c59d37aaf907e97e02606c7bccb20bc62f71ecf",
                 "shasum": ""
             },
@@ -3227,8 +3227,8 @@
                 "laravel"
             ],
             "support": {
-                "issues": "https://github.com/jeffgreco13/filament-breezy/issues",
-                "source": "https://github.com/jeffgreco13/filament-breezy/tree/v2.6.4"
+                "issues": "https://github.com/Jacobtims/filament-breezy/issues",
+                "source": "https://github.com/Jacobtims/filament-breezy/tree/v2.6.4"
             },
             "time": "2025-06-09T17:18:54+00:00"
         },
