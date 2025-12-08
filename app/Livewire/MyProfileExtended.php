@@ -42,7 +42,7 @@ class MyProfileExtended extends MyProfileComponent
     {
         $user = Filament::auth()->user();
 
-        if (! $user instanceof Model) {
+        if (!$user instanceof Model) {
             throw new Exception('The authenticated user object must be an Eloquent model to allow the profile page to update it.');
         }
 
@@ -50,19 +50,19 @@ class MyProfileExtended extends MyProfileComponent
     }
 
     protected function isUserTI(): bool
-{
-    $user = $this->getUser();
-    
-    // Spatie Permission
-    return $user->hasAnyRole(['ti', 'super_admin']);
-}
+    {
+        $user = $this->getUser();
+        return $user->hasAnyRole(['ti', 'super_admin']);
+    }
 
     public function requestPasswordChange()
     {
+        $user = $this->getUser();
+
         try {
-            // Verificar si ya tiene una solicitud pendiente
+            // Verificar si ya existe solicitud pendiente
             $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
-                ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . auth()->user()->name . '%')
+                ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
                 ->where('estado_interno', 'PENDIENTE')
                 ->exists();
 
@@ -77,11 +77,11 @@ class MyProfileExtended extends MyProfileComponent
 
             Ticket::create([
                 'tipo_ticket' => 'SOLICITUD',
-                'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . auth()->user()->name,
+                'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
                 'fecha_solicitud' => Carbon::now(),
                 'estado_interno' => 'PENDIENTE',
-                'oficina' => auth()->user()->oficina ?? 'No especificada',
-                'observaciones' => 'El usuario ' . auth()->user()->email . ' ha solicitado un cambio de contraseña.'
+                'oficina' => $user->oficina ?? 'No especificada',
+                'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
             ]);
 
             Notification::make()
@@ -91,6 +91,8 @@ class MyProfileExtended extends MyProfileComponent
                 ->send();
 
         } catch (\Exception $e) {
+            \Log::error('Error al crear ticket de cambio de contraseña: '.$e->getMessage());
+
             Notification::make()
                 ->title('Error')
                 ->danger()
@@ -110,20 +112,24 @@ class MyProfileExtended extends MyProfileComponent
                             ->collection('avatars')
                             ->avatar()
                             ->required(),
+
                         Grid::make()->schema([
                             TextInput::make('username')
                                 ->label('Usuario')
                                 ->disabled()
                                 ->required(),
+
                             TextInput::make('email')
                                 ->label('Correo Electrónico')
                                 ->disabled()
                                 ->required(),
                         ]),
+
                         Grid::make()->schema([
                             TextInput::make('firstname')
                                 ->label('Nombre')
                                 ->required(),
+
                             TextInput::make('lastname')
                                 ->label('Apellido')
                                 ->required(),
@@ -140,7 +146,7 @@ class MyProfileExtended extends MyProfileComponent
                             ->currentPassword()
                             ->revealable()
                             ->dehydrated(false),
-                        
+
                         Grid::make(2)->schema([
                             TextInput::make('password')
                                 ->label('Nueva Contraseña')
@@ -150,7 +156,7 @@ class MyProfileExtended extends MyProfileComponent
                                 ->revealable()
                                 ->dehydrated(fn ($state) => filled($state))
                                 ->confirmed(),
-                            
+
                             TextInput::make('password_confirmation')
                                 ->label('Confirmar Nueva Contraseña')
                                 ->password()
@@ -167,13 +173,14 @@ class MyProfileExtended extends MyProfileComponent
                         \Filament\Forms\Components\Placeholder::make('password_info')
                             ->label('')
                             ->content('Haga clic en el botón de abajo para crear una solicitud de cambio de contraseña que será procesada por el departamento de TI.'),
-                        
+
                         \Filament\Forms\Components\Actions::make([
                             Action::make('request_password_change')
                                 ->label('Solicitar Cambio de Contraseña')
                                 ->icon('heroicon-o-key')
                                 ->color('primary')
-                                ->action(fn (Action $action) => $this->requestPasswordChange()),                        ]),
+                                ->action('requestPasswordChange'), // Simplificado
+                        ]),
                     ])
                     ->visible(fn () => !$this->isUserTI()),
             ])
@@ -212,8 +219,7 @@ class MyProfileExtended extends MyProfileComponent
             unset($data['password']);
         }
 
-        unset($data['current_password']);
-        unset($data['password_confirmation']);
+        unset($data['current_password'], $data['password_confirmation']);
 
         $record->update($data);
 
