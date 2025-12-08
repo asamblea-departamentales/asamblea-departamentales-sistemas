@@ -6,6 +6,7 @@ use App\Filament\Pages\Actions\ImpersonatePageAction;
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Forms;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support;
 use Filament\Support\Enums\Alignment;
@@ -22,43 +23,67 @@ class EditUser extends EditRecord
     {
         $actions = [
             ImpersonatePageAction::make()->record($this->record),
+            
             Actions\ActionGroup::make([
-                Actions\EditAction::make()
-                    ->label(__('resource.user.change_password'))
+                // ✅ Acción de Cambiar Contraseña (mejorada)
+                Actions\Action::make('change_password')
+                    ->label('Cambiar Contraseña')
+                    ->icon('heroicon-o-key')
+                    ->color('warning')
                     ->form([
-                        Forms\Components\TextInput::make('password')
+                        Forms\Components\TextInput::make('new_password')
+                            ->label('Nueva Contraseña')
                             ->password()
-                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                            ->dehydrated(fn (?string $state): bool => filled($state))
+                            ->required()
+                            ->minLength(8)
                             ->revealable()
-                            ->required(),
-                        Forms\Components\TextInput::make('passwordConfirmation')
+                            ->helperText('Mínimo 8 caracteres')
+                            ->autocomplete('new-password'),
+                        
+                        Forms\Components\TextInput::make('new_password_confirmation')
+                            ->label('Confirmar Nueva Contraseña')
                             ->password()
-                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                            ->dehydrated(fn (?string $state): bool => filled($state))
+                            ->required()
                             ->revealable()
-                            ->same('password')
-                            ->required(),
+                            ->same('new_password')
+                            ->dehydrated(false)
+                            ->autocomplete('new-password'),
                     ])
                     ->modalWidth(Support\Enums\MaxWidth::Medium)
-                    ->modalHeading('Update Password')
-                    ->modalDescription(fn ($record) => $record->email)
+                    ->modalHeading('Cambiar Contraseña de Usuario')
+                    ->modalDescription(fn ($record) => "Usuario: {$record->name} ({$record->email})")
                     ->modalAlignment(Alignment::Center)
-                    ->modalCloseButton(false)
-                    ->modalSubmitActionLabel('Submit')
-                    ->modalCancelActionLabel('Cancel'),
+                    ->modalSubmitActionLabel('Cambiar Contraseña')
+                    ->modalCancelActionLabel('Cancelar')
+                    ->action(function (array $data) {
+                        $this->record->update([
+                            'password' => Hash::make($data['new_password']),
+                        ]);
+
+                        Notification::make()
+                            ->title('Contraseña Actualizada')
+                            ->success()
+                            ->body("La contraseña de {$this->record->name} ha sido actualizada correctamente.")
+                            ->send();
+                    })
+                    ->requiresConfirmation()
+                    ->modalIcon('heroicon-o-shield-exclamation')
+                    ->modalIconColor('warning'),
 
                 Actions\DeleteAction::make()
+                    ->label('Eliminar Usuario')
                     ->extraAttributes(['class' => 'border-b']),
 
-                Actions\CreateAction::make()
-                    ->label(__('resource.user.create_new_user'))
-                    ->url(fn (): string => static::$resource::getNavigationUrl().'/create'),
+                Actions\Action::make('create_new')
+                    ->label('Crear Nuevo Usuario')
+                    ->icon('heroicon-o-user-plus')
+                    ->url(fn (): string => static::$resource::getUrl('create'))
+                    ->color('success'),
             ])
                 ->icon('heroicon-m-ellipsis-horizontal')
-                ->hiddenLabel()
+                ->label('Más Acciones')
                 ->button()
-                ->tooltip('More Actions')
+                ->tooltip('Más Acciones')
                 ->color('gray'),
         ];
 
@@ -70,13 +95,11 @@ class EditUser extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    // Este es para el <title> del navegador (solo texto)
     public function getTitle(): string
     {
         return 'Editar Usuario: ' . $this->record->name;
     }
 
-    // Este es para el heading visual en la página (puede tener HTML)
     public function getHeading(): string|Htmlable
     {
         $title = $this->record->name;
@@ -93,12 +116,12 @@ class EditUser extends EditRecord
     public function getBadgeStatus(): string|Htmlable
     {
         if (empty($this->record->email_verified_at)) {
-            $icon = Blade::render('<x-fluentui-error-circle-24 class="w-5 h-5 text-danger-600" title="Unverified" />');
-            $badge = "<span class='inline-flex items-center' title='Unverified'>"
+            $icon = Blade::render('<x-fluentui-error-circle-24 class="w-5 h-5 text-danger-600" title="No Verificado" />');
+            $badge = "<span class='inline-flex items-center' title='No Verificado'>"
                 .$icon.'</span>';
         } else {
-            $icon = Blade::render('<x-fluentui-checkmark-starburst-24 class="w-5 h-5 text-success-600" title="Verified" />');
-            $badge = "<span class='inline-flex items-center' title='Verified'>"
+            $icon = Blade::render('<x-fluentui-checkmark-starburst-24 class="w-5 h-5 text-success-600" title="Verificado" />');
+            $badge = "<span class='inline-flex items-center' title='Verificado'>"
                 .$icon.'</span>';
         }
 
