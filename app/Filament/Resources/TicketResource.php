@@ -28,54 +28,56 @@ class TicketResource extends Resource
     }
 
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Información del Ticket')
-                    ->schema([
-                        Forms\Components\Select::make('tipo_ticket')
-                            ->label('Tipo de Ticket')
-                            ->options(Ticket::TIPOS)
-                            ->required()
-                            ->searchable(),
-                        
-                        Forms\Components\TextInput::make('motivo')
-                            ->label('Motivo/Asunto')
-                            ->required()
-                            ->maxLength(255)
-                            ->columnSpan(2),
-                    ])->columns(3),
+{
+    return $form
+        ->schema([
+            Forms\Components\Section::make('Información del Ticket')
+                ->schema([
+                    Forms\Components\Select::make('tipo_ticket')
+                        ->label('Tipo de Ticket')
+                        ->options(Ticket::TIPOS)
+                        ->required()
+                        ->searchable(),
+                    
+                    Forms\Components\TextInput::make('motivo')
+                        ->label('Motivo/Asunto')
+                        ->required()
+                        ->maxLength(255)
+                        ->columnSpan(2),
+                ])->columns(3),
 
-                Forms\Components\Section::make('Gestión del Ticket')
-                    ->schema([
-                        Forms\Components\DatePicker::make('fecha_solicitud')
-                            ->label('Fecha de Solicitud')
-                            ->required()
-                            ->default(now())
-                            ->native(false),
-                        
-                        Forms\Components\Select::make('estado_interno')
-                            ->label('Estado')
-                            ->options(Ticket::ESTADOS)
-                            ->default('PENDIENTE')
-                            ->required(),
-                        
-                        Forms\Components\TextInput::make('oficina')
-                            ->label('Oficina')
-                            ->required()
-                            ->maxLength(255),
-                    ])->columns(3),
+            Forms\Components\Section::make('Gestión del Ticket')
+                ->schema([
+                    Forms\Components\DatePicker::make('fecha_solicitud')
+                        ->label('Fecha de Solicitud')
+                        ->required()
+                        ->default(now())
+                        ->native(false),
+                    
+                    Forms\Components\Select::make('estado_interno')
+                        ->label('Estado')
+                        ->options(Ticket::ESTADOS)
+                        ->default('PENDIENTE')
+                        ->required(),
+                    
+                    Forms\Components\TextInput::make('oficina')
+                        ->label('Departamental')
+                        ->disabled() // 👈 no editable
+                        ->default(fn () => auth()->user()->departamental ?? 'No especificada')
+                        ->dehydrated(true), // 👈 se guarda en la BD
+                ])->columns(3),
 
-                Forms\Components\Section::make('Descripción y Observaciones')
-                    ->schema([
-                        Forms\Components\Textarea::make('observaciones')
-                            ->label('Descripción del problema/solicitud')
-                            ->required()
-                            ->rows(4)
-                            ->columnSpanFull(),
-                    ]),
-            ]);
-    }
+            Forms\Components\Section::make('Descripción y Observaciones')
+                ->schema([
+                    Forms\Components\Textarea::make('observaciones')
+                        ->label('Descripción del problema/solicitud')
+                        ->required()
+                        ->rows(4)
+                        ->columnSpanFull(),
+                ]),
+        ]);
+}
+
 
     public static function table(Table $table): Table
     {
