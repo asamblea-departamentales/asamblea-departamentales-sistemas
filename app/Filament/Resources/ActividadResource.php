@@ -180,6 +180,7 @@ class ActividadResource extends Resource
                         Forms\Components\FileUpload::make('atestados')
                             ->label('Adjuntar Atestados')
                             ->multiple()
+                            ->disk('public')
                             ->directory('actividades')
                             ->acceptedFileTypes([
                                 'image/*',
