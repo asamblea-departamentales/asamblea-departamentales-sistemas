@@ -112,23 +112,24 @@ class AdminPanelProvider extends PanelProvider
                     ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
 
                     BreezyCore::make()
-                        ->myProfile(
-                            shouldRegisterUserMenu: true,
-                            shouldRegisterNavigation: false,
-                            navigationGroup: 'Settings',
-                            hasAvatars: true,
-                            slug: 'my-profile',
-                            // 👇 aquí condicionas si se muestra el bloque de cambio de contraseña
-                            enablePasswordUpdate: auth()->user()->hasAnyRole('ti')
-                        )
-                        ->myProfileComponents([
-                            'personal_info' => \App\Livewire\MyProfileExtended::class,
-                    
-                            // 👇 si NO es TI, mostramos tu propio componente
-                            'password' => fn () => !auth()->user()->hasAnyRole('ti')
-                                ? \App\Livewire\RequestPasswordChange::class
-                                : null,
-                        ])
+                    ->myProfile(
+                        shouldRegisterUserMenu: true,
+                        shouldRegisterNavigation: false,
+                        navigationGroup: 'Settings',
+                        hasAvatars: true,
+                        slug: 'my-profile',
+                        // 👇 usamos un closure para evitar el error cuando no hay usuario
+                        enablePasswordUpdate: fn () => auth()->check() && auth()->user()->hasAnyRole('ti')
+                    )
+                    ->myProfileComponents([
+                        'personal_info' => \App\Livewire\MyProfileExtended::class,
+                
+                        // 👇 si NO es TI, mostramos tu propio componente
+                        'password' => fn () => auth()->check() && !auth()->user()->hasAnyRole('ti')
+                            ? \App\Livewire\RequestPasswordChange::class
+                            : null,
+                    ])
+                
                     
             ])
 
