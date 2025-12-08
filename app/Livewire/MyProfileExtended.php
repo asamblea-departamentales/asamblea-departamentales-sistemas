@@ -186,27 +186,30 @@ class MyProfileExtended extends MyProfileComponent
         return $record;
     }
 
-    public function solicitarCambioPassword()
-{
-    $user = $this->getUser();
+    /**
+    * Solicitar cambio de contraseña
+   */
+    public function solicitarCambioPassword(): void
+    {
+     $user = $this->getUser();
 
-    try {
-        // Verificar si ya existe solicitud pendiente
-        $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
+        try {
+            // Verificar si ya existe solicitud pendiente
+            $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
             ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
             ->where('estado_interno', 'PENDIENTE')
             ->exists();
 
-        if ($existingRequest) {
-            Notification::make()
+            if ($existingRequest) {
+                Notification::make()
                 ->title('Solicitud Pendiente')
                 ->warning()
                 ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
                 ->send();
-            return;
-        }
+                return;
+            }
 
-        Ticket::create([
+            Ticket::create([
             'tipo_ticket' => 'SOLICITUD',
             'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
             'fecha_solicitud' => Carbon::now(),
@@ -215,22 +218,22 @@ class MyProfileExtended extends MyProfileComponent
             'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
         ]);
 
-        Notification::make()
+            Notification::make()
             ->title('Solicitud Enviada')
             ->success()
-            ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI lo procesará pronto.')
+            ->body('Se ha creado el ticket para el cambio de contraseña.')
             ->send();
 
-    } catch (\Exception $e) {
-        \Log::error('Error al crear ticket de cambio de contraseña: '.$e->getMessage());
+        } catch (\Exception $e) {
+            \Log::error('Error al crear ticket: ' . $e->getMessage());
 
-        Notification::make()
+            Notification::make()
             ->title('Error')
             ->danger()
-            ->body('No se pudo crear la solicitud. Error: ' . $e->getMessage())
+            ->body('No se pudo crear la solicitud.')
             ->send();
+         }
     }
-}
 
 
     public function render(): View
