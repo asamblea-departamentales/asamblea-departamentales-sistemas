@@ -130,10 +130,13 @@ class TicketResource extends Resource
                     ]),
                 
                     Tables\Columns\TextColumn::make('oficina')
-                    ->label('Departamental')
-                    ->formatStateUsing(fn ($state) => is_array($state) ? ($state['nombre'] ?? 'N/A') : $state)
-                    ->sortable()
-                    ->searchable(),
+    ->label('Departamental')
+    ->formatStateUsing(fn ($state) => 
+        (is_array($state) ? ($state['nombre'] ?? 'N/A') : (is_object($state) ? $state->nombre : $state))
+    )
+    ->sortable()
+    ->searchable(),
+
                 
                 
                     Tables\Columns\TextColumn::make('dias_creacion')
