@@ -207,8 +207,7 @@ class ActividadResource extends Resource
                             ->columnSpanFull()
                             ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
                             ->afterStateUpdated(function ($state) {
-                                if (blank($state)) {
-                                    return;
+                                  dd($state);
                                 }
                             
                                 $folder = Folder::firstOrCreate([
