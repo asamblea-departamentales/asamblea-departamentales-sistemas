@@ -202,7 +202,32 @@ class ActividadResource extends Resource
                             ->openable()
                             ->previewable()
                             ->columnSpanFull()
-                            ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).'),
+                            ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
+                            ->afterStateUpdated(function ($state) {
+                                if (! $state) {
+                                    return;
+                                }
+                
+                                $folderName = 'actividades'; // nombre que aparecerá en Media Manager
+                
+                                // buscar o crear la carpeta
+                                $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate([
+                                    'name' => $folderName,
+                                ]);
+                
+                                foreach ((array) $state as $file) {
+                
+                                    // crear registro en tabla media
+                                    \TomatoPHP\FilamentMediaManager\Models\Media::firstOrCreate([
+                                        'name' => basename($file),
+                                        'path' => 'public/actividades/' . basename($file),
+                                        'mime' => \Illuminate\Support\Facades\Storage::disk('public')->mimeType($file),
+                                        'disk' => 'public',
+                                        'folder_id' => $folder->id,
+                                        'user_id' => auth()->id(),
+                                    ]);
+                                }
+                            }),dame 
                     ])
                     ->collapsible(),
             ]);

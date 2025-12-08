@@ -102,8 +102,7 @@ class AdminPanelProvider extends PanelProvider
                     ->selectable(true)
                     ->editable(true),
                 FilamentMediaManagerPlugin::make()
-                    ->allowSubFolders(),
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                    ->allowSubFolders(),                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns(['default' => 2, 'sm' => 1])
                     ->sectionColumnSpan(1)
                     ->checkboxListColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
