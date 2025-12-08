@@ -226,6 +226,12 @@ class MyProfileExtended extends MyProfileComponent
         return $record;
     }
 
+    public function request()
+{
+    return $this->requestPasswordChange();
+}
+
+
     public function render(): View
     {
         return view('livewire.my-profile-extended');
