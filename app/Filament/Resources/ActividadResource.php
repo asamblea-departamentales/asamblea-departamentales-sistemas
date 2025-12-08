@@ -232,7 +232,9 @@ class ActividadResource extends Resource
                                 //     );
                                 // }
                             }),
-                    ]);
+                        ]),
+            ]);
+        }      
                      // 👈 cierre correcto del Section
                 
                             
