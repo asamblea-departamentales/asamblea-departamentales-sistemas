@@ -60,11 +60,14 @@ class TicketResource extends Resource
                         ->default('PENDIENTE')
                         ->required(),
                     
-                    Forms\Components\TextInput::make('oficina')
+                        Forms\Components\TextInput::make('oficina')
                         ->label('Departamental')
-                        ->disabled() // 👈 no editable
-                        ->default(fn () => auth()->user()->departamental ?? 'No especificada')
-                        ->dehydrated(true), // 👈 se guarda en la BD
+                        ->disabled()
+                        ->afterStateHydrated(fn ($component, $state) => 
+                            $component->state($state ?? (auth()->user()->departamental ?? 'No especificada'))
+                        )
+                        ->dehydrated(true),
+                    
                 ])->columns(3),
 
             Forms\Components\Section::make('Descripción y Observaciones')
