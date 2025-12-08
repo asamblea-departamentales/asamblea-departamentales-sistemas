@@ -60,13 +60,12 @@ class TicketResource extends Resource
                         ->default('PENDIENTE')
                         ->required(),
                     
-                        Forms\Components\TextInput::make('oficina')
+                        Forms\Components\Select::make('departamental_id')
                         ->label('Departamental')
-                        ->disabled()
-                        ->afterStateHydrated(fn ($component, $state) => 
-                            $component->state($state ?? (auth()->user()->departamental ?? 'No especificada'))
-                        )
-                        ->dehydrated(true),
+                        ->relationship(name: 'departamental', titleAttribute: 'nombre')
+                        ->searchable()
+                        ->required(),
+                    
                     
                 ])->columns(3),
 
@@ -129,13 +128,13 @@ class TicketResource extends Resource
                         'secondary' => 'Baja',
                     ]),
                 
-                    Tables\Columns\TextColumn::make('oficina')
-    ->label('Departamental')
-    ->formatStateUsing(fn ($state) => 
-        (is_array($state) ? ($state['nombre'] ?? 'N/A') : (is_object($state) ? $state->nombre : $state))
-    )
-    ->sortable()
-    ->searchable(),
+                    Tables\Columns\TextColumn::make('departamental.nombre')
+                    ->label('Departamental')
+                    ->sortable()
+                    ->searchable()
+                    ->default('No especificada'),
+                
+                
 
                 
                 

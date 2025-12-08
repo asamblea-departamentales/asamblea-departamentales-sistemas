@@ -114,4 +114,11 @@ class Ticket extends Model
             default => 'primary'
         };
     }
+
+    public function departamental()
+{
+    return $this->belongsTo(Departamental::class);
+}
+
+
 }
