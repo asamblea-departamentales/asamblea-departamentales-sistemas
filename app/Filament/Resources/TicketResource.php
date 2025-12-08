@@ -146,7 +146,6 @@ class TicketResource extends Resource
     ->sortable(false)
     ->searchable(false),
 
-                    }),
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
