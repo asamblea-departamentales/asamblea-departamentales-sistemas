@@ -23,9 +23,23 @@ class RequisicionResource extends Resource
 
     // Badge con contador
     public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::pendientes()->count();
+{
+    $user = \Filament\Facades\Filament::auth()->user();
+
+    $isCentral = $user && (
+        $user->hasRole(['ti','Administrador','gol']) || // puedes usar hasRole con array
+        $user->hasRole(config('filament-shield.super_admin.name'))
+    );
+
+    $query = static::getModel()::pendientes();
+
+    if (! $isCentral && $user) {
+        $query->where('departamental_id', $user->departamental_id);
     }
+
+    return (string) $query->count();
+}
+
 
     public static function form(Form $form): Form
     {
