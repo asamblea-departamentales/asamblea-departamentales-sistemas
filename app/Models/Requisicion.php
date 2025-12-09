@@ -162,4 +162,10 @@ class Requisicion extends Model
             default => []
         };
     }
+
+    //Relacion con departamental
+    public function departamental()
+    {
+        return $this->belongsTo(Departamental::class);
+    }
 }
