@@ -316,6 +316,36 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
             }
         }
     
+        // ← AGREGAR ESTO: sincronización con TomatoPHP
+        if ($record->departamental?->nombre && $record->getMedia('atestados')->isNotEmpty()) {
+            $departamentalNombre = $record->departamental->nombre;
+            $folderName = "Atestados - {$departamentalNombre}";
+    
+            $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
+                ['name' => $folderName],
+                [
+                    'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                    'user_id' => $record->user_id,
+                    'is_public' => false,
+                ]
+            );
+    
+            foreach ($record->getMedia('atestados') as $media) {
+                $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
+    
+                \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
+                    ['file' => $relativePath],
+                    [
+                        'name'      => $media->name ?? $media->file_name,
+                        'mime_type' => $media->mime_type,
+                        'size'      => $media->size,
+                        'folder_id' => $folder->id,
+                        'user_id'   => $record->user_id,
+                    ]
+                );
+            }
+        }
+    
         return $record;
     }
 }
