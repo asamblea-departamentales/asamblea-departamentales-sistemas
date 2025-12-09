@@ -298,7 +298,8 @@ class UserResource extends Resource
                 /** @var \App\Models\User|null $user */
                 $user = Filament::auth()->user();
 
-                $isCentral = $user && ($user->hasAnyRole(['Administrador', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
+                //TI global (puede cambiar a uno por departamental)
+                $isCentral = $user && ($user->hasAnyRole(['ti','Administrador', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
 
                 if (! $isCentral && $user) {
                     $query->where('departamental_id', $user->departamental_id);
