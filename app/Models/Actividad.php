@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Actividad extends Model
+class Actividad extends Model implements HasMedia
 {
     use BelongsToDepartamental;
     use HasFactory;                 // <- ✨ habilita la relación y el scope
+    use InteractsWithMedia;
 
     protected $table = 'actividades';
 

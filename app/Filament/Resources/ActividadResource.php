@@ -732,34 +732,34 @@ class ActividadResource extends Resource
 
     // Hook global en el Resource
     public static function afterCreate($record): void
-{
-    $atestados = $record->atestados;
-    if (blank($atestados)) {
-        return;
+    {
+        $atestados = $record->atestados;
+        if (blank($atestados)) {
+            return;
+        }
+    
+        $departamental = $record->departamental->nombre ?? 'general';
+        $month = now()->format('Y-m');
+        $folderName = "{$departamental}-{$month}";
+    
+        $folder = Folder::firstOrCreate(
+            ['name' => $folderName],
+            [
+                'description' => "Carpeta de {$departamental} para {$month}",
+                'user_id' => auth()->id(),
+            ]
+        );
+    
+        foreach ($atestados as $path) {
+            $cleanPath = ltrim($path, '/');
+    
+            // Usa Spatie para registrar el archivo en la colección "atestados"
+            $record
+                ->addMedia(storage_path("app/public/{$cleanPath}"))
+                ->preservingOriginal()
+                ->toMediaCollection('atestados', 'public');
+        }
     }
-
-    $departamental = $record->departamental->nombre ?? 'general';
-    $month = now()->format('Y-m');
-    $folderName = "{$departamental}-{$month}";
-
-    $folder = Folder::firstOrCreate(
-        ['name' => $folderName],
-        [
-            'description' => "Carpeta de {$departamental} para {$month}",
-            'user_id' => auth()->id(),
-        ]
-    );
-
-    foreach ($atestados as $path) {
-        $cleanPath = ltrim($path, '/');
-
-        // Usa la API de Spatie para adjuntar el archivo al modelo Actividad
-        $record
-            ->addMedia(storage_path("app/public/{$cleanPath}"))
-            ->preservingOriginal()
-            ->toMediaCollection('atestados');
-    }
-}
 
     public static function canViewAny(): bool
     {
