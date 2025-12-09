@@ -177,37 +177,37 @@ class Actividad extends Model implements HasMedia
     } // ← ESTA LLAVE ES LA QUE FALTABA
 
     public function syncAtestadosToMediaManager(): void
-{
-    if (!$this->departamental?->nombre) {
-        return;
-    }
-
-    $departamentalNombre = $this->departamental->nombre;
-    $folderName = "Atestados - {$departamentalNombre}";
-
-    $folder = Folder::firstOrCreate(
-        ['name' => $folderName],
-        [
-            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => $this->user_id,
-            'is_public' => false,
-        ]
-    );
-
-    foreach ($this->getMedia('atestados') as $media) {
-        // ESTA ES LA CLAVE: usar exactamente la misma ruta que Spatie guarda
-        $relativePath = 'actividades/' . $media->file_name;
-
-        MediaManager::updateOrCreate(
-            ['file' => $relativePath], // ← así lo espera TomatoPHP
+    {
+        if (!$this->departamental?->nombre) {
+            return;
+        }
+    
+        $departamentalNombre = $this->departamental->nombre;
+        $folderName = "Atestados - {$departamentalNombre}";
+    
+        $folder = Folder::firstOrCreate(
+            ['name' => $folderName],
             [
-                'name'      => $media->file_name,
-                'mime_type' => $media->mime_type,
-                'size'      => $media->size,
-                'folder_id' => $folder->id,
-                'user_id'   => $this->user_id,
+                'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                'user_id' => $this->user_id,
+                'is_public' => false,
             ]
         );
+    
+        foreach ($this->getMedia('atestados') as $media) {
+            // LA CLAVE: usar SOLO la ruta relativa SIN "public/"
+            $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
+    
+            MediaManager::updateOrCreate(
+                ['file' => $relativePath],
+                [
+                    'name'      => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size'      => $media->size,
+                    'folder_id' => $folder->id,
+                    'user_id'   => $this->user_id,
+                ]
+            );
+        }
     }
-}
 }
