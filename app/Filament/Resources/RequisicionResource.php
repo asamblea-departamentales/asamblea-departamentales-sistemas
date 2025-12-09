@@ -164,10 +164,12 @@ public static function form(Form $form): Form
                         'secondary' => 'Baja',
                     ]),
                 
-                Tables\Columns\TextColumn::make('oficina')
-                    ->label('Oficina')
+                    Tables\Columns\TextColumn::make('departamental.nombre')
+                    ->label('Departamental')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->default('No especificada'),
+                
                 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
