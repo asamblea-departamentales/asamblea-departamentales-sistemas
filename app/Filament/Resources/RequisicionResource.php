@@ -41,60 +41,61 @@ class RequisicionResource extends Resource
 }
 
 
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Información del Insumo')
-                    ->schema([
-                        Forms\Components\Select::make('tipo_insumo')
-                            ->label('Tipo de Insumo')
-                            ->options(Requisicion::TIPOS_INSUMO)
-                            ->required()
-                            ->searchable(),
-                        
-                        Forms\Components\Select::make('rubro')
-                            ->label('Rubro')
-                            ->options(Requisicion::RUBROS)
-                            ->required()
-                            ->searchable(),
-                        
-                        Forms\Components\TextInput::make('cantidad')
-                            ->label('Cantidad')
-                            ->required()
-                            ->numeric()
-                            ->minValue(1)
-                            ->suffix('unidades'),
-                    ])->columns(3),
+public static function form(Form $form): Form
+{
+    return $form
+        ->schema([
+            Forms\Components\Section::make('Información de la Requisición')
+                ->schema([
+                    Forms\Components\Select::make('tipo_insumo')
+                        ->label('Tipo de Insumo')
+                        ->options(Requisicion::TIPOS_INSUMO)
+                        ->required()
+                        ->searchable(),
+                    
+                    Forms\Components\Select::make('rubro')
+                        ->label('Rubro')
+                        ->options(Requisicion::RUBROS)
+                        ->required()
+                        ->searchable(),
+                    
+                    Forms\Components\TextInput::make('cantidad')
+                        ->label('Cantidad')
+                        ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->suffix('unidades'),
+                ])->columns(3),
 
-                Forms\Components\Section::make('Información de Solicitud')
-                    ->schema([
-                        Forms\Components\DatePicker::make('fecha_solicitud')
-                            ->label('Fecha de Solicitud')
-                            ->required()
-                            ->default(now())
-                            ->native(false),
-                        
-                        Forms\Components\Select::make('estado_interno')
-                            ->label('Estado Interno')
-                            ->options(Requisicion::ESTADOS)
-                            ->default('SOLICITADA')
-                            ->required(),
-                        
-                        Forms\Components\TextInput::make('oficina')
-                            ->label('Oficina')
-                            ->required()
-                            ->maxLength(255),
-                    ])->columns(3),
+            Forms\Components\Section::make('Gestión de la Requisición')
+                ->schema([
+                    Forms\Components\DatePicker::make('fecha_solicitud')
+                        ->label('Fecha de Solicitud')
+                        ->required()
+                        ->default(now())
+                        ->native(false),
+                    
+                    Forms\Components\Select::make('estado_interno')
+                        ->label('Estado Interno')
+                        ->options(Requisicion::ESTADOS)
+                        ->default('SOLICITADA')
+                        ->required(),
+                    
+                    Forms\Components\Select::make('departamental_id')
+                        ->label('Departamental')
+                        ->relationship(name: 'departamental', titleAttribute: 'nombre')
+                        ->searchable()
+                        ->required(),
+                ])->columns(3),
 
-                Forms\Components\Section::make('Observaciones')
-                    ->schema([
-                        Forms\Components\Textarea::make('observaciones')
-                            ->label('Observaciones')
-                            ->rows(3)
-                            ->columnSpanFull(),
-                    ]),
-            ]);
+            Forms\Components\Section::make('Observaciones')
+                ->schema([
+                    Forms\Components\Textarea::make('observaciones')
+                        ->label('Observaciones')
+                        ->rows(3)
+                        ->columnSpanFull(),
+                ]),
+        ]);
     }
 
     public static function table(Table $table): Table
