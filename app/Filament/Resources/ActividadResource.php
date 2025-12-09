@@ -655,8 +655,7 @@ class ActividadResource extends Resource
             ->placeholder('Describe brevemente la actividad...')
             ->dehydrated(true),
 
-        // Atestados
-        Forms\Components\FileUpload::make('atestados')
+            Forms\Components\FileUpload::make('atestados')
             ->label('Adjuntar Atestados (Opcional)')
             ->multiple()
             ->directory('actividades')
@@ -664,19 +663,21 @@ class ActividadResource extends Resource
             ->maxSize(5120)
             ->columnSpanFull()
             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.')
-            ->dehydrated()
-            ->afterCreate(function ($record) {
-            $atestados = $record->atestados;  // Esto es un array gracias al cast
-            if (blank($atestados)) {
-                return;
-            }
-            // Obtener el departamental de la actividad
-            $departamental = $record->departamental->nombre ?? 'general';
-            // Obtener el mes actual en formato YYYY-MM
-            $month = now()->format('Y-m');
-            // Nombre de la carpeta: "Departamental-Mes"
+            ->dehydrated(),  // Esto mantiene el estado para guardarlo en el modelo
+        // ... más campos ...
+    ])
+    ->afterCreate(function ($record) {  // <-- MUEVELO AQUÍ, al final del $form
+        $atestados = $record->atestados;  // Array gracias al cast
+        if (blank($atestados)) {
+            return;
+        }
+        // Obtener el departamental de la actividad
+        $departamental = $record->departamental->nombre ?? 'general';
+        // Obtener el mes actual en formato YYYY-MM
+        $month = now()->format('Y-m');
+
             $folderName = "{$departamental}-{$month}";
-            // Crear o buscar carpeta
+        
             $folder = Folder::firstOrCreate(
                 ['name' => $folderName],
                 [
@@ -684,20 +685,20 @@ class ActividadResource extends Resource
                     'user_id' => auth()->id(),
                 ]
             );
-            foreach ($atestados as $path) {  // Ya no necesitas (array) porque es array
-                Media::firstOrCreate(
-                    ['file' => $path],
-                    [
-                        'name' => basename($path),
-                        'mime_type' => Storage::disk('public')->mimeType($path),
-                        'size' => Storage::disk('public')->size($path),
-                        'folder_id' => $folder->id,
-                        'user_id' => auth()->id(),
-                    ]
-                );
+        
+            foreach ($atestados as $path) {
+                Media::create([
+                    'name' => basename($path),
+                    'file' => $path,
+                    'mime_type' => Storage::disk('public')->mimeType($path),
+                    'size' => Storage::disk('public')->size($path),
+                    'folder_id' => $folder->id,
+                    'user_id' => auth()->id(),
+                ]);
             }
-            })
-    ])
+        })
+
+
     ->action(function (array $data, Tables\Actions\Action $action) {
 
         // Defaults y blindajes
