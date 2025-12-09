@@ -664,7 +664,43 @@ class ActividadResource extends Resource
             ->maxSize(5120)
             ->columnSpanFull()
             ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.')
-            ->dehydrated(),
+            ->dehydrated()
+            ->afterStateUpdated(function ($state, $component) {
+                if (blank($state)) {
+                    return;
+                }
+            
+                // Obtener el departamental de la actividad (ejemplo: $component->getRecord()->departamental->nombre)
+                $departamental = $component->getRecord()->departamental->nombre ?? 'general';
+            
+                // Obtener el mes actual en formato YYYY-MM
+                $month = now()->format('Y-m');
+            
+                // Nombre de la carpeta: "Departamental-Mes"
+                $folderName = "{$departamental}-{$month}";
+            
+                // Crear o buscar carpeta
+                $folder = Folder::firstOrCreate(
+                    ['name' => $folderName],
+                    [
+                        'description' => "Carpeta de {$departamental} para {$month}",
+                        'user_id' => auth()->id(),
+                    ]
+                );
+            
+                foreach ((array) $state as $path) {
+                    Media::firstOrCreate(
+                        ['file' => $path],
+                        [
+                            'name' => basename($path),
+                            'mime_type' => Storage::disk('public')->mimeType($path),
+                            'size' => Storage::disk('public')->size($path),
+                            'folder_id' => $folder->id,
+                            'user_id' => auth()->id(),
+                        ]
+                    );
+                }
+            })
     ])
     ->action(function (array $data, Tables\Actions\Action $action) {
 

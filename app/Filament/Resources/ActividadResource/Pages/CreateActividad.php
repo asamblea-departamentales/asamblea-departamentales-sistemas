@@ -237,26 +237,34 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                                 ->uploadButtonPosition('left')
                                 // Posición del indicador de progreso
                                 ->uploadProgressIndicatorPosition('left')
-                                ->afterStateUpdated(function ($state) {
+                                ->afterStateUpdated(function ($state, $component) {
                                     if (blank($state)) {
                                         return;
                                     }
                                 
-                                    $folder = Folder::firstOrCreate([
-                                        'name' => 'actividades',
-                                    ]);
+                                    // Obtener el departamental de la actividad (ejemplo: $component->getRecord()->departamental->nombre)
+                                    $departamental = $component->getRecord()->departamental->nombre ?? 'general';
                                 
-                                    foreach ((array) $state as $file) {
-                                        $path = $file;
+                                    // Obtener el mes actual en formato YYYY-MM
+                                    $month = now()->format('Y-m');
                                 
+                                    // Nombre de la carpeta: "Departamental-Mes"
+                                    $folderName = "{$departamental}-{$month}";
+                                
+                                    // Crear o buscar carpeta
+                                    $folder = Folder::firstOrCreate(
+                                        ['name' => $folderName],
+                                        [
+                                            'description' => "Carpeta de {$departamental} para {$month}",
+                                            'user_id' => auth()->id(),
+                                        ]
+                                    );
+                                
+                                    foreach ((array) $state as $path) {
                                         Media::firstOrCreate(
-                                            [
-                                                'disk' => 'public',
-                                                'path' => $path,
-                                            ],
+                                            ['file' => $path],
                                             [
                                                 'name' => basename($path),
-                                                'type' => 'file',
                                                 'mime_type' => Storage::disk('public')->mimeType($path),
                                                 'size' => Storage::disk('public')->size($path),
                                                 'folder_id' => $folder->id,
