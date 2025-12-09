@@ -12,6 +12,8 @@ use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
 
 class TicketResource extends Resource
 {
@@ -23,9 +25,22 @@ class TicketResource extends Resource
 
     // Badge con contador de tickets abiertos
     public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::abiertos()->count();
+{
+    $user = \Filament\Facades\Filament::auth()->user();
+
+    $isCentral = $user && (
+        $user->hasAnyRole(['ti','Administrador','gol']) ||
+        $user->hasRole(config('filament-shield.super_admin.name'))
+    );
+
+    $query = static::getModel()::abiertos();
+
+    if (! $isCentral && $user) {
+        $query->where('departamental_id', $user->departamental_id);
     }
+
+    return (string) $query->count();
+}
 
     public static function form(Form $form): Form
 {
