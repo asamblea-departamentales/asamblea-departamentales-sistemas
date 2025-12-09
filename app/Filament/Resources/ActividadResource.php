@@ -730,52 +730,7 @@ class ActividadResource extends Resource
             ]);
     }
 
-// Hook global en el Resource// FORZAMOS que el sync se ejecute siempre, aunque Filament no llame al hook
-public static function boot()
-{
-    parent::boot();
 
-    static::created(function ($record) {
-        static::syncAtestadosToMediaManager($record);
-    });
-
-    static::updated(function ($record) {
-        // Solo si cambió algo de los atestados
-        if ($record->wasChanged('atestados') || $record->getMedia('atestados')->count() !== $record->getOriginal('media', collect())->count()) {
-            static::syncAtestadosToMediaManager($record);
-        }
-    });
-}
-
-protected static function syncAtestadosToMediaManager($record): void
-{
-    if (!$record->departamental?->nombre) return;
-
-    $departamentalNombre = $record->departamental->nombre;
-    $folderName = "Atestados - {$departamentalNombre}";
-
-    $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
-        ['name' => $folderName],
-        [
-            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => $record->user_id,
-            'is_public' => false,
-        ]
-    );
-
-    foreach ($record->getMedia('atestados') as $media) {
-        \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
-            ['file' => $media->getPathRelativeToRoot()],
-            [
-                'name'      => $media->file_name,
-                'mime_type' => $media->mime_type,
-                'size'      => $media->size,
-                'folder_id' => $folder->id,
-                'user_id'   => $record->user_id,
-            ]
-        );
-    }
-}
 
     public static function canViewAny(): bool
     {

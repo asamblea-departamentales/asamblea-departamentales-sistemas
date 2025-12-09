@@ -160,4 +160,52 @@ class Actividad extends Model implements HasMedia
             'audio/mpeg', 'audio/wav'
         ]);
     }
+
+    use TomatoPHP\FilamentMediaManager\Models\Folder;
+
+protected static function booted()
+{
+    static::created(function ($actividad) {
+        $actividad->syncAtestadosToMediaManager();
+    });
+
+    static::updated(function ($actividad) {
+        // Solo si se subieron o modificaron archivos
+        if ($actividad->getMedia('atestados')->isNotEmpty()) {
+            $actividad->syncAtestadosToMediaManager();
+        }
+    });
+}
+
+public function syncAtestadosToMediaManager(): void
+{
+    if (!$this->departamental?->nombre) {
+        return;
+    }
+
+    $departamentalNombre = $this->departamental->nombre;
+    $folderName = "Atestados - {$departamentalNombre}";
+
+    $folder = Folder::firstOrCreate(
+        ['name' => $folderName],
+        [
+            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+            'user_id' => $this->user_id,
+            'is_public' => false,
+        ]
+    );
+
+    foreach ($this->getMedia('atestados') as $media) {
+        \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
+            ['file' => $media->getPathRelativeToRoot()],
+            [
+                'name'      => $media->file_name,
+                'mime_type' => $media->mime_type,
+                'size'      => $media->size,
+                'folder_id' => $folder->id,
+                'user_id'   => $this->user_id,
+            ]
+        );
+    }
+}
 }
