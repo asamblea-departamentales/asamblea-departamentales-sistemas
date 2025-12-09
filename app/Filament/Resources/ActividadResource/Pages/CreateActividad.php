@@ -19,6 +19,8 @@ use Filament\Resources\Pages\CreateRecord;
 use TomatoPHP\FilamentMediaManager\Models\Folder;
 use Illuminate\Support\Facades\Storage;
 use TomatoPHP\FilamentMediaManager\Models\Media;
+use Illuminate\Database\Eloquent\Model; // ← Asegúrate de tener este use arriba del archivo
+use App\Models\Actividad;
 
 // Declaración de la clase CreateActividad que extiende de CreateRecord
 class CreateActividad extends CreateRecord
@@ -190,7 +192,6 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                     ->schema([
                         \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
                             ->label('Adjuntar Atestados')
-                            ->collection('atestados')
                             ->multiple()
                             ->reorderable()
                             ->enableOpen()
@@ -298,5 +299,25 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                 ->icon('heroicon-o-x-mark'),
         ];
     }
-    // Cierre de la clase CreateActividad
+
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        $record = new Actividad();
+        $record->fill($data);
+        $record->save();
+    
+        if (!empty($data['atestados'])) {
+            foreach ($data['atestados'] as $file) {
+                $record->addMedia($file)
+                    ->preservingOriginal()
+                    ->usingFileName($file->getClientOriginalName())
+                    ->toMediaCollection('atestados', 'public');
+            }
+        }
+    
+        return $record;
+    }
 }
+    // Cierre de la clase CreateActividad
+
