@@ -154,7 +154,7 @@ class ActividadResource extends Resource
 
                 Forms\Components\Section::make('Fechas Importantes y Recordatorios')
                     ->schema([
-                        Forms\Components\DateTimePicker::make('start_date')
+                        Forms\Components\DateTimePicker::make('star_date')
                             ->label('Fecha de Inicio')
                             ->required()
                             ->format('Y-m-d H:i:s')
@@ -167,7 +167,7 @@ class ActividadResource extends Resource
                         Forms\Components\DateTimePicker::make('due_date')
                             ->label('Fecha de Vencimiento')
                             ->required()
-                            ->after('start_date')
+                            ->after('star_date')
                             ->format('Y-m-d H:i:s')
                             ->displayFormat('d/m/Y H:i')
                             ->seconds(false)
@@ -303,7 +303,7 @@ class ActividadResource extends Resource
                     ->date('d/m/Y')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('start_date')
+                Tables\Columns\TextColumn::make('star_date')
                     ->label('Fecha de Inicio')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
@@ -586,7 +586,7 @@ class ActividadResource extends Resource
                                     ->live()
                                     ->dehydrated(),
 
-                                Forms\Components\DateTimePicker::make('start_date')
+                                Forms\Components\DateTimePicker::make('star_date')
                                     ->label('Fecha de Inicio')
                                     ->required()
                                     ->default(now())
@@ -600,7 +600,7 @@ class ActividadResource extends Resource
                                     ->label('Fecha de Vencimiento')
                                     ->required()
                                     ->default(now()->addDays(7))
-                                    ->after('start_date')
+                                    ->after('star_date')
                                     ->displayFormat('d/m/Y H:i')
                                     ->format('Y-m-d H:i')
                                     ->seconds(false)
@@ -666,7 +666,7 @@ class ActividadResource extends Resource
                             ->dehydrated(),
                     ])
                     ->action(function (array $data, Tables\Actions\Action $action) {
-                        $data['start_date'] = $data['start_date'] ?? now();
+                        $data['star_date'] = $data['star_date'] ?? now();
                         $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
                         $data['fecha']     = $data['fecha'] ?? now()->format('Y-m-d');
                         $data['programa']  = $data['programa'] ?? 'Otro';
@@ -677,7 +677,7 @@ class ActividadResource extends Resource
                             ((int) ($data['asistentes_hombres'] ?? 0)) +
                             ((int) ($data['asistentes_mujeres'] ?? 0));
 
-                        if (empty($data['start_date']) || empty($data['due_date'])) {
+                        if (empty($data['star_date']) || empty($data['due_date'])) {
                             Notification::make()
                                 ->title('Error de Validación')
                                 ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
