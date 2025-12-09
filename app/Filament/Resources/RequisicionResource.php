@@ -190,13 +190,12 @@ public static function form(Form $form): Form
                     ->label('Rubro')
                     ->options(Requisicion::RUBROS),
                 
-                SelectFilter::make('oficina')
-                    ->label('Oficina')
+                    SelectFilter::make('departamental_id')
+                    ->label('Departamental')
                     ->options(function () {
-                        return Requisicion::distinct('oficina')
-                            ->pluck('oficina', 'oficina')
-                            ->toArray();
+                        return \App\Models\Departamental::pluck('nombre', 'id')->toArray();
                     }),
+                
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

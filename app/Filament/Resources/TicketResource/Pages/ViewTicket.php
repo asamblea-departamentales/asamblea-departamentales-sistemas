@@ -112,7 +112,7 @@ class ViewTicket extends ViewRecord
                             }),
 
                         TextEntry::make('motivo')->label('Motivo/Asunto'),
-                        TextEntry::make('oficina')->label('Oficina'),
+                        TextEntry::make('departamental.nombre')->label('Departamental'),
                     ])->columns(3),
 
                 Section::make('Fechas y Tiempo')

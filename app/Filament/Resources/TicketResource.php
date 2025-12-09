@@ -196,13 +196,12 @@ class TicketResource extends Resource
                     ->label('Estado')
                     ->options(Ticket::ESTADOS),
                 
-                SelectFilter::make('oficina')
-                    ->label('Oficina')
+                    SelectFilter::make('departamental_id')
+                    ->label('Departamental')
                     ->options(function () {
-                        return Ticket::distinct('oficina')
-                            ->pluck('oficina', 'oficina')
-                            ->toArray();
+                        return \App\Models\Departamental::pluck('nombre', 'id')->toArray();
                     }),
+                
                 
                 Filter::make('abiertos')
                     ->label('Solo Abiertos')
