@@ -100,6 +100,23 @@ class RequisicionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
+        //Para limitar vistas por roles
+        ->modifyQueryUsing(function ($query) {
+            /** @var \App\Models\User|null $user */
+            $user = \Filament\Facades\Filament::auth()->user();
+
+            // TI global, Administrador, super_admin → ven todos los tickets
+            $isCentral = $user && (
+                $user->hasAnyRole(['ti','Administrador','gol']) ||
+                $user->hasRole(config('filament-shield.super_admin.name'))
+            );
+
+            // Coordinadores y usuarios normales → solo tickets de su departamental
+            if (! $isCentral && $user) {
+                $query->where('departamental_id', $user->departamental_id);
+            }
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('tipo_insumo')
                     ->label('Tipo de Insumo')
