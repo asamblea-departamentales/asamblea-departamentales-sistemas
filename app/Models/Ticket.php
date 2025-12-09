@@ -20,7 +20,7 @@ class Ticket extends Model
         'motivo',
         'fecha_solicitud',
         'estado_interno',
-        'oficina',
+        'departamental_id',
         'observaciones',
     ];
 
@@ -66,10 +66,11 @@ class Ticket extends Model
         return $query->where('tipo_ticket', $tipo);
     }
 
-    public function scopePorOficina($query, $oficina)
+    public function scopePorDepartamental($query, $departamentalId)
     {
-        return $query->where('oficina', $oficina);
+        return $query->where('departamental_id', $departamentalId);
     }
+
 
     public function scopeAbiertos($query)
     {
