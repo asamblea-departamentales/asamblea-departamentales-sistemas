@@ -655,15 +655,15 @@ class ActividadResource extends Resource
                             ->placeholder('Describe brevemente la actividad...')
                             ->dehydrated(true),
 
-                        Forms\Components\FileUpload::make('atestados')
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
                             ->label('Adjuntar Atestados (Opcional)')
+                            ->collection('atestados')
                             ->multiple()
                             ->directory('actividades')
                             ->maxFiles(5)
                             ->maxSize(5120)
                             ->columnSpanFull()
-                            ->helperText('Opcional: Puedes adjuntar hasta 5 archivos de 5MB cada uno.')
-                            ->dehydrated(),
+                            ->helperText('Se guardarán en la carpeta privada de tu departamental'),
                     ])
                     ->action(function (array $data, Tables\Actions\Action $action) {
                         $data['star_date'] = $data['star_date'] ?? now();
@@ -732,34 +732,47 @@ class ActividadResource extends Resource
 
     // Hook global en el Resource
     public static function afterCreate($record): void
-    {
-        $atestados = $record->atestados;
-        if (blank($atestados)) {
-            return;
-        }
-    
-        $departamental = $record->departamental->nombre ?? 'general';
-        $month = now()->format('Y-m');
-        $folderName = "{$departamental}-{$month}";
-    
-        $folder = Folder::firstOrCreate(
-            ['name' => $folderName],
+{
+    static::syncMediaToPrivateFolder($record);
+}
+
+public static function afterUpdate($record): void
+{
+    static::syncMediaToPrivateFolder($record);
+}
+
+protected static function syncMediaToPrivateFolder($record): void
+{
+    if (!$record->departamental) {
+        return;
+    }
+
+    $departamentalNombre = $record->departamental->nombre;
+    $folderName = "Atestados - {$departamentalNombre}";
+
+    // Carpeta privada por departamental
+    $folder = Folder::firstOrCreate(
+        ['name' => $folderName],
+        [
+            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+            'user_id' => auth()->id(),
+        ]
+    );
+
+    // Sincroniza todos los archivos de la colección 'atestados'
+    foreach ($record->getMedia('atestados') as $media) {
+        \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
+            ['file' => $media->getPathRelativeToRoot()],
             [
-                'description' => "Carpeta de {$departamental} para {$month}",
+                'name' => $media->file_name,
+                'mime_type' => $media->mime_type,
+                'size' => $media->size,
+                'folder_id' => $folder->id,
                 'user_id' => auth()->id(),
             ]
         );
-    
-        foreach ($atestados as $path) {
-            $cleanPath = ltrim($path, '/');
-    
-            // Usa Spatie para registrar el archivo en la colección "atestados"
-            $record
-                ->addMedia(storage_path("app/public/{$cleanPath}"))
-                ->preservingOriginal()
-                ->toMediaCollection('atestados', 'public');
-        }
     }
+}
 
     public static function canViewAny(): bool
     {

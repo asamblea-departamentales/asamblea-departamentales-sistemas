@@ -192,90 +192,27 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                         // Esquema de campos para este paso
                         ->schema([
                             // Campo para subir archivos
-                            Forms\Components\FileUpload::make('atestados')
-                                // Etiqueta del campo
-                                ->label('Adjuntar Atestados')
-                                // Permite múltiples archivos
-                                ->multiple()
-                                // Directorio donde se guardarán
-                                ->directory('actividades')
-                                // Tipos de archivo aceptados
-                                ->acceptedFileTypes([
-                                    'image/*',  // Imágenes
-                                    'application/pdf',  // PDFs
-                                    'application/msword',  // Word antiguo
-                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  // Word nuevo
-                                    'text/plain',  // Texto plano
-                                    'application/vnd.ms-excel',  // Excel antiguo
-                                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  // Excel nuevo
-                                    'application/zip',  // ZIP
-                                    'application/x-rar-compressed',  // RAR
-                                    'video/*',  // Videos
-                                    'audio/*',  // Audios
-                                ])
-                                // Máximo número de archivos
-                                ->maxFiles(10)
-                                // Tamaño máximo por archivo en KB (10MB)
-                                ->maxSize(10240)
-                                // Permite reordenar archivos
-                                ->reorderable()
-                                // Permite descargar archivos
-                                ->downloadable()
-                                // Permite abrir archivos
-                                ->openable()
-                                // Permite previsualizar archivos
-                                ->previewable()
-                                // Ocupa todo el ancho disponible
-                                ->columnSpanFull()
-                                // Texto de ayuda detallado
-                                ->helperText('Formatos aceptados: imágenes, PDF, Word, Excel, ZIP, video y audio. Máximo 10 archivos de 10MB cada uno.')
-                                // Mensaje durante la subida
-                                ->uploadingMessage('Subiendo archivos...')
-                                // Posición del botón de eliminar archivo
-                                ->removeUploadedFileButtonPosition('right')
-                                // Posición del botón de subir
-                                ->uploadButtonPosition('left')
-                                // Posición del indicador de progreso
-                                ->uploadProgressIndicatorPosition('left')
-                                ->afterStateUpdated(function ($state, $component) {
-                                    if (blank($state)) {
-                                        return;
-                                    }
-                                
-                                    // Obtener el departamental de la actividad (ejemplo: $component->getRecord()->departamental->nombre)
-                                    $departamental = $component->getRecord()->departamental->nombre ?? 'general';
-                                
-                                    // Obtener el mes actual en formato YYYY-MM
-                                    $month = now()->format('Y-m');
-                                
-                                    // Nombre de la carpeta: "Departamental-Mes"
-                                    $folderName = "{$departamental}-{$month}";
-                                
-                                    // Crear o buscar carpeta
-                                    $folder = Folder::firstOrCreate(
-                                        ['name' => $folderName],
-                                        [
-                                            'description' => "Carpeta de {$departamental} para {$month}",
-                                            'user_id' => auth()->id(),
-                                        ]
-                                    );
-                                
-                                    foreach ((array) $state as $path) {
-                                        Media::firstOrCreate(
-                                            ['file' => $path],
-                                            [
-                                                'name' => basename($path),
-                                                'mime_type' => Storage::disk('public')->mimeType($path),
-                                                'size' => Storage::disk('public')->size($path),
-                                                'folder_id' => $folder->id,
-                                                'user_id' => auth()->id(),
-                                            ]
-                                            );
-                        
-                                }
-                                }),
+                            Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
+    ->label('Adjuntar Atestados')
+    ->collection('atestados')
+    ->multiple()
+    ->reorderable()
+    ->downloadable()
+    ->openable()
+    ->previewable()
+    ->maxFiles(10)
+    ->maxSize(10240)
+    ->disk('public')
+    ->directory('actividades') // carpeta física (puede ser la misma para todos)
+    ->preserveFilenames()
+    ->columnSpanFull()
+    ->helperText('Los archivos se guardarán en la carpeta privada de tu departamental.')
+    ->hint('Solo visible para usuarios del mismo departamental')
+    ->hintIcon('heroicon-o-lock-closed'),
                         ]),
                 ])
+                                
+                                
                 // Configuración del botón de submit del wizard
                     ->submitAction(
                         // Crea una acción personalizada para el submit

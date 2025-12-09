@@ -104,12 +104,41 @@ class AdminPanelProvider extends PanelProvider
                 FilamentFullCalendarPlugin::make()
                     ->selectable(true)
                     ->editable(true),
-                FilamentMediaManagerPlugin::make()
-                    ->allowSubFolders(),                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
-                    ->gridColumns(['default' => 2, 'sm' => 1])
-                    ->sectionColumnSpan(1)
-                    ->checkboxListColumns(['default' => 1, 'sm' => 2, 'lg' => 3])
-                    ->resourceCheckboxListColumns(['default' => 1, 'sm' => 2]),
+                    FilamentMediaManagerPlugin::make()
+                    ->allowSubFolders()
+                    ->foldersQuery(function ($query) {
+                        $user = auth()->user();
+                
+                        // Administradores y roles especiales ven TODO
+                        if ($user->hasRole(['Administrador', 'gol'])) {
+                            return $query;
+                        }
+                
+                        // Usuarios normales solo ven carpetas de su departamental
+                        if ($user->departamental?->nombre) {
+                            $departamental = $user->departamental->nombre;
+                            return $query->where('name', 'LIKE', "Atestados - {$departamental}%");
+                        }
+                
+                        // Si no tiene departamental → no ve nada (seguridad extra)
+                        return $query->whereRaw('1 = 0');
+                    })
+                    ->mediaQuery(function ($query) {
+                        $user = auth()->user();
+                
+                        if ($user->hasRole(['Administrador', 'gol'])) {
+                            return $query;
+                        }
+                
+                        if ($user->departamental?->nombre) {
+                            $departamental = $user->departamental->nombre;
+                            return $query->whereHas('folder', function ($q) use ($departamental) {
+                                $q->where('name', 'LIKE', "Atestados - {$departamental}%");
+                            });
+                        }
+                
+                        return $query->whereRaw('1 = 0');
+                    }),
                     BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
