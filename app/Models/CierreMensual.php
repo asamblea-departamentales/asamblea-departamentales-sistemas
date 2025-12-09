@@ -42,13 +42,18 @@ class CierreMensual extends Model
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($model) {
             if (! $model->id) {
                 $model->id = (string) Str::uuid();
             }
+    
+            if (auth()->check() && empty($model->user_id)) {
+                $model->user_id = auth()->id();
+            }
         });
     }
+    
 
     // Relaciones
     public function departamental(): BelongsTo

@@ -211,21 +211,22 @@ class ActividadResource extends Resource
                                     return;
                                 }
                             
-                                $folder = Folder::firstOrCreate([
-                                    'name' => 'actividades',
-                                ]);
+                                // Crear o buscar carpeta "actividades"
+                                $folder = Folder::firstOrCreate(
+                                    ['name' => 'actividades'],
+                                    [
+                                        'description' => 'Carpeta de actividades',
+                                        'user_id' => auth()->id(),
+                                    ]
+                                );
                             
-                                foreach ((array) $state as $file) {
-                                    $path = $file;
-                            
+                                foreach ((array) $state as $path) {
                                     Media::firstOrCreate(
                                         [
-                                            'disk' => 'public',
-                                            'path' => $path,
+                                            'file' => $path, // ruta relativa en el disk
                                         ],
                                         [
                                             'name' => basename($path),
-                                            'type' => 'file',
                                             'mime_type' => Storage::disk('public')->mimeType($path),
                                             'size' => Storage::disk('public')->size($path),
                                             'folder_id' => $folder->id,
