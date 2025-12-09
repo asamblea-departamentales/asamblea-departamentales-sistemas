@@ -730,45 +730,51 @@ class ActividadResource extends Resource
             ]);
     }
 
-    // Hook global en el Resource
-    public static function afterCreate($record): void
+// Hook global en el Resource
+public static function afterCreate($record): void
 {
-    static::syncMediaToPrivateFolder($record);
+    static::syncAtestadosToMediaManager($record);
 }
 
 public static function afterUpdate($record): void
 {
-    static::syncMediaToPrivateFolder($record);
+    static::syncAtestadosToMediaManager($record);
 }
 
-protected static function syncMediaToPrivateFolder($record): void
+/**
+ * Sincroniza los archivos de Spatie Media Library con TomatoPHP Media Manager
+ * en una carpeta PRIVADA por departamental
+ */
+protected static function syncAtestadosToMediaManager($record): void
 {
-    if (!$record->departamental) {
+    // Si no tiene departamental → no hacemos nada (seguridad)
+    if (!$record->departamental?->nombre) {
         return;
     }
 
     $departamentalNombre = $record->departamental->nombre;
     $folderName = "Atestados - {$departamentalNombre}";
 
-    // Carpeta privada por departamental
-    $folder = Folder::firstOrCreate(
+    // Crear carpeta PRIVADA (is_public = false)
+    $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
         ['name' => $folderName],
         [
             'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => auth()->id(),
+            'user_id' => $record->user_id,     // ← IMPORTANTE: el dueño es el usuario que creó la actividad
+            'is_public' => false,              // ← CLAVE: solo visible para el dueño y su equipo
         ]
     );
 
-    // Sincroniza todos los archivos de la colección 'atestados'
+    // Sincronizar cada archivo de Spatie → TomatoPHP Media Manager
     foreach ($record->getMedia('atestados') as $media) {
         \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
             ['file' => $media->getPathRelativeToRoot()],
             [
-                'name' => $media->file_name,
+                'name'      => $media->file_name,
                 'mime_type' => $media->mime_type,
-                'size' => $media->size,
+                'size'      => $media->size,
                 'folder_id' => $folder->id,
-                'user_id' => auth()->id(),
+                'user_id'   => $record->user_id,
             ]
         );
     }

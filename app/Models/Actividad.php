@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use TomatoPHP\FilamentMediaManager\Traits\InteractsWithMediaFolders;
 
 class Actividad extends Model implements HasMedia
 {
     use BelongsToDepartamental;
     use HasFactory;                 // <- ✨ habilita la relación y el scope
     use InteractsWithMedia;
+    use InteractsWithMediaFolders;
 
     protected $table = 'actividades';
 
