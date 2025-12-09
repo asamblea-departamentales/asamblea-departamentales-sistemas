@@ -59,13 +59,20 @@ class Requisicion extends Model
     ];
 
     protected static function boot(): void
-    {   
+    {
         parent::boot();
-
+    
         static::creating(function ($model) {
+            // Generar UUID para el id
             $model->id = (string) Str::uuid();
+    
+            // Asignar automáticamente el departamental del usuario logueado
+            if (auth()->check()) {
+                $model->departamental_id = auth()->user()->departamental_id;
+            }
         });
     }
+    
 
     // Scopes útiles
     public function scopePorEstado($query, $estado)
