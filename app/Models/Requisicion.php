@@ -20,7 +20,7 @@ class Requisicion extends Model
         'cantidad',
         'fecha_solicitud',
         'estado_interno',
-        'oficina',
+        'departamental_id',
         'observaciones',
     ];
 
@@ -83,10 +83,11 @@ class Requisicion extends Model
         return $query->where('rubro', $rubro);
     }
 
-    public function scopePorOficina($query, $oficina)
-    {
-        return $query->where('oficina', $oficina);
-    }
+    public function scopePorDepartamental($query, $departamentalId)
+{
+    return $query->where('departamental_id', $departamentalId);
+}
+
 
     public function scopePendientes($query)
     {
