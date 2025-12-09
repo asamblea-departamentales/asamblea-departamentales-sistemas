@@ -18,6 +18,8 @@ use App\Models\CierreMensual;
 use TomatoPHP\FilamentMediaManager\Models\Folder;
 use Illuminate\Support\Facades\Storage;
 use TomatoPHP\FilamentMediaManager\Models\Media;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+
 
 class ActividadResource extends Resource
 {
@@ -188,64 +190,23 @@ class ActividadResource extends Resource
                     ])
                     ->columns(3),
 
-                Forms\Components\Section::make('Atestados')
-                    ->schema([
-                        Forms\Components\FileUpload::make('atestados')
-                            ->label('Adjuntar Atestados')
-                            ->multiple()
-                            ->disk('public')
-                            ->directory('actividades')
-                            ->acceptedFileTypes([
-                                'image/*',
-                                'application/pdf',
-                                'application/msword',
-                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                'text/plain',
-                                'application/vnd.ms-excel',
-                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                'application/zip',
-                                'application/x-rar-compressed',
-                                'video/*',
-                                'audio/*',
-                            ])
-                            ->maxFiles(10)
-                            ->maxSize(10240)
-                            ->reorderable()
-                            ->downloadable()
-                            ->openable()
-                            ->previewable()
-                            ->columnSpanFull()
-                            ->helperText('Máximo 10 archivos (imágenes, PDF, Word, Excel, ZIP, videos, audios).')
-                            ->afterStateUpdated(function ($state) {
-                                if (blank($state)) {
-                                    return;
-                                }
-
-                                $folder = Folder::firstOrCreate(
-                                    ['name' => 'actividades'],
-                                    [
-                                        'description' => 'Carpeta de actividades',
-                                        'user_id' => auth()->id(),
-                                    ]
-                                );
-
-                                foreach ((array) $state as $path) {
-                                    Media::firstOrCreate(
-                                        ['file' => $path],
-                                        [
-                                            'name' => basename($path),
-                                            'mime_type' => Storage::disk('public')->mimeType($path),
-                                            'size' => Storage::disk('public')->size($path),
-                                            'folder_id' => $folder->id,
-                                            'user_id' => auth()->id(),
-                                        ]
-                                    );
-                                }
-                            }),
-                    ]),
+                    SpatieMediaLibraryFileUpload::make('atestados')
+                        ->label('Adjuntar Atestados')
+                        ->collection('atestados')           // ← nombre exacto de la colección
+                        ->multiple()
+                        ->reorderable()
+                        ->enableOpen()
+                        ->enableDownload()
+                        ->maxFiles(10)
+                        ->maxSize(10240)
+                        ->disk('public')
+                        ->directory('actividades')          // ← carpeta física
+                        ->preserveFilenames()
+                        ->columnSpanFull()
+                        ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental.'),
             ]);
     }
-
+    
     public static function table(Table $table): Table
     {
         return $table
@@ -655,15 +616,21 @@ class ActividadResource extends Resource
                             ->placeholder('Describe brevemente la actividad...')
                             ->dehydrated(true),
 
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
-                            ->label('Adjuntar Atestados (Opcional)')
-                            ->collection('atestados')
-                            ->multiple()
-                            ->directory('actividades')
-                            ->maxFiles(5)
-                            ->maxSize(5120)
-                            ->columnSpanFull()
-                            ->helperText('Se guardarán en la carpeta privada de tu departamental'),
+
+                            SpatieMediaLibraryFileUpload::make('atestados')
+                                ->label('Adjuntar Atestados')
+                                ->collection('atestados')           // ← nombre exacto de la colección
+                                ->multiple()
+                                ->reorderable()
+                                ->enableOpen()
+                                ->enableDownload()
+                                ->maxFiles(10)
+                                ->maxSize(10240)
+                                ->disk('public')
+                                ->directory('actividades')          // ← carpeta física
+                                ->preserveFilenames()
+                                ->columnSpanFull()
+                                ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental.')
                     ])
                     ->action(function (array $data, Tables\Actions\Action $action) {
                         $data['star_date'] = $data['star_date'] ?? now();

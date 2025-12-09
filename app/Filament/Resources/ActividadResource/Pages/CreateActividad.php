@@ -185,30 +185,26 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
 ->columns(3),
                     // Cuarto paso del wizard: Documentos y Atestados
                     Forms\Components\Wizard\Step::make('Documentos y Atestados')
-                        // Descripción del paso
-                        ->description('Adjuntar archivos relacionados')
-                        // Ícono del paso
-                        ->icon('heroicon-o-paper-clip')
-                        // Esquema de campos para este paso
-                        ->schema([
-                            // Campo para subir archivos
-                            Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
-    ->label('Adjuntar Atestados')
-    ->collection('atestados')
-    ->multiple()
-    ->reorderable()
-    ->downloadable()
-    ->openable()
-    ->previewable()
-    ->maxFiles(10)
-    ->maxSize(10240)
-    ->disk('public')
-    ->directory('actividades') // carpeta física (puede ser la misma para todos)
-    ->preserveFilenames()
-    ->columnSpanFull()
-    ->helperText('Los archivos se guardarán en la carpeta privada de tu departamental.')
-    ->hint('Solo visible para usuarios del mismo departamental')
-    ->hintIcon('heroicon-o-lock-closed'),
+                    ->description('Adjuntar archivos relacionados')
+                    ->icon('heroicon-o-paper-clip')
+                    ->schema([
+                        \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
+                            ->label('Adjuntar Atestados')
+                            ->collection('atestados')
+                            ->multiple()
+                            ->reorderable()
+                            ->enableOpen()
+                            ->enableDownload()
+                            ->maxFiles(10)
+                            ->maxSize(10240) // 10MB
+                            ->disk('public')
+                            ->directory('actividades')
+                            ->preserveFilenames()
+                            ->columnSpanFull()
+                            ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental en el Media Manager.')
+                            ->hint('Solo tu equipo puede verlos')
+                            ->hintIcon('heroicon-o-lock-closed'),
+                    ]),
                         ]),
                 ])
                                 
