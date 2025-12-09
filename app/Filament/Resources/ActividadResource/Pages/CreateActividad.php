@@ -205,10 +205,7 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                             ->hint('Solo tu equipo puede verlos')
                             ->hintIcon('heroicon-o-lock-closed'),
                     ]),
-                        ]),
                 ])
-                                
-                                
                 // Configuración del botón de submit del wizard
                     ->submitAction(
                         // Crea una acción personalizada para el submit
