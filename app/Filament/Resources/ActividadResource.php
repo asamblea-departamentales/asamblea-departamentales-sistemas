@@ -730,42 +730,39 @@ class ActividadResource extends Resource
             ]);
     }
 
-// Hook global en el Resource
-public static function afterCreate($record): void
+// Hook global en el Resource// FORZAMOS que el sync se ejecute siempre, aunque Filament no llame al hook
+public static function boot()
 {
-    static::syncAtestadosToMediaManager($record);
+    parent::boot();
+
+    static::created(function ($record) {
+        static::syncAtestadosToMediaManager($record);
+    });
+
+    static::updated(function ($record) {
+        // Solo si cambió algo de los atestados
+        if ($record->wasChanged('atestados') || $record->getMedia('atestados')->count() !== $record->getOriginal('media', collect())->count()) {
+            static::syncAtestadosToMediaManager($record);
+        }
+    });
 }
 
-public static function afterUpdate($record): void
-{
-    static::syncAtestadosToMediaManager($record);
-}
-
-/**
- * Sincroniza los archivos de Spatie Media Library con TomatoPHP Media Manager
- * en una carpeta PRIVADA por departamental
- */
 protected static function syncAtestadosToMediaManager($record): void
 {
-    // Si no tiene departamental → no hacemos nada (seguridad)
-    if (!$record->departamental?->nombre) {
-        return;
-    }
+    if (!$record->departamental?->nombre) return;
 
     $departamentalNombre = $record->departamental->nombre;
     $folderName = "Atestados - {$departamentalNombre}";
 
-    // Crear carpeta PRIVADA (is_public = false)
     $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
         ['name' => $folderName],
         [
             'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => $record->user_id,     // ← IMPORTANTE: el dueño es el usuario que creó la actividad
-            'is_public' => false,              // ← CLAVE: solo visible para el dueño y su equipo
+            'user_id' => $record->user_id,
+            'is_public' => false,
         ]
     );
 
-    // Sincronizar cada archivo de Spatie → TomatoPHP Media Manager
     foreach ($record->getMedia('atestados') as $media) {
         \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
             ['file' => $media->getPathRelativeToRoot()],
