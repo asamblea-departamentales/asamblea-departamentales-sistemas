@@ -10,6 +10,8 @@ use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use TomatoPHP\FilamentMediaManager\Traits\InteractsWithMediaFolders;
+use TomatoPHP\FilamentMediaManager\Models\Folder;           // ← CORRECTO: dentro de los uses
+use TomatoPHP\FilamentMediaManager\Models\Media as MediaManager; // ← opcional, para evitar conflicto
 
 class Actividad extends Model implements HasMedia
 {
@@ -161,51 +163,48 @@ class Actividad extends Model implements HasMedia
         ]);
     }
 
-    use TomatoPHP\FilamentMediaManager\Models\Folder;
-
-protected static function booted()
-{
-    static::created(function ($actividad) {
-        $actividad->syncAtestadosToMediaManager();
-    });
-
-    static::updated(function ($actividad) {
-        // Solo si se subieron o modificaron archivos
-        if ($actividad->getMedia('atestados')->isNotEmpty()) {
+    protected static function booted()
+    {
+        static::created(function ($actividad) {
             $actividad->syncAtestadosToMediaManager();
+        });
+
+        static::updated(function ($actividad) {
+            if ($actividad->getMedia('atestados')->isNotEmpty() === false) {
+                $actividad->syncAtestadosToMediaManager();
+            }
+        });
+    } // ← ESTA LLAVE ES LA QUE FALTABA
+
+    public function syncAtestadosToMediaManager(): void
+    {
+        if (!$this->departamental?->nombre) {
+            return;
         }
-    });
-}
 
-public function syncAtestadosToMediaManager(): void
-{
-    if (!$this->departamental?->nombre) {
-        return;
-    }
+        $departamentalNombre = $this->departamental->nombre;
+        $folderName = "Atestados - {$departamentalNombre}";
 
-    $departamentalNombre = $this->departamental->nombre;
-    $folderName = "Atestados - {$departamentalNombre}";
-
-    $folder = Folder::firstOrCreate(
-        ['name' => $folderName],
-        [
-            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => $this->user_id,
-            'is_public' => false,
-        ]
-    );
-
-    foreach ($this->getMedia('atestados') as $media) {
-        \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
-            ['file' => $media->getPathRelativeToRoot()],
+        $folder = Folder::firstOrCreate(
+            ['name' => $folderName],
             [
-                'name'      => $media->file_name,
-                'mime_type' => $media->mime_type,
-                'size'      => $media->size,
-                'folder_id' => $folder->id,
-                'user_id'   => $this->user_id,
+                'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                'user_id' => $this->user_id,
+                'is_public' => false,
             ]
         );
+
+        foreach ($this->getMedia('atestados') as $media) {
+            \TomatoPHP\FilamentMediaManager\Models\Media::updateOrCreate(
+                ['file' => $media->getPathRelativeToRoot()],
+                [
+                    'name'      => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size'      => $media->size,
+                    'folder_id' => $folder->id,
+                    'user_id'   => $this->user_id,
+                ]
+            );
+        }
     }
-}
 }
