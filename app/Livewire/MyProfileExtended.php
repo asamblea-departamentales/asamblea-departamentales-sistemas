@@ -198,7 +198,7 @@ class MyProfileExtended extends MyProfileComponent
             'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
             'fecha_solicitud' => Carbon::now(),
             'estado_interno' => 'PENDIENTE',
-            'oficina' => $user->oficina ?? 'No especificada',
+            'departamental_id' =>$user->departamental_id,
             'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
         ]);
 
