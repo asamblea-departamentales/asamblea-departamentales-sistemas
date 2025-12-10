@@ -10,22 +10,18 @@ use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use TomatoPHP\FilamentMediaManager\Traits\InteractsWithMediaFolders;
-use TomatoPHP\FilamentMediaManager\Models\Folder;           // ← CORRECTO: dentro de los uses
-use TomatoPHP\FilamentMediaManager\Models\Media as MediaManager; // ← opcional, para evitar conflicto
+use TomatoPHP\FilamentMediaManager\Models\Folder;
+use TomatoPHP\FilamentMediaManager\Models\Media as MediaManager;
 
 class Actividad extends Model implements HasMedia
 {
     use BelongsToDepartamental;
-    use HasFactory;                 // <- ✨ habilita la relación y el scope
+    use HasFactory;
     use InteractsWithMedia;
     use InteractsWithMediaFolders;
 
     protected $table = 'actividades';
 
-    /**
-     * IMPORTANTE:
-     * Usa 'departamental_id' como FK (int/uuid) hacia departamentales.
-     */
     protected $fillable = [
         'user_id',
         'fecha',
@@ -36,11 +32,10 @@ class Actividad extends Model implements HasMedia
         'star_date',
         'due_date',
         'reminder_at',
-      //  'atestados', lo mismo aqui
-        'lugar', // campo agregado
-        'asistentes_hombres', // campo agregado
-        'asistentes_mujeres', // campo agregado
-        'asistencia_completa', // campo agregado
+        'lugar',
+        'asistentes_hombres',
+        'asistentes_mujeres',
+        'asistencia_completa',
     ];
 
     protected $casts = [
@@ -48,13 +43,13 @@ class Actividad extends Model implements HasMedia
         'due_date' => 'datetime',
         'reminder_at' => 'datetime',
         'fecha' => 'date',
-      //  'atestados' => 'array', porque ahora usamos media library directamente
-        'asistentes_hombres' => 'integer', // campo agregado
-        'asistentes_mujeres' => 'integer', // campo agregado
-        'asistencia_completa' => 'integer', // campo agregado
+        'asistentes_hombres' => 'integer',
+        'asistentes_mujeres' => 'integer',
+        'asistencia_completa' => 'integer',
     ];
 
-    // metodo agregado
+    protected $appends = ['asistencia_total'];
+
     protected static function boot()
     {
         parent::boot();
@@ -83,6 +78,19 @@ class Actividad extends Model implements HasMedia
         });
     }
 
+    protected static function booted()
+    {
+        static::created(function ($actividad) {
+            $actividad->syncAtestadosToMediaManager();
+        });
+        
+        static::updated(function ($actividad) {
+            if ($actividad->getMedia('atestados')->isNotEmpty()) {
+                $actividad->syncAtestadosToMediaManager();
+            }
+        });
+    }
+
     /** Relaciones */
     public function user()
     {
@@ -94,25 +102,18 @@ class Actividad extends Model implements HasMedia
         return $this->hasMany(Comentarios::class);
     }
 
-    /** Accessor para URLs completas de archivos adjuntos */
-    //public function getArchivosUrlsAttribute(): array  // <- minúsculas: Urls
-    //{
-      //  if (empty($this->atestados)) {
-           // return [];
-       // }
+    public function cierreMensual()
+    {
+        return $this->belongsTo(CierreMensual::class, 'cierre_mensual_id');
+    }
 
-        //return collect($this->atestados)->map(fn ($path) => asset('storage/'.ltrim($path, '/')))->all();
-  //  }
-
-    // Agregado tambien
+    /** Accessors */
     public function getAsistenciaTotalAttribute()
     {
         return $this->asistentes_hombres + $this->asistentes_mujeres;
     }
 
-    protected $appends = ['asistencia_total']; // <- Agrega asistencia_total a los atributos accesibles
-
-    /** Scopes de estado (nombres alineados al valor) */
+    /** Scopes */
     public function scopeCompletadas($query)
     {
         return $query->where('estado', 'completada');
@@ -133,83 +134,57 @@ class Actividad extends Model implements HasMedia
         return $query->where('user_id', $userId);
     }
 
-    /**
-     * Extra: puedes filtrar por el usuario actual y su departamental
-     * usando el scope del trait:
-     * Actividad::forCurrentUser()->get();
-     */
-
-     //NUEVO para relacion con el Cierre Mensual
-     public function cierreMensual()
-     {
-         return $this->belongsTo(CierreMensual::class, 'cierre_mensual_id');
-     }
-
-     // Usa Spatie para manejar los archivos
+    /** Spatie Media Library - ✅ SOLO UNA VEZ */
     public function registerMediaCollections(): void
     {
-     $this->addMediaCollection('atestados')
-        ->useDisk('public')
-        ->acceptsMimeTypes([
-            'image/jpeg', 'image/png', 'image/gif', 'image/webp',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/zip', 'application/x-rar-compressed',
-            'video/mp4', 'video/mpeg', 'video/quicktime',
-            'audio/mpeg', 'audio/wav'
-        ]);
+        $this->addMediaCollection('atestados')
+            ->useDisk('public')
+            ->acceptsMimeTypes([
+                'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/vnd.ms-excel',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/zip', 'application/x-rar-compressed',
+                'video/mp4', 'video/mpeg', 'video/quicktime',
+                'audio/mpeg', 'audio/wav'
+            ]);
     }
 
-    protected static function booted()
-{
-    static::created(function ($actividad) {
-        $actividad->syncAtestadosToMediaManager();
-    });
-    
-    static::updated(function ($actividad) {
-        if ($actividad->getMedia('atestados')->isNotEmpty()) {
-            $actividad->syncAtestadosToMediaManager();
+    /** Sincronización con Media Manager */
+    public function syncAtestadosToMediaManager(): void
+    {
+        if (!$this->departamental?->nombre) {
+            return;
         }
-    });
-}
 
-public function syncAtestadosToMediaManager(): void
-{
-    if (!$this->departamental?->nombre) {
-        return;
-    }
+        $departamentalNombre = $this->departamental->nombre;
+        $folderName = "Atestados - {$departamentalNombre}";
 
-    $departamentalNombre = $this->departamental->nombre;
-    $folderName = "Atestados - {$departamentalNombre}";
-
-    $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
-        ['name' => $folderName],
-        [
-            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-            'user_id' => $this->user_id,
-            'is_public' => false,
-        ]
-    );
-
-    foreach ($this->getMedia('atestados') as $media) {
-        // Usar solo la ruta relativa sin "public/"
-        $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
-
-        \DB::table('media_has_models')->updateOrInsert(
+        $folder = Folder::firstOrCreate(
+            ['name' => $folderName],
             [
-                'media_id' => $media->id,
-                'model_type' => 'TomatoPHP\FilamentMediaManager\Models\Folder',
-                'model_id' => $folder->id,
-            ],
-            [
-                'created_at' => now(),
-                'updated_at' => now(),
+                'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                'user_id' => $this->user_id,
+                'is_public' => false,
             ]
         );
+
+        foreach ($this->getMedia('atestados') as $media) {
+            $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
+
+            \DB::table('media_has_models')->updateOrInsert(
+                [
+                    'media_id' => $media->id,
+                    'model_type' => 'TomatoPHP\FilamentMediaManager\Models\Folder',
+                    'model_id' => $folder->id,
+                ],
+                [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
+        }
     }
 }
-}
-
