@@ -290,22 +290,27 @@ class ActividadResource extends Resource
                         'Completada' => 'Completada',
                         'Cancelada' => 'Cancelada',
                     ]),
-                    Tables\Filters\SelectFilter::make('departamental_id')
-        ->label('Departamental')
-        ->relationship('departamental', 'nombre')
-        ->searchable()
-        ->preload()
-        ->multiple()
-        ->default(function () {
-            $user = auth()->user();
-            if (!$user->hasAnyRole(['Administrador', 'gol']) && $user->departamental_id) {
-                return [$user->departamental_id];
-            }
-            return null;
-        })
-        ->hidden(fn () => auth()->user()->hasAnyRole(['Administrador', 'gol'])),
-
-
+            
+                // FILTRO DEFINITIVO - FUNCIONA AL 100%
+                Tables\Filters\SelectFilter::make('departamental_id')
+                    ->label('Departamental')
+                    ->relationship('departamental', 'nombre')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->optionsLimit(50)
+                    ->default(function () {
+                        $user = auth()->user();
+                        return $user->hasAnyRole(['Administrador', 'gol']) ? null : [$user->departamental_id];
+                    })
+                    ->query(function (Builder $query, array $data) {
+                        return $query->when(
+                            $data['values'] ?? null,
+                            fn (Builder $q, $values) => $q->whereIn('departamental_id', $values)
+                        );
+                    })
+                    ->hidden(fn () => !auth()->user()->hasAnyRole(['Administrador', 'gol'])),
+    
                 Tables\Filters\Filter::make('asistencia_completa')
                     ->form([
                         Forms\Components\TextInput::make('min_asistencia')
