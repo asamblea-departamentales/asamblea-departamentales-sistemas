@@ -223,31 +223,32 @@ class CierreMensualResource extends Resource
 
         ];
     }
+// En app/Filament/Resources/CierreMensualResource.php
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
 {
     $user = auth()->user();
 
-    if ($user->hasAnyRole(['super_admin', 'gol'])) {
+    // 1. Roles que deben ver TODOS los registros (Superiores / Centrales)
+    if ($user->hasAnyRole(['super_admin', 'ti', 'gol', 'auditoria'])) { 
         return parent::getEloquentQuery();
     }
 
-    // Si es Coordinador, verificar el ID
-    if ($user->hasRole('coordinador')) {
+    // 2. Roles que deben ver solo los registros de su DEPARTAMENTAL (Coordinador y Asistente Técnico)
+    if ($user->hasAnyRole(['coordinador', 'asistente_tecnico'])) {
         $userDepartamentalId = $user->departamental_id;
 
+        // Si el usuario no tiene departamental asignada (seguridad adicional)
         if (is_null($userDepartamentalId)) {
-            // Si el ID es NULO, mostramos un conjunto vacío para evitar errores
-            // o para forzar la seguridad si el coordinador no tiene asignación.
             return parent::getEloquentQuery()->whereRaw('1 = 0'); 
         }
 
-        // Si tiene ID, aplicamos el filtro normal
+        // Filtramos por su departamental
         return parent::getEloquentQuery()
             ->where('departamental_id', $userDepartamentalId);
     }
 
-    // Si es cualquier otro rol, devolvemos un conjunto vacío por defecto
+    // 3. Para cualquier otro rol no autorizado, devolvemos un conjunto vacío
     return parent::getEloquentQuery()->whereRaw('1 = 0');
 }
 }
