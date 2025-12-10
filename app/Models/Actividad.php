@@ -162,29 +162,36 @@ class Actividad extends Model implements HasMedia
         $departamentalNombre = $this->departamental->nombre;
         $folderName = "Atestados - {$departamentalNombre}";
 
+        // Esta carpeta es ÚNICA por departamental
         $folder = Folder::firstOrCreate(
-            ['name' => $folderName],
+            [
+                'name' => $folderName,
+                'user_id' => $this->user_id, // dueño siempre
+            ],
             [
                 'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-                'user_id' => $this->user_id,
                 'is_public' => false,
+                'is_hidden' => false,
+                'is_protected' => false,
             ]
         );
 
-        foreach ($this->getMedia('atestados') as $media) {
-            $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
+        // 🔥 Corrección IMPORTANTE:
+        // Primero borramos vínculos previos SOLO del folder actual
+        \DB::table('media_has_models')
+            ->where('model_type', Folder::class)
+            ->where('model_id', $folder->id)
+            ->delete();
 
-            \DB::table('media_has_models')->updateOrInsert(
-                [
-                    'media_id' => $media->id,
-                    'model_type' => 'TomatoPHP\FilamentMediaManager\Models\Folder',
-                    'model_id' => $folder->id,
-                ],
-                [
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
-            );
+        // Volver a insertar SOLO los archivos actualizados
+        foreach ($this->getMedia('atestados') as $media) {
+            \DB::table('media_has_models')->insert([
+                'media_id'    => $media->id,
+                'model_type'  => Folder::class,
+                'model_id'    => $folder->id,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
         }
     }
 }
