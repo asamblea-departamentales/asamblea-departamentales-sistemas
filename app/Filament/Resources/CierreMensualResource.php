@@ -19,6 +19,8 @@ class CierreMensualResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
+    protected static ?string $navigationGroup = 'Reportes y Cierres';
+
     protected static ?string $navigationLabel = 'Cierres Mensuales';
 
     protected static ?string $modelLabel = 'Cierre Mensual';

@@ -303,7 +303,7 @@ class ActividadResource extends Resource
             }
             return null;
         })
-        ->visible(fn () => auth()->user()->hasAnyRole(['Administrador', 'gol'])),
+        ->hidden(fn () => auth()->user()->hasAnyRole(['Administrador', 'gol'])),
 
 
                 Tables\Filters\Filter::make('asistencia_completa')
