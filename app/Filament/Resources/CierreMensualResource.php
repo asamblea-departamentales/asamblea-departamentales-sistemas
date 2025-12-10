@@ -222,16 +222,18 @@ class CierreMensualResource extends Resource
         ];
     }
 
-    // Filtrar por departamental para roles no-admin
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        $query = parent::getEloquentQuery();
         $user = auth()->user();
-
-        if ($user->hasRole(['super_admin', 'gol'])) {
-            return $query;
+    
+        // Super Admin y GOL ven todo
+        if ($user->hasAnyRole(['super_admin', 'gol'])) {
+            return parent::getEloquentQuery();
         }
-
-        return $query->where('departamental_id', $user->departamental_id);
+    
+        // Coordinador SOLO ve su departamental
+        return parent::getEloquentQuery()
+            ->where('departamental_id', $user->departamental_id);
     }
+    
 }
