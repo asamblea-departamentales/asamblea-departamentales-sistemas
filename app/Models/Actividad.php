@@ -10,8 +10,10 @@ use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use TomatoPHP\FilamentMediaManager\Traits\InteractsWithMediaFolders;
-use TomatoPHP\FilamentMediaManager\Models\Folder;
 use TomatoPHP\FilamentMediaManager\Models\Media as MediaManager;
+/** Sincronización con Media Manager */
+use TomatoPHP\FilamentMediaManager\Models\Media as ManagerMedia;
+use TomatoPHP\FilamentMediaManager\Models\Folder;
 
 class Actividad extends Model implements HasMedia
 {
@@ -135,9 +137,7 @@ class Actividad extends Model implements HasMedia
     }
 
 
-    /** Sincronización con Media Manager */
-    use TomatoPHP\FilamentMediaManager\Models\Media as ManagerMedia;
-    use TomatoPHP\FilamentMediaManager\Models\Folder;
+
     
     public function syncAtestadosToMediaManager(): void
     {
@@ -145,7 +145,7 @@ class Actividad extends Model implements HasMedia
             return;
         }
     
-        $ carpetaName = "Atestados - {$this->departamental->nombre}";
+        $carpetaName = "Atestados - {$this->departamental->nombre}";
     
         $folder = Folder::firstOrCreate(
             ['name' => $carpetaName],
