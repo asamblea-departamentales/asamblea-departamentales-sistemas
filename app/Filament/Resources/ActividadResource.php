@@ -290,39 +290,21 @@ class ActividadResource extends Resource
                         'Completada' => 'Completada',
                         'Cancelada' => 'Cancelada',
                     ]),
+                    Tables\Filters\SelectFilter::make('departamental_id')
+        ->label('Departamental')
+        ->relationship('departamental', 'nombre')
+        ->searchable()
+        ->preload()
+        ->multiple()
+        ->default(function () {
+            $user = auth()->user();
+            if (!$user->hasAnyRole(['Administrador', 'gol']) && $user->departamental_id) {
+                return [$user->departamental_id];
+            }
+            return null;
+        })
+        ->visible(fn () => auth()->user()->hasAnyRole(['Administrador', 'gol'])),
 
-                Tables\Filters\SelectFilter::make('departamental')
-                    ->label('Departamental')
-                    ->relationship('departamental', 'nombre')
-                    ->searchable()
-                    ->preload()
-                    ->visible(function () {
-                        $user = auth()->user();
-
-                        $allowed = $user->can('view_any_actividad') && $user->hasRole(['Administrador', 'gol']);
-
-                        $tableFilters = request()->query('tableFilters', []);
-                        $hasDepartamentalFilter = isset($tableFilters['departamental']['value']);
-
-                        return $allowed || $hasDepartamentalFilter;
-                    }),
-
-                Tables\Filters\SelectFilter::make('user_id')
-                    ->label('Usuario')
-                    ->relationship(
-                        name: 'user',
-                        titleAttribute: 'firstname',
-                        modifyQueryUsing: function (Builder $query) {
-                            $user = auth()->user();
-                            if (! $user->hasRole(['Administrador', 'gol'])) {
-                                $query->where('departamental_id', $user->departamental_id);
-                            }
-                            return $query;
-                        }
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->visible(fn () => auth()->user()->hasRole(['Administrador', 'gol'])),
 
                 Tables\Filters\Filter::make('asistencia_completa')
                     ->form([

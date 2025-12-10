@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Actividad;
 use App\Models\CierreMensual;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Carbon;
 
 class CierreMensualService
 {
@@ -19,7 +18,7 @@ class CierreMensualService
 
         // 2. Calcular totales
         $proyectadas = $actividades->count();
-        $ejecutadas = $actividades->where('estado', 'Ejecutada')->count();
+        $ejecutadas = $actividades->where('estado', 'Completada')->count();
         $pendientes = $actividades->where('estado', 'Pendiente')->count();
         $canceladas = $actividades->where('estado', 'Cancelada')->count();
 
