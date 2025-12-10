@@ -169,9 +169,10 @@ class CierreMensualResource extends Resource
                 Tables\Actions\Action::make('descargar_pdf')
                 ->label('Descargar PDF')
                 ->icon('heroicon-o-document-arrow-down')
-                ->url(fn ($record) => route('cierre.pdf', $record->id)) // 👈 usar el ID
+                ->url(fn ($record) => route('cierre.pdf', $record)) // 👈 pasa el modelo, no solo el ID
                 ->openUrlInNewTab()
                 ->visible(fn ($record) => filled($record->pdf_path)),
+            
 
                 Tables\Actions\Action::make('descargar_consolidado')
     ->label('Descargar Consolidado')
