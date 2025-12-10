@@ -134,23 +134,6 @@ class Actividad extends Model implements HasMedia
         return $query->where('user_id', $userId);
     }
 
-    /** Spatie Media Library - ✅ SOLO UNA VEZ */
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('atestados')
-            ->useDisk('public')
-            ->acceptsMimeTypes([
-                'image/jpeg', 'image/png', 'image/gif', 'image/webp',
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'application/vnd.ms-excel',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'application/zip', 'application/x-rar-compressed',
-                'video/mp4', 'video/mpeg', 'video/quicktime',
-                'audio/mpeg', 'audio/wav'
-            ]);
-    }
 
     /** Sincronización con Media Manager */
     public function syncAtestadosToMediaManager(): void
@@ -158,40 +141,33 @@ class Actividad extends Model implements HasMedia
         if (!$this->departamental?->nombre) {
             return;
         }
-
+    
         $departamentalNombre = $this->departamental->nombre;
         $folderName = "Atestados - {$departamentalNombre}";
-
-        // Esta carpeta es ÚNICA por departamental
+    
         $folder = Folder::firstOrCreate(
-            [
-                'name' => $folderName,
-                'user_id' => $this->user_id, // dueño siempre
-            ],
+            ['name' => $folderName],
             [
                 'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                'user_id' => $this->user_id,
                 'is_public' => false,
-                'is_hidden' => false,
-                'is_protected' => false,
             ]
         );
-
-        // 🔥 Corrección IMPORTANTE:
-        // Primero borramos vínculos previos SOLO del folder actual
-        \DB::table('media_has_models')
-            ->where('model_type', Folder::class)
-            ->where('model_id', $folder->id)
-            ->delete();
-
-        // Volver a insertar SOLO los archivos actualizados
+    
         foreach ($this->getMedia('atestados') as $media) {
-            \DB::table('media_has_models')->insert([
-                'media_id'    => $media->id,
-                'model_type'  => Folder::class,
-                'model_id'    => $folder->id,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ]);
+    
+            DB::table('media_has_models')->updateOrInsert(
+                [
+                    'media_id' => $media->id,
+                    'model_type' => Folder::class,
+                    'model_id' => $folder->id,
+                ],
+                [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
     }
+    
 }
