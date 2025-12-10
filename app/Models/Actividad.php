@@ -164,50 +164,52 @@ class Actividad extends Model implements HasMedia
     }
 
     protected static function booted()
-    {
-        static::created(function ($actividad) {
+{
+    static::created(function ($actividad) {
+        $actividad->syncAtestadosToMediaManager();
+    });
+    
+    static::updated(function ($actividad) {
+        if ($actividad->getMedia('atestados')->isNotEmpty()) {
             $actividad->syncAtestadosToMediaManager();
-        });
-
-        static::updated(function ($actividad) {
-            if ($actividad->getMedia('atestados')->isNotEmpty() === false) {
-                $actividad->syncAtestadosToMediaManager();
-            }
-        });
-    } // ← ESTA LLAVE ES LA QUE FALTABA
-
-    public function syncAtestadosToMediaManager(): void
-    {
-        if (!$this->departamental?->nombre) {
-            return;
         }
-    
-        $departamentalNombre = $this->departamental->nombre;
-        $folderName = "Atestados - {$departamentalNombre}";
-    
-        $folder = Folder::firstOrCreate(
-            ['name' => $folderName],
+    });
+}
+
+public function syncAtestadosToMediaManager(): void
+{
+    if (!$this->departamental?->nombre) {
+        return;
+    }
+
+    $departamentalNombre = $this->departamental->nombre;
+    $folderName = "Atestados - {$departamentalNombre}";
+
+    $folder = \TomatoPHP\FilamentMediaManager\Models\Folder::firstOrCreate(
+        ['name' => $folderName],
+        [
+            'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+            'user_id' => $this->user_id,
+            'is_public' => false,
+        ]
+    );
+
+    foreach ($this->getMedia('atestados') as $media) {
+        // Usar solo la ruta relativa sin "public/"
+        $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
+
+        \DB::table('media_has_models')->updateOrInsert(
             [
-                'description' => "Carpeta privada de atestados – {$departamentalNombre}",
-                'user_id' => $this->user_id,
-                'is_public' => false,
+                'media_id' => $media->id,
+                'model_type' => 'TomatoPHP\FilamentMediaManager\Models\Folder',
+                'model_id' => $folder->id,
+            ],
+            [
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
-    
-        foreach ($this->getMedia('atestados') as $media) {
-            // LA CLAVE: usar SOLO la ruta relativa SIN "public/"
-            $relativePath = ltrim(str_replace('public/', '', $media->getPathRelativeToRoot()), '/');
-    
-            MediaManager::updateOrCreate(
-                ['file' => $relativePath],
-                [
-                    'name'      => $media->file_name,
-                    'mime_type' => $media->mime_type,
-                    'size'      => $media->size,
-                    'folder_id' => $folder->id,
-                    'user_id'   => $this->user_id,
-                ]
-            );
-        }
     }
 }
+}
+
