@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class CierreMensual extends Model
 {
@@ -31,6 +32,18 @@ class CierreMensual extends Model
         'fecha_cierre' => 'datetime',
     ];
 
+    // 👇 Genera UUID automáticamente
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->id) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+    }
+
     public function actividades()
     {
         return $this->hasMany(Actividad::class, 'cierre_mensual_id');
@@ -52,5 +65,14 @@ class CierreMensual extends Model
             ->where('mes', $mes)
             ->where('año', $año)
             ->exists();
-    }
+        }
+
+        public function getPorcentajeCumplimientoAttribute()
+        {
+            if ($this->actividades_proyectadas > 0) {
+                return round(($this->actividades_ejecutadas / $this->actividades_proyectadas) * 100, 2);
+            }
+            return 0;
+        }
+            
 }

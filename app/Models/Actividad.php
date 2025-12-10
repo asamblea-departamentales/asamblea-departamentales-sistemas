@@ -104,7 +104,7 @@ class Actividad extends Model implements HasMedia
 
     public function cierreMensual()
     {
-        return $this->belongsTo(CierreMensual::class, 'cierre_mensual_id');
+        return $this->belongsTo(CierreMensual::class);
     }
 
     /** Accessors */
