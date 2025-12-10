@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class CierreMensual extends Model
 {
@@ -74,5 +76,23 @@ class CierreMensual extends Model
             }
             return 0;
         }
+
+
+public function generarPDF()
+{
+    $pdf = Pdf::loadView('pdf.cierre_mensual', [
+        'cierre' => $this,
+        'actividades' => $this->actividades,
+        'meses' => app(\App\Services\CierreMensualService::class)->meses(),
+    ]);
+
+    $pdfPath = "cierres/cierre_{$this->id}.pdf";
+    $pdf->save(storage_path("app/public/$pdfPath"));
+
+    $this->update(['pdf_path' => $pdfPath]);
+
+    return $pdfPath;
+}
+
             
 }
