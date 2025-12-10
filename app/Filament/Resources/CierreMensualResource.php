@@ -225,17 +225,29 @@ class CierreMensualResource extends Resource
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
-    {
-        $user = auth()->user();
-    
-        // Super Admin y GOL ven todo
-        if ($user->hasAnyRole(['super_admin', 'gol'])) {
-            return parent::getEloquentQuery();
-        }
-    
-        // Coordinador SOLO ve su departamental
-        return parent::getEloquentQuery()
-            ->where('departamental_id', $user->departamental_id);
+{
+    $user = auth()->user();
+
+    if ($user->hasAnyRole(['super_admin', 'gol'])) {
+        return parent::getEloquentQuery();
     }
-    
+
+    // Si es Coordinador, verificar el ID
+    if ($user->hasRole('coordinador')) {
+        $userDepartamentalId = $user->departamental_id;
+
+        if (is_null($userDepartamentalId)) {
+            // Si el ID es NULO, mostramos un conjunto vacío para evitar errores
+            // o para forzar la seguridad si el coordinador no tiene asignación.
+            return parent::getEloquentQuery()->whereRaw('1 = 0'); 
+        }
+
+        // Si tiene ID, aplicamos el filtro normal
+        return parent::getEloquentQuery()
+            ->where('departamental_id', $userDepartamentalId);
+    }
+
+    // Si es cualquier otro rol, devolvemos un conjunto vacío por defecto
+    return parent::getEloquentQuery()->whereRaw('1 = 0');
+}
 }
