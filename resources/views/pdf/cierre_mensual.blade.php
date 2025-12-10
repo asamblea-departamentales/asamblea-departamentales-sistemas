@@ -94,24 +94,24 @@
         </tr>
     </table>
 
-   {{-- Actividades por programa --}}
+  {{-- Actividades por programa --}}
 @php
-// Normalizamos nombres de programas para evitar problemas de tildes o saltos de línea
+// Mapa de equivalencias con prefijo "Programa de"
 $mapaProgramas = [
-    'Atencion Ciudadana' => 'Atención Ciudadana',
-    'Participacion Ciudadana' => 'Participación Ciudadana',
-    'Educacion Civica' => 'Educación Cívica',
+    'programa de atencion ciudadana' => 'Atención Ciudadana',
+    'programa de participacion ciudadana' => 'Participación Ciudadana',
+    'programa de educacion civica' => 'Educación Cívica',
 ];
 
 $actividadesPorPrograma = $cierre->actividades->groupBy(function($actividad) use ($mapaProgramas) {
     // Limpia espacios y saltos de línea
     $nombre = preg_replace('/\s+/', ' ', trim($actividad->programa));
-    // Quita tildes para comparar
-    $nombreSinTilde = str_replace(
+    // Quita tildes y pasa a minúsculas
+    $nombreSinTilde = strtolower(str_replace(
         ['á','é','í','ó','ú','Á','É','Í','Ó','Ú'],
-        ['a','e','i','o','u','A','E','I','O','U'],
+        ['a','e','i','o','u','a','e','i','o','u'],
         $nombre
-    );
+    ));
     // Devuelve el nombre oficial si existe en el mapa
     return $mapaProgramas[$nombreSinTilde] ?? $nombre;
 });
@@ -144,6 +144,7 @@ $actividadesPorPrograma = $cierre->actividades->groupBy(function($actividad) use
     @endforelse
 </table>
 @endforeach
+
 
 
     {{-- Programación mensual --}}
