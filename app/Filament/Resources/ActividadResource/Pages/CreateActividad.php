@@ -192,6 +192,7 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                     ->schema([
                         \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
                             ->label('Adjuntar Atestados')
+                            ->collection(collection: 'atestados')
                             ->multiple()
                             ->reorderable()
                             ->enableOpen()

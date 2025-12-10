@@ -17,10 +17,10 @@ use TomatoPHP\FilamentMediaManager\Models\Folder;
 
 class Actividad extends Model implements HasMedia
 {
-    use BelongsToDepartamental;
-    use HasFactory;
     use InteractsWithMedia;
     use InteractsWithMediaFolders;
+    use BelongsToDepartamental;
+    use HasFactory;
 
     protected $table = 'actividades';
 
