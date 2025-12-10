@@ -136,19 +136,21 @@ class Actividad extends Model implements HasMedia
 
 
     /** Sincronización con Media Manager */
+    use TomatoPHP\FilamentMediaManager\Models\Media as ManagerMedia;
+    use TomatoPHP\FilamentMediaManager\Models\Folder;
+    
     public function syncAtestadosToMediaManager(): void
     {
         if (!$this->departamental?->nombre) {
             return;
         }
     
-        $departamentalNombre = $this->departamental->nombre;
-        $folderName = "Atestados - {$departamentalNombre}";
+        $ carpetaName = "Atestados - {$this->departamental->nombre}";
     
         $folder = Folder::firstOrCreate(
-            ['name' => $folderName],
+            ['name' => $carpetaName],
             [
-                'description' => "Carpeta privada de atestados – {$departamentalNombre}",
+                'description' => "Carpeta privada de atestados – {$this->departamental->nombre}",
                 'user_id' => $this->user_id,
                 'is_public' => false,
             ]
@@ -156,18 +158,23 @@ class Actividad extends Model implements HasMedia
     
         foreach ($this->getMedia('atestados') as $media) {
     
-            DB::table('media_has_models')->updateOrInsert(
+            // Ruta relativa desde storage/app/public
+            $relativePath = ltrim(str_replace(storage_path('app/public/'), '', $media->getPath()), '/');
+    
+            ManagerMedia::updateOrCreate(
                 [
-                    'media_id' => $media->id,
-                    'model_type' => Folder::class,
-                    'model_id' => $folder->id,
+                    'file' => $relativePath,
                 ],
                 [
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'name'       => $media->name ?? $media->file_name,
+                    'mime_type'  => $media->mime_type,
+                    'size'       => $media->size,
+                    'folder_id'  => $folder->id,
+                    'user_id'    => $this->user_id,
                 ]
             );
         }
     }
+    
     
 }
