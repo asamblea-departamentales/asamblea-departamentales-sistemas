@@ -8,7 +8,6 @@ use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\BadgeEntry;
 use Filament\Infolists\Components\Section;
 
 class ViewContrato extends ViewRecord
@@ -32,14 +31,15 @@ class ViewContrato extends ViewRecord
                             ->label('ID')
                             ->copyable(),
                         
-                        BadgeEntry::make('estado')
+                        TextEntry::make('estado')
                             ->label('Estado Actual')
-                            ->getStateUsing(fn (): string => $this->record->estado)
-                            ->colors([
-                                'success' => 'Vigente',
-                                'warning' => 'Por vencer',
-                                'danger' => 'Vencido',
-                            ]),
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'Vigente' => 'success',
+                                'Por vencer' => 'warning',
+                                'Vencido' => 'danger',
+                                default => 'gray',
+                            }),
                         
                         TextEntry::make('dias_vencimiento')
                             ->label('Días para vencimiento')
@@ -65,16 +65,18 @@ class ViewContrato extends ViewRecord
 
                 Section::make('Información del Contrato')
                     ->schema([
-                        BadgeEntry::make('tipo')
+                        TextEntry::make('tipo')
                             ->label('Tipo de Contrato')
-                            ->colors([
-                                'primary' => 'SERVICIOS',
-                                'success' => 'SUMINISTROS',
-                                'warning' => 'OBRAS',
-                                'info' => 'CONSULTORIA',
-                                'secondary' => 'MANTENIMIENTO',
-                                'danger' => 'ARRENDAMIENTO',
-                            ]),
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'SERVICIOS' => 'primary',
+                                'SUMINISTROS' => 'success',
+                                'OBRAS' => 'warning',
+                                'CONSULTORIA' => 'info',
+                                'MANTENIMIENTO' => 'gray',
+                                'ARRENDAMIENTO' => 'danger',
+                                default => 'gray',
+                            }),
                         
                         TextEntry::make('proveedor')
                             ->label('Proveedor/Contratista')
@@ -82,7 +84,7 @@ class ViewContrato extends ViewRecord
                         
                         TextEntry::make('monto')
                             ->label('Monto del Contrato')
-                            ->getStateUsing(fn (): string => $this->record->monto_formateado)
+                            ->money('USD')
                             ->icon('heroicon-o-currency-dollar'),
                     ])->columns(3),
 

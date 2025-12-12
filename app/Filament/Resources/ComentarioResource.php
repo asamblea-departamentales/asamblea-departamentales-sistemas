@@ -22,7 +22,7 @@ class ComentarioResource extends Resource
     {
         return $form->schema([
 
-            // ✅ Seleccionar actividad solo al crear
+            //  Seleccionar actividad solo al crear
             Forms\Components\Select::make('actividad_id')
                 ->relationship('actividad', 'macroactividad')
                 ->label('Actividad')
@@ -31,11 +31,11 @@ class ComentarioResource extends Resource
                 ->preload()
                 ->disabled(fn ($record) => $record !== null),
 
-            // ✅ Usuario asignado automáticamente y oculto
+            //  Usuario asignado automáticamente y oculto
             Forms\Components\Hidden::make('user_id')
                 ->default(auth()->id()),
 
-            // ✅ Comentario siempre editable
+            //  Comentario siempre editable
             Forms\Components\Textarea::make('contenido')
                 ->label('Contenido del comentario')
                 ->required()
@@ -79,7 +79,7 @@ class ComentarioResource extends Resource
                 ->visible(fn () =>
                     auth()->user()->hasAnyRole([
                         'Administrador',
-                        'superadmin',
+                        'super_admin',
                         'coordinador',
                         'gol',
                     ])
@@ -90,7 +90,7 @@ class ComentarioResource extends Resource
                 ->visible(fn () =>
                     auth()->user()->hasAnyRole([
                         'Administrador',
-                        'superadmin',
+                        'super_admin',
                         'coordinador',
                         'gol',
                     ])
@@ -102,7 +102,7 @@ class ComentarioResource extends Resource
                     ->visible(fn () =>
                         auth()->user()->hasAnyRole([
                             'Administrador',
-                            'superadmin',
+                            'super_admin',
                             'coordinador',
                             'gol',
                         ])
