@@ -183,20 +183,24 @@ class CierreMensualResource extends Resource
 
             
                 // ✅ NUEVA ACCIÓN: APROBAR CIERRE
-    Tables\Actions\Action::make('aprobar')
-    ->label('Aprobar')
-    ->color('success')
-    ->icon('heroicon-o-check')
-    ->requiresConfirmation()
-    ->visible(fn ($record) => $record->estado === 'generado')
-    ->action(function ($record) {
-        $record->update(['estado' => 'aprobado']);
-
-        \Filament\Notifications\Notification::make()
-            ->title('Cierre aprobado correctamente')
-            ->success()
-            ->send();
-    }),    
+                Tables\Actions\Action::make('aprobar')
+                ->label('Aprobar')
+                ->color('success')
+                ->icon('heroicon-o-check')
+                ->requiresConfirmation()
+                ->visible(fn ($record) =>
+                    $record->estado === 'generado'
+                    && auth()->user()->hasAnyRole(['Administrador', 'coordinador', 'ti', 'gol', 'auditoria'])
+                )
+                ->action(function ($record) {
+                    $record->update(['estado' => 'aprobado']);
+            
+                    \Filament\Notifications\Notification::make()
+                        ->title('Cierre aprobado correctamente')
+                        ->success()
+                        ->send();
+                }),
+              
                 
             Tables\Actions\EditAction::make(),
             ])
