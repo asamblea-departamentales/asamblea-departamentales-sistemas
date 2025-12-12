@@ -39,10 +39,10 @@ public function estaVigente()
     return $this->fecha_vencimiento >= now();
 }
 
-// Días para vencimiento (puede ser negativo si ya venció)
+// Días para vencimiento 
 public function diasParaVencimiento()
 {
-    return now()->diffInDays($this->fecha_vencimiento, false);
+    return (int) now()->diffInDays($this->fecha_vencimiento, false);
 }
 
 // Obtener estado del contrato
