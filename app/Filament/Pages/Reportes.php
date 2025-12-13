@@ -15,7 +15,7 @@ class Reportes extends Page
     
     protected static ?string $title = 'Dashboard de Reportes';
     
-    protected static ?string $navigationGroup = 'Análisis';
+    protected static ?string $navigationGroup = 'Reportes y Cierres';
     
     protected static ?int $navigationSort = 10;
     
