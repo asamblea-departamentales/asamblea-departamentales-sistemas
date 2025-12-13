@@ -37,6 +37,7 @@ use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Jeffgreco13\FilamentBreezy\Livewire\MyProfile\ChangePassword;
+use App\Filament\Pages\Reportes;
 
 
 
@@ -90,6 +91,7 @@ class AdminPanelProvider extends PanelProvider
             // Pages
             ->pages([
                 Pages\Dashboard::class,
+                Reportes::class, //Agregado
             ])
 
             // Widgets
