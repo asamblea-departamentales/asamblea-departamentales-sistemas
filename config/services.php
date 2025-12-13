@@ -31,4 +31,24 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    //NUEVO
+    /*
+    |--------------------------------------------------------------------------
+    | Power BI Configuration
+    |--------------------------------------------------------------------------
+    */
+
+    'powerbi' => [
+        'embed_url' => env('POWERBI_EMBED_URL', ''),
+        'report_id' => env('POWERBI_REPORT_ID', ''),
+        'tenant_id' => env('POWERBI_TENANT_ID', ''),
+        'gateway_installed' => env('POWERBI_GATEWAY_INSTALLED', false),
+        'internal_db_host' => env('POWERBI_INTERNAL_DB_HOST', null),
+        'require_institutional_email' => env('POWERBI_REQUIRE_INSTITUTIONAL_EMAIL', false),
+        'azure_ad_tenant' => env('POWERBI_AZURE_AD_TENANT', null),
+        'service_url' => 'https://app.powerbi.com',
+        'api_url' => 'https://api.powerbi.com/v1.0/myorg',
+    ],
+
+
 ];
