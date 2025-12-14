@@ -106,8 +106,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentFullCalendarPlugin::make()
                     ->selectable(true)
                     ->editable(true),
-                    FilamentMediaManagerPlugin::make()
-                    ->allowSubFolders(),
+                    //FilamentMediaManagerPlugin::make()
+                    //->allowSubFolders(),
                     BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
