@@ -9,16 +9,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use TomatoPHP\FilamentMediaManager\Traits\InteractsWithMediaFolders;
-use TomatoPHP\FilamentMediaManager\Models\Media as MediaManager;
-/** Sincronización con Media Manager */
-use TomatoPHP\FilamentMediaManager\Models\Media as ManagerMedia;
-use TomatoPHP\FilamentMediaManager\Models\Folder;
 
 class Actividad extends Model implements HasMedia
 {
     use InteractsWithMedia;
-    use InteractsWithMediaFolders;
     use BelongsToDepartamental;
     use HasFactory;
 
@@ -52,6 +46,11 @@ class Actividad extends Model implements HasMedia
 
     protected $appends = ['asistencia_total'];
 
+    /*
+    |--------------------------------------------------------------------------
+    | VALIDACIONES AUTOMÁTICAS
+    |--------------------------------------------------------------------------
+    */
     protected static function boot()
     {
         parent::boot();
@@ -80,20 +79,12 @@ class Actividad extends Model implements HasMedia
         });
     }
 
-    protected static function booted()
-    {
-        static::created(function ($actividad) {
-            $actividad->syncAtestadosToMediaManager();
-        });
-        
-        static::updated(function ($actividad) {
-            if ($actividad->getMedia('atestados')->isNotEmpty()) {
-                $actividad->syncAtestadosToMediaManager();
-            }
-        });
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONES
+    |--------------------------------------------------------------------------
+    */
 
-    /** Relaciones */
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -109,26 +100,38 @@ class Actividad extends Model implements HasMedia
         return $this->belongsTo(CierreMensual::class);
     }
 
-    /** Accessors */
+    /*
+    |--------------------------------------------------------------------------
+    | ACCESSORS
+    |--------------------------------------------------------------------------
+    */
+
     public function getAsistenciaTotalAttribute()
     {
-        return $this->asistentes_hombres + $this->asistentes_mujeres;
+        return ($this->asistentes_hombres ?? 0) + ($this->asistentes_mujeres ?? 0);
     }
 
-    /** Scopes */
+    /*
+    |--------------------------------------------------------------------------
+    | SCOPES
+    |--------------------------------------------------------------------------
+    */
+
     public function scopeCompletadas($query)
     {
-        return $query->where('estado', 'completada');
+        return $query->where('estado', 'Completada');
     }
 
     public function scopePendientes($query)
     {
-        return $query->where('estado', 'pendiente');
+        return $query->where('estado', 'Pendiente');
     }
 
     public function scopeVencidas($query)
     {
-        return $query->where('due_date', '<', now())->where('estado', '!=', 'completada');
+        return $query
+            ->where('due_date', '<', now())
+            ->where('estado', '!=', 'Completada');
     }
 
     public function scopePorUsuario($query, $userId)
@@ -136,45 +139,24 @@ class Actividad extends Model implements HasMedia
         return $query->where('user_id', $userId);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | MEDIA (SPATIE)
+    |--------------------------------------------------------------------------
+    */
 
-
-    
-    public function syncAtestadosToMediaManager(): void
+    public function registerMediaCollections(): void
     {
-        if (!$this->departamental?->nombre) {
-            return;
-        }
-    
-        $carpetaName = "Atestados - {$this->departamental->nombre}";
-    
-        $folder = Folder::firstOrCreate(
-            ['name' => $carpetaName],
-            [
-                'description' => "Carpeta privada de atestados – {$this->departamental->nombre}",
-                'user_id' => $this->user_id,
-                'is_public' => false,
-            ]
-        );
-    
-        foreach ($this->getMedia('atestados') as $media) {
-    
-            // Ruta relativa desde storage/app/public
-            $relativePath = ltrim(str_replace(storage_path('app/public/'), '', $media->getPath()), '/');
-    
-            ManagerMedia::updateOrCreate(
-                [
-                    'file' => $relativePath,
-                ],
-                [
-                    'name'       => $media->name ?? $media->file_name,
-                    'mime_type'  => $media->mime_type,
-                    'size'       => $media->size,
-                    'folder_id'  => $folder->id,
-                    'user_id'    => $this->user_id,
-                ]
-            );
-        }
+        $this->addMediaCollection('atestados')
+            ->useDisk('public') // importante
+            ->acceptsFile(function ($file) {
+                return in_array($file->mimeType, [
+                    'image/jpeg',
+                    'image/png',
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                ]);
+            });
     }
-    
-    
 }
