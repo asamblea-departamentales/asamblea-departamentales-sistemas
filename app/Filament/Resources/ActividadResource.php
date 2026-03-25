@@ -625,70 +625,71 @@ class ActividadResource extends Resource
     ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
                     ])
                     ->action(function (array $data, Tables\Actions\Action $action) {
-                        $data['star_date'] = $data['star_date'] ?? now();
-                        $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
-                        $data['fecha']     = $data['fecha'] ?? now()->format('Y-m-d');
-                        $data['programa']  = $data['programa'] ?? 'Otro';
-                        $data['departamental_id'] = auth()->user()->departamental_id ?? null;
-                        $data['user_id'] = auth()->id();
+    $data['star_date'] = $data['star_date'] ?? now();
+    $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
+    $data['fecha']     = $data['fecha'] ?? now()->format('Y-m-d');
+    $data['programa']  = $data['programa'] ?? 'Otro';
+    $data['departamental_id'] = auth()->user()->departamental_id ?? null;
+    $data['user_id'] = auth()->id();
 
-                        $data['asistencia_completa'] =
-                            ((int) ($data['asistentes_hombres'] ?? 0)) +
-                            ((int) ($data['asistentes_mujeres'] ?? 0));
+    $data['asistencia_completa'] =
+        ((int) ($data['asistentes_hombres'] ?? 0)) +
+        ((int) ($data['asistentes_mujeres'] ?? 0));
 
-                        if (empty($data['star_date']) || empty($data['due_date'])) {
-                            Notification::make()
-                                ->title('Error de Validación')
-                                ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
-                                ->danger()
-                                ->send();
+    if (empty($data['star_date']) || empty($data['due_date'])) {
+        Notification::make()->title('Error de Validación')
+            ->body('Faltan datos requeridos: fechas de inicio o vencimiento.')
+            ->danger()->send();
+        return $action->halt();
+    }
 
-                            return $action->halt();
-                        }
+    if (\Carbon\Carbon::parse($data['due_date']) < now()) {
+        Notification::make()->title('Error de Validación')
+            ->body('La fecha de vencimiento no puede ser en el pasado.')
+            ->danger()->send();
+        return $action->halt();
+    }
 
-                        if (\Carbon\Carbon::parse($data['due_date']) < now()) {
-                            Notification::make()
-                                ->title('Error de Validación')
-                                ->body('La fecha de vencimiento no puede ser en el pasado.')
-                                ->danger()
-                                ->send();
+    if (empty($data['departamental_id'])) {
+        Notification::make()->title('Error de Validación')
+            ->body('El usuario no tiene departamental asignada.')
+            ->danger()->send();
+        return $action->halt();
+    }
 
-                            return $action->halt();
-                        }
+    try {
+        // Extraer atestados antes de crear el modelo
+        $atestados = $data['atestados'] ?? [];
+        unset($data['atestados']);
 
-                        if (empty($data['departamental_id'])) {
-                            Notification::make()
-                                ->title('Error de Validación')
-                                ->body('El usuario no tiene departamental asignada.')
-                                ->danger()
-                                ->send();
+        $record = Actividad::create($data);
 
-                            return $action->halt();
-                        }
+        // Attachar archivos a Spatie después de crear el modelo
+        if (!empty($atestados)) {
+            foreach ((array) $atestados as $tmpFilename) {
+                $tmpPath = storage_path('app/public/livewire-tmp/' . $tmpFilename);
+                if (file_exists($tmpPath)) {
+                    $record->addMedia($tmpPath)
+                        ->preservingOriginal()
+                        ->toMediaCollection('atestados', 'public');
+                }
+            }
+        }
 
-                        try {
+        Notification::make()
+            ->title('¡Actividad creada exitosamente!')
+            ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
+            ->success()->send();
 
-
-                        $record = Actividad::create($data);
-
-
-                            Notification::make()
-                                ->title('¡Actividad creada exitosamente!')
-                                ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
-                                ->success()
-                                ->send();
-
-                            $action->success();
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->title('Error')
-                                ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
-                                ->danger()
-                                ->send();
-
-                            $action->halt();
-                        }
-                    }),
+        $action->success();
+    } catch (\Exception $e) {
+        Notification::make()
+            ->title('Error')
+            ->body('Ocurrió un error al crear la actividad: ' . $e->getMessage())
+            ->danger()->send();
+        $action->halt();
+    }
+}),
             ]);
     }
 
