@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ActividadResource\Pages;
+use App\Filament\Resources\ActividadResource\RelationManagers\AtestadosRelationManager;
 use App\Filament\Resources\ActividadResource\RelationManagers\ComentarioRelationManager;
 use App\Models\Actividad;
 use Filament\Forms;
@@ -773,7 +774,10 @@ class ActividadResource extends Resource
     {
         return [
             ComentarioRelationManager::class,
+            AtestadosRelationManager::class,
         ];
+
+        
     }
 
     public static function getSlug(): string
