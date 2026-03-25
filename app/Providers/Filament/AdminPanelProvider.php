@@ -34,7 +34,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
-use TomatoPHP\FilamentMediaManager\FilamentMediaManagerPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Jeffgreco13\FilamentBreezy\Livewire\MyProfile\ChangePassword;
 use App\Filament\Pages\Reportes;
@@ -106,8 +105,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentFullCalendarPlugin::make()
                     ->selectable(true)
                     ->editable(true),
-                    //FilamentMediaManagerPlugin::make()
-                    //->allowSubFolders(),
+                   
                     BreezyCore::make()
                     ->myProfile(
                         shouldRegisterUserMenu: true,
