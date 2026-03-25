@@ -305,19 +305,7 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
 
     protected function handleRecordCreation(array $data): Model
 {
-    $record = new Actividad();
-    $record->fill($data);
-    $record->save();
-
-    if (!empty($data['atestados'])) {
-        foreach ($data['atestados'] as $file) {
-            $record->addMedia($file)
-                ->usingName($file->getClientOriginalName())
-                ->toMediaCollection('atestados', 'public');
-        }
-    }
-
-    return $record;
+    return Actividad::create($data);
 }
 }
     // Cierre de la clase CreateActividad

@@ -667,19 +667,11 @@ class ActividadResource extends Resource
                         }
 
                         try {
-$mediaFiles = $data['atestados'] ?? [];
 
-unset($data['atestados']);
 
-$record = Actividad::create($data);
+                        $record = Actividad::create($data);
 
-// 🔥 guardar archivos manualmente
-foreach ($mediaFiles as $file) {
-    $record
-        ->addMedia($file->getRealPath())
-        ->usingName($file->getClientOriginalName())
-        ->toMediaCollection('atestados', 'public');
-}
+
                             Notification::make()
                                 ->title('¡Actividad creada exitosamente!')
                                 ->body('La actividad "' . \Illuminate\Support\Str::limit($record->macroactividad, 50) . '" ha sido creada.')
