@@ -624,7 +624,8 @@ class ActividadResource extends Resource
     ->columnSpanFull()
     ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
                     ])
-                    ->action(function (array $data, Tables\Actions\Action $action) {
+                  ->action(function (array $data, Tables\Actions\Action $action) {
+    \Illuminate\Support\Facades\Log::info('QUICK ADD DATA', $data);
     $data['star_date'] = $data['star_date'] ?? now();
     $data['due_date']  = $data['due_date'] ?? now()->addDays(7);
     $data['fecha']     = $data['fecha'] ?? now()->format('Y-m-d');
