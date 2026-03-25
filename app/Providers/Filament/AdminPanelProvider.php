@@ -37,6 +37,7 @@ use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Jeffgreco13\FilamentBreezy\Livewire\MyProfile\ChangePassword;
 use App\Filament\Pages\Reportes;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 
 
 
@@ -102,27 +103,27 @@ class AdminPanelProvider extends PanelProvider
 
             // Plugins
             ->plugins([
-                FilamentFullCalendarPlugin::make()
-                    ->selectable(true)
-                    ->editable(true),
-                   
-                    BreezyCore::make()
-                    ->myProfile(
-                        shouldRegisterUserMenu: true,
-                        shouldRegisterNavigation: false,
-                        navigationGroup: 'Settings',
-                        hasAvatars: true,
-                        slug: 'my-profile'
-                    )
-                    // 1. 🛑 EXCLUIR el componente de cambio de contraseña por defecto
-                    ->withoutMyProfileComponents([
-                        'update_password',
-                    ])
-                    // 2. ✅ REGISTRAR solo tu componente extendido
-                    ->myProfileComponents([
-                        'personal_info' => \App\Livewire\MyProfileExtended::class,
-                    ]),
-            ])
+    FilamentFullCalendarPlugin::make()
+        ->selectable(true)
+        ->editable(true),
+
+    BreezyCore::make()
+        ->myProfile(
+            shouldRegisterUserMenu: true,
+            shouldRegisterNavigation: false,
+            navigationGroup: 'Settings',
+            hasAvatars: true,
+            slug: 'my-profile'
+        )
+        ->withoutMyProfileComponents([
+            'update_password',
+        ])
+        ->myProfileComponents([
+            'personal_info' => \App\Livewire\MyProfileExtended::class,
+        ]),
+
+    FilamentShieldPlugin::make(), // 🔥 separado correctamente
+])
                 
 
             // Boton para salir del impersonate (NUEVO)
