@@ -79,6 +79,15 @@ class Actividad extends Model implements HasMedia
         });
     }
 
+    //Agregado 
+    public function canViewMedia(): bool
+{
+    $user = auth()->user();
+
+    return $user->departamental_id === $this->departamental_id
+        || $user->hasRole('Administrador');
+}
+
     /*
     |--------------------------------------------------------------------------
     | RELACIONES

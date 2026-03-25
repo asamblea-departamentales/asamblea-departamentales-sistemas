@@ -11,10 +11,14 @@ class ActividadPathGenerator implements PathGenerator
     {
         $model = $media->model;
 
-        return 'departamentos/' 
-            . $model->departamental_id 
-            . '/actividades/' 
-            . $model->id . '/';
+        if ($model && $model->departamental_id) {
+            return 'departamentales/' 
+                . $model->departamental_id 
+                . '/actividades/' 
+                . $model->id . '/';
+        }
+
+        return 'otros/';
     }
 
     public function getPathForConversions(Media $media): string
