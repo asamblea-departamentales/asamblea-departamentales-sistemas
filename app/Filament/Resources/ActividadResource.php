@@ -617,19 +617,31 @@ class ActividadResource extends Resource
 
 
                             SpatieMediaLibraryFileUpload::make('atestados')
-                                ->label('Adjuntar Atestados')
-                                ->collection('atestados')           // ← nombre exacto de la colección
-                                ->multiple()
-                                ->reorderable()
-                                ->enableOpen()
-                                ->enableDownload()
-                                ->maxFiles(10)
-                                ->maxSize(10240)
-                                ->disk('public')
-                                ->directory('actividades')          // ← carpeta física
-                                ->preserveFilenames()
-                                ->columnSpanFull()
-                                ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental.')
+    ->label('Adjuntar Atestados')
+    ->collection('atestados')
+    ->multiple()
+    ->reorderable()
+
+    // UX
+    ->enableOpen()
+    ->enableDownload()
+    ->panelLayout('grid')
+    ->imagePreviewHeight('150')
+
+    // Control
+    ->maxFiles(10)
+    ->maxSize(10240)
+
+    // Organización
+    ->disk('public')
+    ->directory(fn ($record) => 'departamentos/' . auth()->user()->departamental_id . '/actividades/' . $record->id)
+    // Seguridad
+    ->visibility('private') // 🔥 importante si manejas info sensible
+
+    ->preserveFilenames()
+
+    ->columnSpanFull()
+    ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
                     ])
                     ->action(function (array $data, Tables\Actions\Action $action) {
                         $data['star_date'] = $data['star_date'] ?? now();
