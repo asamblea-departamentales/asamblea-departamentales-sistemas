@@ -770,15 +770,13 @@ class ActividadResource extends Resource
         return auth()->user()->can('delete_any_actividad');
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            ComentarioRelationManager::class,
-            AtestadosRelationManager::class,
-        ];
-
-        
-    }
+   public static function getRelations(): array
+{
+    return [
+        ComentarioRelationManager::class,
+        AtestadosRelationManager::class,
+    ];
+}
 
     public static function getSlug(): string
     {
