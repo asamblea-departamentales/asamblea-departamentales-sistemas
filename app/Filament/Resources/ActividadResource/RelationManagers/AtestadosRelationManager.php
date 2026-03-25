@@ -5,20 +5,18 @@ namespace App\Filament\Resources\ActividadResource\RelationManagers;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class AtestadosRelationManager extends RelationManager
 {
-    protected static string $relationship = 'media'; // 🔥 importante
+    protected static string $relationship = 'media';
 
     protected static ?string $title = 'Atestados';
 
     public function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
-            SpatieMediaLibraryFileUpload::make('file')
+            \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('file')
                 ->collection('atestados')
-                ->required()
                 ->multiple()
                 ->disk('public'),
         ]);
@@ -28,10 +26,20 @@ class AtestadosRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('file_name')
-                    ->label('Archivo'),
+                Tables\Columns\ImageColumn::make('preview')
+                    ->label('Preview')
+                    ->getStateUsing(fn ($record) =>
+                        str_contains($record->mime_type, 'image')
+                            ? $record->getUrl()
+                            : null
+                    )
+                    ->height(80),
 
-                Tables\Columns\TextColumn::make('mime_type')
+                Tables\Columns\TextColumn::make('file_name')
+                    ->label('Archivo')
+                    ->searchable(),
+
+                Tables\Columns\BadgeColumn::make('mime_type')
                     ->label('Tipo'),
 
                 Tables\Columns\TextColumn::make('size')
@@ -39,8 +47,8 @@ class AtestadosRelationManager extends RelationManager
                     ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' KB'),
             ])
             ->actions([
-                Tables\Actions\Action::make('download')
-                    ->label('Descargar')
+                Tables\Actions\Action::make('ver')
+                    ->label('Ver')
                     ->url(fn ($record) => $record->getUrl())
                     ->openUrlInNewTab(),
 

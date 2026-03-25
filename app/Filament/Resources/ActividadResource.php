@@ -191,110 +191,101 @@ class ActividadResource extends Resource
                     ])
                     ->columns(3),
 
-                    SpatieMediaLibraryFileUpload::make('atestados')
+                  SpatieMediaLibraryFileUpload::make('atestados')
     ->label('Adjuntar Atestados')
     ->collection('atestados')
     ->multiple()
     ->reorderable()
-
-    // UX
+    ->panelLayout('grid')
+    ->imagePreviewHeight('120')
     ->enableOpen()
     ->enableDownload()
-    ->panelLayout('grid')
-    ->imagePreviewHeight('150')
-
-    // Control
     ->maxFiles(10)
     ->maxSize(10240)
-
-    // Organización
     ->disk('public')
-    ->directory(fn ($record) => 'departamentos/' . auth()->user()->departamental_id . '/actividades/' . $record->id)
-    // Seguridad
-    ->visibility('private') // 🔥 importante si manejas info sensible
-
     ->preserveFilenames()
-
     ->columnSpanFull()
     ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
             ]);
     }
     
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('user.firstname')
-                    ->label('Usuario')
-                    ->searchable()
-                    ->sortable(),
+{
+    return $table
+        ->modifyQueryUsing(fn ($query) => $query->withCount('media')) // 🔥 clave
 
-                Tables\Columns\TextColumn::make('departamental.nombre')
-                    ->label('Oficina Departamental')
-                    ->searchable()
-                    ->sortable(),
+        ->columns([
+            Tables\Columns\TextColumn::make('user.firstname')
+                ->label('Usuario')
+                ->searchable()
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('programa')
-                    ->label('Programa')
-                    ->searchable()
-                    ->limit(50),
+            Tables\Columns\TextColumn::make('departamental.nombre')
+                ->label('Oficina Departamental')
+                ->searchable()
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('macroactividad')
-                    ->label('Macroactividad')
-                    ->searchable()
-                    ->limit(50)
-                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
+            Tables\Columns\TextColumn::make('programa')
+                ->label('Programa')
+                ->searchable()
+                ->limit(50),
 
-                Tables\Columns\BadgeColumn::make('estado')
-                    ->label('Estado')
-                    ->colors([
-                        'primary' => 'Pendiente',
-                        'warning' => 'En Progreso',
-                        'success' => 'Completada',
-                        'danger' => 'Cancelada',
-                    ])
-                    ->icon(fn (string $state): string => match ($state) {
-                        'Pendiente' => 'heroicon-o-clock',
-                        'En Progreso' => 'heroicon-o-arrow-path',
-                        'Completada' => 'heroicon-o-lock-closed',
-                        'Cancelada' => 'heroicon-o-x-circle',
-                        default => 'heroicon-o-document-text',
-                    }),
+            Tables\Columns\TextColumn::make('macroactividad')
+                ->label('Macroactividad')
+                ->searchable()
+                ->limit(50)
+                ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
 
-                Tables\Columns\TextColumn::make('lugar')
-                    ->label('Lugar de la Actividad')
-                    ->searchable()
-                    ->limit(50)
-                    ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
+            Tables\Columns\BadgeColumn::make('estado')
+                ->label('Estado')
+                ->colors([
+                    'primary' => 'Pendiente',
+                    'warning' => 'En Progreso',
+                    'success' => 'Completada',
+                    'danger' => 'Cancelada',
+                ]),
 
-                Tables\Columns\TextColumn::make('asistencia_completa')
-                    ->label('Asistencia Total')
-                    ->getStateUsing(fn ($record) => $record->asistentes_hombres + $record->asistentes_mujeres)
-                    ->sortable(),
+            // 🔥 NUEVA COLUMNA PRO
+            Tables\Columns\TextColumn::make('media_count')
+                ->label('Archivos')
+                ->badge()
+                ->color('info')
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('fecha')
-                    ->label('Fecha de la Actividad')
-                    ->date('d/m/Y')
-                    ->sortable(),
+            Tables\Columns\TextColumn::make('lugar')
+                ->label('Lugar de la Actividad')
+                ->searchable()
+                ->limit(50)
+                ->tooltip(fn ($state) => strlen($state) > 50 ? $state : null),
 
-                Tables\Columns\TextColumn::make('star_date')
-                    ->label('Fecha de Inicio')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+            Tables\Columns\TextColumn::make('asistencia_completa')
+                ->label('Asistencia Total')
+                ->getStateUsing(fn ($record) => $record->asistentes_hombres + $record->asistentes_mujeres)
+                ->sortable(),
 
-                Tables\Columns\TextColumn::make('due_date')
-                    ->label('Fecha de Vencimiento')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->color(fn ($record) => $record->due_date < now() && $record->estado !== 'Completada' ? 'danger' : null),
+            Tables\Columns\TextColumn::make('fecha')
+                ->label('Fecha de la Actividad')
+                ->date('d/m/Y')
+                ->sortable(),
 
-                Tables\Columns\IconColumn::make('reminder_at')
-                    ->label('Recordatorio')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-bell')
-                    ->falseIcon('heroicon-o-bell-slash')
-                    ->state(fn ($record) => ! is_null($record->reminder_at)),
-            ])
+            Tables\Columns\TextColumn::make('star_date')
+                ->label('Fecha de Inicio')
+                ->dateTime('d/m/Y H:i')
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('due_date')
+                ->label('Fecha de Vencimiento')
+                ->dateTime('d/m/Y H:i')
+                ->sortable()
+                ->color(fn ($record) => $record->due_date < now() && $record->estado !== 'Completada' ? 'danger' : null),
+
+            Tables\Columns\IconColumn::make('reminder_at')
+                ->label('Recordatorio')
+                ->boolean()
+                ->trueIcon('heroicon-o-bell')
+                ->falseIcon('heroicon-o-bell-slash')
+                ->state(fn ($record) => ! is_null($record->reminder_at)),
+        ])
             ->filters([
                 Tables\Filters\SelectFilter::make('estado')
                     ->options([
@@ -617,30 +608,19 @@ class ActividadResource extends Resource
                             ->dehydrated(true),
 
 
-                            SpatieMediaLibraryFileUpload::make('atestados')
+                           SpatieMediaLibraryFileUpload::make('atestados')
     ->label('Adjuntar Atestados')
     ->collection('atestados')
     ->multiple()
     ->reorderable()
-
-    // UX
+    ->panelLayout('grid')
+    ->imagePreviewHeight('120')
     ->enableOpen()
     ->enableDownload()
-    ->panelLayout('grid')
-    ->imagePreviewHeight('150')
-
-    // Control
     ->maxFiles(10)
     ->maxSize(10240)
-
-    // Organización
     ->disk('public')
-    ->directory(fn ($record) => 'departamentos/' . auth()->user()->departamental_id . '/actividades/' . $record->id)
-    // Seguridad
-    ->visibility('private') // 🔥 importante si manejas info sensible
-
     ->preserveFilenames()
-
     ->columnSpanFull()
     ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
                     ])
