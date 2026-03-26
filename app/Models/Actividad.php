@@ -88,6 +88,18 @@ class Actividad extends Model implements HasMedia
         || $user->hasRole('Administrador');
 }
 
+//NUEVO
+public function getAtestadosUrlsAttribute()
+{
+    return $this->getMedia('atestados')->map(function ($media) {
+        return [
+            'url' => $media->getUrl(),
+            'name' => $media->name,
+            'size' => $media->size,
+        ];
+    })->toArray();
+}
+
     /*
     |--------------------------------------------------------------------------
     | RELACIONES
