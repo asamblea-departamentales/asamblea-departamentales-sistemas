@@ -126,7 +126,8 @@ Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
     return response()->file(storage_path('app/public/'.$cierre->pdf_path));
 })->name('cierre.pdf');
 
-/* -----------------------------
-|  FALLBACK
-------------------------------*/
-Route::fallback(fn () => redirect('/admin/login'));
+//* -----------------------------
+//  FALLBACK (EXCLUYENDO STORAGE Y PDF)
+//------------------------------*/
+Route::any('{any}', fn () => redirect('/admin/login'))
+    ->where('any', '^(?!storage|cierres).*');
