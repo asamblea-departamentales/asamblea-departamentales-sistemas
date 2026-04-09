@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Icewind\SMB\ServerFactory;
-use League\Flysystem\Filesystem;
 use Icewind\Flysystem\SMBv3Adapter;
+use Icewind\SMB\ServerFactory;
+use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
 
 class FilesystemServiceProvider extends ServiceProvider
 {
@@ -16,8 +16,8 @@ class FilesystemServiceProvider extends ServiceProvider
     {
         $this->app['filesystem']->extend('smb', function ($app, $config) {
             try {
-                $serverFactory = new ServerFactory();
-                
+                $serverFactory = new ServerFactory;
+
                 $server = $serverFactory->createServer(
                     $config['host'],
                     $config['username'],
@@ -25,7 +25,7 @@ class FilesystemServiceProvider extends ServiceProvider
                 );
 
                 $share = $server->getShare($config['share']);
-                
+
                 return new Filesystem(
                     new SMBv3Adapter(
                         $share,
@@ -33,7 +33,7 @@ class FilesystemServiceProvider extends ServiceProvider
                     )
                 );
             } catch (\Exception $e) {
-                \Log::error('SMB connection error: ' . $e->getMessage());
+                \Log::error('SMB connection error: '.$e->getMessage());
                 throw $e;
             }
         });
