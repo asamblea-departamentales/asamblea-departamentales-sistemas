@@ -45,9 +45,12 @@ return [
       //  ],
 
        'repositorio' => [
-    'driver' => 'local',
-    'root' => env('SMB_PATH', '/mnt/repositorio_dpto'),
-    'visibility' => 'private',
+    'driver' => 'smb',
+    'host' => env('SMB_HOST', '172.19.10.99'),
+    'username' => env('SMB_USER', 'userdpto'),
+    'password' => env('SMB_PASSWORD'),
+    'share' => env('SMB_SHARE', 'Repositorio_dpto'),
+    'root' => env('SMB_ROOT', '/'),
 ],
 
         's3' => [

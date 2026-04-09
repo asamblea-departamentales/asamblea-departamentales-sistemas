@@ -126,8 +126,8 @@ Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
     return response()->file(storage_path('app/public/'.$cierre->pdf_path));
 })->name('cierre.pdf');
 //* -----------------------------
-|  RUTA PARA SERVIR ARCHIVOS MEDIA
-------------------------------*/
+//  RUTA PARA SERVIR ARCHIVOS MEDIA
+//------------------------------*/
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
