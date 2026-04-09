@@ -125,9 +125,69 @@ Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
 
     return response()->file(storage_path('app/public/'.$cierre->pdf_path));
 })->name('cierre.pdf');
+//* -----------------------------
+|  RUTA PARA SERVIR ARCHIVOS MEDIA
+------------------------------*/
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Support\Facades\Storage;
+
+Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media) {
+
+    // Permisos
+    if (!auth()->user()->can('view_actividad')) {
+        abort(403);
+    }
+
+    $disk = $media->disk;
+    $path = $media->getPath();
+
+    if (!Storage::disk($disk)->exists($path)) {
+        abort(404, 'Archivo no encontrado');
+    }
+
+    // Descargar
+    if (request()->query('download')) {
+        return Storage::disk($disk)->download(
+            $path,
+            $media->file_name
+        );
+    }
+
+    //Preview
+    return response()->file(
+        Storage::disk($disk)->path($path)
+    );
+
+})->name('media.view');
+
+//* -----------------------------
+// RUTA DE TEST PARA VERIFICAR CONFIGURACIÓN DE DISCO "REPOSITORIO"
+//------------------------------*/
+Route::middleware(['web', 'auth'])->get('/test-smb', function () {
+    try {
+        $disk = 'repositorio';
+
+        $file = 'test_laravel_' . now()->timestamp . '.txt';
+
+        Storage::disk($disk)->put($file, 'OK - SMB funcionando');
+
+        return response()->json([
+            'status' => 'OK',
+            'path' => config("filesystems.disks.$disk.root"),
+            'file_created' => $file,
+        ]);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'ERROR',
+            'message' => $e->getMessage(),
+            'path' => config("filesystems.disks.repositorio.root"),
+        ], 500);
+    }
+});
 
 //* -----------------------------
 //  FALLBACK (EXCLUYENDO STORAGE Y PDF)
 //------------------------------*/
 Route::any('{any}', fn () => redirect('/admin/login'))
-    ->where('any', '^(?!storage|cierres).*');
+    ->where('any', '^(?!storage|cierres|media).*');

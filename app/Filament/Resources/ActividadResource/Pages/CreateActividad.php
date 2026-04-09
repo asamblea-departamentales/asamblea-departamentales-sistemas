@@ -192,7 +192,7 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                     ->schema([
                         \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
     ->label('Adjuntar Atestados')
-    ->collection('atestados')
+    ->collection('atestados', 'repositorio')
     ->multiple()
     ->reorderable()
     ->panelLayout('grid')
@@ -201,12 +201,12 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
     ->enableDownload()
     ->maxFiles(10)
     ->maxSize(10240)
-    ->disk('public')
-    ->preserveFilenames()
+    ->getUploadedFileUrlUsing(fn ($file) => route('media.view', ['media' => $file->id]))
+    ->preserveFilenames(false) //mejor práctica con SMB
     ->columnSpanFull()
-                            ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental en el Media Manager.')
-                            ->hint('Solo tu equipo puede verlos')
-                            ->hintIcon('heroicon-o-lock-closed'),
+    ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental en el Media Manager.')
+    ->hint('Solo tu equipo puede verlos')
+    ->hintIcon('heroicon-o-lock-closed'),
                     ]),
                 ])
                 // Configuración del botón de submit del wizard

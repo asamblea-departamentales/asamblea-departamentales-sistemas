@@ -169,7 +169,7 @@ public function getAtestadosUrlsAttribute()
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('atestados')
-            ->useDisk('public') // importante
+            ->useDisk('repositorio') // importante
             ->acceptsFile(function ($file) {
                 return in_array($file->mimeType, [
                     'image/jpeg',

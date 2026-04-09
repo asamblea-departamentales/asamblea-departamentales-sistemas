@@ -18,7 +18,7 @@ class AtestadosRelationManager extends RelationManager
             \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('file')
                 ->collection('atestados')
                 ->multiple()
-                ->disk('public'),
+                ->disk('repositorio'),
         ]);
     }
 

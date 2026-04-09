@@ -192,19 +192,14 @@ class ActividadResource extends Resource
                     ->columns(3),
 
                   SpatieMediaLibraryFileUpload::make('atestados')
-    ->label('Adjuntar Atestados')
     ->collection('atestados')
+    ->disk('repositorio') // 👈 correcto
     ->multiple()
     ->reorderable()
     ->panelLayout('grid')
-    ->imagePreviewHeight('120')
     ->enableOpen()
     ->enableDownload()
-    ->maxFiles(10)
-    ->maxSize(10240)
-    ->disk('public')
-    ->preserveFilenames()
-    ->columnSpanFull()
+    ->getUploadedFileUrlUsing(fn ($file) => route('media.view', ['media' => $file->id]))
     ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
             ]);
     }
@@ -245,7 +240,7 @@ class ActividadResource extends Resource
                     'danger' => 'Cancelada',
                 ]),
 
-            // 🔥 NUEVA COLUMNA PRO
+            //NUEVA COLUMNA 
             Tables\Columns\TextColumn::make('media_count')
                 ->label('Archivos')
                 ->badge()

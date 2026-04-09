@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -14,51 +13,98 @@ class UsersSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create();
+        // 1. Configuración de Usuarios Reales
+        $usuariosReales = [
+            [
+                'firstname' => 'Rene',
+                'lastname'  => 'Herrera',
+                'email'     => 'rene.herrera@asamblea.gob.sv',
+                'username'  => 'rherrera',
+                'password'  => 'ReneAdministrador2026',
+                'role'      => 'gol', // Rol GOL (lectura + export)
+            ],
+            [
+                'firstname' => 'Marvin',
+                'lastname'  => 'Isho',
+                'email'     => 'marvin.isho@asamblea.gob.sv',
+                'username'  => 'misho',
+                'password'  => 'SonsonatePrueba2026',
+                'role'      => 'coordinador',
+            ],
+            [
+                'firstname' => 'Ana',
+                'lastname'  => 'Estrada',
+                'email'     => 'ana.estrada@asamblea.gob.sv',
+                'username'  => 'aestrada',
+                'password'  => 'SantaAnaPrueba2026',
+                'role'      => 'coordinador',
+            ],
+            [
+                'firstname' => 'Monica',
+                'lastname'  => 'Villeda',
+                'email'     => 'monica.villeda@asamblea.gob.sv',
+                'username'  => 'mvilleda',
+                'password'  => 'LaLiberdadPrueba2026',
+                'role'      => 'coordinador',
+            ],
+            [
+                'firstname' => 'Amilcar',
+                'lastname'  => 'Ortiz',
+                'email'     => 'amilcar.ortiz@asamblea.gob.sv',
+                'username'  => 'aortiz',
+                'password'  => 'SanVicentePrueba2026',
+                'role'      => 'coordinador',
+            ],
+            [
+                'firstname' => 'Francisco',
+                'lastname'  => 'Gonzalez',
+                'email'     => 'francisco.gonzalez@asamblea.gob.sv',
+                'username'  => 'fgonzalez',
+                'password'  => 'LaUnionPrueba2026',
+                'role'      => 'coordinador',
+            ],
+            [
+                'firstname' => 'Departamental',
+                'lastname'  => 'San Salvador',
+                'email'     => 'pmunoz@asamblea.gob.sv',
+                'username'  => 'pmunoz',
+                'password'  => 'SanSalvador2026',
+                'role'      => 'coordinador',
+            ],
+        ];
 
-        // === Superadmin idempotente ===
-        $user = User::firstOrCreate(
-            ['username' => 'superadmin'], // clave única
+        // 2. Superadmin (Idempotente)
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'admin@asamblea.gob.sv'],
             [
                 'id' => (string) Str::uuid(),
-                'firstname' => 'Super',
-                'lastname' => 'Admin',
-                'email' => 'superadmin@starter-kit.com',
+                'username' => 'superadmin',
+                'firstname' => 'Admin',
+                'lastname' => 'Principal',
                 'email_verified_at' => now(),
-                'password' => Hash::make('superadmin'),
+                'password' => Hash::make('Admin@2026!'),
             ]
         );
 
-        // Asignar/asegurar super_admin de Shield sobre este usuario
-        Artisan::call('shield:super-admin', ['--user' => $user->id]);
+        // Vincular con Shield Super Admin
+        Artisan::call('shield:super-admin', ['--user' => $superAdmin->id]);
 
-        // === Relleno de usuarios por rol (idempotente) ===
-        $roles = DB::table('roles')->whereNot('name', 'super_admin')->get();
+        // 3. Crear usuarios y asignar roles mediante Spatie (usando nombres de tu RoleSeeder)
+        foreach ($usuariosReales as $data) {
+            $user = User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'id' => (string) Str::uuid(),
+                    'username' => $data['username'],
+                    'firstname' => $data['firstname'],
+                    'lastname' => $data['lastname'],
+                    'email_verified_at' => now(),
+                    'password' => Hash::make($data['password']),
+                ]
+            );
 
-        foreach ($roles as $role) {
-            for ($i = 0; $i < 10; $i++) {
-
-                $email = $faker->unique()->safeEmail();
-                $username = $faker->unique()->userName();
-
-                $u = User::firstOrCreate(
-                    ['email' => $email],   // evita duplicar por correo
-                    [
-                        'id' => (string) Str::uuid(),
-                        'username' => $username,
-                        'firstname' => $faker->firstName(),
-                        'lastname' => $faker->lastName(),
-                        'email_verified_at' => now(),
-                        'password' => Hash::make('password'),
-                    ]
-                );
-
-                // Vincular rol de forma idempotente
-                DB::table('model_has_roles')->updateOrInsert(
-                    ['role_id' => $role->id, 'model_type' => User::class, 'model_id' => $u->id],
-                    []
-                );
-            }
+            // Sincronizar el rol (esto evita duplicados y asegura que tenga el rol correcto)
+            $user->syncRoles([$data['role']]);
         }
     }
 }

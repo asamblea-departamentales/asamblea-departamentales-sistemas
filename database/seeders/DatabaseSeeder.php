@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             DepartamentalesSeeder::class,
             // para tener data
-            ActividadesSeeder::class,
             AssignShieldPermissionsSeeder::class,
         ]);
     }

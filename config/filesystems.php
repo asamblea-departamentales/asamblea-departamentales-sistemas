@@ -36,13 +36,19 @@ return [
             'throw' => false,
         ],
 
-        'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
-        ],
+       // 'public' => [
+      //     'driver' => 'local',
+       //     'root' => storage_path('app/public'),
+       //     'url' => env('APP_URL').'/storage',
+      //      'visibility' => 'public',
+      //      'throw' => false,
+      //  ],
+
+       'repositorio' => [
+    'driver' => 'local',
+    'root' => env('SMB_PATH', '/mnt/repositorio_dpto'),
+    'visibility' => 'private',
+],
 
         's3' => [
             'driver' => 's3',
