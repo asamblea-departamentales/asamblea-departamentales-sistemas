@@ -77,7 +77,6 @@ class ListActividades extends ListRecords
     ->icon('heroicon-o-archive-box')
     ->color('primary')
     ->button()
-    // Eliminamos requiresConfirmation() porque el form() ya actúa como confirmación
     ->modalHeading('Generar Cierre o Informe Mensual')
     ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
     ->modalSubmitActionLabel('Generar')
@@ -91,35 +90,33 @@ class ListActividades extends ListRecords
             ])
             ->default('individual')
             ->required()
-            ->live() // Esto refresca el modal cuando cambias la opción
+            ->live()
             ->columnSpanFull(),
 
-        \Filament\Forms\Components\Grid::make(2) // Organizamos en columnas para que se vea mejor
+        \Filament\Forms\Components\Grid::make(2)
             ->schema([
                 \Filament\Forms\Components\Select::make('mes')
                     ->label('Mes a cerrar')
-                    ->options($this->getMesesDisponibles())
-                    ->default(Carbon::now()->subMonth()->month)
+                    ->options(fn () => $this->getMesesDisponibles()) // <-- closure
+                    ->default(fn () => Carbon::now()->subMonth()->month) // <-- closure
                     ->required(),
 
                 \Filament\Forms\Components\TextInput::make('año')
                     ->label('Año')
                     ->numeric()
-                    ->default(Carbon::now()->subMonth()->year)
+                    ->default(fn () => Carbon::now()->subMonth()->year) // <-- closure
                     ->required(),
             ]),
 
         \Filament\Forms\Components\Textarea::make('observaciones')
             ->label('Observaciones (opcional)')
             ->rows(3)
-            // Usamos una función anónima con $get para la visibilidad dinámica
             ->hidden(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'consolidado')
             ->columnSpanFull(),
     ])
     ->action(function (array $data) {
         $this->generarCierreMensual($data);
     })
-    // Verifica que el usuario realmente tenga estos roles en la tabla 'roles'
     ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
         ];
     }
