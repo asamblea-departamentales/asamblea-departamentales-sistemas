@@ -30,6 +30,7 @@ class ListActividades extends ListRecords
                 ->label('Descargar Consolidado')
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('success')
+                ->button()
                 ->visible(fn () => $user && $user->hasRole('gol'))
                 ->modalWidth('md')
                 ->modalHeading('Descargar Informe Consolidado')
@@ -75,6 +76,7 @@ class ListActividades extends ListRecords
                 ->label('Generar Cierre Mensual')
                 ->icon('heroicon-o-archive-box')
                 ->color('primary')
+                ->button()
                 ->requiresConfirmation()
                 ->modalHeading('Generar Cierre o Informe Mensual')
                 ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
@@ -273,17 +275,17 @@ class ListActividades extends ListRecords
             ->where('año', $año)
             ->first();
 
-        if ($cierreExistente) {
-            if ($cierreExistente->estado === 'reabierto') {
-                // Desvincular actividades del cierre anterior antes de eliminarlo
-                Actividad::where('cierre_mensual_id', $cierreExistente->id)
-                    ->update(['cierre_mensual_id' => null]);
-                // Eliminar el cierre reabierto para poder crear uno nuevo
-                $cierreExistente->delete();
-            } else {
-                return false; // Ya existe y no está reabierto, no generar uno nuevo
-            }
+        // Verificar si ya existe un cierre para este mes
+        $cierreExistente = CierreMensual::where('departamental_id', $departamentalId)
+            ->where('mes', $mes)
+            ->where('año', $año)
+            ->first();
+
+        if ($cierreExistente && $cierreExistente->estado !== 'reabierto') {
+            return false; // Ya existe, no se generó uno nuevo
         }
+
+        // Obtener actividades del mes
 
         // Obtener actividades del mes
         $actividades = Actividad::where('departamental_id', $departamentalId)
