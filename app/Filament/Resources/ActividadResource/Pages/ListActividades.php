@@ -273,8 +273,16 @@ class ListActividades extends ListRecords
             ->where('año', $año)
             ->first();
 
-        if ($cierreExistente && $cierreExistente->estado !== 'reabierto') {
-            return false; // Ya existe, no se generó uno nuevo
+        if ($cierreExistente) {
+            if ($cierreExistente->estado === 'reabierto') {
+                // Desvincular actividades del cierre anterior antes de eliminarlo
+                Actividad::where('cierre_mensual_id', $cierreExistente->id)
+                    ->update(['cierre_mensual_id' => null]);
+                // Eliminar el cierre reabierto para poder crear uno nuevo
+                $cierreExistente->delete();
+            } else {
+                return false; // Ya existe y no está reabierto, no generar uno nuevo
+            }
         }
 
         // Obtener actividades del mes
