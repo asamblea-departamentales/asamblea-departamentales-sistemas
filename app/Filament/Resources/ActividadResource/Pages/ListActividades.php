@@ -73,59 +73,54 @@ class ListActividades extends ListRecords
                 }),
 
             Actions\Action::make('generar_cierre')
-                ->label('Generar Cierre Mensual')
-                ->icon('heroicon-o-archive-box')
-                ->color('primary')
-                ->button()
-                ->requiresConfirmation()
-                ->modalHeading('Generar Cierre o Informe Mensual')
-                ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
-                ->modalSubmitActionLabel('Generar')
-                ->modalWidth('2xl')
+    ->label('Generar Cierre Mensual')
+    ->icon('heroicon-o-archive-box')
+    ->color('primary')
+    ->button()
+    // Eliminamos requiresConfirmation() porque el form() ya actúa como confirmación
+    ->modalHeading('Generar Cierre o Informe Mensual')
+    ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
+    ->modalSubmitActionLabel('Generar')
+    ->modalWidth('2xl')
+    ->form([
+        \Filament\Forms\Components\Radio::make('tipo_cierre')
+            ->label('Tipo de Cierre/Informe')
+            ->options([
+                'individual' => 'Cierre Individual (Solo mi departamental)',
+                'consolidado' => 'Informe Consolidado (Todas las departamentales)',
+            ])
+            ->default('individual')
+            ->required()
+            ->live() // Esto refresca el modal cuando cambias la opción
+            ->columnSpanFull(),
 
-                // Formulario
-                ->form([
-                    \Filament\Forms\Components\Radio::make('tipo_cierre')
-                        ->label('Tipo de Cierre/Informe')
-                        ->options([
-                            'individual' => 'Cierre Individual (Solo mi departamental)',
-                            'consolidado' => 'Informe Consolidado (Todas las departamentales)',
-                        ])
-                        ->default('individual')
-                        ->required()
-                        ->descriptions([
-                            'individual' => 'Genera el cierre solo para su departamental',
-                            'consolidado' => 'Genera un informe consolidado de todas las departamentales (Solo SuperAdmin y GOL)',
-                        ])
-                        ->live()
-                        ->columnSpanFull(),
+        \Filament\Forms\Components\Grid::make(2) // Organizamos en columnas para que se vea mejor
+            ->schema([
+                \Filament\Forms\Components\Select::make('mes')
+                    ->label('Mes a cerrar')
+                    ->options($this->getMesesDisponibles())
+                    ->default(Carbon::now()->subMonth()->month)
+                    ->required(),
 
-                    \Filament\Forms\Components\Select::make('mes')
-                        ->label('Mes a cerrar')
-                        ->options($this->getMesesDisponibles())
-                        ->default(Carbon::now()->subMonth()->month)
-                        ->required()
-                        ->columnSpan(1),
+                \Filament\Forms\Components\TextInput::make('año')
+                    ->label('Año')
+                    ->numeric()
+                    ->default(Carbon::now()->subMonth()->year)
+                    ->required(),
+            ]),
 
-                    \Filament\Forms\Components\TextInput::make('año')
-                        ->label('Año')
-                        ->numeric()
-                        ->default(Carbon::now()->subMonth()->year)
-                        ->required()
-                        ->columnSpan(1),
-
-                    \Filament\Forms\Components\Textarea::make('observaciones')
-                        ->label('Observaciones (opcional)')
-                        ->rows(3)
-                        ->visible(fn ($get) => $get('tipo_cierre') === 'individual')
-                        ->columnSpanFull(),
-                ])
-
-                ->action(function (array $data) {
-                    $this->generarCierreMensual($data);
-                })
-
-                ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
+        \Filament\Forms\Components\Textarea::make('observaciones')
+            ->label('Observaciones (opcional)')
+            ->rows(3)
+            // Usamos una función anónima con $get para la visibilidad dinámica
+            ->hidden(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'consolidado')
+            ->columnSpanFull(),
+    ])
+    ->action(function (array $data) {
+        $this->generarCierreMensual($data);
+    })
+    // Verifica que el usuario realmente tenga estos roles en la tabla 'roles'
+    ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
         ];
     }
 
