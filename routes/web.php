@@ -1,18 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Lab404\Impersonate\Services\ImpersonateManager;
 use App\Http\Controllers\ContactController;
+use App\Models\CierreMensual;
 use App\Models\Departamental;
 use App\Models\User;
 use App\Notifications\ActividadReminderNotification;
-//Agregado para cierren mensual
-use App\Models\CierreMensual;
+// Agregado para cierren mensual
+use Illuminate\Support\Facades\Route;
 
 /* -----------------------------
 |  CONTACTO
 ------------------------------*/
-Route::get('/contact', fn() => view('contact'))->name('contact.form');
+Route::get('/contact', fn () => view('contact'))->name('contact.form');
 Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
 /* -----------------------------
@@ -34,31 +33,31 @@ Route::middleware('web')->get('/login', function () {
 Route::post('/test-notification', function () {
     try {
         $user = auth()->user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return response()->json(['error' => 'No autenticado'], 401);
         }
-        
+
         $actividad = \App\Models\Actividad::first();
-        
-        if (!$actividad) {
+
+        if (! $actividad) {
             return response()->json(['error' => 'No hay actividades'], 404);
         }
-        
+
         $user->notify(new ActividadReminderNotification($actividad));
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Notificación enviada correctamente',
             'user_id' => $user->id,
             'user_name' => $user->name,
-            'actividad' => $actividad->macroactividad
+            'actividad' => $actividad->macroactividad,
         ]);
-        
+
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
         ], 500);
     }
 })->middleware('web');
@@ -70,7 +69,7 @@ Route::middleware(['web', 'auth'])->get('/api/notifications/unread-count', funct
     return response()->json([
         'count' => auth()->check()
             ? auth()->user()->unreadNotifications()->count()
-            : 0
+            : 0,
     ]);
 });
 
@@ -82,7 +81,7 @@ Route::middleware(['web', 'auth'])
 
         $super = auth()->user();
 
-        if (!$super || !$super->canImpersonate()) {
+        if (! $super || ! $super->canImpersonate()) {
             abort(403, 'No autorizado.');
         }
 
@@ -113,35 +112,47 @@ Route::middleware(['web', 'auth'])->get('/admin/impersonate/leave', function () 
         ->with('success', 'Has salido del modo de suplantación');
 })->name('impersonate.leave');
 
-
-
 /* -----------------------------
 |  NUEVO: RUTA PARA PDF DE CIERRE MENSUAL
 ------------------------------*/
 Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
-    if (!$cierre->pdf_path) {
+    if (! $cierre->pdf_path) {
         abort(404, 'PDF no generado.');
     }
 
     return response()->file(storage_path('app/public/'.$cierre->pdf_path));
 })->name('cierre.pdf');
-//* -----------------------------
+
+/* -----------------------------
+|  RUTA PARA PDF CONSOLIDADO
+------------------------------*/
+Route::get('/consolidado/{año}/{mes}/pdf', function (int $año, int $mes) {
+    $filename = "informe_consolidado_{$año}_{$mes}.pdf";
+    $path = storage_path("app/public/cierres/{$filename}");
+
+    if (! file_exists($path)) {
+        abort(404, 'PDF consolidado no generado.');
+    }
+
+    return response()->file($path);
+})->name('consolidado.pdf');
+// * -----------------------------
 //  RUTA PARA SERVIR ARCHIVOS MEDIA
-//------------------------------*/
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+// ------------------------------*/
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media) {
 
     // Permisos
-    if (!auth()->user()->can('view_actividad')) {
+    if (! auth()->user()->can('view_actividad')) {
         abort(403);
     }
 
     $disk = $media->disk;
     $path = $media->getPath();
 
-    if (!Storage::disk($disk)->exists($path)) {
+    if (! Storage::disk($disk)->exists($path)) {
         abort(404, 'Archivo no encontrado');
     }
 
@@ -153,21 +164,21 @@ Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media
         );
     }
 
-    //Preview
+    // Preview
     return response()->file(
         Storage::disk($disk)->path($path)
     );
 
 })->name('media.view');
 
-//* -----------------------------
+// * -----------------------------
 // RUTA DE TEST PARA VERIFICAR CONFIGURACIÓN DE DISCO "REPOSITORIO"
-//------------------------------*/
+// ------------------------------*/
 Route::middleware(['web', 'auth'])->get('/test-smb', function () {
     try {
         $disk = 'repositorio';
 
-        $file = 'test_laravel_' . now()->timestamp . '.txt';
+        $file = 'test_laravel_'.now()->timestamp.'.txt';
 
         Storage::disk($disk)->put($file, 'OK - SMB funcionando');
 
@@ -181,13 +192,13 @@ Route::middleware(['web', 'auth'])->get('/test-smb', function () {
         return response()->json([
             'status' => 'ERROR',
             'message' => $e->getMessage(),
-            'path' => config("filesystems.disks.repositorio.root"),
+            'path' => config('filesystems.disks.repositorio.root'),
         ], 500);
     }
 });
 
-//* -----------------------------
+// * -----------------------------
 //  FALLBACK (EXCLUYENDO STORAGE Y PDF)
-//------------------------------*/
+// ------------------------------*/
 Route::any('{any}', fn () => redirect('/admin/login'))
     ->where('any', '^(?!storage|cierres|media).*');

@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CierreMensualResource\Pages;
-use App\Filament\Resources\CierreMensualResource\RelationManagers;
 use App\Models\CierreMensual;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CierreMensualResource extends Resource
 {
@@ -24,13 +21,12 @@ class CierreMensualResource extends Resource
     protected static ?string $navigationLabel = 'Cierres Mensuales';
 
     protected static ?string $modelLabel = 'Cierre Mensual';
-    protected static ?string $pluralModelLabel = 'Cierres Mensuales';
 
+    protected static ?string $pluralModelLabel = 'Cierres Mensuales';
 
     protected static ?int $navigationSort = 5;
 
     protected static ?string $slug = 'cierre-mensuales';
-
 
     public static function form(Form $form): Form
     {
@@ -43,7 +39,7 @@ class CierreMensualResource extends Resource
                             ->required()
                             ->disabled()
                             ->dehydrated(),
-                        
+
                         Forms\Components\Select::make('mes')
                             ->options([
                                 1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo',
@@ -54,7 +50,7 @@ class CierreMensualResource extends Resource
                             ->required()
                             ->disabled()
                             ->dehydrated(),
-                        
+
                         Forms\Components\TextInput::make('año')
                             ->numeric()
                             ->required()
@@ -65,12 +61,12 @@ class CierreMensualResource extends Resource
                             ->label('Generado por')
                             ->disabled()
                             ->dehydrated(false),
-                         
+
                         Forms\Components\DateTimePicker::make('fecha_cierre')
                             ->label('Fecha de Cierre')
                             ->disabled()
                             ->displayFormat('d/m/Y H:i')
-                            ->dehydrated(false),    
+                            ->dehydrated(false),
                     ])
                     ->columns(3),
 
@@ -79,19 +75,19 @@ class CierreMensualResource extends Resource
                         Forms\Components\TextInput::make('actividades_proyectadas')
                             ->numeric()
                             ->disabled(),
-                        
+
                         Forms\Components\TextInput::make('actividades_ejecutadas')
                             ->numeric()
                             ->disabled(),
-                        
+
                         Forms\Components\TextInput::make('actividades_pendientes')
                             ->numeric()
                             ->disabled(),
-                        
+
                         Forms\Components\TextInput::make('actividades_canceladas')
                             ->numeric()
                             ->disabled(),
-                        
+
                         Forms\Components\TextInput::make('porcentaje_cumplimiento')
                             ->suffix('%')
                             ->disabled(),
@@ -107,7 +103,7 @@ class CierreMensualResource extends Resource
                                 'reabierto' => 'Reabierto',
                             ])
                             ->required(),
-                        
+
                         Forms\Components\Textarea::make('observaciones')
                             ->rows(3),
                     ]),
@@ -121,7 +117,7 @@ class CierreMensualResource extends Resource
                 Tables\Columns\TextColumn::make('departamental.nombre')
                     ->searchable()
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('mes')
                     ->formatStateUsing(fn ($state) => [
                         1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo',
@@ -130,26 +126,26 @@ class CierreMensualResource extends Resource
                         10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
                     ][$state])
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('año')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('porcentaje_cumplimiento')
                     ->suffix('%')
                     ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger'))
                     ->sortable(),
-                
+
                 Tables\Columns\BadgeColumn::make('estado')
                     ->colors([
                         'primary' => 'generado',
                         'success' => 'aprobado',
                         'warning' => 'reabierto',
                     ]),
-                
+
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Generado por')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('fecha_cierre')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
@@ -157,7 +153,7 @@ class CierreMensualResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('departamental_id')
                     ->relationship('departamental', 'nombre'),
-                
+
                 Tables\Filters\SelectFilter::make('estado')
                     ->options([
                         'generado' => 'Generado',
@@ -167,42 +163,31 @@ class CierreMensualResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('descargar_pdf')
-                ->label('Descargar PDF')
-                ->icon('heroicon-o-document-arrow-down')
-                ->url(fn ($record) => route('cierre.pdf', $record)) // 👈 pasa el modelo, no solo el ID
-                ->openUrlInNewTab()
-                ->visible(fn ($record) => filled($record->pdf_path)),
-            
+                    ->label('Descargar PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->url(fn ($record) => route('cierre.pdf', $record)) // 👈 pasa el modelo, no solo el ID
+                    ->openUrlInNewTab()
+                    ->visible(fn ($record) => filled($record->pdf_path)),
 
-                Tables\Actions\Action::make('descargar_consolidado')
-    ->label('Descargar Consolidado')
-    ->icon('heroicon-o-document-arrow-down')
-    ->url(fn ($record) => asset("storage/" . $record->pdf_path))    
-    ->openUrlInNewTab()
-    ->visible(fn () => auth()->user()->hasRole('gol')),
-
-            
                 // ✅ NUEVA ACCIÓN: APROBAR CIERRE
                 Tables\Actions\Action::make('aprobar')
-                ->label('Aprobar')
-                ->color('success')
-                ->icon('heroicon-o-check')
-                ->requiresConfirmation()
-                ->visible(fn ($record) =>
-                    $record->estado === 'generado'
-                    && auth()->user()->hasAnyRole(['Administrador', 'coordinador', 'ti', 'gol', 'auditoria'])
-                )
-                ->action(function ($record) {
-                    $record->update(['estado' => 'aprobado']);
-            
-                    \Filament\Notifications\Notification::make()
-                        ->title('Cierre aprobado correctamente')
-                        ->success()
-                        ->send();
-                }),
-              
-                
-            Tables\Actions\EditAction::make(),
+                    ->label('Aprobar')
+                    ->color('success')
+                    ->icon('heroicon-o-check')
+                    ->requiresConfirmation()
+                    ->visible(fn ($record) => $record->estado === 'generado'
+                        && auth()->user()->hasAnyRole(['Administrador', 'coordinador', 'ti', 'gol', 'auditoria'])
+                    )
+                    ->action(function ($record) {
+                        $record->update(['estado' => 'aprobado']);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Cierre aprobado correctamente')
+                            ->success()
+                            ->send();
+                    }),
+
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -228,32 +213,32 @@ class CierreMensualResource extends Resource
 
         ];
     }
-// En app/Filament/Resources/CierreMensualResource.php
+    // En app/Filament/Resources/CierreMensualResource.php
 
-public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
-{
-    $user = auth()->user();
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $user = auth()->user();
 
-    // 1. Roles que deben ver TODOS los registros (Superiores / Centrales)
-    if ($user->hasAnyRole(['super_admin', 'ti', 'gol', 'auditoria'])) { 
-        return parent::getEloquentQuery();
-    }
-
-    // 2. Roles que deben ver solo los registros de su DEPARTAMENTAL (Coordinador y Asistente Técnico)
-    if ($user->hasAnyRole(['coordinador', 'asistente_tecnico'])) {
-        $userDepartamentalId = $user->departamental_id;
-
-        // Si el usuario no tiene departamental asignada (seguridad adicional)
-        if (is_null($userDepartamentalId)) {
-            return parent::getEloquentQuery()->whereRaw('1 = 0'); 
+        // 1. Roles que deben ver TODOS los registros (Superiores / Centrales)
+        if ($user->hasAnyRole(['super_admin', 'ti', 'gol', 'auditoria'])) {
+            return parent::getEloquentQuery();
         }
 
-        // Filtramos por su departamental
-        return parent::getEloquentQuery()
-            ->where('departamental_id', $userDepartamentalId);
-    }
+        // 2. Roles que deben ver solo los registros de su DEPARTAMENTAL (Coordinador y Asistente Técnico)
+        if ($user->hasAnyRole(['coordinador', 'asistente_tecnico'])) {
+            $userDepartamentalId = $user->departamental_id;
 
-    // 3. Para cualquier otro rol no autorizado, devolvemos un conjunto vacío
-    return parent::getEloquentQuery()->whereRaw('1 = 0');
-}
+            // Si el usuario no tiene departamental asignada (seguridad adicional)
+            if (is_null($userDepartamentalId)) {
+                return parent::getEloquentQuery()->whereRaw('1 = 0');
+            }
+
+            // Filtramos por su departamental
+            return parent::getEloquentQuery()
+                ->where('departamental_id', $userDepartamentalId);
+        }
+
+        // 3. Para cualquier otro rol no autorizado, devolvemos un conjunto vacío
+        return parent::getEloquentQuery()->whereRaw('1 = 0');
+    }
 }
