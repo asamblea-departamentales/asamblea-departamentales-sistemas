@@ -37,6 +37,7 @@
         "blade-ui-kit/blade-icons": "^1.8",
         "codeat3/blade-fluentui-system-icons": "^1.32",
         "datlechin/filament-menu-builder": "0.6.6",
+        "directorytree/ldaprecord-laravel": "^3.4",
         "filament/filament": "^3.2",
         "filament/notifications": "^3.3",
         "filament/spatie-laravel-media-library-plugin": "^3.2",

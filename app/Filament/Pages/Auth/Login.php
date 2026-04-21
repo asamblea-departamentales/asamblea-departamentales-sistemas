@@ -10,6 +10,10 @@ use Filament\Forms\Form;
 use Filament\Pages\Auth\Login as BaseLogin;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use App\Services\LdapAuthenticator;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use LdapRecord\Ldap;
 
 class Login extends BaseLogin
 {
@@ -26,15 +30,14 @@ class Login extends BaseLogin
 
     protected function getEmailFormComponent(): Component
     {
-        return TextInput::make('email')
-            ->label('Correo Electrónico')
-            ->email()
+        return TextInput::make('username')
+            ->label('Nombre de Usuario')
             ->required()
             ->autocomplete()
             ->autofocus()
             ->extraInputAttributes(['tabindex' => 1])
-            ->placeholder('correo@asamblea.gob.sv')
-            ->prefixIcon('heroicon-o-envelope')
+            ->placeholder('nombre de usuario')
+            ->prefixIcon('heroicon-o-user')
             ->maxLength(255);
     }
 
@@ -49,7 +52,7 @@ class Login extends BaseLogin
             ->required()
             ->extraInputAttributes(['tabindex' => 2])
             ->placeholder('Ingresa tu contraseña')
-            ->prefixIcon('heroicon-o-lock-closed')
+            ->prefixIcon('heroicon-o-user-lock')
             ->maxLength(255);
     }
 
@@ -83,6 +86,30 @@ class Login extends BaseLogin
         ];
     }
 
+    protected function authenticate(): void
+    {
+        $credentials = $this->getCredentialsFromFormData($this->form->getState());
+        $username = $credentials['username'];
+        $password = $credentials['password'];
+
+        // Buscar el usuario en la base de datos local
+        $user = User::where('username', $username)->first();
+
+        //Si no existe el usuario, denegar el acceso
+        if (!$user) {
+            $this->throwFailureValidationException();
+        }
+
+        // Autenticar contra LDAP
+        $ldapAuth = app(LdapAuthenticator::class);
+        if (!$ldapAuth->authenticate($username, $password)) {
+            $this->throwFailureValidationException();
+        }
+
+        // Si la autenticación LDAP es exitosa, iniciar sesión en Laravel
+        Auth::login($user, $this->remember);
+    }    
+
     protected function hasFullWidthFormActions(): bool
     {
         return true;
@@ -92,7 +119,7 @@ class Login extends BaseLogin
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
-            'email' => $data['email'],
+            'email' => $data['username'],
             'password' => $data['password'],
         ];
     }

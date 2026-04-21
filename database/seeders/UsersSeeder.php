@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -13,65 +12,20 @@ class UsersSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Configuración de Usuarios Reales
-        $usuariosReales = [
-            [
-                'firstname' => 'Rene',
-                'lastname'  => 'Herrera',
-                'email'     => 'rene.herrera@asamblea.gob.sv',
-                'username'  => 'rherrera',
-                'password'  => 'ReneAdministrador2026',
-                'role'      => 'gol', // Rol GOL (lectura + export)
-            ],
-            [
-                'firstname' => 'Marvin',
-                'lastname'  => 'Isho',
-                'email'     => 'marvin.isho@asamblea.gob.sv',
-                'username'  => 'misho',
-                'password'  => 'SonsonatePrueba2026',
-                'role'      => 'coordinador',
-            ],
-            [
-                'firstname' => 'Ana',
-                'lastname'  => 'Estrada',
-                'email'     => 'ana.estrada@asamblea.gob.sv',
-                'username'  => 'aestrada',
-                'password'  => 'SantaAnaPrueba2026',
-                'role'      => 'coordinador',
-            ],
-            [
-                'firstname' => 'Monica',
-                'lastname'  => 'Villeda',
-                'email'     => 'monica.villeda@asamblea.gob.sv',
-                'username'  => 'mvilleda',
-                'password'  => 'LaLiberdadPrueba2026',
-                'role'      => 'coordinador',
-            ],
-            [
-                'firstname' => 'Amilcar',
-                'lastname'  => 'Ortiz',
-                'email'     => 'amilcar.ortiz@asamblea.gob.sv',
-                'username'  => 'aortiz',
-                'password'  => 'SanVicentePrueba2026',
-                'role'      => 'coordinador',
-            ],
-            [
-                'firstname' => 'Francisco',
-                'lastname'  => 'Gonzalez',
-                'email'     => 'francisco.gonzalez@asamblea.gob.sv',
-                'username'  => 'fgonzalez',
-                'password'  => 'LaUnionPrueba2026',
-                'role'      => 'coordinador',
-            ],
-            [
-                'firstname' => 'Departamental',
-                'lastname'  => 'San Salvador',
-                'email'     => 'pmunoz@asamblea.gob.sv',
-                'username'  => 'pmunoz',
-                'password'  => 'SanSalvador2026',
-                'role'      => 'coordinador',
-            ],
-        ];
+        // Los usuarios reales ahora se autenticarán contra LDAP
+        // Los usuarios deben existir en la tabla users con sus roles y departamental
+        // La contraseña se verificará contra el directorio LDAP institucional
+        //
+        // $usuariosReales = [
+        //     [
+        //         'firstname' => 'Rene',
+        //         'lastname'  => 'Herrera',
+        //         'email'     => 'rene.herrera@asamblea.gob.sv',
+        //         'username'  => 'rherrera',
+        //         'role'      => 'gol',
+        //     ],
+        //     // ... más usuarios
+        // ];
 
         // 2. Superadmin (Idempotente)
         $superAdmin = User::firstOrCreate(
@@ -89,22 +43,22 @@ class UsersSeeder extends Seeder
         // Vincular con Shield Super Admin
         Artisan::call('shield:super-admin', ['--user' => $superAdmin->id]);
 
-        // 3. Crear usuarios y asignar roles mediante Spatie (usando nombres de tu RoleSeeder)
-        foreach ($usuariosReales as $data) {
-            $user = User::firstOrCreate(
-                ['email' => $data['email']],
-                [
-                    'id' => (string) Str::uuid(),
-                    'username' => $data['username'],
-                    'firstname' => $data['firstname'],
-                    'lastname' => $data['lastname'],
-                    'email_verified_at' => now(),
-                    'password' => Hash::make($data['password']),
-                ]
-            );
-
-            // Sincronizar el rol (esto evita duplicados y asegura que tenga el rol correcto)
-            $user->syncRoles([$data['role']]);
-        }
+        // Los usuarios reales ya no se crean aquí - se autenticarán contra LDAP
+        // Los usuarios deben existir previamente en la tabla users con sus roles y departamental
+        // La autenticación de contraseña se hace contra el directorio LDAP institucional
+        //
+        // foreach ($usuariosReales as $data) {
+        //     $user = User::firstOrCreate(
+        //         ['email' => $data['email']],
+        //         [
+        //             'id' => (string) Str::uuid(),
+        //             'username' => $data['username'],
+        //             'firstname' => $data['firstname'],
+        //             'lastname' => $data['lastname'],
+        //             'email_verified_at' => now(),
+        //         ]
+        //     );
+        //     $user->syncRoles([$data['role']]);
+        // }
     }
 }

@@ -79,26 +79,6 @@ class UserResource extends Resource
                             ->hiddenOn('create')
                             ->fullWidth(),
 
-                        Forms\Components\Section::make()
-                            ->schema([
-                                Forms\Components\TextInput::make('password')
-                                    ->label('Contraseña')
-                                    ->password()
-                                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                                    ->dehydrated(fn (?string $state): bool => filled($state))
-                                    ->revealable()
-                                    ->required(),
-                                    Forms\Components\TextInput::make('password_confirmation')
-                                    ->label('Confirmar Contraseña')
-                                    ->password()
-                                    ->revealable()
-                                    ->required()
-                                    ->same('password') // ← este sí funciona
-                                    ->dehydrated(false), // ← NO se manda al modelo (importante)
-                            ])
-                            ->compact()
-                            ->hidden(fn (string $operation): bool => $operation === 'edit'),
-
                         Forms\Components\Placeholder::make('user_info')
                             ->hiddenLabel()
                             ->content(function (?User $record): HtmlString {
