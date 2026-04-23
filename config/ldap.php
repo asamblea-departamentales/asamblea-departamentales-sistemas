@@ -1,3 +1,4 @@
+<?php
 'connections' => [
     'default' => [
         'hosts' => [env('LDAP_HOSTS', '172.19.10.7')],
