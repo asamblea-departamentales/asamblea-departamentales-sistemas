@@ -4,17 +4,17 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Models\User;
+use App\Services\LdapAuthenticator;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Pages\Auth\Login as BaseLogin;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
-use App\Services\LdapAuthenticator;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use LdapRecord\Ldap;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Pages\Auth\Login as BaseLogin;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\HtmlString;
 
 class Login extends BaseLogin
 {
@@ -88,30 +88,40 @@ class Login extends BaseLogin
     }
 
     public function authenticate(): ?LoginResponse
-{
-    $credentials = $this->getCredentialsFromFormData($this->form->getState());
-    $username = $credentials['username'];
-    $password = $credentials['password'];
+    {
+        $credentials = $this->getCredentialsFromFormData($this->form->getState());
+        $username = $credentials['username'];
+        $password = $credentials['password'];
 
-    // Buscar usuario local
-    $user = User::where('username', $username)->first();
+        // Buscar usuario local
+        $user = User::where('username', $username)->first();
 
-    if (!$user) {
-        $this->throwFailureValidationException();
+        if (! $user) {
+            $this->throwFailureValidationException();
+        }
+
+        // Verificar si es SuperAdmin - usar autenticación local
+        $isSuperAdmin = $user->hasRole(config('filament-shield.super_admin.name'))
+            || $user->hasRole('SuperAdmin');
+
+        if ($isSuperAdmin) {
+            // Autenticar contra BD local
+            if (! $user->password || ! Hash::check($password, $user->password)) {
+                $this->throwFailureValidationException();
+            }
+        } else {
+            // Autenticar contra LDAP
+            $ldapAuth = app(LdapAuthenticator::class);
+            if (! $ldapAuth->authenticate($username, $password)) {
+                $this->throwFailureValidationException();
+            }
+        }
+
+        // Login en Laravel
+        Auth::login($user, $this->remember);
+
+        return app(LoginResponse::class);
     }
-
-    // Autenticar contra LDAP
-    $ldapAuth = app(LdapAuthenticator::class);
-
-    if (!$ldapAuth->authenticate($username, $password)) {
-        $this->throwFailureValidationException();
-    }
-
-    // Login en Laravel
-    Auth::login($user, $this->remember);
-
-    return app(LoginResponse::class);
-} 
 
     protected function hasFullWidthFormActions(): bool
     {
