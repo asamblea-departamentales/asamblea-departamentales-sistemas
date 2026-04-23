@@ -53,7 +53,7 @@ class Login extends BaseLogin
             ->required()
             ->extraInputAttributes(['tabindex' => 2])
             ->placeholder('Ingresa tu contraseña')
-            ->prefixIcon('heroicon-o-user-lock')
+            ->prefixIcon('heroicon-o-lock-closed')
             ->maxLength(255);
     }
 
