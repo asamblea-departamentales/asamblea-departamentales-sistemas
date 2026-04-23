@@ -14,6 +14,7 @@ use App\Services\LdapAuthenticator;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use LdapRecord\Ldap;
+use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 
 class Login extends BaseLogin
 {
@@ -86,29 +87,31 @@ class Login extends BaseLogin
         ];
     }
 
-    protected function authenticate(): void
-    {
-        $credentials = $this->getCredentialsFromFormData($this->form->getState());
-        $username = $credentials['username'];
-        $password = $credentials['password'];
+    public function authenticate(): ?LoginResponse
+{
+    $credentials = $this->getCredentialsFromFormData($this->form->getState());
+    $username = $credentials['username'];
+    $password = $credentials['password'];
 
-        // Buscar el usuario en la base de datos local
-        $user = User::where('username', $username)->first();
+    // Buscar usuario local
+    $user = User::where('username', $username)->first();
 
-        //Si no existe el usuario, denegar el acceso
-        if (!$user) {
-            $this->throwFailureValidationException();
-        }
+    if (!$user) {
+        $this->throwFailureValidationException();
+    }
 
-        // Autenticar contra LDAP
-        $ldapAuth = app(LdapAuthenticator::class);
-        if (!$ldapAuth->authenticate($username, $password)) {
-            $this->throwFailureValidationException();
-        }
+    // Autenticar contra LDAP
+    $ldapAuth = app(LdapAuthenticator::class);
 
-        // Si la autenticación LDAP es exitosa, iniciar sesión en Laravel
-        Auth::login($user, $this->remember);
-    }    
+    if (!$ldapAuth->authenticate($username, $password)) {
+        $this->throwFailureValidationException();
+    }
+
+    // Login en Laravel
+    Auth::login($user, $this->remember);
+
+    return app(LoginResponse::class);
+} 
 
     protected function hasFullWidthFormActions(): bool
     {
@@ -119,7 +122,7 @@ class Login extends BaseLogin
     protected function getCredentialsFromFormData(array $data): array
     {
         return [
-            'email' => $data['username'],
+            'username' => $data['username'],
             'password' => $data['password'],
         ];
     }
