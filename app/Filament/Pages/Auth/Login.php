@@ -118,7 +118,7 @@ class Login extends BaseLogin
         }
 
         // Login en Laravel
-        Auth::login($user, $this->remember);
+        Auth::login($user, $credentials['remember'] ?? false);
 
         return app(LoginResponse::class);
     }
@@ -134,6 +134,7 @@ class Login extends BaseLogin
         return [
             'username' => $data['username'],
             'password' => $data['password'],
+            'remember' => $data['remember'] ?? false,
         ];
     }
 }
