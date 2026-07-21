@@ -88,6 +88,11 @@ public function generarPDF()
         'meses' => app(\App\Services\CierreMensualService::class)->getMesesDisponibles(),
     ]);
 
+    $pdfDir = storage_path('app/public/cierres');
+    if (!is_dir($pdfDir)) {
+        mkdir($pdfDir, 0755, true);
+    }
+
     $pdfPath = "cierres/cierre_{$this->id}.pdf";
     $pdf->save(storage_path("app/public/$pdfPath"));
 

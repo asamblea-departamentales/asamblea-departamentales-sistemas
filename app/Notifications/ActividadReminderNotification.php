@@ -21,6 +21,10 @@ class ActividadReminderNotification extends Notification implements ShouldQueue,
     {
         $this->actividad = $actividad;
         $this->onQueue('notifications');
+
+        if ($actividad->reminder_at && $actividad->reminder_at->isFuture()) {
+            $this->delay($actividad->reminder_at);
+        }
     }
 
     public function via($notifiable)
@@ -77,15 +81,6 @@ class ActividadReminderNotification extends Notification implements ShouldQueue,
     public function toArray($notifiable)
     {
         return $this->toDatabase($notifiable);
-    }
-
-    public function delay($notifiable)
-    {
-        if ($this->actividad->reminder_at && $this->actividad->reminder_at->isFuture()) {
-            return $this->actividad->reminder_at;
-        }
-
-        return now();
     }
 
     private function calculateTimeRemaining(): string

@@ -130,11 +130,6 @@ class CierreMensualResource extends Resource
                 Tables\Columns\TextColumn::make('año')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('porcentaje_cumplimiento')
-                    ->suffix('%')
-                    ->color(fn ($state) => $state >= 80 ? 'success' : ($state >= 50 ? 'warning' : 'danger'))
-                    ->sortable(),
-
                 Tables\Columns\BadgeColumn::make('estado')
                     ->colors([
                         'primary' => 'generado',

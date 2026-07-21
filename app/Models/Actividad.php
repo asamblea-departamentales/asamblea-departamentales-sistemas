@@ -80,14 +80,16 @@ class Actividad extends Model implements HasMedia
         });
     }
 
-    //Agregado 
     public function canViewMedia(): bool
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return false;
+        }
 
-    return $user->departamental_id === $this->departamental_id
-        || $user->hasRole('ti');
-}
+        return $user->departamental_id === $this->departamental_id
+            || $user->hasRole('ti');
+    }
 
 //NUEVO
 public function getAtestadosUrlsAttribute()
