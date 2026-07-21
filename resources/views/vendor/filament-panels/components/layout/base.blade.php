@@ -1,12 +1,9 @@
 @props(['livewire' => null])
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
       dir="{{ __('filament-panels::layout.direction') ?? 'ltr' }}"
       class="fi min-h-screen">
 <head>
-    <script>console.log('🔍 BASE.BLADE.PHP CARGADO');</script>
-
     {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::HEAD_START, scopes: $livewire?->getRenderHookScopes()) }}
 
     <meta charset="utf-8" />

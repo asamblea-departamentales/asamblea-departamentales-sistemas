@@ -1,21 +1,3 @@
-import Echo from 'laravel-echo';
-
-// ✅ Configurar Echo para Reverb
-if (import.meta.env.VITE_REVERB_APP_KEY) {
-    window.Echo = new Echo({
-        broadcaster: 'reverb',
-        key: import.meta.env.VITE_REVERB_APP_KEY,
-        wsHost: import.meta.env.VITE_REVERB_HOST,
-        wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-        wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
-        forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
-        enabledTransports: ['ws', 'wss'],
-    });
-    console.log('✅ Echo configurado con Reverb');
-} else {
-    console.warn('⚠️ Echo no configurado - faltan credenciales de Reverb en .env');
-}
-
 import './bootstrap';
 import '../css/app.css';
 
@@ -161,46 +143,3 @@ window.updateFilamentBadge = function() {
         console.log('🔔 Badge actualizado con databaseNotificationsSent');
     }
 };
-
-// ✅ OBTENER EL USER ID y CONFIGURAR ECHO para el usuario actual
-function getCurrentUserId() {
-    return document.querySelector('meta[name="user-id"]')?.getAttribute('content');
-}
-
-function setupEchoForCurrentUser() {
-    const userId = getCurrentUserId();
-    
-    if (!userId || !window.Echo) {
-        console.error('❌ No se puede configurar Echo');
-        return;
-    }
-
-    console.log(`🔧 Configurando Echo para usuario: ${userId}`);
-
-    window.Echo.channel(`notifications.${userId}`)
-        .listen('.notification', (notification) => {
-            console.log('🔔 Notificación de Echo recibida:', notification);
-            
-            window.showToastNotification({
-                title: notification.title || 'Nueva notificación',
-                body: notification.body || 'Tienes una notificación pendiente',
-                iconColor: notification.iconColor || 'info',
-                duration: notification.duration
-            });
-            
-            window.updateFilamentBadge();
-        })
-        .error((error) => {
-            console.error('❌ Error en el canal privado de Echo:', error);
-        });
-}
-
-// Inicializa Echo cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(setupEchoForCurrentUser, 500);
-});
-
-// También, inicializa si ya estamos en un estado listo
-if (window.Livewire) {
-    setupEchoForCurrentUser();
-}
