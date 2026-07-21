@@ -64,7 +64,7 @@ Route::post('/test-notification', function () {
             'error' => $e->getMessage(),
         ], 500);
     }
-})->middleware(['web', 'auth'])->throttle(5, 1);
+})->middleware(['web', 'auth', 'throttle:5,1']);
 
 /* -----------------------------
 |  API → CONTEO DE NOTIFICACIONES

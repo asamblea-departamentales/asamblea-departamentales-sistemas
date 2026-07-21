@@ -19,7 +19,7 @@ class ImpersonateTableAction extends Action
     {
         parent::setUp();
 
-        $this->label('Impersonate')
+        $this->label('Ver como')
             ->icon('heroicon-o-user')
             ->color('warning')
             ->action(function (Model $record): void {
@@ -53,11 +53,11 @@ class ImpersonateTableAction extends Action
                 return $user && method_exists($user, $canImpersonate) && $user->$canImpersonate() && method_exists($record, $canBeImpersonated) && $record->$canBeImpersonated();
             })
             ->requiresConfirmation()
-            ->modalHeading('Impersonate User')
+            ->modalHeading('Ver como este usuario')
             ->modalDescription(function (Model $record): string {
-                return "Are you sure you want to impersonate {$record->name}?";
+                return "¿Deseas ver el sistema como {$record->name}?";
             })
-            ->modalSubmitActionLabel('Start Impersonation');
+            ->modalSubmitActionLabel('Confirmar');
     }
 
     protected function canBeImpersonated(Model $target): bool

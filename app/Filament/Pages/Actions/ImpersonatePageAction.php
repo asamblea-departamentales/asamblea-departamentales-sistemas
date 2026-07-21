@@ -18,13 +18,13 @@ class ImpersonatePageAction extends Action
     {
         parent::setUp();
 
-        $this->label('Impersonate')
+        $this->label('Ver como')
             ->icon('heroicon-o-user')
             ->color('warning')
             ->requiresConfirmation()
-            ->modalHeading('Impersonate User')
-            ->modalDescription(fn (Model $record): string => "Are you sure you want to impersonate {$record->name}?")
-            ->modalSubmitActionLabel('Start Impersonation')
+            ->modalHeading('Ver como este usuario')
+            ->modalDescription(fn (Model $record): string => "¿Deseas ver el sistema como {$record->name}?")
+            ->modalSubmitActionLabel('Confirmar')
             ->action(function (Model $record): void {
                 if (! $this->canBeImpersonated($record)) {
                     return;

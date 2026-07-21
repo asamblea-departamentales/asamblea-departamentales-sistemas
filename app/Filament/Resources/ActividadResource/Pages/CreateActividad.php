@@ -222,12 +222,12 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                             // Acción que ejecuta al hacer submit
                             ->submit('create')
                     )
-                // Permite saltar pasos (opcional)
-                    ->skippable()
                 // Mantiene el paso actual en la URL
                     ->persistStepInQueryString()
                 // Inicia en el paso 1
                     ->startOnStep(1)
+                // Validar campos obligatorios antes de avanzar de paso
+                    ->validateItems(true)
                 // El wizard ocupa todo el ancho disponible
                     ->columnSpanFull(),
             ]);

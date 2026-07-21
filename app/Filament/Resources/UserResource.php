@@ -289,7 +289,7 @@ class UserResource extends Resource
 
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    ImpersonateTableAction::make()->tooltip('Impersonate this user'),
+                    ImpersonateTableAction::make()->tooltip('Ver como este usuario'),
                     Tables\Actions\EditAction::make()->tooltip('Edit user'),
                     Tables\Actions\DeleteAction::make()->tooltip('Delete user'),
                     Tables\Actions\Action::make('asignarRol')
