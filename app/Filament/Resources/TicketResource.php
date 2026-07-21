@@ -240,7 +240,7 @@ class TicketResource extends Resource
                     ->action(function (array $data, Ticket $record): void {
                         $record->update([
                             'estado_interno' => $data['nuevo_estado'],
-                            'observaciones' => $record->observaciones . 
+                            'observaciones' => ($record->observaciones ?? '') . 
                                 "\n\n[" . now()->format('d/m/Y H:i') . "] Estado cambiado a " . 
                                 Ticket::ESTADOS[$data['nuevo_estado']] . 
                                 (isset($data['comentario']) ? ": " . $data['comentario'] : "")
@@ -260,7 +260,7 @@ class TicketResource extends Resource
                             foreach ($records as $record) {
                                 $record->update([
                                     'estado_interno' => 'CERRADO',
-                                    'observaciones' => $record->observaciones . 
+                                    'observaciones' => ($record->observaciones ?? '') . 
                                         "\n[" . now()->format('d/m/Y H:i') . "] Ticket cerrado masivamente"
                                 ]);
                             }

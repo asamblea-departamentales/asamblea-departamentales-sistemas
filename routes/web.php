@@ -115,7 +115,15 @@ Route::middleware(['web', 'auth'])->get('/admin/impersonate/leave', function () 
 /* -----------------------------
 |  NUEVO: RUTA PARA PDF DE CIERRE MENSUAL
 ------------------------------*/
-Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
+Route::middleware(['web', 'auth'])->get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
+    $user = auth()->user();
+
+    if (! $user->hasAnyRole(['ti', 'gol']) && ! $user->isSuperAdmin()) {
+        if ($cierre->departamental_id !== $user->departamental_id) {
+            abort(403, 'No autorizado para ver este PDF.');
+        }
+    }
+
     if (! $cierre->pdf_path) {
         abort(404, 'PDF no generado.');
     }
@@ -125,8 +133,14 @@ Route::get('/cierres/{cierre}/pdf', function (CierreMensual $cierre) {
 
 /* -----------------------------
 |  RUTA PARA PDF CONSOLIDADO
-------------------------------*/
-Route::get('/consolidado/{año}/{mes}/pdf', function (int $año, int $mes) {
+-----------------------------*/
+Route::middleware(['web', 'auth'])->get('/consolidado/{año}/{mes}/pdf', function (int $año, int $mes) {
+    $user = auth()->user();
+
+    if (! $user->hasAnyRole(['ti', 'gol']) && ! $user->isSuperAdmin()) {
+        abort(403, 'No autorizado para ver consolidados.');
+    }
+
     $filename = "informe_consolidado_{$año}_{$mes}.pdf";
     $path = storage_path("app/public/cierres/{$filename}");
 
@@ -144,9 +158,18 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media) {
 
-    // Permisos
-    if (! auth()->user()->can('view_actividad')) {
+    $user = auth()->user();
+
+    if (! $user || ! $user->can('view_actividad')) {
         abort(403);
+    }
+
+    $actividad = $media->model;
+
+    if ($actividad && method_exists($actividad, 'canViewMedia')) {
+        if (! $actividad->canViewMedia()) {
+            abort(403, 'No autorizado para ver este archivo.');
+        }
     }
 
     $disk = $media->disk;
@@ -170,32 +193,6 @@ Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media
     );
 
 })->name('media.view');
-
-// * -----------------------------
-// RUTA DE TEST PARA VERIFICAR CONFIGURACIÓN DE DISCO "REPOSITORIO"
-// ------------------------------*/
-Route::middleware(['web', 'auth'])->get('/test-smb', function () {
-    try {
-        $disk = 'repositorio';
-
-        $file = 'test_laravel_'.now()->timestamp.'.txt';
-
-        Storage::disk($disk)->put($file, 'OK - SMB funcionando');
-
-        return response()->json([
-            'status' => 'OK',
-            'path' => config("filesystems.disks.$disk.root"),
-            'file_created' => $file,
-        ]);
-
-    } catch (\Throwable $e) {
-        return response()->json([
-            'status' => 'ERROR',
-            'message' => $e->getMessage(),
-            'path' => config('filesystems.disks.repositorio.root'),
-        ], 500);
-    }
-});
 
 // * -----------------------------
 //  FALLBACK (EXCLUYENDO STORAGE Y PDF)

@@ -66,7 +66,9 @@ class CreateActividad extends CreateRecord
                                 ->disabled(),
                             // Campo oculto para la departamental (se asigna automáticamente)
                             Forms\Components\Hidden::make('departamental_id')
-                                ->default(fn () => auth()->user()->departamental_id),
+                                ->default(fn () => auth()->user()->departamental_id)
+                                ->required()
+                                ->rules(['exists:departamentales,id']),
 
                             // Campo para seleccionar la fecha de la actividad
                             Forms\Components\DatePicker::make('fecha')
@@ -85,7 +87,7 @@ class CreateActividad extends CreateRecord
                             // Etiqueta del campo
                                 ->label('Oficina Departamental')
                             // Campo solo lectura
-                                ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
+                                ->default(fn () => auth()->user()->departamental?->nombre ?? 'Sin departamental')
                                 ->disabled()
                                 ->dehydrated(false), // No se guarda en la base de datos
                             // Campo de texto para el programa
@@ -98,7 +100,7 @@ class CreateActividad extends CreateRecord
                                 ->options([
                                     'Programa de Educacion Civica'=> 'Programa de Educacion Civica',
                                     'Programa de Participacion Ciudadana'=> 'Programa de Participacion Ciudadana',
-                                    'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadanda',
+                                    'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadana',
                                     'Otro'=> 'Otros'
                                 ])
                                 ->placeholder('Seleccione un programa')

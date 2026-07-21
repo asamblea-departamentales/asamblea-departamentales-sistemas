@@ -26,6 +26,8 @@ class CierreMensual extends Model
         'actividades_ejecutadas',
         'actividades_pendientes',
         'actividades_canceladas',
+        'estado',
+        'observaciones',
         'fecha_cierre',
         'pdf_path',
     ];
@@ -83,7 +85,7 @@ public function generarPDF()
     $pdf = Pdf::loadView('pdf.cierre_mensual', [
         'cierre' => $this,
         'actividades' => $this->actividades,
-        'meses' => app(\App\Services\CierreMensualService::class)->meses(),
+        'meses' => app(\App\Services\CierreMensualService::class)->getMesesDisponibles(),
     ]);
 
     $pdfPath = "cierres/cierre_{$this->id}.pdf";

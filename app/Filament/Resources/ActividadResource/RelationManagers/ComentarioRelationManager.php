@@ -53,13 +53,14 @@ class ComentarioRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->user_id === auth()->id()), // Solo el autor puede editar
+                    ->visible(fn ($record) => $record->user_id === auth()->id() || auth()->user()->hasAnyRole(['ti', 'super_admin', 'coordinador'])),
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn ($record) => $record->user_id === auth()->id()), // Solo el autor puede eliminar
+                    ->visible(fn ($record) => $record->user_id === auth()->id() || auth()->user()->hasAnyRole(['ti', 'super_admin', 'coordinador'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()->hasAnyRole(['ti', 'super_admin', 'coordinador'])),
                 ]),
             ]);
     }

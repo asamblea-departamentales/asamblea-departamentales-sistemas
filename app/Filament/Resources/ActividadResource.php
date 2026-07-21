@@ -68,7 +68,7 @@ class ActividadResource extends Resource
 
                         Forms\Components\TextInput::make('departamental_display')
                             ->label('Oficina Departamental')
-                            ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental->nombre ?? 'Sin departamental')
+                            ->formatStateUsing(fn ($record) => $record?->departamental?->nombre ?? auth()->user()->departamental?->nombre ?? 'Sin departamental')
                             ->disabled()
                             ->dehydrated(false),
 
@@ -450,7 +450,26 @@ class ActividadResource extends Resource
         ])
             ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            $user = auth()->user();
+                            foreach ($records as $record) {
+                                if (in_array($record->estado, ['Completada', 'Cancelada'])) {
+                                    Notification::make()
+                                        ->title('Accion no permitida')
+                                        ->body('La actividad "'.$record->macroactividad.'" esta en estado "'.$record->estado.'" y no puede eliminarse.')
+                                        ->danger()->send();
+                                    return false;
+                                }
+                                if (CierreMensual::mesCerrado($record->departamental_id, $record->fecha->month, $record->fecha->year)) {
+                                    Notification::make()
+                                        ->title('Mes cerrado')
+                                        ->body('La actividad "'.$record->macroactividad.'" pertenece a un mes cerrado.')
+                                        ->danger()->send();
+                                    return false;
+                                }
+                            }
+                        }),
             ]),
         ])
             ->headerActions([
@@ -487,7 +506,7 @@ class ActividadResource extends Resource
 
                                 Forms\Components\TextInput::make('departamental_display')
                                     ->label('Oficina Departamental')
-                                    ->default(fn () => auth()->user()->departamental->nombre ?? 'Sin departamental')
+                                    ->default(fn () => auth()->user()->departamental?->nombre ?? 'Sin departamental')
                                     ->disabled()
                                     ->dehydrated(false),
 
@@ -692,7 +711,7 @@ class ActividadResource extends Resource
             return false;
         }
 
-        if ($record->estado === 'Completada') {
+        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
             return false;
         }
 

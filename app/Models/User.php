@@ -80,8 +80,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Reglas de acceso adicionales si manejas varios paneles.
-        return true;
+        return $this->hasRole('super_admin') || $this->hasRole('ti')
+            || $this->hasRole('gol') || $this->hasRole('coordinador')
+            || $this->hasRole('asistente_tecnico') || $this->hasRole('auditoria');
     }
 
     /* ==============================

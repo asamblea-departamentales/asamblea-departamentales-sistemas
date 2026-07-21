@@ -52,6 +52,10 @@ class Ticket extends Model
 
         static::creating(function ($model) {
             $model->id = (string) Str::uuid();
+
+            if (auth()->check() && ! $model->departamental_id) {
+                $model->departamental_id = auth()->user()->departamental_id;
+            }
         });
     }
 

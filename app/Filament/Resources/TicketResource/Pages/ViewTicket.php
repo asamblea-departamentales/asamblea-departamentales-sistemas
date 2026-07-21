@@ -122,7 +122,8 @@ class ViewTicket extends ViewRecord
                             ->date('d/M/Y'),
 
                         TextEntry::make('dias_desde_creacion')
-                            ->label('Días desde creación')
+                            ->label('Dias desde creacion')
+                            ->getStateUsing(fn () => $this->record->diasDesdeCreacion() . ' dias')
                             ->badge()
                             ->color(fn () => match (true) {
                                 $this->record->diasDesdeCreacion() >= 7 => 'danger',

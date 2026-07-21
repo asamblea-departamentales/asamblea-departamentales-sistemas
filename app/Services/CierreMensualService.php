@@ -41,6 +41,15 @@ class CierreMensualService
         $cierresConsolidados = [];
 
         if ($tipoCierre === 'individual') {
+            if (! $user->departamental_id) {
+                return [
+                    'generados' => 0,
+                    'omitidos' => 1,
+                    'cierres' => [],
+                    'error' => 'El usuario no tiene departamental asignada.',
+                ];
+            }
+
             $resultado = $this->procesarCierreDepartamental(
                 $user->departamental_id,
                 $mes,
@@ -74,6 +83,10 @@ class CierreMensualService
                 } else {
                     $cierresOmitidos++;
                 }
+            }
+
+            if (! empty($cierresConsolidados)) {
+                $this->generarPDFConsolidado($cierresConsolidados, $mes, $año);
             }
         }
 
@@ -112,47 +125,50 @@ class CierreMensualService
         $proyectadas = $actividades->count();
         $ejecutadas = $actividades->where('estado', 'Completada')->count();
         $pendientes = $actividades->where('estado', 'Pendiente')->count();
+        $enProgreso = $actividades->where('estado', 'En Progreso')->count();
         $canceladas = $actividades->where('estado', 'Cancelada')->count();
-        $porcentajeCumplimiento = $proyectadas > 0
-            ? round(($ejecutadas / $proyectadas) * 100, 2)
-            : 0;
 
-        $cierre = CierreMensual::updateOrCreate(
-            [
-                'departamental_id' => $departamentalId,
-                'mes' => $mes,
-                'año' => $año,
-            ],
-            [
-                'user_id' => $user->id,
-                'actividades_proyectadas' => $proyectadas,
-                'actividades_ejecutadas' => $ejecutadas,
-                'actividades_pendientes' => $pendientes,
-                'actividades_canceladas' => $canceladas,
-                'porcentaje_cumplimiento' => $porcentajeCumplimiento,
-                'estado' => 'generado',
-                'observaciones' => $observaciones,
-                'fecha_cierre' => now(),
-            ]
-        );
+        return DB::transaction(function () use (
+            $departamentalId, $mes, $año, $user, $observaciones,
+            $proyectadas, $ejecutadas, $pendientes, $enProgreso, $canceladas,
+            $actividades, $generarPDF
+        ) {
+            $cierre = CierreMensual::updateOrCreate(
+                [
+                    'departamental_id' => $departamentalId,
+                    'mes' => $mes,
+                    'año' => $año,
+                ],
+                [
+                    'user_id' => $user->id,
+                    'actividades_proyectadas' => $proyectadas,
+                    'actividades_ejecutadas' => $ejecutadas,
+                    'actividades_pendientes' => $pendientes + $enProgreso,
+                    'actividades_canceladas' => $canceladas,
+                    'estado' => 'generado',
+                    'observaciones' => $observaciones,
+                    'fecha_cierre' => now(),
+                ]
+            );
 
-        Actividad::where('departamental_id', $departamentalId)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $año)
-            ->update(['cierre_mensual_id' => $cierre->id]);
+            Actividad::where('departamental_id', $departamentalId)
+                ->whereMonth('fecha', $mes)
+                ->whereYear('fecha', $año)
+                ->update(['cierre_mensual_id' => $cierre->id]);
 
-        if ($generarPDF) {
-            $cierre->generarPDF();
-        }
+            if ($generarPDF) {
+                $cierre->generarPDF();
+            }
 
-        return true;
+            return true;
+        });
     }
 
     public function generarPDFConsolidado($cierres, int $mes, int $año): void
     {
         $meses = $this->getMesesDisponibles();
 
-        $pdf = Pdf::loadView('pdf.cierre-consolidado', [
+        $pdf = Pdf::loadView('pdf.cierre_consolidado', [
             'cierres' => $cierres,
             'mes' => $mes,
             'año' => $año,

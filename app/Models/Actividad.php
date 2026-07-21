@@ -32,6 +32,7 @@ class Actividad extends Model implements HasMedia
         'asistentes_hombres',
         'asistentes_mujeres',
         'asistencia_completa',
+        'cierre_mensual_id',
     ];
 
     protected $casts = [

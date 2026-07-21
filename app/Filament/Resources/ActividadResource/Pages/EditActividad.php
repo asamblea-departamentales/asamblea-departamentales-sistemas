@@ -13,7 +13,9 @@ class EditActividad extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->visible(fn () => auth()->user()->can('delete_actividad')
+                    && ! in_array($this->record?->estado, ['Completada', 'Cancelada'])),
         ];
     }
 
