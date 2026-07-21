@@ -226,8 +226,6 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
                     ->persistStepInQueryString()
                 // Inicia en el paso 1
                     ->startOnStep(1)
-                // Validar campos obligatorios antes de avanzar de paso
-                    ->validateItems(true)
                 // El wizard ocupa todo el ancho disponible
                     ->columnSpanFull(),
             ]);
