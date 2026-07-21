@@ -146,8 +146,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->fit(Fit::Contain, 300, 300)
-            ->nonQueued();
+            ->fit(Fit::Contain, 300, 300);
     }
 
     public function getFallbackMediaUrl(string $collectionName = 'default', string $conversion = ''): string

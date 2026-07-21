@@ -36,7 +36,7 @@ class UsersSeeder extends Seeder
                 'firstname' => 'Admin',
                 'lastname' => 'Principal',
                 'email_verified_at' => now(),
-                'password' => Hash::make('Admin@2026!'),
+                'password' => Hash::make(env('SUPERADMIN_PASSWORD', 'Cambiar@' . now()->year . '!')),
             ]
         );
 

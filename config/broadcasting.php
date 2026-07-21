@@ -36,8 +36,8 @@ return [
                 'scheme' => env('REVERB_SCHEME', 'http'),
                 'ping' => env('REVERB_PING_INTERVAL', 10),
                 'tls' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
+                    'verify_peer' => env('REVERB_TLS_VERIFY_PEER', true),
+                    'verify_peer_name' => env('REVERB_TLS_VERIFY_PEER_NAME', true),
                 ],
             ],
         ],

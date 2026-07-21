@@ -88,7 +88,7 @@ class Actividad extends Model implements HasMedia
         }
 
         return $user->departamental_id === $this->departamental_id
-            || $user->hasRole('ti');
+            || $user->hasAnyRole(['ti', 'super_admin', 'gol']);
     }
 
 //NUEVO

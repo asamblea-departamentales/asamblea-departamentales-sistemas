@@ -38,6 +38,10 @@ Route::post('/test-notification', function () {
             return response()->json(['error' => 'No autenticado'], 401);
         }
 
+        if (! $user->hasRole('super_admin')) {
+            abort(403, 'No autorizado.');
+        }
+
         $actividad = \App\Models\Actividad::first();
 
         if (! $actividad) {
@@ -60,7 +64,7 @@ Route::post('/test-notification', function () {
             'error' => $e->getMessage(),
         ], 500);
     }
-})->middleware('web');
+})->middleware(['web', 'auth'])->throttle(5, 1);
 
 /* -----------------------------
 |  API → CONTEO DE NOTIFICACIONES
@@ -164,12 +168,14 @@ Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media
         abort(403);
     }
 
-    $actividad = $media->model;
+    $model = $media->model;
 
-    if ($actividad && method_exists($actividad, 'canViewMedia')) {
-        if (! $actividad->canViewMedia()) {
+    if ($model instanceof \App\Models\Actividad) {
+        if (! $model->canViewMedia()) {
             abort(403, 'No autorizado para ver este archivo.');
         }
+    } else {
+        abort(403, 'Tipo de archivo no soportado para visualización.');
     }
 
     $disk = $media->disk;

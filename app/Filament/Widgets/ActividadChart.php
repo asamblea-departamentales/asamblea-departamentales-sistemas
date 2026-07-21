@@ -21,18 +21,21 @@ class ActividadChart extends ChartWidget
     {
         $data = [];
         $labels = [];
+        $now = Carbon::now();
+        $startDate = $now->copy()->subMonths(5)->startOfMonth();
+        $endDate = $now->copy()->endOfMonth();
 
-        // Generar datos para los ultimos meses
+        $counts = Actividad::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, COUNT(*) as total")
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('mes')
+            ->pluck('total', 'mes')
+            ->toArray();
+
         for ($i = 5; $i >= 0; $i--) {
             $month = Carbon::now()->subMonths($i);
-            $labels[] = $month->format('M Y'); // Formato de mes y año Eje: Jul 2025
-
-            // Consultar la DB
-            $count = Actividad::whereMonth('created_at', $month->month)
-                ->whereYear('created_at', $month->year)
-                ->count();
-
-            $data[] = $count; // Se guardan los datos
+            $key = $month->format('Y-m');
+            $labels[] = $month->format('M Y');
+            $data[] = $counts[$key] ?? 0;
         }
 
         return [

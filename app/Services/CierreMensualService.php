@@ -7,6 +7,7 @@ use App\Models\CierreMensual;
 use App\Models\Departamental;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CierreMensualService
 {
@@ -117,9 +118,11 @@ class CierreMensualService
             return false;
         }
 
+        $fechaInicio = Carbon::createFromDate($año, $mes, 1)->startOfMonth();
+        $fechaFin = $fechaInicio->copy()->endOfMonth();
+
         $actividades = Actividad::where('departamental_id', $departamentalId)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $año)
+            ->whereBetween('fecha', [$fechaInicio, $fechaFin])
             ->get();
 
         $proyectadas = $actividades->count();
@@ -151,13 +154,13 @@ class CierreMensualService
                 ]
             );
 
-            Actividad::where('departamental_id', $departamentalId)
-                ->whereMonth('fecha', $mes)
-                ->whereYear('fecha', $año)
+            Actividad::whereIn('id', $actividades->pluck('id')->toArray())
                 ->update(['cierre_mensual_id' => $cierre->id]);
 
             if ($generarPDF) {
-                $cierre->generarPDF();
+                DB::transaction(function () use ($cierre) {
+                    $cierre->generarPDF();
+                });
             }
 
             return true;

@@ -32,10 +32,17 @@ class CheckDepartamentales extends Command
         // Obtener todas las departamentales
         $departamentales = DB::table('departamentales')->select('id', 'nombre')->get();
 
+        $proximoMesInicio = Carbon::now()->addMonth()->startOfMonth();
+        $proximoMesFin = Carbon::now()->addMonth()->endOfMonth();
+
+        $actividadesPorDepartamental = Actividad::select('departamental_id', DB::raw('COUNT(*) as total'))
+            ->whereBetween('fecha', [$proximoMesInicio, $proximoMesFin])
+            ->groupBy('departamental_id')
+            ->pluck('total', 'departamental_id')
+            ->toArray();
+
         foreach ($departamentales as $departamental) {
-            $count = Actividad::where('departamental_id', $departamental->id)
-                              ->whereMonth('fecha', $proximoMes)
-                              ->count();
+            $count = $actividadesPorDepartamental[$departamental->id] ?? 0;
 
             if ($count === 0) {
                 // Notificar a SuperAdmins y GOL

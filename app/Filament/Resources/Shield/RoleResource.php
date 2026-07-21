@@ -42,9 +42,6 @@ class RoleResource extends Resource implements HasShieldPermissions
 
         $query = parent::getEloquentQuery()->withoutGlobalScopes();
 
-        \Log::info('Role Query SQL: '.$query->toSql());
-        \Log::info('Role Query Bindings: '.implode(', ', $query->getBindings()));
-
         return $query;
 
     }

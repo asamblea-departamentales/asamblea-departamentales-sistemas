@@ -50,15 +50,11 @@ class DepartamentalFaltanteNotification extends Notification implements ShouldQu
             ->icon('heroicon-o-exclamation-triangle')
             ->iconColor('warning')
             ->actions([
-                Action::make('view')
-                    ->label('Ver Departamental')
-                    ->url(route('admin.impersonate.departamental', ['departamental' => $this->departamental_id]))
-                    ->button(),
                 Action::make('activities')
-                    ->label('Ver Actividades')  
-                    ->url("/admin/actividades?departamental={$this->departamental_id}")
+                    ->label('Ver Actividades')
+                    ->url("/admin/actividades?tableFilters[departamental_id][value]={$this->departamental_id}")
                     ->button()
-                    ->color('secondary'),
+                    ->color('primary'),
             ])
             ->getDatabaseMessage(); // Esto retorna el array en formato Filament
     }

@@ -68,8 +68,12 @@ class SendNewContactNotification implements ShouldQueue
             $recipients = Config::get('mail.contact_notification_recipients', []);
 
             if (empty($recipients)) {
-                Log::warning('No recipients configured for contact notification. Using default.');
-                $recipients = ['info@superduper.com'];
+                $adminEmail = config('app.admin_email');
+                if (! $adminEmail) {
+                    Log::warning('No recipients configured for contact notification and no app.admin_email set. Skipping.');
+                    return;
+                }
+                $recipients = [$adminEmail];
             }
 
             $mail = new NewContactUsNotificationMail($contact);

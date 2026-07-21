@@ -8,12 +8,23 @@ use Illuminate\Support\Facades\Schema;
 
 trait BelongsToDepartamental
 {
+    private static array $columnCache = [];
+
     /**
      * Relación con departamental
      */
     public function departamental()
     {
         return $this->belongsTo(\App\Models\Departamental::class);
+    }
+
+    private static function hasDepartamentalColumn(string $table): bool
+    {
+        if (! array_key_exists($table, self::$columnCache)) {
+            self::$columnCache[$table] = Schema::hasColumn($table, 'departamental_id');
+        }
+
+        return self::$columnCache[$table];
     }
 
     /**
@@ -30,7 +41,7 @@ trait BelongsToDepartamental
                      || $u->hasRole(config('filament-shield.super_admin.name'));
         $table = $query->getModel()->getTable();
 
-        return ($isCentral || ! Schema::hasColumn($table, 'departamental_id'))
+        return ($isCentral || ! self::hasDepartamentalColumn($table))
             ? $query
             : $query->where("{$table}.departamental_id", $u->departamental_id);
     }
@@ -51,7 +62,7 @@ trait BelongsToDepartamental
 
             if (! $isCentral
                 && empty($model->departamental_id)
-                && Schema::hasColumn($model->getTable(), 'departamental_id')
+                && self::hasDepartamentalColumn($model->getTable())
             ) {
                 $model->departamental_id = $u->departamental_id;
             }
@@ -67,7 +78,7 @@ trait BelongsToDepartamental
                           || $u->hasRole(config('filament-shield.super_admin.name'));
             $table = $query->getModel()->getTable();
 
-            if (! $isCentral && Schema::hasColumn($table, 'departamental_id')) {
+            if (! $isCentral && self::hasDepartamentalColumn($table)) {
                 $query->where("{$table}.departamental_id", $u->departamental_id);
             }
         });

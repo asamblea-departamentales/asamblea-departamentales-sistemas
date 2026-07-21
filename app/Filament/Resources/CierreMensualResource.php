@@ -87,10 +87,6 @@ class CierreMensualResource extends Resource
                         Forms\Components\TextInput::make('actividades_canceladas')
                             ->numeric()
                             ->disabled(),
-
-                        Forms\Components\TextInput::make('porcentaje_cumplimiento')
-                            ->suffix('%')
-                            ->disabled(),
                     ])
                     ->columns(3),
 
