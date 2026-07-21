@@ -51,8 +51,8 @@
 
     @filamentScripts(withCore: true)
 
-    {{-- Configuración Echo / WebSocket --}}
-    @if (filament()->hasBroadcasting() && config('filament.broadcasting.echo'))
+    {{-- Configuración Echo / WebSocket — solo si el usuario está autenticado --}}
+    @if (Auth::check() && filament()->hasBroadcasting() && config('filament.broadcasting.echo'))
         <script data-navigate-once>
             window.Echo = new window.EchoFactory(@js(config('filament.broadcasting.echo')));
 

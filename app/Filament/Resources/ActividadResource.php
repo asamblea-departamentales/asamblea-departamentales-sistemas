@@ -296,7 +296,7 @@ class ActividadResource extends Resource
                     ->default(function () {
                         $user = auth()->user();
 
-                        return $user->hasAnyRole(['Administrador', 'gol']) ? null : [$user->departamental_id];
+                        return $user->hasAnyRole(['ti', 'gol']) ? null : [$user->departamental_id];
                     })
                     ->query(function (Builder $query, array $data) {
                         return $query->when(
@@ -304,7 +304,7 @@ class ActividadResource extends Resource
                             fn (Builder $q, $values) => $q->whereIn('departamental_id', $values)
                         );
                     })
-                    ->hidden(fn () => ! auth()->user()->hasAnyRole(['Administrador', 'gol'])),
+                    ->hidden(fn () => ! auth()->user()->hasAnyRole(['ti', 'gol'])),
 
                 Tables\Filters\Filter::make('asistencia_completa')
                     ->form([

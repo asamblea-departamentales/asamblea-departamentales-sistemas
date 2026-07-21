@@ -9,6 +9,8 @@ use Filament\Facades\Filament;
 use Filament\Notifications\Auth\VerifyEmail;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class CreateUser extends CreateRecord
 {
@@ -33,6 +35,11 @@ class CreateUser extends CreateRecord
             && ! ($auth->hasAnyRole(['ti', 'gol']) || $auth->hasRole(config('filament-shield.super_admin.name')))
         ) {
             $data['departamental_id'] = $auth->departamental_id;
+        }
+
+        // Asignar contraseña aleatoria para usuarios LDAP (nunca se usa para login)
+        if (empty($data['password'])) {
+            $data['password'] = Hash::make(Str::random(32));
         }
 
         return $data;

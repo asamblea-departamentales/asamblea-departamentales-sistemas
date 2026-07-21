@@ -27,7 +27,7 @@ class RequisicionResource extends Resource
     $user = \Filament\Facades\Filament::auth()->user();
 
     $isCentral = $user && (
-        $user->hasRole(['ti','Administrador','gol']) || // puedes usar hasRole con array
+        $user->hasRole(['ti','ti','gol']) || // puedes usar hasRole con array
         $user->hasRole(config('filament-shield.super_admin.name'))
     );
 
@@ -109,7 +109,7 @@ public static function form(Form $form): Form
 
             // TI global, Administrador, super_admin → ven todos los tickets
             $isCentral = $user && (
-                $user->hasAnyRole(['ti','Administrador','gol']) ||
+                $user->hasAnyRole(['ti','ti','gol']) ||
                 $user->hasRole(config('filament-shield.super_admin.name'))
             );
 

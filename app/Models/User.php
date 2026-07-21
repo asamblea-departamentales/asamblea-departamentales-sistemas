@@ -17,6 +17,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, MustVerifyEmail
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     use HasRoles, HasUuids;
     use Impersonate;
     use InteractsWithMedia;
+    use AuthenticatesWithLdap;
 
     /**
      * The attributes that are mass assignable.
@@ -36,8 +38,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
         'firstname',
         'lastname',
         'password',
-        'departamental_id',   // <-- AÑADIDO
-        'activo',             // <-- AÑADIDO (opcional si lo usas)
+        'departamental_id',
+        'activo',
+        'guid',
+        'domain',
     ];
 
     /**
@@ -112,7 +116,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     /** Roles “centrales” con vista global (ajusta nombres si usas otros) */
     public function isCentralRole(): bool
     {
-        return $this->hasAnyRole(['Administrador', 'gol']) || $this->isSuperAdmin();
+        return $this->hasAnyRole(['ti', 'gol']) || $this->isSuperAdmin();
     }
 
     /* ==============================

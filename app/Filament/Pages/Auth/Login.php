@@ -5,7 +5,6 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
-use App\Services\LdapAuthenticator;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -89,38 +88,40 @@ class Login extends BaseLogin
 
     public function authenticate(): ?LoginResponse
     {
-        $credentials = $this->getCredentialsFromFormData($this->form->getState());
-        $username = $credentials['username'];
-        $password = $credentials['password'];
+        $data = $this->form->getState();
+        $username = $data['username'];
+        $password = $data['password'];
+        $remember = $data['remember'] ?? false;
 
-        // Buscar usuario local
-        $user = User::where('username', $username)->first();
+        // Check if user exists locally to determine auth strategy
+        $localUser = User::where('username', $username)->first();
 
-        if (! $user) {
-            $this->throwFailureValidationException();
-        }
-
-        // Verificar si es SuperAdmin - usar autenticación local
-        $isSuperAdmin = $user->hasRole(config('filament-shield.super_admin.name'))
-            || $user->hasRole('SuperAdmin');
-
-        if ($isSuperAdmin) {
-            // Autenticar contra BD local
-            if (! $user->password || ! Hash::check($password, $user->password)) {
+        if ($localUser && $this->isSuperAdmin($localUser)) {
+            // SuperAdmin: authenticate against local DB
+            if (! $localUser->password || ! Hash::check($password, $localUser->password)) {
                 $this->throwFailureValidationException();
             }
+            Auth::login($localUser, $remember);
         } else {
-            // Autenticar contra LDAP
-            $ldapAuth = app(LdapAuthenticator::class);
-            if (! $ldapAuth->authenticate($username, $password)) {
+            // All other users: authenticate via LDAP (with local fallback if needed)
+            $credentials = ['username' => $username, 'password' => $password];
+
+            // If user exists locally, add fallback for offline scenarios
+            if ($localUser) {
+                $credentials['fallback'] = ['username' => $username, 'password' => $password];
+            }
+
+            if (! Auth::attempt($credentials, $remember)) {
                 $this->throwFailureValidationException();
             }
         }
-
-        // Login en Laravel
-        Auth::login($user, $credentials['remember'] ?? false);
 
         return app(LoginResponse::class);
+    }
+
+    protected function isSuperAdmin(User $user): bool
+    {
+        return $user->hasRole(config('filament-shield.super_admin.name'));
     }
 
     protected function hasFullWidthFormActions(): bool
@@ -128,7 +129,6 @@ class Login extends BaseLogin
         return true;
     }
 
-    // Método para personalizar mensajes de validación
     protected function getCredentialsFromFormData(array $data): array
     {
         return [

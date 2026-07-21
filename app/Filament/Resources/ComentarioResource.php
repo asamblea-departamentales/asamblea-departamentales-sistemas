@@ -78,7 +78,7 @@ class ComentarioResource extends Resource
             Tables\Actions\EditAction::make()
                 ->visible(fn () =>
                     auth()->user()->hasAnyRole([
-                        'Administrador',
+                        'ti',
                         'super_admin',
                         'coordinador',
                         'gol',
@@ -89,7 +89,7 @@ class ComentarioResource extends Resource
             Tables\Actions\DeleteAction::make()
                 ->visible(fn () =>
                     auth()->user()->hasAnyRole([
-                        'Administrador',
+                        'ti',
                         'super_admin',
                         'coordinador',
                         'gol',
@@ -101,7 +101,7 @@ class ComentarioResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->visible(fn () =>
                         auth()->user()->hasAnyRole([
-                            'Administrador',
+                            'ti',
                             'super_admin',
                             'coordinador',
                             'gol',

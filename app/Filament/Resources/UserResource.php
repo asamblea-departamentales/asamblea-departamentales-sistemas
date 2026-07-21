@@ -157,7 +157,7 @@ class UserResource extends Resource
                                         $u = Filament::auth()->user();
 
                                         // TI, GOL o SuperAdmin pueden cambiar la oficina
-                                        return ! ($u && ($u->hasAnyRole(['Administrador', 'gol', 'SuperAdmin']) || $u->hasRole(config('filament-shield.super_admin.name'))));
+                                        return ! ($u && ($u->hasAnyRole(['ti', 'gol', 'super_admin']) || $u->hasRole(config('filament-shield.super_admin.name'))));
                                     }),
 
                                 // === Marcar email verificado (solo en crear) ===
@@ -174,7 +174,7 @@ class UserResource extends Resource
                                 $user = Filament::auth()->user();
 
                                 return $user && (
-                                    $user->hasRole('Administrador') ||
+                                    $user->hasRole('ti') ||
                                     $user->hasRole(config('filament-shield.super_admin.name'))
                                 );
                             })
@@ -280,7 +280,7 @@ class UserResource extends Resource
                 $user = Filament::auth()->user();
 
                 //TI global (puede cambiar a uno por departamental)
-                $isCentral = $user && ($user->hasAnyRole(['ti','Administrador', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
+                $isCentral = $user && ($user->hasAnyRole(['ti','ti', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
 
                 if (! $isCentral && $user) {
                     $query->where('departamental_id', $user->departamental_id);
@@ -297,7 +297,7 @@ class UserResource extends Resource
                         ->icon('heroicon-o-shield-check')
                         ->modalHeading('Asignar rol al usuario')
                         ->modalSubmitActionLabel('Asignar')
-                        ->visible(fn () => Filament::auth()->user()?->hasRole('Administrador'))
+                        ->visible(fn () => Filament::auth()->user()?->hasRole('ti'))
                         ->form([
                             Select::make('roles')
                                 ->label('Selecciona roles')
@@ -318,7 +318,7 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->visible(fn () => Filament::auth()->user()?->hasRole('Administrador')),
+                        ->visible(fn () => Filament::auth()->user()?->hasRole('ti')),
                 ]),
             ]);
     }

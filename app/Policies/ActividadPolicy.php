@@ -16,7 +16,7 @@ class ActividadPolicy
     public function viewAny(User $user): bool
     {
         //GOL y Administrador siempre pueden ver todas
-        if($user->hasRole(['Administrador', 'gol'])){
+        if($user->hasRole(['ti', 'gol'])){
             return true;
         }
         //Otros roles depende del permiso
@@ -34,7 +34,7 @@ class ActividadPolicy
         }
 
         // GOL o Administrador → pueden ver todas
-        if ($user->hasRole(['Administrador', 'gol'])) {
+        if ($user->hasRole(['ti', 'gol'])) {
             return true;
         }
 
@@ -71,7 +71,7 @@ class ActividadPolicy
         }
 
         // Administrador sí puede editar todo
-        if ($user->hasRole('Administrador')) {
+        if ($user->hasRole('ti')) {
             return true;
         }
 
@@ -95,7 +95,7 @@ class ActividadPolicy
         }
 
         // Administrador sí puede eliminar todo
-        if ($user->hasRole('Administrador')) {
+        if ($user->hasRole('ti')) {
             return true;
         }
 

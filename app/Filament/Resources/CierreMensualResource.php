@@ -176,7 +176,7 @@ class CierreMensualResource extends Resource
                     ->icon('heroicon-o-check')
                     ->requiresConfirmation()
                     ->visible(fn ($record) => $record->estado === 'generado'
-                        && auth()->user()->hasAnyRole(['Administrador', 'coordinador', 'ti', 'gol', 'auditoria'])
+                        && auth()->user()->hasAnyRole(['ti', 'coordinador', 'ti', 'gol', 'auditoria'])
                     )
                     ->action(function ($record) {
                         $record->update(['estado' => 'aprobado']);

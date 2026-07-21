@@ -4,62 +4,172 @@ namespace App\Services;
 
 use App\Models\Actividad;
 use App\Models\CierreMensual;
+use App\Models\Departamental;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class CierreMensualService
 {
-    public function generarCierre($departamentalId, $mes, $año, $userId)
+    public function getMesesDisponibles(): array
     {
-        // 1. Buscar actividades del mes
-        $actividades = Actividad::whereMonth('fecha', $mes)
+        return [
+            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo',
+            4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
+            7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre',
+            10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+        ];
+    }
+
+    public function getNombreMes(int $mes): string
+    {
+        return $this->getMesesDisponibles()[$mes] ?? '';
+    }
+
+    /**
+     * Genera cierre mensual individual o consolidado.
+     *
+     * @return array{generados: int, omitidos: int, cierres: array}
+     */
+    public function generarCierre(array $data, $user): array
+    {
+        $mes = $data['mes'];
+        $año = $data['año'];
+        $tipoCierre = $data['tipo_cierre'] ?? 'individual';
+
+        $cierresGenerados = 0;
+        $cierresOmitidos = 0;
+        $cierresConsolidados = [];
+
+        if ($tipoCierre === 'individual') {
+            $resultado = $this->procesarCierreDepartamental(
+                $user->departamental_id,
+                $mes,
+                $año,
+                $user,
+                $data['observaciones'] ?? null,
+                true
+            );
+
+            $resultado ? $cierresGenerados++ : $cierresOmitidos++;
+        }
+
+        if ($tipoCierre === 'consolidado') {
+            foreach (Departamental::all() as $departamental) {
+                $resultado = $this->procesarCierreDepartamental(
+                    $departamental->id,
+                    $mes,
+                    $año,
+                    $user,
+                    'Cierre consolidado generado automáticamente',
+                    false
+                );
+
+                if ($resultado) {
+                    $cierresGenerados++;
+                    $cierre = CierreMensual::where('departamental_id', $departamental->id)
+                        ->where('mes', $mes)
+                        ->where('año', $año)
+                        ->first();
+                    $cierresConsolidados[] = $cierre;
+                } else {
+                    $cierresOmitidos++;
+                }
+            }
+        }
+
+        return [
+            'generados' => $cierresGenerados,
+            'omitidos' => $cierresOmitidos,
+            'cierres' => $cierresConsolidados,
+        ];
+    }
+
+    /**
+     * Procesa el cierre de una departamental específica.
+     */
+    public function procesarCierreDepartamental(
+        int $departamentalId,
+        int $mes,
+        int $año,
+        $user,
+        ?string $observaciones,
+        bool $generarPDF = true
+    ): bool {
+        $cierreExistente = CierreMensual::where('departamental_id', $departamentalId)
+            ->where('mes', $mes)
+            ->where('año', $año)
+            ->first();
+
+        if ($cierreExistente && $cierreExistente->estado !== 'reabierto') {
+            return false;
+        }
+
+        $actividades = Actividad::where('departamental_id', $departamentalId)
+            ->whereMonth('fecha', $mes)
             ->whereYear('fecha', $año)
-            ->where('departamental_id', $departamentalId)
             ->get();
 
-        // 2. Calcular totales
         $proyectadas = $actividades->count();
         $ejecutadas = $actividades->where('estado', 'Completada')->count();
         $pendientes = $actividades->where('estado', 'Pendiente')->count();
         $canceladas = $actividades->where('estado', 'Cancelada')->count();
+        $porcentajeCumplimiento = $proyectadas > 0
+            ? round(($ejecutadas / $proyectadas) * 100, 2)
+            : 0;
 
-        // 3. Crear Cierre
-        $cierre = CierreMensual::create([
-            'departamental_id' => $departamentalId,
-            'user_id' => $userId,
-            'mes' => $mes,
-            'año' => $año,
-            'actividades_proyectadas' => $proyectadas,
-            'actividades_ejecutadas' => $ejecutadas,
-            'actividades_pendientes' => $pendientes,
-            'actividades_canceladas' => $canceladas,
-            'fecha_cierre' => now(),
-        ]);
+        $cierre = CierreMensual::updateOrCreate(
+            [
+                'departamental_id' => $departamentalId,
+                'mes' => $mes,
+                'año' => $año,
+            ],
+            [
+                'user_id' => $user->id,
+                'actividades_proyectadas' => $proyectadas,
+                'actividades_ejecutadas' => $ejecutadas,
+                'actividades_pendientes' => $pendientes,
+                'actividades_canceladas' => $canceladas,
+                'porcentaje_cumplimiento' => $porcentajeCumplimiento,
+                'estado' => 'generado',
+                'observaciones' => $observaciones,
+                'fecha_cierre' => now(),
+            ]
+        );
 
-        // 4. Asociar actividades al cierre
-        Actividad::whereIn('id', $actividades->pluck('id'))
+        Actividad::where('departamental_id', $departamentalId)
+            ->whereMonth('fecha', $mes)
+            ->whereYear('fecha', $año)
             ->update(['cierre_mensual_id' => $cierre->id]);
 
-        // 5. Generar PDF
-        $pdf = Pdf::loadView('pdf.cierre_mensual', [
-            'cierre' => $cierre,
-            'actividades' => $actividades,
-            'meses' => $this->meses(),
-        ]);
+        if ($generarPDF) {
+            $cierre->generarPDF();
+        }
 
-        $pdfPath = "cierres/cierre_{$cierre->id}.pdf";
-        $pdf->save(storage_path("app/public/$pdfPath"));
-
-        $cierre->update(['pdf_path' => $pdfPath]);
-
-        return $cierre;
+        return true;
     }
 
-    public function meses()
+    public function generarPDFConsolidado($cierres, int $mes, int $año): void
     {
-        return [
-            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
-        ];
+        $meses = $this->getMesesDisponibles();
+
+        $pdf = Pdf::loadView('pdf.cierre-consolidado', [
+            'cierres' => $cierres,
+            'mes' => $mes,
+            'año' => $año,
+            'meses' => $meses,
+        ]);
+
+        $nombreArchivo = "informe_consolidado_{$año}_{$mes}.pdf";
+        $rutaPDF = storage_path("app/public/cierres/{$nombreArchivo}");
+
+        if (! file_exists(dirname($rutaPDF))) {
+            mkdir(dirname($rutaPDF), 0755, true);
+        }
+
+        $pdf->save($rutaPDF);
+
+        if (! empty($cierres)) {
+            $cierres[0]->update(['pdf_path' => "cierres/{$nombreArchivo}"]);
+        }
     }
 }

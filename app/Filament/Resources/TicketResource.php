@@ -29,7 +29,7 @@ class TicketResource extends Resource
     $user = \Filament\Facades\Filament::auth()->user();
 
     $isCentral = $user && (
-        $user->hasAnyRole(['ti','Administrador','gol']) ||
+        $user->hasAnyRole(['ti','ti','gol']) ||
         $user->hasRole(config('filament-shield.super_admin.name'))
     );
 
@@ -106,7 +106,7 @@ class TicketResource extends Resource
 
             // TI global, Administrador, super_admin → ven todos los tickets
             $isCentral = $user && (
-                $user->hasAnyRole(['ti','Administrador','gol']) ||
+                $user->hasAnyRole(['ti','ti','gol']) ||
                 $user->hasRole(config('filament-shield.super_admin.name'))
             );
 

@@ -3,9 +3,8 @@
 namespace App\Filament\Resources\ActividadResource\Pages;
 
 use App\Filament\Resources\ActividadResource;
-use App\Models\Actividad;
 use App\Models\CierreMensual;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\CierreMensualService;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -19,6 +18,7 @@ class ListActividades extends ListRecords
     protected function getHeaderActions(): array
     {
         $user = auth()->user();
+        $service = app(CierreMensualService::class);
 
         return [
             Actions\CreateAction::make()
@@ -37,7 +37,7 @@ class ListActividades extends ListRecords
                 ->form([
                     \Filament\Forms\Components\Select::make('descargar_mes')
                         ->label('Mes')
-                        ->options($this->getMesesDisponibles())
+                        ->options($service->getMesesDisponibles())
                         ->default(Carbon::now()->subMonth()->month)
                         ->required(),
                     \Filament\Forms\Components\TextInput::make('descargar_año')
@@ -46,7 +46,7 @@ class ListActividades extends ListRecords
                         ->default(Carbon::now()->subMonth()->year)
                         ->required(),
                 ])
-                ->action(function (array $data) {
+                ->action(function (array $data) use ($service) {
                     $año = $data['descargar_año'];
                     $mes = $data['descargar_mes'];
                     $filename = "informe_consolidado_{$año}_{$mes}.pdf";
@@ -55,7 +55,7 @@ class ListActividades extends ListRecords
                     if (! file_exists($path)) {
                         Notification::make()
                             ->title('PDF no encontrado')
-                            ->body("El consolidado de {$this->getMesesDisponibles()[$mes]} $año no ha sido generado. Genérelo primero desde 'Generar Cierre Mensual'.")
+                            ->body("El consolidado de {$service->getNombreMes($mes)} $año no ha sido generado. Genérelo primero desde 'Generar Cierre Mensual'.")
                             ->danger()
                             ->send();
 
@@ -68,87 +68,66 @@ class ListActividades extends ListRecords
                         ->success()
                         ->send();
 
-                    // Redirección a la ruta del PDF (el navegador abrir en nueva pestaña)
                     return redirect()->route('consolidado.pdf', ['año' => $año, 'mes' => $mes]);
                 }),
 
             Actions\Action::make('generar_cierre')
-    ->label('Generar Cierre Mensual')
-    ->icon('heroicon-o-archive-box')
-    ->color('primary')
-    ->button()
-    ->modalHeading('Generar Cierre o Informe Mensual')
-    ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
-    ->modalSubmitActionLabel('Generar')
-    ->modalWidth('2xl')
-    ->form([
-        \Filament\Forms\Components\Radio::make('tipo_cierre')
-            ->label('Tipo de Cierre/Informe')
-            ->options([
-                'individual' => 'Cierre Individual (Solo mi departamental)',
-                'consolidado' => 'Informe Consolidado (Todas las departamentales)',
-            ])
-            ->default('individual')
-            ->required()
-            ->live()
-            ->columnSpanFull(),
+                ->label('Generar Cierre Mensual')
+                ->icon('heroicon-o-archive-box')
+                ->color('primary')
+                ->button()
+                ->modalHeading('Generar Cierre o Informe Mensual')
+                ->modalDescription('Seleccione el tipo de cierre o informe que desea generar')
+                ->modalSubmitActionLabel('Generar')
+                ->modalWidth('2xl')
+                ->form([
+                    \Filament\Forms\Components\Radio::make('tipo_cierre')
+                        ->label('Tipo de Cierre/Informe')
+                        ->options([
+                            'individual' => 'Cierre Individual (Solo mi departamental)',
+                            'consolidado' => 'Informe Consolidado (Todas las departamentales)',
+                        ])
+                        ->default('individual')
+                        ->required()
+                        ->live()
+                        ->columnSpanFull(),
 
-        \Filament\Forms\Components\Grid::make(2)
-            ->schema([
-                \Filament\Forms\Components\Select::make('mes')
-                    ->label('Mes a cerrar')
-                    ->options(fn () => $this->getMesesDisponibles()) // <-- closure
-                    ->default(fn () => Carbon::now()->subMonth()->month) // <-- closure
-                    ->required(),
+                    \Filament\Forms\Components\Grid::make(2)
+                        ->schema([
+                            \Filament\Forms\Components\Select::make('mes')
+                                ->label('Mes a cerrar')
+                                ->options(fn () => $service->getMesesDisponibles())
+                                ->default(fn () => Carbon::now()->subMonth()->month)
+                                ->required(),
 
-                \Filament\Forms\Components\TextInput::make('año')
-                    ->label('Año')
-                    ->numeric()
-                    ->default(fn () => Carbon::now()->subMonth()->year) // <-- closure
-                    ->required(),
-            ]),
+                            \Filament\Forms\Components\TextInput::make('año')
+                                ->label('Año')
+                                ->numeric()
+                                ->default(fn () => Carbon::now()->subMonth()->year)
+                                ->required(),
+                        ]),
 
-        \Filament\Forms\Components\Textarea::make('observaciones')
-            ->label('Observaciones (opcional)')
-            ->rows(3)
-            ->hidden(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'consolidado')
-            ->columnSpanFull(),
-    ])
-    ->action(function (array $data) {
-        $this->generarCierreMensual($data);
-    })
-    ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
+                    \Filament\Forms\Components\Textarea::make('observaciones')
+                        ->label('Observaciones (opcional)')
+                        ->rows(3)
+                        ->hidden(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'consolidado')
+                        ->columnSpanFull(),
+                ])
+                ->action(function (array $data) {
+                    $this->generarCierreMensual($data);
+                })
+                ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
         ];
     }
 
-    // Función para obtener los meses disponibles
-    protected function getMesesDisponibles(): array
-    {
-        return [
-            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo',
-            4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
-            7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre',
-            10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-        ];
-    }
-
-    // Función para obtener el nombre del mes anterior
-    protected function getMesAnteriorNombre(): string
-    {
-        $meses = $this->getMesesDisponibles();
-
-        return $meses[Carbon::now()->subMonth()->month];
-    }
-
-    // Función principal para generar el cierre mensual
     protected function generarCierreMensual(array $data): void
     {
         $user = auth()->user();
+        $service = app(CierreMensualService::class);
         $mes = $data['mes'];
         $año = $data['año'];
         $tipoCierre = $data['tipo_cierre'] ?? 'individual';
 
-        // Validar permisos para consolidado
         if ($tipoCierre === 'consolidado' && ! $user->hasAnyRole(['super_admin', 'gol'])) {
             Notification::make()
                 ->title('Sin permisos')
@@ -162,61 +141,16 @@ class ListActividades extends ListRecords
         try {
             DB::beginTransaction();
 
-            $cierresGenerados = 0;
-            $cierresOmitidos = 0;
-
-            // Si es informe individual → solo la departamental del usuario
-            if ($tipoCierre === 'individual') {
-                $resultado = $this->procesarCierreDepartamental(
-                    $user->departamental_id,
-                    $mes,
-                    $año,
-                    $user,
-                    $data['observaciones'] ?? null,
-                    true // Generar el PDF
-                );
-
-                if ($resultado) {
-                    $cierresGenerados++;
-                } else {
-                    $cierresOmitidos++;
-                }
-            }
-
-            // Si es informe consolidado → recorrer todas las departamentales
-            if ($tipoCierre === 'consolidado') {
-                foreach (\App\Models\Departamental::all() as $departamental) {
-                    $resultado = $this->procesarCierreDepartamental(
-                        $departamental->id,
-                        $mes,
-                        $año,
-                        $user,
-                        'Cierre consolidado generado automáticamente',
-                        false // No generar PDF para consolidado
-                    );
-
-                    if ($resultado) {
-                        $cierresGenerados++;
-                        // Guardar el cierre creado
-                        $cierre = CierreMensual::where('departamental_id', $departamental->id)
-                            ->where('mes', $mes)
-                            ->where('año', $año)
-                            ->first();
-                        $cierresConsolidados[] = $cierre;
-                    } else {
-                        $cierresOmitidos++;
-                    }
-                }
-            }
+            $resultado = $service->generarCierre($data, $user);
 
             DB::commit();
 
             $mensaje = $tipoCierre === 'individual'
-                ? "Se ha generado el cierre de {$this->getMesesDisponibles()[$mes]} {$año}."
-                : "Se generó el informe consolidado para {$this->getMesesDisponibles()[$mes]} {$año} con {$cierresGenerados} departamentales.";
+                ? "Se ha generado el cierre de {$service->getNombreMes($mes)} {$año}."
+                : "Se generó el informe consolidado para {$service->getNombreMes($mes)} {$año} con {$resultado['generados']} departamentales.";
 
-            if ($cierresOmitidos > 0) {
-                $mensaje .= " {$cierresOmitidos} ya existían.";
+            if ($resultado['omitidos'] > 0) {
+                $mensaje .= " {$resultado['omitidos']} ya existían.";
             }
 
             Notification::make()
@@ -225,8 +159,7 @@ class ListActividades extends ListRecords
                 ->success()
                 ->send();
 
-            // Redirigir según el tipo
-            if ($tipoCierre === 'individual' && $cierresGenerados > 0) {
+            if ($tipoCierre === 'individual' && $resultado['generados'] > 0) {
                 $cierre = CierreMensual::where('departamental_id', $user->departamental_id)
                     ->where('mes', $mes)
                     ->where('año', $año)
@@ -245,118 +178,6 @@ class ListActividades extends ListRecords
                 ->body('Ocurrió un error: '.$e->getMessage())
                 ->danger()
                 ->send();
-        }
-    }
-
-    /**
-     * Función auxiliar para procesar el cierre de una departamental
-     *
-     * @return bool True si se generó el cierre, False si ya existía
-     */
-    protected function procesarCierreDepartamental(
-        int $departamentalId,
-        int $mes,
-        int $año,
-        $user,
-        ?string $observaciones,
-        bool $generarPDF = true
-    ): bool {
-        // Verificar si ya existe un cierre para este mes
-        $cierreExistente = CierreMensual::where('departamental_id', $departamentalId)
-            ->where('mes', $mes)
-            ->where('año', $año)
-            ->first();
-
-        // Verificar si ya existe un cierre para este mes
-        $cierreExistente = CierreMensual::where('departamental_id', $departamentalId)
-            ->where('mes', $mes)
-            ->where('año', $año)
-            ->first();
-
-        if ($cierreExistente && $cierreExistente->estado !== 'reabierto') {
-            return false; // Ya existe, no se generó uno nuevo
-        }
-
-        // Obtener actividades del mes
-
-        // Obtener actividades del mes
-        $actividades = Actividad::where('departamental_id', $departamentalId)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $año)
-            ->get();
-
-        // Calcular métricas
-        $proyectadas = $actividades->count();
-        $ejecutadas = $actividades->where('estado', 'Completada')->count();
-        $pendientes = $actividades->where('estado', 'Pendiente')->count();
-        $canceladas = $actividades->where('estado', 'Cancelada')->count();
-
-        $porcentajeCumplimiento = $proyectadas > 0
-            ? round(($ejecutadas / $proyectadas) * 100, 2)
-            : 0;
-
-        // Crear o actualizar el cierre
-        $cierre = CierreMensual::updateOrCreate(
-            [
-                'departamental_id' => $departamentalId,
-                'mes' => $mes,
-                'año' => $año,
-            ],
-            [
-                'user_id' => $user->id,
-                'actividades_proyectadas' => $proyectadas,
-                'actividades_ejecutadas' => $ejecutadas,
-                'actividades_pendientes' => $pendientes,
-                'actividades_canceladas' => $canceladas,
-                'porcentaje_cumplimiento' => $porcentajeCumplimiento,
-                'estado' => 'generado',
-                'observaciones' => $observaciones,
-                'fecha_cierre' => now(),
-            ]
-        );
-
-        // Vincular actividades del mes al cierre
-        Actividad::where('departamental_id', $departamentalId)
-            ->whereMonth('fecha', $mes)
-            ->whereYear('fecha', $año)
-            ->update(['cierre_mensual_id' => $cierre->id]);
-
-        // Generar PDF con actividades ya vinculadas solo si se solicita el individual
-        if ($generarPDF) {
-            $cierre->generarPDF();
-        }
-
-        return true; // Se generó exitosamente
-    }
-
-    /**
-     * Genera un PDF consolidado con informacion de todas las departamentales
-     */
-    protected function generarPDFConsolidado($cierres, $mes, $año): void
-    {
-        $meses = $this->getMesesDisponibles();
-
-        $pdf = Pdf::loadView('pdf.cierre-consolidado', [
-            'cierres' => $cierres,
-            'mes' => $mes,
-            'año' => $año,
-            'meses' => $meses,
-        ]);
-
-        $nombreArchivo = "informe_consolidado_{$año}_{$mes}.pdf";
-        $rutaPDF = storage_path("app/public/cierres/{$nombreArchivo}");
-
-        // Crear directorio si no existe
-        if (! file_exists(dirname($rutaPDF))) {
-            mkdir(dirname($rutaPDF), 0755, true);
-        }
-
-        $pdf->save($rutaPDF);
-
-        // Opcional: Guardar la ruta en algún lugar para poder descargarlo después
-        // Por ejemplo, en el primer cierre
-        if (! empty($cierres)) {
-            $cierres[0]->update(['pdf_path' => "cierres/{$nombreArchivo}"]);
         }
     }
 }
