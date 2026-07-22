@@ -9,6 +9,7 @@ class Comentarios extends Model
 {
     protected $fillable = [
         'actividad_id',
+        'ticket_id',
         'user_id',
         'contenido',
     ];
@@ -16,6 +17,11 @@ class Comentarios extends Model
     public function actividad(): BelongsTo
     {
         return $this->belongsTo(Actividad::class);
+    }
+
+    public function ticket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class);
     }
 
     public function user(): BelongsTo

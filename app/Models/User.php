@@ -18,8 +18,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, MustVerifyEmail, LdapAuthenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles, HasUuids;

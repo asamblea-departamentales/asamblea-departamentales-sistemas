@@ -14,4 +14,7 @@ return [
             'timeout' => 5,
         ],
     ],
+    'logging' => [
+        'enabled' => env('LDAP_LOGGING', true),
+    ],
 ];

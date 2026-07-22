@@ -137,10 +137,10 @@ class Login extends BaseLogin
             }
             Auth::login($localUser, $remember);
         } else {
-            $credentials = ['username' => $username, 'password' => $password];
+            $credentials = ['samaccountname' => $username, 'password' => $password];
 
             if ($localUser) {
-                $credentials['fallback'] = ['username' => $username, 'password' => $password];
+                $credentials['fallback'] = ['samaccountname' => $username, 'password' => $password];
             }
 
             if (! Auth::attempt($credentials, $remember)) {

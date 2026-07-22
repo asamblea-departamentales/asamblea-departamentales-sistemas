@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TicketResource\Pages;
 
 use App\Filament\Resources\TicketResource;
+use App\Filament\Resources\TicketResource\RelationManagers\TicketComentarioRelationManager;
 use App\Models\Ticket;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -14,6 +15,13 @@ use Filament\Forms;
 class ViewTicket extends ViewRecord
 {
     protected static string $resource = TicketResource::class;
+
+    public function getRelationManagers(): array
+    {
+        return [
+            TicketComentarioRelationManager::class,
+        ];
+    }
 
     protected function getHeaderActions(): array
     {

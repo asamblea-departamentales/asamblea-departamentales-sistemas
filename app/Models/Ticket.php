@@ -132,9 +132,14 @@ class Ticket extends Model
     }
 
     public function departamental()
-{
-    return $this->belongsTo(Departamental::class);
-}
+    {
+        return $this->belongsTo(Departamental::class);
+    }
+
+    public function comentarios()
+    {
+        return $this->hasMany(Comentarios::class);
+    }
 
 
 }

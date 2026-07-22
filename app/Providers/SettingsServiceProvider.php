@@ -19,7 +19,7 @@ class SettingsServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        View::composer('*', function ($view) {
+        View::composer(['components.superduper.*', 'livewire.superduper.*'], function ($view) {
             $view->with([
                 'generalSettings' => app(GeneralSettings::class),
                 'siteSettings' => app(SiteSettings::class),

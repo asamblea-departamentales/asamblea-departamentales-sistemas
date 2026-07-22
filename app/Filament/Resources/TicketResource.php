@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResource\Pages;
+use App\Filament\Resources\TicketResource\RelationManagers\TicketComentarioRelationManager;
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -295,7 +296,7 @@ class TicketResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TicketComentarioRelationManager::class,
         ];
     }
 
