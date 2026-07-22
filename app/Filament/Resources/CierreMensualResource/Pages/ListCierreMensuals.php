@@ -129,9 +129,14 @@ class ListCierreMensuals extends ListRecords
         } catch (\Exception $e) {
             DB::rollBack();
 
+            \Log::error('Error generando cierre: ' . $e->getMessage(), [
+                'exception' => $e,
+                'user_id' => auth()->id(),
+            ]);
+
             Notification::make()
                 ->title('Error al generar cierre')
-                ->body('Ocurrió un error: '.$e->getMessage())
+                ->body('Ocurrió un error inesperado. Contacte al administrador.')
                 ->danger()
                 ->send();
         }

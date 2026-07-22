@@ -196,7 +196,9 @@ class ActividadResource extends Resource
                     ->panelLayout('grid')
                     ->enableOpen()
                     ->enableDownload()
-                    ->helperText('Archivos almacenados y gestionados dentro del sistema.'),
+                    ->maxFiles(10)
+                    ->maxSize(10240)
+                    ->helperText('Máximo 10 archivos, 10 MB cada uno.'),
             ]);
     }
 

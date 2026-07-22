@@ -65,6 +65,16 @@ class ContratoResource extends Resource
                             ->step(0.01),
                     ])->columns(3),
 
+                Forms\Components\Hidden::make('departamental_id')
+                    ->default(fn () => auth()->user()->departamental_id)
+                    ->visible(fn () => ! auth()->user()->isCentralRole())
+                    ->dehydrated(),
+                Forms\Components\Select::make('departamental_id')
+                    ->label('Departamental')
+                    ->relationship(name: 'departamental', titleAttribute: 'nombre')
+                    ->searchable()
+                    ->visible(fn () => auth()->user()->isCentralRole()),
+
                 Forms\Components\Section::make('Vigencia del Contrato')
                     ->schema([
                         Forms\Components\DatePicker::make('fecha_inicio')
@@ -97,6 +107,18 @@ class ContratoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                $user = \Filament\Facades\Filament::auth()->user();
+
+                $isCentral = $user && (
+                    $user->hasAnyRole(['ti','gol']) ||
+                    $user->hasRole(config('filament-shield.super_admin.name'))
+                );
+
+                if (! $isCentral && $user) {
+                    $query->where('departamental_id', $user->departamental_id);
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('tipo')
                     ->label('Tipo')

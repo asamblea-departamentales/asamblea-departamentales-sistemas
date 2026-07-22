@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Icewind\Flysystem\SMBv3Adapter;
+use Icewind\SMB\BasicAuth;
 use Icewind\SMB\ServerFactory;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
@@ -18,10 +19,15 @@ class FilesystemServiceProvider extends ServiceProvider
             try {
                 $serverFactory = new ServerFactory;
 
+                $credentials = new BasicAuth(
+                    $config['username'] ?? '',
+                    null,
+                    $config['password'] ?? ''
+                );
+
                 $server = $serverFactory->createServer(
                     $config['host'],
-                    $config['username'],
-                    $config['password']
+                    $credentials
                 );
 
                 $share = $server->getShare($config['share']);

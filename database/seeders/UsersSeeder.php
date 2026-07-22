@@ -12,20 +12,13 @@ class UsersSeeder extends Seeder
 {
     public function run(): void
     {
-        // Los usuarios reales ahora se autenticarán contra LDAP
-        // Los usuarios deben existir en la tabla users con sus roles y departamental
-        // La contraseña se verificará contra el directorio LDAP institucional
-        //
-        // $usuariosReales = [
-        //     [
-        //         'firstname' => 'Rene',
-        //         'lastname'  => 'Herrera',
-        //         'email'     => 'rene.herrera@asamblea.gob.sv',
-        //         'username'  => 'rherrera',
-        //         'role'      => 'gol',
-        //     ],
-        //     // ... más usuarios
-        // ];
+        $password = env('SUPERADMIN_PASSWORD');
+
+        if (! $password || strlen($password) < 12) {
+            throw new \RuntimeException(
+                'SUPERADMIN_PASSWORD must be defined in .env with at least 12 characters.'
+            );
+        }
 
         // 2. Superadmin (Idempotente)
         $superAdmin = User::firstOrCreate(
@@ -36,7 +29,7 @@ class UsersSeeder extends Seeder
                 'firstname' => 'Admin',
                 'lastname' => 'Principal',
                 'email_verified_at' => now(),
-                'password' => Hash::make(env('SUPERADMIN_PASSWORD', 'Cambiar@' . now()->year . '!')),
+                'password' => Hash::make($password),
             ]
         );
 

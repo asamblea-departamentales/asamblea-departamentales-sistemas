@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 |  CONTACTO
 ------------------------------*/
 Route::get('/contact', fn () => view('contact'))->name('contact.form');
-Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit')->middleware('throttle:10,1');
 
 /* -----------------------------
 |  HOME → REDIRECT A PANEL

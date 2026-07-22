@@ -21,6 +21,7 @@ class Contrato extends Model
         'fecha_vencimiento',
         'oficina',
         'observaciones',
+        'departamental_id',
     ];
 
 
@@ -76,7 +77,15 @@ public function scopeVencidos($query)
 
         static::creating(function ($model) {
             $model -> id = (string) Str::uuid();
-        });
 
+            if (auth()->check() && ! $model->departamental_id) {
+                $model->departamental_id = auth()->user()->departamental_id;
+            }
+        });
+    }
+
+    public function departamental()
+    {
+        return $this->belongsTo(Departamental::class);
     }
 }

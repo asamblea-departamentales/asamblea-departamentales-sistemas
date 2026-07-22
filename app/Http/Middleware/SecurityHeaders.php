@@ -39,17 +39,17 @@ class SecurityHeaders
             $csp = "default-src 'self'; ".
                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
                    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
-                   "img-src 'self' data:; ".
+                   "img-src 'self' data: https://ui-avatars.com; ".
                    "font-src 'self' data: https://cdnjs.cloudflare.com; ".
                    "connect-src 'self'; ".
                    "media-src 'self'; ".
                    "object-src 'none'; ".
-                   "frame-src 'self';";
+                   "frame-src 'self' https://app.powerbi.com;";
         } else {
             $csp = "default-src 'self'; ".
                    "script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
                    "style-src 'self' 'unsafe-inline' http://localhost:* http://127.0.0.1:* http://[::1]:* https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; ".
-                   "img-src 'self' data:; ".
+                   "img-src 'self' data: https://ui-avatars.com; ".
                    "font-src 'self' data: https://cdnjs.cloudflare.com; ".
                    "connect-src 'self' ws://localhost:* ws://127.0.0.1:* ws://[::1]:* http://localhost:* http://127.0.0.1:* http://[::1]:*; ".
                    "media-src 'self'; ".
@@ -57,17 +57,7 @@ class SecurityHeaders
                    "frame-src 'self';";
         }
 
-        // Check for CSP Report-Only header in request (for debugging)
-        if ($request->header('X-Enable-CSP-Report-Only') === 'true') {
-            $response->headers->set('Content-Security-Policy-Report-Only', $csp);
-
-            SecurityLogger::logSuspiciousActivity('CSP Report-Only mode enabled', [
-                'enabled_by' => 'request header',
-                'csp' => $csp,
-            ]);
-        } else {
-            $response->headers->set('Content-Security-Policy', $csp);
-        }
+        $response->headers->set('Content-Security-Policy', $csp);
 
         return $this->addBasicSecurityHeaders($response);
     }

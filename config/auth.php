@@ -64,7 +64,7 @@ return [
             'driver' => 'ldap',
             'model' => App\Models\User::class,
             'database' => [
-                'model' => App\Models\User::class,
+            'model' => \App\Ldap\User::class,
                 'sync_attributes' => [
                     'username'  => 'samaccountname',
                     'firstname' => 'givenname',

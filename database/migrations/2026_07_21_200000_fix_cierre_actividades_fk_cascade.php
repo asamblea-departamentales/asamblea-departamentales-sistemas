@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreign('cierre_mensual_id')
                   ->references('id')
                   ->on('cierres_mensuales')
-                  ->restrictOnDelete()
                   ->nullOnDelete();
         });
     }

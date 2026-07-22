@@ -165,11 +165,10 @@ Start development server:
 php artisan serve
 ```
 
-Now you can access with `/admin` path, using:
+Now you can access with `/admin` path, using the credentials defined in your `.env` file:
 
 ```bash
-email: superadmin@starter-kit.com
-password: superadmin
+SUPERADMIN_PASSWORD=<your-secure-password>
 ```
 
 #### Performance

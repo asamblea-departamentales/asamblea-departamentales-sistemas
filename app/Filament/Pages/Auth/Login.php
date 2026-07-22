@@ -9,14 +9,21 @@ use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BaseLogin;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
 
 class Login extends BaseLogin
 {
+    protected int $maxAttempts = 5;
+    protected int $decayMinutes = 1;
+
     public function form(Form $form): Form
     {
         return $form
@@ -86,35 +93,59 @@ class Login extends BaseLogin
         ];
     }
 
+    protected function throttleKey(): string
+    {
+        return strtolower($this->data['username'] ?? '') . '|' . request()->ip();
+    }
+
     public function authenticate(): ?LoginResponse
     {
+        $throttleKey = $this->throttleKey();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, $this->maxAttempts)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            throw ValidationException::withMessages([
+                'data.username' => 'Demasiados intentos. Intente de nuevo en ' . $seconds . ' segundos.',
+            ]);
+        }
+
         $data = $this->form->getState();
         $username = $data['username'];
         $password = $data['password'];
         $remember = $data['remember'] ?? false;
 
-        // Check if user exists locally to determine auth strategy
         $localUser = User::where('username', $username)->first();
 
         if ($localUser && $this->isSuperAdmin($localUser)) {
-            // SuperAdmin: authenticate against local DB
             if (! $localUser->password || ! Hash::check($password, $localUser->password)) {
+                RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
+                $this->throwFailureValidationException();
+            }
+            if ($localUser->activo === false) {
                 $this->throwFailureValidationException();
             }
             Auth::login($localUser, $remember);
         } else {
-            // All other users: authenticate via LDAP (with local fallback if needed)
             $credentials = ['username' => $username, 'password' => $password];
 
-            // If user exists locally, add fallback for offline scenarios
             if ($localUser) {
                 $credentials['fallback'] = ['username' => $username, 'password' => $password];
             }
 
             if (! Auth::attempt($credentials, $remember)) {
+                RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
+                $this->throwFailureValidationException();
+            }
+
+            $authenticatedUser = Auth::user();
+            if ($authenticatedUser && $authenticatedUser->activo === false) {
+                Auth::logout();
                 $this->throwFailureValidationException();
             }
         }
+
+        RateLimiter::clear($throttleKey);
 
         return app(LoginResponse::class);
     }

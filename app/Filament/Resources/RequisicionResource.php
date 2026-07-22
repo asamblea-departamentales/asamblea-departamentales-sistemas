@@ -81,11 +81,16 @@ public static function form(Form $form): Form
                         ->default('SOLICITADA')
                         ->required(),
                     
+                    Forms\Components\Hidden::make('departamental_id')
+                        ->default(fn () => auth()->user()->departamental_id)
+                        ->visible(fn () => ! auth()->user()->isCentralRole())
+                        ->dehydrated(),
                     Forms\Components\Select::make('departamental_id')
                         ->label('Departamental')
                         ->relationship(name: 'departamental', titleAttribute: 'nombre')
                         ->searchable()
-                        ->required(),
+                        ->required()
+                        ->visible(fn () => auth()->user()->isCentralRole()),
                 ])->columns(3),
 
             Forms\Components\Section::make('Observaciones')
@@ -109,7 +114,7 @@ public static function form(Form $form): Form
 
             // TI global, Administrador, super_admin → ven todos los tickets
             $isCentral = $user && (
-                $user->hasAnyRole(['ti','ti','gol']) ||
+                $user->hasAnyRole(['ti','gol']) ||
                 $user->hasRole(config('filament-shield.super_admin.name'))
             );
 
