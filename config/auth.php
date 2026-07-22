@@ -61,10 +61,10 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'ldap',
-            'model' => App\Models\User::class,
+            'driver' => env('LDAP_ENABLED', true) ? 'ldap' : 'eloquent',
+            'model' => env('LDAP_ENABLED', true) ? \App\Ldap\User::class : App\Models\User::class,
             'database' => [
-            'model' => \App\Ldap\User::class,
+                'model' => App\Models\User::class,
                 'sync_attributes' => [
                     'username'  => 'samaccountname',
                     'firstname' => 'givenname',

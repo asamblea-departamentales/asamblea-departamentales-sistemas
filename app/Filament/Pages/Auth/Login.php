@@ -116,8 +116,18 @@ class Login extends BaseLogin
         $remember = $data['remember'] ?? false;
 
         $localUser = User::where('username', $username)->first();
+        $ldapEnabled = env('LDAP_ENABLED', true);
 
-        if ($localUser && $this->isSuperAdmin($localUser)) {
+        if (! $ldapEnabled) {
+            if (! $localUser || ! $localUser->password || ! Hash::check($password, $localUser->password)) {
+                RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
+                $this->throwFailureValidationException();
+            }
+            if ($localUser->activo === false) {
+                $this->throwFailureValidationException();
+            }
+            Auth::login($localUser, $remember);
+        } elseif ($localUser && $this->isSuperAdmin($localUser)) {
             if (! $localUser->password || ! Hash::check($password, $localUser->password)) {
                 RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
                 $this->throwFailureValidationException();

@@ -8,6 +8,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\Tables\Table;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Opcodes\LogViewer\Facades\LogViewer;
 
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->validateLdapConfig();
+
         Post::observe(PostObserver::class);
 
         Table::configureUsing(function (Table $table): void {
@@ -58,5 +61,21 @@ class AppServiceProvider extends ServiceProvider
             PanelsRenderHook::BODY_END,
             fn () => view('filament.components.impersonate-banner')
         );
+    }
+
+    protected function validateLdapConfig(): void
+    {
+        if (! env('LDAP_ENABLED', true)) {
+            return;
+        }
+
+        $missing = array_filter([
+            'LDAP_HOSTS' => env('LDAP_HOSTS'),
+            'LDAP_BASE_DN' => env('LDAP_BASE_DN'),
+        ], fn ($v) => empty($v));
+
+        if ($missing) {
+            Log::warning('LDAP habilitado pero variables faltantes: ' . implode(', ', array_keys($missing)));
+        }
     }
 }
