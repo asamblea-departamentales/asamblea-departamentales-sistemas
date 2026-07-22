@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Storage;
 
 class ConsolidadoController extends Controller
 {
-    public function pdf($mes, $año)
+    public function pdf(int $año, int $mes)
     {
         $cierres = CierreMensual::where('mes', $mes)
             ->where('año', $año)
             ->with('departamental','actividades')
             ->get();
 
-        $pdf = Pdf::loadView('pdf.consolidado', [
+        $pdf = Pdf::loadView('pdf.cierre_consolidado', [
             'cierres' => $cierres,
             'mes' => $mes,
             'año' => $año,

@@ -37,7 +37,7 @@ class SendNewContactNotification implements ShouldQueue
      *
      * @var array
      */
-    public $backoff = [60, 60, 60]; // 1 minute, 5 minutes, 10 minutes
+    public $backoff = [60, 300, 600]; // 1 minute, 5 minutes, 10 minutes
 
     /**
      * Create a new listener instance.

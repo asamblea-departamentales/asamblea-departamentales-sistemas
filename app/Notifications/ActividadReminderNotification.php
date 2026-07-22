@@ -71,6 +71,9 @@ class ActividadReminderNotification extends Notification implements ShouldQueue,
     public function broadcastOn(): array
     {
         $notifiable = $this->notifiable ?? $this->actividad->user;
+        if (! $notifiable) {
+            return [];
+        }
         return [new PrivateChannel('notifications.' . $notifiable->getKey())];
     }
 

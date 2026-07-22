@@ -112,7 +112,7 @@
                         $totalCanceladas += $cierre->actividades_canceladas;
                     @endphp
                     <tr>
-                        <td><strong>{{ $cierre->departamental->nombre }}</strong></td>
+                        <td><strong>{{ $cierre->departamental?->nombre ?? 'N/A' }}</strong></td>
                         <td>{{ $cierre->actividades_proyectadas }}</td>
                         <td>{{ $cierre->actividades_ejecutadas }}</td>
                         <td>{{ $cierre->actividades_pendientes }}</td>
@@ -137,7 +137,7 @@
     {{-- Detalle por cada Departamental --}}
     @foreach($cierres as $index => $cierre)
         <div class="departamental-section {{ $index > 0 ? 'page-break' : '' }}">
-            <div class="section-title">{{ $cierre->departamental->nombre }}</div>
+            <div class="section-title">{{ $cierre->departamental?->nombre ?? 'N/A' }}</div>
             
             {{-- Resumen de la departamental --}}
             <table>

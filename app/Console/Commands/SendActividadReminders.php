@@ -28,7 +28,7 @@ class SendActividadReminders extends Command
 
         $actividades = Actividad::whereNotNull('reminder_at')
             ->where('reminder_at', '<=', $now)
-            ->where('estado', '!=', 'Completada')
+            ->whereIn('estado', ['Pendiente', 'En Progreso'])
             ->whereNull('reminder_notified_at')
             ->with('user')
             ->cursor();
@@ -97,10 +97,17 @@ class SendActividadReminders extends Command
      */
     private function notifyAdditionalUsers(Actividad $actividad): void
     {
-        // Obtener usuarios que deben recibir notificaciones (por ejemplo, administradores)
-        $additionalUsers = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['super_admin', 'ti', 'coordinador']);
+        $additionalUsers = User::whereHas('roles', function ($query) use ($actividad) {
+            $query->whereIn('name', ['super_admin', 'ti']);
         })->get();
+
+        if ($actividad->departamental_id) {
+            $coordinadores = User::whereHas('roles', function ($query) {
+                $query->where('name', 'coordinador');
+            })->where('departamental_id', $actividad->departamental_id)->get();
+
+            $additionalUsers = $additionalUsers->merge($coordinadores);
+        }
 
         foreach ($additionalUsers as $user) {
             if ($user->id === $actividad->user->id) {

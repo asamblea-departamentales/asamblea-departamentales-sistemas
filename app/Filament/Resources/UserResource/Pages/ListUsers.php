@@ -32,12 +32,15 @@ class ListUsers extends ListRecords
         $user = auth()->user();
         $tabs = [
             null => Tab::make('All'),
-            'admin' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'admin')),
-            'author' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'author')),
+            'coordinador' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'coordinador')),
+            'asistente_tecnico' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'asistente_tecnico')),
+            'auditoria' => Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'auditoria')),
         ];
 
         if ($user->isSuperAdmin()) {
             $tabs['superadmin'] = Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', config('filament-shield.super_admin.name')));
+            $tabs['ti'] = Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'ti'));
+            $tabs['gol'] = Tab::make()->query(fn ($query) => $query->with('roles')->whereRelation('roles', 'name', '=', 'gol'));
         }
 
         return $tabs;

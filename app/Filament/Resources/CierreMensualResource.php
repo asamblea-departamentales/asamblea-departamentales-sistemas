@@ -98,7 +98,8 @@ class CierreMensualResource extends Resource
                                 'aprobado' => 'Aprobado',
                                 'reabierto' => 'Reabierto',
                             ])
-                            ->required(),
+                            ->required()
+                            ->disabled(fn () => ! auth()->user()->isSuperAdmin() && ! auth()->user()->hasAnyRole(['ti', 'gol'])),
 
                         Forms\Components\Textarea::make('observaciones')
                             ->rows(3),
@@ -115,12 +116,12 @@ class CierreMensualResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('mes')
-                    ->formatStateUsing(fn ($state) => [
+                    ->formatStateUsing(fn ($state) => ([
                         1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo',
                         4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
                         7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre',
                         10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-                    ][$state])
+                    ])[$state] ?? 'Desconocido')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('año')
@@ -156,18 +157,17 @@ class CierreMensualResource extends Resource
                 Tables\Actions\Action::make('descargar_pdf')
                     ->label('Descargar PDF')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->url(fn ($record) => route('cierre.pdf', $record)) // 👈 pasa el modelo, no solo el ID
+                    ->url(fn ($record) => route('cierre.pdf', $record))
                     ->openUrlInNewTab()
                     ->visible(fn ($record) => filled($record->pdf_path)),
 
-                // ✅ NUEVA ACCIÓN: APROBAR CIERRE
                 Tables\Actions\Action::make('aprobar')
                     ->label('Aprobar')
                     ->color('success')
                     ->icon('heroicon-o-check')
                     ->requiresConfirmation()
                     ->visible(fn ($record) => $record->estado === 'generado'
-                        && auth()->user()->hasAnyRole(['ti', 'coordinador', 'ti', 'gol', 'auditoria'])
+                        && auth()->user()->hasAnyRole(['ti', 'coordinador', 'gol', 'auditoria'])
                     )
                     ->action(function ($record) {
                         $record->update(['estado' => 'aprobado']);
@@ -178,7 +178,8 @@ class CierreMensualResource extends Resource
                             ->send();
                     }),
 
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => auth()->user()->hasAnyRole(['super_admin', 'ti', 'gol'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

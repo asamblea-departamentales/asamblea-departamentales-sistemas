@@ -74,8 +74,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
 
     public function canBeImpersonated()
     {
-        // Puedes limitar según dominio si lo deseas.
-        return true;
+        return ! $this->isSuperAdmin();
     }
 
     public function canAccessPanel(Panel $panel): bool
@@ -97,7 +96,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     {
         return $this->getMedia('avatars')?->first()?->getUrl()
             ?? $this->getMedia('avatars')?->first()?->getUrl('thumb')
-            ?? $this->avatar_url;
+            ?? $this->getFallbackMediaUrl('avatars');
     }
 
     // Accessor "name"

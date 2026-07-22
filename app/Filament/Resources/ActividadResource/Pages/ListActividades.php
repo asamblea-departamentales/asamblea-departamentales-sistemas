@@ -31,7 +31,7 @@ class ListActividades extends ListRecords
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('success')
                 ->button()
-                ->visible(fn () => $user && $user->hasRole('gol'))
+                ->visible(fn () => $user && $user->hasAnyRole(['super_admin', 'gol', 'coordinador']))
                 ->modalWidth('md')
                 ->modalHeading('Descargar Informe Consolidado')
                 ->form([
@@ -160,15 +160,22 @@ class ListActividades extends ListRecords
                 ->send();
 
             if ($tipoCierre === 'individual' && $resultado['generados'] > 0) {
-                $cierre = CierreMensual::where('departamental_id', $user->departamental_id)
-                    ->where('mes', $mes)
-                    ->where('año', $año)
-                    ->first();
+                $departamentalId = $user->isSuperAdmin() ? $resultado['cierres'][0]->departamental_id ?? null : $user->departamental_id;
 
-                $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
-            } else {
-                $this->redirect(\App\Filament\Resources\CierreMensualResource::getUrl('index'));
+                if ($departamentalId) {
+                    $cierre = CierreMensual::where('departamental_id', $departamentalId)
+                        ->where('mes', $mes)
+                        ->where('año', $año)
+                        ->first();
+
+                    if ($cierre) {
+                        $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+                        return;
+                    }
+                }
             }
+
+            $this->redirect(\App\Filament\Resources\CierreMensualResource::getUrl('index'));
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -28,6 +28,7 @@ class Actividad extends Model implements HasMedia
         'star_date',
         'due_date',
         'reminder_at',
+        'reminder_notified_at',
         'lugar',
         'asistentes_hombres',
         'asistentes_mujeres',

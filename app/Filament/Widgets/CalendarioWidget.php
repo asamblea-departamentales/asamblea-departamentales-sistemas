@@ -60,7 +60,11 @@ class CalendarioWidget extends FullCalendarWidget implements HasActions
     // Sobrescribe el método onEventClick para manejar el clic en el evento
     public function onEventClick(array $event): void
   {
-    $this->record = Actividad::find($event['id']);
+    $actividad = Actividad::find($event['id']);
+    if (! $actividad) {
+        return;
+    }
+    $this->record = $actividad;
 
     $this->redirect(
         \App\Filament\Resources\ActividadResource::getUrl('view', ['record' => $this->record->id])

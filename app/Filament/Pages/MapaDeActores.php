@@ -17,19 +17,19 @@ class MapaDeActores extends Page
         return [
             'roles' => [
                 [
-                    'name' => 'Admin',
+                    'name' => 'Super Admin',
                     'icon' => 'heroicon-o-shield-check',
                     'description' => 'Acceso total al sistema. Administra usuarios, roles, permisos y configuraciones.',
                 ],
                 [
-                    'name' => 'Analyst',
-                    'icon' => 'heroicon-o-chart-bar',
-                    'description' => 'Consulta indicadores, dashboards y estadísticas territoriales.',
+                    'name' => 'Tecnologia de Informacion',
+                    'icon' => 'heroicon-o-wrench-screwdriver',
+                    'description' => 'Soporte tecnico, gestion de infraestructura y asistencia tecnica.',
                 ],
                 [
-                    'name' => 'Viewer',
-                    'icon' => 'heroicon-o-eye',
-                    'description' => 'Acceso de solo lectura a reportes, bitácoras y registros cerrados.',
+                    'name' => 'Gestion de Oficina Local',
+                    'icon' => 'heroicon-o-chart-bar',
+                    'description' => 'Consulta indicadores, dashboards y estadísticas territoriales.',
                 ],
                 [
                     'name' => 'Coordinador',
@@ -37,9 +37,14 @@ class MapaDeActores extends Page
                     'description' => 'Gestiona actividades, atestados y cierres mensuales en su oficina.',
                 ],
                 [
-                    'name' => 'Técnico',
+                    'name' => 'Asistente Tecnico',
                     'icon' => 'heroicon-o-pencil-square',
-                    'description' => 'Apoya la carga operativa: ejecución, atestados, bitácoras.',
+                    'description' => 'Apoya la carga operativa: ejecucion, atestados, bitacoras.',
+                ],
+                [
+                    'name' => 'Auditoria',
+                    'icon' => 'heroicon-o-eye',
+                    'description' => 'Acceso de solo lectura a reportes, bitacoras y registros cerrados.',
                 ],
             ],
         ];

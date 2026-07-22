@@ -158,9 +158,7 @@ class CierreMensualService
                 ->update(['cierre_mensual_id' => $cierre->id]);
 
             if ($generarPDF) {
-                DB::transaction(function () use ($cierre) {
-                    $cierre->generarPDF();
-                });
+                $cierre->generarPDF();
             }
 
             return true;
@@ -188,7 +186,9 @@ class CierreMensualService
         $pdf->save($rutaPDF);
 
         if (! empty($cierres)) {
-            $cierres[0]->update(['pdf_path' => "cierres/{$nombreArchivo}"]);
+            foreach ($cierres as $cierre) {
+                $cierre->update(['pdf_path' => "cierres/{$nombreArchivo}"]);
+            }
         }
     }
 }

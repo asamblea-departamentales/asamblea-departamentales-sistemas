@@ -280,7 +280,7 @@ class UserResource extends Resource
                 $user = Filament::auth()->user();
 
                 //TI global (puede cambiar a uno por departamental)
-                $isCentral = $user && ($user->hasAnyRole(['ti','ti', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
+                $isCentral = $user && ($user->hasAnyRole(['ti', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
 
                 if (! $isCentral && $user) {
                     $query->where('departamental_id', $user->departamental_id);
@@ -303,7 +303,8 @@ class UserResource extends Resource
                                 ->label('Selecciona roles')
                                 ->multiple()
                                 ->relationship('roles', 'name')
-                                ->required(),
+                                ->required()
+                                ->options(fn () => \Spatie\Permission\Models\Role::where('name', '!=', 'super_admin')->pluck('name', 'name')->toArray()),
                         ])
                         ->action(function (Model $record, array $data) {
                             $record->syncRoles($data['roles']);

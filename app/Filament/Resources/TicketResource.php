@@ -29,7 +29,7 @@ class TicketResource extends Resource
     $user = \Filament\Facades\Filament::auth()->user();
 
     $isCentral = $user && (
-        $user->hasAnyRole(['ti','ti','gol']) ||
+        $user->hasAnyRole(['ti','gol']) ||
         $user->hasRole(config('filament-shield.super_admin.name'))
     );
 
@@ -106,7 +106,7 @@ class TicketResource extends Resource
 
             // TI global, Administrador, super_admin → ven todos los tickets
             $isCentral = $user && (
-                $user->hasAnyRole(['ti','ti','gol']) ||
+                $user->hasAnyRole(['ti','gol']) ||
                 $user->hasRole(config('filament-shield.super_admin.name'))
             );
 
@@ -142,13 +142,12 @@ class TicketResource extends Resource
                 Tables\Columns\BadgeColumn::make('estado_interno')
                     ->label('Estado')
                     ->formatStateUsing(fn (string $state): string => Ticket::ESTADOS[$state] ?? $state)
-                    ->getStateUsing(fn (Ticket $record): string => $record->estado_color)
                     ->colors([
-                        'warning' => 'warning',
-                        'info' => 'info',
-                        'success' => 'success',
-                        'secondary' => 'secondary',
-                        'danger' => 'danger',
+                        'warning' => 'Pendiente',
+                        'info' => 'En Proceso',
+                        'success' => 'Resuelto',
+                        'secondary' => 'Cerrado',
+                        'danger' => 'Cancelado',
                     ]),
                 
                 Tables\Columns\BadgeColumn::make('prioridad')

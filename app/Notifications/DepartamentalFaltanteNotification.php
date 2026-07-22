@@ -21,8 +21,9 @@ class DepartamentalFaltanteNotification extends Notification implements ShouldQu
     {
         $this->departamental_id = $departamental_id;
         $this->departamental_nombre = $departamental_nombre;
-        $this->mes = $mes ?? now()->addMonth()->month;
-        $this->anio = $anio ?? now()->addMonth()->year;
+        $nextMonth = now()->addMonth();
+        $this->mes = $mes ?? $nextMonth->month;
+        $this->anio = $anio ?? $nextMonth->year;
         $this->onQueue('notifications');
     }
 

@@ -67,8 +67,8 @@ class CreateActividad extends CreateRecord
                             // Campo oculto para la departamental (se asigna automáticamente)
                             Forms\Components\Hidden::make('departamental_id')
                                 ->default(fn () => auth()->user()->departamental_id)
-                                ->required()
-                                ->rules(['exists:departamentales,id']),
+                                ->required(fn () => auth()->user() && auth()->user()->departamental_id !== null)
+                                ->rules(fn () => auth()->user() && auth()->user()->departamental_id !== null ? ['exists:departamentales,id'] : []),
 
                             // Campo para seleccionar la fecha de la actividad
                             Forms\Components\DatePicker::make('fecha')

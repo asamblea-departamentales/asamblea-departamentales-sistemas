@@ -65,8 +65,8 @@
     <h2>Sistema de Información Estadístico</h2>
     <h3>Departamento de Oficinas Departamentales</h3>
 
-    <p><strong>Departamental:</strong> {{ $cierre->departamental->nombre }}</p>
-<p><strong>Responsable del cierre:</strong> {{ $cierre->user->name }}</p>
+    <p><strong>Departamental:</strong> {{ $cierre->departamental?->nombre ?? 'N/A' }}</p>
+<p><strong>Responsable del cierre:</strong> {{ $cierre->user?->name ?? 'N/A' }}</p>
     <p>Fecha de cierre: {{ optional($cierre->fecha_cierre)->format('d/m/Y') }}</p>
     <hr>
 
@@ -84,7 +84,7 @@
             <th>% Cumplimiento</th>
         </tr>
         <tr>
-            <td>{{ $cierre->mes }}</td>
+            <td>{{ $meses[$cierre->mes] ?? $cierre->mes }}</td>
             <td>{{ $cierre->año }}</td>
             <td>{{ $cierre->actividades_proyectadas }}</td>
             <td>{{ $cierre->actividades_ejecutadas }}</td>

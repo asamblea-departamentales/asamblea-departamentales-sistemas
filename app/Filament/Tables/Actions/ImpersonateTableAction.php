@@ -49,8 +49,13 @@ class ImpersonateTableAction extends Action
                 $user = Auth::user();
                 $canImpersonate = config('superduper.impersonate.can_impersonate_method', 'canImpersonate');
                 $canBeImpersonated = config('superduper.impersonate.can_be_impersonated_method', 'canBeImpersonated');
+                $notSame = $user && isset($user->id, $record->id) && $user->id !== $record->id;
 
-                return $user && method_exists($user, $canImpersonate) && $user->$canImpersonate() && method_exists($record, $canBeImpersonated) && $record->$canBeImpersonated();
+                return $user
+                    && method_exists($user, $canImpersonate) && $user->$canImpersonate()
+                    && $notSame
+                    && ! app(ImpersonateManager::class)->isImpersonating()
+                    && method_exists($record, $canBeImpersonated) && $record->$canBeImpersonated();
             })
             ->requiresConfirmation()
             ->modalHeading('Ver como este usuario')

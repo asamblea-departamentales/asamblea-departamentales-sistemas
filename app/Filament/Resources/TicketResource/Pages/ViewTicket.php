@@ -38,7 +38,7 @@ class ViewTicket extends ViewRecord
                 ->action(function (array $data): void {
                     $this->record->update([
                         'estado_interno' => $data['nuevo_estado'],
-                        'observaciones' => $this->record->observaciones .
+                        'observaciones' => ($this->record->observaciones ?? '') .
                             "\n\n[" . now()->format('d/m/Y H:i') . "] Estado cambiado a " .
                             Ticket::ESTADOS[$data['nuevo_estado']] .
                             (isset($data['comentario']) ? ": " . $data['comentario'] : "")
@@ -61,7 +61,7 @@ class ViewTicket extends ViewRecord
                 ->action(function (array $data): void {
                     $this->record->update([
                         'estado_interno' => 'CERRADO',
-                        'observaciones' => $this->record->observaciones .
+                        'observaciones' => ($this->record->observaciones ?? '') .
                             "\n\n[" . now()->format('d/m/Y H:i') . "] Ticket CERRADO: " . $data['motivo_cierre']
                     ]);
 

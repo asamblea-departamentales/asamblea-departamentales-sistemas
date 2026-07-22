@@ -63,8 +63,8 @@ class ActividadResource extends Resource
 
                         Forms\Components\Hidden::make('departamental_id')
                             ->default(fn () => auth()->user()->departamental_id)
-                            ->required()
-                            ->rules(['exists:departamentales,id']),
+                            ->required(fn () => auth()->user() && auth()->user()->departamental_id !== null)
+                            ->rules(fn () => auth()->user() && auth()->user()->departamental_id !== null ? ['exists:departamentales,id'] : []),
 
                         Forms\Components\TextInput::make('departamental_display')
                             ->label('Oficina Departamental')
@@ -97,35 +97,36 @@ class ActividadResource extends Resource
                         Forms\Components\TextInput::make('asistentes_hombres')
                             ->label('Asistentes Hombres')
                             ->numeric()
-                            ->required()
                             ->minValue(0)
-                            ->inputMode('integer')
+                            ->default(0)
                             ->live()
-                            ->placeholder('0'),
-
+                            ->placeholder('0')
+                            ->required(fn ($get) => $get('estado') === 'Completada'),
                         Forms\Components\TextInput::make('asistentes_mujeres')
                             ->label('Asistentes Mujeres')
                             ->numeric()
-                            ->required()
                             ->minValue(0)
-                            ->inputMode('integer')
+                            ->default(0)
                             ->live()
-                            ->placeholder('0'),
-
+                            ->placeholder('0')
+                            ->required(fn ($get) => $get('estado') === 'Completada'),
                         Forms\Components\TextInput::make('asistencia_completa')
                             ->label('Asistencia Completa')
                             ->numeric()
-                            ->required()
+                            ->required(fn ($get) => $get('estado') === 'Completada')
                             ->minValue(0)
                             ->inputMode('integer')
                             ->live()
                             ->placeholder('0')
                             ->rule(function (Forms\Get $get) {
                                 return function (string $attribute, $value, $fail) use ($get) {
+                                    if ($get('estado') !== 'Completada') {
+                                        return;
+                                    }
                                     $hombres = (int) $get('asistentes_hombres');
                                     $mujeres = (int) $get('asistentes_mujeres');
 
-                                    if ($value != $hombres + $mujeres) {
+                                    if ((int) $value !== $hombres + $mujeres) {
                                         $fail('La asistencia completa debe ser igual a la suma de asistentes hombres y mujeres.');
                                     }
                                 };
@@ -296,7 +297,7 @@ class ActividadResource extends Resource
                     ->default(function () {
                         $user = auth()->user();
 
-                        return $user->hasAnyRole(['ti', 'gol']) ? null : [$user->departamental_id];
+                        return $user->isCentralRole() ? null : [$user->departamental_id];
                     })
                     ->query(function (Builder $query, array $data) {
                         return $query->when(
@@ -304,7 +305,7 @@ class ActividadResource extends Resource
                             fn (Builder $q, $values) => $q->whereIn('departamental_id', $values)
                         );
                     })
-                    ->hidden(fn () => ! auth()->user()->hasAnyRole(['ti', 'gol'])),
+                    ->hidden(fn () => ! auth()->user()->isCentralRole()),
 
                 Tables\Filters\Filter::make('asistencia_completa')
                     ->form([
@@ -451,7 +452,7 @@ class ActividadResource extends Resource
             ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->before(function ($records) {
+                        ->before(function ($records, $action) {
                             $user = auth()->user();
                             foreach ($records as $record) {
                                 if (in_array($record->estado, ['Completada', 'Cancelada'])) {
@@ -459,14 +460,16 @@ class ActividadResource extends Resource
                                         ->title('Accion no permitida')
                                         ->body('La actividad "'.$record->macroactividad.'" esta en estado "'.$record->estado.'" y no puede eliminarse.')
                                         ->danger()->send();
-                                    return false;
+                                    $action->halt();
+                                    return;
                                 }
                                 if (CierreMensual::mesCerrado($record->departamental_id, $record->fecha->month, $record->fecha->year)) {
                                     Notification::make()
                                         ->title('Mes cerrado')
                                         ->body('La actividad "'.$record->macroactividad.'" pertenece a un mes cerrado.')
                                         ->danger()->send();
-                                    return false;
+                                    $action->halt();
+                                    return;
                                 }
                             }
                         }),
@@ -537,7 +540,6 @@ class ActividadResource extends Resource
                                     ->options([
                                         'Pendiente' => 'Pendiente',
                                         'En Progreso' => 'En Progreso',
-                                        'Completada' => 'Completada',
                                         'Cancelada' => 'Cancelada',
                                     ])
                                     ->default('Pendiente')
@@ -689,15 +691,17 @@ class ActividadResource extends Resource
             return false;
         }
 
-        if ($record->estado === 'Completada') {
+        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
             return false;
         }
 
-        $mes = $record->fecha->month;
-        $año = $record->fecha->year;
+        if (! $user->isCentralRole()) {
+            $mes = $record->fecha->month;
+            $año = $record->fecha->year;
 
-        if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
-            return false;
+            if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
+                return false;
+            }
         }
 
         return true;
@@ -715,11 +719,13 @@ class ActividadResource extends Resource
             return false;
         }
 
-        $mes = $record->fecha->month;
-        $año = $record->fecha->year;
+        if (! $user->isCentralRole()) {
+            $mes = $record->fecha->month;
+            $año = $record->fecha->year;
 
-        if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
-            return false;
+            if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
+                return false;
+            }
         }
 
         return true;

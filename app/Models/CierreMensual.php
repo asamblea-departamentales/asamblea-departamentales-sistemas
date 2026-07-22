@@ -63,11 +63,16 @@ class CierreMensual extends Model
         return $this->belongsTo(User::class);
     }
 
-    public static function mesCerrado($departamentalId, $mes, $año)
+    public static function mesCerrado($departamentalId, $mes, $año): bool
     {
+        if ($departamentalId === null) {
+            return false;
+        }
+
         return self::where('departamental_id', $departamentalId)
             ->where('mes', $mes)
             ->where('año', $año)
+            ->where('estado', '!=', 'reabierto')
             ->exists();
         }
 
