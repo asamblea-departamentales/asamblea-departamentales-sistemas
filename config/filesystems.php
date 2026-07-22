@@ -46,7 +46,7 @@ return [
 
         'repositorio' => [
             'driver' => 'local',
-            'root' => env('SMB_MOUNT_POINT', '/mnt/repositorio_dpto'),
+            'root' => env('SMB_MOUNT_POINT', storage_path('app/repositorio_test')),
         ],
 
         's3' => [
