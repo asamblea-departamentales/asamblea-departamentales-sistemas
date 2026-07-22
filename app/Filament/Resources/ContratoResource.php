@@ -24,9 +24,21 @@ class ContratoResource extends Resource
     // Badge con contador de contratos por vencer
     public static function getNavigationBadge(): ?string
     {
-        $porVencer = static::getModel()::vigentes()
-            ->where('fecha_vencimiento', '<=', now()->addDays(30))
-            ->count();
+        $user = \Filament\Facades\Filament::auth()->user();
+
+        $isCentral = $user && (
+            $user->hasAnyRole(['ti','gol']) ||
+            $user->hasRole(config('filament-shield.super_admin.name'))
+        );
+
+        $query = static::getModel()::vigentes()
+            ->where('fecha_vencimiento', '<=', now()->addDays(30));
+
+        if (! $isCentral && $user) {
+            $query->where('departamental_id', $user->departamental_id);
+        }
+
+        $porVencer = $query->count();
         return $porVencer > 0 ? (string) $porVencer : null;
     }
 

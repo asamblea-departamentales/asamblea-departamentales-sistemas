@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
@@ -132,6 +133,7 @@ class TicketResource extends Resource
                         'info' => 'SOLICITUD',
                         'primary' => 'INCIDENTE',
                         'secondary' => 'RECLAMO',
+                        'success' => 'CAMBIO_CONTRASENA',
                     ]),
                 
                 Tables\Columns\TextColumn::make('motivo')
@@ -219,7 +221,8 @@ class TicketResource extends Resource
                 Filter::make('alta_prioridad')
                     ->label('Alta Prioridad')
                     ->query(fn (Builder $query): Builder => 
-                        $query->where('fecha_solicitud', '<=', now()->subDays(7))
+                        $query->abiertos()
+                            ->where('fecha_solicitud', '<=', now()->subDays(7))
                     ),
             ])
             ->actions([
@@ -234,10 +237,11 @@ class TicketResource extends Resource
                     ->form([
                         Forms\Components\Select::make('nuevo_estado')
                             ->label('Nuevo Estado')
-                            ->options(Ticket::ESTADOS)
-                            ->required()
-                            ->default(fn (Ticket $record) => $record->estado_interno),
-                        
+                            ->options(fn (Ticket $record) => collect(Ticket::TRANSICIONES[$record->estado_interno] ?? [])
+                                ->mapWithKeys(fn ($s) => [$s => Ticket::ESTADOS[$s] ?? $s])
+                                ->toArray())
+                            ->required(),
+
                         Forms\Components\Textarea::make('comentario')
                             ->label('Comentario del cambio')
                             ->rows(2),
@@ -250,7 +254,8 @@ class TicketResource extends Resource
                                 Ticket::ESTADOS[$data['nuevo_estado']] . 
                                 (isset($data['comentario']) ? ": " . $data['comentario'] : "")
                         ]);
-                    }),
+                    })
+                    ->visible(fn (Ticket $record) => ! empty(Ticket::TRANSICIONES[$record->estado_interno] ?? [])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -262,12 +267,23 @@ class TicketResource extends Resource
                         ->icon('heroicon-o-x-circle')
                         ->color('danger')
                         ->action(function ($records): void {
+                            $skipped = 0;
                             foreach ($records as $record) {
+                                if (! $record->estaAbierto()) {
+                                    $skipped++;
+                                    continue;
+                                }
                                 $record->update([
                                     'estado_interno' => 'CERRADO',
                                     'observaciones' => ($record->observaciones ?? '') . 
                                         "\n[" . now()->format('d/m/Y H:i') . "] Ticket cerrado masivamente"
                                 ]);
+                            }
+
+                            if ($skipped > 0) {
+                                Notification::make()
+                                    ->title($skipped . ' ticket(s) ya estaban cerrados/cancelados')
+                                    ->warning()->send();
                             }
                         })
                         ->deselectRecordsAfterCompletion(),

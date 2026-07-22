@@ -179,7 +179,7 @@ class MyProfileExtended extends MyProfileComponent
 
         try {
             // Verificar si ya existe solicitud pendiente
-            $existingRequest = Ticket::where('tipo_ticket', 'SOLICITUD')
+            $existingRequest = Ticket::where('tipo_ticket', 'CAMBIO_CONTRASENA')
             ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
             ->where('estado_interno', 'PENDIENTE')
             ->exists();
@@ -193,8 +193,8 @@ class MyProfileExtended extends MyProfileComponent
                 return;
             }
 
-            Ticket::create([
-            'tipo_ticket' => 'SOLICITUD',
+            $ticket = Ticket::create([
+            'tipo_ticket' => 'CAMBIO_CONTRASENA',
             'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
             'fecha_solicitud' => Carbon::now(),
             'estado_interno' => 'PENDIENTE',
@@ -202,10 +202,21 @@ class MyProfileExtended extends MyProfileComponent
             'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
         ]);
 
+            // Notificar a usuarios TI y super_admin via BD
+            $tiUsers = \App\Models\User::query()
+                ->whereHas('roles', fn ($q) => $q->whereIn('name', ['ti', 'super_admin']))
+                ->get();
+
+            foreach ($tiUsers as $tiUser) {
+                $tiUser->notify(
+                    new \App\Notifications\TicketCambioContrasenaNotification($ticket, $user)
+                );
+            }
+
             Notification::make()
             ->title('Solicitud Enviada')
             ->success()
-            ->body('Se ha creado el ticket para el cambio de contraseña.')
+            ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI será notificado.')
             ->send();
 
         } catch (\Exception $e) {

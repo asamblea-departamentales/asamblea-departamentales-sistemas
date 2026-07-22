@@ -27,9 +27,10 @@ class ViewTicket extends ViewRecord
                 ->form([
                     Forms\Components\Select::make('nuevo_estado')
                         ->label('Nuevo Estado')
-                        ->options(Ticket::ESTADOS)
-                        ->required()
-                        ->default(fn () => $this->record->estado_interno),
+                        ->options(fn () => collect(Ticket::TRANSICIONES[$this->record->estado_interno] ?? [])
+                            ->mapWithKeys(fn ($s) => [$s => Ticket::ESTADOS[$s] ?? $s])
+                            ->toArray())
+                        ->required(),
 
                     Forms\Components\Textarea::make('comentario')
                         ->label('Comentario del cambio')
@@ -45,7 +46,8 @@ class ViewTicket extends ViewRecord
                     ]);
 
                     $this->refreshFormData(['estado_interno', 'observaciones']);
-                }),
+                })
+                ->visible(fn () => ! empty(Ticket::TRANSICIONES[$this->record->estado_interno] ?? [])),
 
             Actions\Action::make('cerrar_ticket')
                 ->label('Cerrar Ticket')
@@ -67,7 +69,7 @@ class ViewTicket extends ViewRecord
 
                     $this->refreshFormData(['estado_interno', 'observaciones']);
                 })
-                ->visible(fn () => $this->record->estaAbierto()),
+                ->visible(fn () => in_array($this->record->estado_interno, ['RESUELTO'])),
         ];
     }
 

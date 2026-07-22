@@ -63,7 +63,9 @@ public static function form(Form $form): Form
                         ->label('Cantidad')
                         ->required()
                         ->numeric()
+                        ->integer()
                         ->minValue(1)
+                        ->step(1)
                         ->suffix('unidades'),
                 ])->columns(3),
 
@@ -79,7 +81,9 @@ public static function form(Form $form): Form
                         ->label('Estado Interno')
                         ->options(Requisicion::ESTADOS)
                         ->default('SOLICITADA')
-                        ->required(),
+                        ->required()
+                        ->disabled()
+                        ->dehydrated(),
                     
                     Forms\Components\Hidden::make('departamental_id')
                         ->default(fn () => auth()->user()->departamental_id)
@@ -230,7 +234,7 @@ public static function form(Form $form): Form
                     ->action(function (array $data, Requisicion $record): void {
                         $record->update([
                             'estado_interno' => $data['nuevo_estado'],
-                            'observaciones' => $record->observaciones . 
+                            'observaciones' => ($record->observaciones ?? '') . 
                                 "\n[" . now()->format('d/m/Y H:i') . "] Estado cambiado a " . 
                                 Requisicion::ESTADOS[$data['nuevo_estado']] . 
                                 (isset($data['observacion']) ? ": " . $data['observacion'] : "")

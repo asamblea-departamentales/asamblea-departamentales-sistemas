@@ -37,7 +37,7 @@ class ContratoPolicy
 
     public function delete(User $user, Contrato $contrato): bool
     {
-        if ($user->isSuperAdmin()) {
+        if ($user->isCentralRole()) {
             return true;
         }
 

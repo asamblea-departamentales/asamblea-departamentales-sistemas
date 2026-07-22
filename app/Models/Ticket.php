@@ -44,6 +44,16 @@ class Ticket extends Model
         'SOLICITUD' => 'Solicitud',
         'INCIDENTE' => 'Incidente',
         'RECLAMO' => 'Reclamo',
+        'CAMBIO_CONTRASENA' => 'Cambio de Contraseña',
+    ];
+
+    // Transiciones válidas de estado
+    public const TRANSICIONES = [
+        'PENDIENTE' => ['EN_PROCESO', 'CANCELADO'],
+        'EN_PROCESO' => ['RESUELTO', 'CANCELADO'],
+        'RESUELTO' => ['CERRADO'],
+        'CERRADO' => [],
+        'CANCELADO' => [],
     ];
 
     protected static function boot(): void
