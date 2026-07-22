@@ -74,6 +74,9 @@
             font-weight: 500;
             font-size: 0.9rem;
             transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
         }
         .btn:hover {
             background: #081f4d;
@@ -103,9 +106,12 @@
             Pedile al administrador que te cree un usuario o que active tu cuenta.
         </p>
 
-        <a href="{{ route('filament.admin.auth.login') }}" class="btn">
-            Iniciar Sesión
-        </a>
+        <form method="POST" action="{{ route('filament.admin.auth.logout') }}">
+            @csrf
+            <button type="submit" class="btn">
+                Cerrar Sesión e Intentar de Nuevo
+            </button>
+        </form>
 
         <div class="footer">
             {{ config('app.name') }} &mdash; Asamblea Legislativa de El Salvador

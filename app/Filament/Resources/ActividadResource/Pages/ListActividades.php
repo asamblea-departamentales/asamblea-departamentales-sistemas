@@ -31,7 +31,7 @@ class ListActividades extends ListRecords
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('success')
                 ->button()
-                ->visible(fn () => $user && $user->hasAnyRole(['super_admin', 'gol', 'coordinador']))
+                ->visible(fn () => $user && $user->hasAnyRole(['super_admin', 'gol', 'ti']))
                 ->modalWidth('md')
                 ->modalHeading('Descargar Informe Consolidado')
                 ->form([
@@ -83,10 +83,11 @@ class ListActividades extends ListRecords
                 ->form([
                     \Filament\Forms\Components\Radio::make('tipo_cierre')
                         ->label('Tipo de Cierre/Informe')
-                        ->options([
+                        ->options(fn () => collect([
                             'individual' => 'Cierre Individual (Solo mi departamental)',
-                            'consolidado' => 'Informe Consolidado (Todas las departamentales)',
-                        ])
+                        ]->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
+                            $options->put('consolidado', 'Informe Consolidado (Todas las departamentales)');
+                        })->toArray()))
                         ->default('individual')
                         ->required()
                         ->live()

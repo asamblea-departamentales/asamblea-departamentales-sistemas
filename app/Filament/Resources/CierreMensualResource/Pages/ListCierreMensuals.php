@@ -34,10 +34,11 @@ class ListCierreMensuals extends ListRecords
                 ->form([
                     \Filament\Forms\Components\Radio::make('tipo_cierre')
                         ->label('Tipo de Cierre/Informe')
-                        ->options([
+                        ->options(fn () => collect([
                             'individual' => 'Cierre Individual (Solo mi departamental)',
-                            'consolidado' => 'Informe Consolidado (Todas las departamentales)',
-                        ])
+                        ]->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
+                            $options->put('consolidado', 'Informe Consolidado (Todas las departamentales)');
+                        })->toArray()))
                         ->default('individual')
                         ->required()
                         ->live()
