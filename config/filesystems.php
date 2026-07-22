@@ -44,14 +44,10 @@ return [
       //      'throw' => false,
       //  ],
 
-       'repositorio' => [
-    'driver' => 'smb',
-    'host' => env('SMB_HOST', '172.19.10.99'),
-    'username' => env('SMB_USER', 'userdpto'),
-    'password' => env('SMB_PASSWORD'),
-    'share' => env('SMB_SHARE', 'Repositorio_dpto'),
-    'root' => env('SMB_ROOT', '/'),
-],
+        'repositorio' => [
+            'driver' => 'local',
+            'root' => env('SMB_MOUNT_POINT', '/mnt/repositorio_dpto'),
+        ],
 
         's3' => [
             'driver' => 's3',
