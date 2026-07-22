@@ -101,7 +101,10 @@ class ActividadResource extends Resource
                             ->default(0)
                             ->live()
                             ->placeholder('0')
-                            ->required(fn ($get) => $get('estado') === 'Completada'),
+                            ->required(fn ($get) => $get('estado') === 'Completada')
+                            ->afterStateUpdated(fn ($state, $set, $get) =>
+                                $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
+                            ),
                         Forms\Components\TextInput::make('asistentes_mujeres')
                             ->label('Asistentes Mujeres')
                             ->numeric()
@@ -109,28 +112,19 @@ class ActividadResource extends Resource
                             ->default(0)
                             ->live()
                             ->placeholder('0')
-                            ->required(fn ($get) => $get('estado') === 'Completada'),
+                            ->required(fn ($get) => $get('estado') === 'Completada')
+                            ->afterStateUpdated(fn ($state, $set, $get) =>
+                                $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
+                            ),
                         Forms\Components\TextInput::make('asistencia_completa')
                             ->label('Asistencia Completa')
                             ->numeric()
+                            ->disabled()
+                            ->dehydrated()
                             ->required(fn ($get) => $get('estado') === 'Completada')
                             ->minValue(0)
                             ->inputMode('integer')
-                            ->live()
-                            ->placeholder('0')
-                            ->rule(function (Forms\Get $get) {
-                                return function (string $attribute, $value, $fail) use ($get) {
-                                    if ($get('estado') !== 'Completada') {
-                                        return;
-                                    }
-                                    $hombres = (int) $get('asistentes_hombres');
-                                    $mujeres = (int) $get('asistentes_mujeres');
-
-                                    if ((int) $value !== $hombres + $mujeres) {
-                                        $fail('La asistencia completa debe ser igual a la suma de asistentes hombres y mujeres.');
-                                    }
-                                };
-                            }),
+                            ->placeholder('0'),
 
                         Forms\Components\Textarea::make('macroactividad')
                             ->label('Macroactividad')
@@ -205,7 +199,7 @@ class ActividadResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->withCount('media')) // 🔥 clave
+            ->modifyQueryUsing(fn ($query) => $query->with(['user', 'departamental'])->withCount('media'))
 
             ->columns([
                 Tables\Columns\TextColumn::make('user.firstname')
@@ -414,7 +408,10 @@ class ActividadResource extends Resource
                             ->inputMode('integer')
                             ->live()
                             ->placeholder('0')
-                            ->default(fn ($record) => $record->asistentes_hombres ?? 0),
+                            ->default(fn ($record) => $record->asistentes_hombres ?? 0)
+                            ->afterStateUpdated(fn ($state, $set, $get) =>
+                                $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
+                            ),
 
                         Forms\Components\TextInput::make('asistentes_mujeres')
                             ->label('Asistentes Mujeres')
@@ -424,13 +421,17 @@ class ActividadResource extends Resource
                             ->inputMode('integer')
                             ->live()
                             ->placeholder('0')
-                            ->default(fn ($record) => $record->asistentes_mujeres ?? 0),
+                            ->default(fn ($record) => $record->asistentes_mujeres ?? 0)
+                            ->afterStateUpdated(fn ($state, $set, $get) =>
+                                $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
+                            ),
 
                         Forms\Components\TextInput::make('asistencia_completa')
                             ->label('Asistencia Completa')
                             ->numeric()
                             ->disabled()
-                            ->default(fn ($get) => ($get('asistentes_hombres') ?? 0) + ($get('asistentes_mujeres') ?? 0)),
+                            ->dehydrated()
+                            ->placeholder('Se calcula automáticamente'),
                     ])
                     ->action(function (Model $record, array $data, Tables\Actions\Action $action) {
                         $record->update([
@@ -455,24 +456,32 @@ class ActividadResource extends Resource
             Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->before(function ($records, $action) {
-                            $user = auth()->user();
+                            $skipped = [];
                             foreach ($records as $record) {
                                 if (in_array($record->estado, ['Completada', 'Cancelada'])) {
-                                    Notification::make()
-                                        ->title('Accion no permitida')
-                                        ->body('La actividad "'.$record->macroactividad.'" esta en estado "'.$record->estado.'" y no puede eliminarse.')
-                                        ->danger()->send();
-                                    $action->halt();
-                                    return;
+                                    $skipped[] = '"' . $record->macroactividad . '" (' . $record->estado . ')';
+                                    continue;
                                 }
                                 if (CierreMensual::mesCerrado($record->departamental_id, $record->fecha->month, $record->fecha->year)) {
-                                    Notification::make()
-                                        ->title('Mes cerrado')
-                                        ->body('La actividad "'.$record->macroactividad.'" pertenece a un mes cerrado.')
-                                        ->danger()->send();
-                                    $action->halt();
-                                    return;
+                                    $skipped[] = '"' . $record->macroactividad . '" (mes cerrado)';
+                                    continue;
                                 }
+                            }
+
+                            if (count($skipped) === count($records)) {
+                                Notification::make()
+                                    ->title('Ninguna actividad pudo ser eliminada')
+                                    ->body('Todas las seleccionadas están en estado terminal o en mes cerrado.')
+                                    ->danger()->send();
+                                $action->halt();
+                                return;
+                            }
+
+                            if (! empty($skipped)) {
+                                Notification::make()
+                                    ->title('Eliminación parcial')
+                                    ->body(count($skipped) . ' actividad(es) omitida(s): ' . implode(', ', $skipped))
+                                    ->warning()->send();
                             }
                         }),
             ]),
@@ -542,7 +551,6 @@ class ActividadResource extends Resource
                                     ->options([
                                         'Pendiente' => 'Pendiente',
                                         'En Progreso' => 'En Progreso',
-                                        'Cancelada' => 'Cancelada',
                                     ])
                                     ->default('Pendiente')
                                     ->required()
@@ -585,7 +593,10 @@ class ActividadResource extends Resource
                                     ->live()
                                     ->placeholder('0')
                                     ->required(fn ($get) => $get('estado') === 'Completada')
-                                    ->dehydrated(),
+                                    ->dehydrated()
+                                    ->afterStateUpdated(fn ($state, $set, $get) =>
+                                        $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
+                                    ),
 
                                 Forms\Components\TextInput::make('asistentes_mujeres')
                                     ->label('Asistentes Mujeres')
@@ -595,18 +606,17 @@ class ActividadResource extends Resource
                                     ->live()
                                     ->placeholder('0')
                                     ->required(fn ($get) => $get('estado') === 'Completada')
-                                    ->dehydrated(),
+                                    ->dehydrated()
+                                    ->afterStateUpdated(fn ($state, $set, $get) =>
+                                        $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
+                                    ),
 
                                 Forms\Components\TextInput::make('asistencia_completa')
                                     ->label('Asistencia Total')
                                     ->numeric()
                                     ->disabled()
-                                    ->default(fn ($get) => ((int) ($get('asistentes_hombres') ?? 0)) +
-                                        ((int) ($get('asistentes_mujeres') ?? 0))
-                                    )
-                                    ->live()
-                                    ->placeholder('Se calcula automáticamente')
-                                    ->dehydrated(),
+                                    ->dehydrated()
+                                    ->placeholder('Se calcula automáticamente'),
                             ]),
 
                         Forms\Components\Textarea::make('macroactividad')

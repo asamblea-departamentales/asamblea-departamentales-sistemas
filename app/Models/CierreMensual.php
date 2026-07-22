@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 
 class CierreMensual extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'cierres_mensuales';
 
@@ -46,6 +49,22 @@ class CierreMensual extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+
+        static::saved(function ($model) {
+            Cache::forget("mes_cerrado_{$model->departamental_id}_{$model->mes}_{$model->año}");
+        });
+
+        static::deleted(function ($model) {
+            Cache::forget("mes_cerrado_{$model->departamental_id}_{$model->mes}_{$model->año}");
+        });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['estado', 'mes', 'año', 'departamental_id', 'observaciones'])
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['pdf_path']);
     }
 
     public function actividades()
@@ -69,12 +88,16 @@ class CierreMensual extends Model
             return false;
         }
 
-        return self::where('departamental_id', $departamentalId)
-            ->where('mes', $mes)
-            ->where('año', $año)
-            ->where('estado', '!=', 'reabierto')
-            ->exists();
-        }
+        $cacheKey = "mes_cerrado_{$departamentalId}_{$mes}_{$año}";
+
+        return Cache::remember($cacheKey, 60, function () use ($departamentalId, $mes, $año) {
+            return self::where('departamental_id', $departamentalId)
+                ->where('mes', $mes)
+                ->where('año', $año)
+                ->where('estado', 'aprobado')
+                ->exists();
+        });
+    }
 
         public function getPorcentajeCumplimientoAttribute()
         {

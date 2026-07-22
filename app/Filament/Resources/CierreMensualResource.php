@@ -213,7 +213,7 @@ class CierreMensualResource extends Resource
 
         // 1. Roles que deben ver TODOS los registros (Superiores / Centrales)
         if ($user->hasAnyRole(['super_admin', 'ti', 'gol', 'auditoria'])) {
-            return parent::getEloquentQuery();
+            return parent::getEloquentQuery()->with(['departamental', 'user']);
         }
 
         // 2. Roles que deben ver solo los registros de su DEPARTAMENTAL (Coordinador y Asistente Técnico)
@@ -222,15 +222,15 @@ class CierreMensualResource extends Resource
 
             // Si el usuario no tiene departamental asignada (seguridad adicional)
             if (is_null($userDepartamentalId)) {
-                return parent::getEloquentQuery()->whereRaw('1 = 0');
+                return parent::getEloquentQuery()->with(['departamental', 'user'])->whereRaw('1 = 0');
             }
 
             // Filtramos por su departamental
-            return parent::getEloquentQuery()
+            return parent::getEloquentQuery()->with(['departamental', 'user'])
                 ->where('departamental_id', $userDepartamentalId);
         }
 
         // 3. Para cualquier otro rol no autorizado, devolvemos un conjunto vacío
-        return parent::getEloquentQuery()->whereRaw('1 = 0');
+        return parent::getEloquentQuery()->with(['departamental', 'user'])->whereRaw('1 = 0');
     }
 }

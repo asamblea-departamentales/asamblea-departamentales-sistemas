@@ -285,6 +285,7 @@ class UserResource extends Resource
                 if (! $isCentral && $user) {
                     $query->where('departamental_id', $user->departamental_id);
                 }
+                $query->with(['departamental', 'roles', 'media']);
             })
 
             ->actions([

@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Actividad extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use InteractsWithMedia, LogsActivity;
     use BelongsToDepartamental;
     use HasFactory;
 
@@ -123,6 +125,18 @@ public function getAtestadosUrlsAttribute()
     public function cierreMensual()
     {
         return $this->belongsTo(CierreMensual::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'macroactividad', 'estado', 'star_date', 'due_date',
+                'asistentes_hombres', 'asistentes_mujeres', 'asistencia_completa',
+                'departamental_id', 'cierre_mensual_id',
+            ])
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['reminder_notified_at']);
     }
 
     /*

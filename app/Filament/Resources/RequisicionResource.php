@@ -122,6 +122,7 @@ public static function form(Form $form): Form
             if (! $isCentral && $user) {
                 $query->where('departamental_id', $user->departamental_id);
             }
+            $query->with('departamental');
         })
             ->columns([
                 Tables\Columns\TextColumn::make('tipo_insumo')

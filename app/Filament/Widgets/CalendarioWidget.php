@@ -18,7 +18,12 @@ class CalendarioWidget extends FullCalendarWidget implements HasActions
     public Model|string|int|null $record = null;
     public function fetchEvents(array $fetchInfo): array
     {
-        return Actividad::all()->map(function ($actividad) {
+        return Actividad::query()
+            ->where('star_date', '>=', $fetchInfo['start'])
+            ->where('due_date', '<=', $fetchInfo['end'])
+            ->select(['id', 'macroactividad', 'star_date', 'due_date', 'estado'])
+            ->get()
+            ->map(function ($actividad) {
             return [
                 'id' => $actividad->id,
                 'title' => $actividad->macroactividad,
