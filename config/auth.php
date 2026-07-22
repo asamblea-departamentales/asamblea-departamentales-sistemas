@@ -72,7 +72,7 @@ return [
                     'email'     => 'mail',
                 ],
                 'sync_existing' => [
-                    'username' => ['attribute' => 'samaccountname'],
+                    'username' => 'samaccountname',
                 ],
                 'password_column' => false,
             ],
