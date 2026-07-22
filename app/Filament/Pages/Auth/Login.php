@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\QueryException;
 
 class Login extends BaseLogin
 {
@@ -143,8 +144,18 @@ class Login extends BaseLogin
                 $credentials['fallback'] = ['samaccountname' => $username, 'password' => $password];
             }
 
-            if (! Auth::attempt($credentials, $remember)) {
+            try {
+                if (! Auth::attempt($credentials, $remember)) {
+                    RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
+                    $this->throwFailureValidationException();
+                }
+            } catch (QueryException $e) {
                 RateLimiter::hit($throttleKey, $this->decayMinutes * 60);
+                Notification::make()
+                    ->title('Aún no tenés acceso al sistema')
+                    ->body('Tu usuario no está registrado. Pedile al administrador que te cree un usuario.')
+                    ->danger()
+                    ->send();
                 $this->throwFailureValidationException();
             }
 
