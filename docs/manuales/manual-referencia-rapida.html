@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referencia Rápida — Sistema de Gestión de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html">Inicio</a>
+    <a href="manual-usuario-final.html">Usuario Final</a>
+    <a href="manual-administracion.html">Administración</a>
+    <a href="manual-reportes.html">Reportes</a>
+    <a href="manual-referencia-rapida.html" class="active">Referencia Rápida</a>
+    <a href="glosario.html">Glosario</a>
+  </nav>
+  <div class="sidebar-section sidebar-toc">
+    <h3>Contenido</h3>
+    <div class="toc-list" id="sidebar-toc-list"></div>
+  </div>
+  <div class="sidebar-section sidebar-keypoints">
+    <h3>Puntos Clave</h3>
+    <div id="keypoints-list"></div>
+  </div>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Referencia Rápida</h1>
+      <div class="audiencia">Para: Todos los usuarios</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Código: M-DEP-REF-001</span>
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <!-- CONTROL DE DOCUMENTO -->
+  <div class="doc-control no-print">
+    <h2>Control de documento</h2>
+    <table>
+      <tr><td>Código</td><td>M-DEP-REF-001</td></tr>
+      <tr><td>Versión</td><td>1.0</td></tr>
+      <tr><td>Fecha</td><td>21 de julio de 2026</td></tr>
+      <tr><td>Elaborado por</td><td>Unidad de Sistemas</td></tr>
+      <tr><td>Aprobado por</td><td>Mesa Directiva</td></tr>
+      <tr><td>Clasificación</td><td>Uso interno</td></tr>
+    </table>
+  </div>
+
+  <div class="search-bar no-print">
+    <input type="text" id="search-input" placeholder="Buscar…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <h2 id="acceso-sistema">Acceso al Sistema</h2>
+  <ul>
+    <li><strong>URL:</strong> <code>http://localhost:8000/admin</code></li>
+    <li><strong>Inicio de sesión:</strong> usuario y contraseña proporcionados por el administrador</li>
+    <li><strong>Cerrar sesión:</strong> menú superior derecho → nombre de usuario → Cerrar Sesión</li>
+  </ul>
+
+  <h2 id="actividades">Actividades</h2>
+
+  <h3>Estados</h3>
+  <p>
+    <span class="badge badge-primary">Pendiente</span>
+    <span class="badge badge-warning">En Progreso</span>
+    <span class="badge badge-success">Completada</span>
+    <span class="badge badge-danger">Cancelada</span>
+  </p>
+
+  <h3>Programas</h3>
+  <ul>
+    <li>Educación Cívica</li>
+    <li>Participación Ciudadana</li>
+    <li>Atención Ciudadana</li>
+    <li>Otros</li>
+  </ul>
+
+  <h3>Crear actividad (Asistente)</h3>
+  <ol class="steps-list">
+    <li>Actividades → <strong>Crear con Asistente</strong></li>
+    <li>Paso 1: Información General (usuario, fecha, oficina, programa, estado)</li>
+    <li>Paso 2: Detalles (macroactividad, lugar)</li>
+    <li>Paso 3: Fechas (inicio, vencimiento, recordatorio opcional)</li>
+    <li>Paso 4: Archivos adjuntos (máx. 10 archivos, 10 MB c/u)</li>
+    <li>Click en <strong>Crear Actividad</strong></li>
+  </ol>
+
+  <h3>Añadir Rápido</h3>
+  <p>Actividades → <strong>Añadir Rápido</strong> → llenar campos → crear</p>
+
+  <h3>Editar</h3>
+  <p>Icono lápiz ✏️ (no disponible si está Completada, Cancelada o mes cerrado)</p>
+
+  <h3>Completar</h3>
+  <p>Icono check verde ✓ → ingresar asistentes → Confirmar</p>
+
+  <h3>Adjuntar archivos</h3>
+  <p>En edición/vista, pestaña <strong>Atestados</strong>. Arrastrar o seleccionar. Tipos: PDF, Word, JPG, PNG.</p>
+
+  <h3>Comentarios</h3>
+  <p>Pestaña <strong>Comentarios</strong> en la vista de actividad. Solo el autor puede editar/eliminar.</p>
+
+  <h2 id="requisiciones">Requisiciones</h2>
+
+  <h3>Estados</h3>
+  <div class="flow">
+    <span class="badge badge-primary">Solicitada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-warning">En Revisión</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-info">Aprobada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-success">Comprada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-secondary">Entregada</span>
+  </div>
+  <div class="flow">
+    <span class="badge badge-primary">Solicitada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-danger">Rechazada</span>
+  </div>
+
+  <h3>Niveles de urgencia</h3>
+  <ul>
+    <li><span class="badge badge-secondary">Baja</span> — 0 a 2 días desde creación</li>
+    <li><span class="badge badge-primary">Media</span> — 3 a 6 días</li>
+    <li><span class="badge badge-warning">Alta</span> — 7 a 14 días</li>
+    <li><span class="badge badge-danger">Urgente</span> — 15+ días</li>
+  </ul>
+
+  <h3>Tipos de insumo</h3>
+  <p>Oficina, Limpieza, Tecnología, Mantenimiento, Seguridad, Otros</p>
+
+  <h3>Rubros</h3>
+  <p>Papelería, Electrónica, Mobiliario, Consumibles, Herramientas</p>
+
+  <h2 id="tickets">Tickets</h2>
+
+  <h3>Estados</h3>
+  <p>
+    <span class="badge badge-warning">Pendiente</span>
+    <span class="badge badge-info">En Proceso</span>
+    <span class="badge badge-success">Resuelto</span>
+    <span class="badge badge-secondary">Cerrado</span>
+    <span class="badge badge-danger">Cancelado</span>
+  </p>
+
+  <h3>Prioridad</h3>
+  <ul>
+    <li><span class="badge badge-secondary">Baja</span> — 0-2 días desde creación</li>
+    <li><span class="badge badge-warning">Media</span> — 3-6 días</li>
+    <li><span class="badge badge-danger">Alta</span> — 7+ días</li>
+  </ul>
+
+  <h3>Tipos de ticket</h3>
+  <p>
+    <span class="badge badge-danger">Soporte Técnico</span>
+    <span class="badge badge-warning">Mantenimiento</span>
+    <span class="badge badge-info">Solicitud</span>
+    <span class="badge badge-primary">Incidente</span>
+    <span class="badge badge-secondary">Reclamo</span>
+  </p>
+
+  <h2 id="contratos">Contratos</h2>
+
+  <h3>Estados</h3>
+  <p>
+    <span class="badge badge-success">Vigente</span>
+    <span class="badge badge-warning">Por vencer</span>
+    <span class="badge badge-danger">Vencido</span>
+  </p>
+
+  <h3>Tipos</h3>
+  <p>
+    <span class="badge badge-primary">Servicios</span>
+    <span class="badge badge-success">Suministros</span>
+    <span class="badge badge-warning">Obras</span>
+    <span class="badge badge-info">Consultoría</span>
+    <span class="badge badge-secondary">Mantenimiento</span>
+    <span class="badge badge-danger">Arrendamiento</span>
+  </p>
+
+  <h2 id="roles">Roles del Sistema</h2>
+  <table>
+    <tr><th>Rol</th><th>Capacidad</th></tr>
+    <tr><td>Super Admin</td><td>Acceso total a todo el sistema</td></tr>
+    <tr><td>TI</td><td>Acceso técnico total</td></tr>
+    <tr><td>GOL</td><td>Lectura global y exportación</td></tr>
+    <tr><td>Coordinador</td><td>Gestión completa de su oficina</td></tr>
+    <tr><td>Asistente Técnico</td><td>Carga operativa</td></tr>
+    <tr><td>Auditoría</td><td>Solo consulta</td></tr>
+  </table>
+
+  <h2 id="cierres">Cierres Mensuales</h2>
+  <ul>
+    <li><strong>Individual:</strong> una departamental, un mes. Bloquea actividades.</li>
+    <li><strong>Consolidado:</strong> todas las departamentales, un mes. Solo SuperAdmin/GOL.</li>
+    <li>Estados: Generado → Aprobado → (opcional) Reabierto</li>
+    <li>% Cumplimiento = Ejecutadas / (Ejecutadas + Pendientes)</li>
+  </ul>
+
+  <h2 id="exportacion">Exportación de Datos</h2>
+  <table>
+    <tr><th>Formato</th><th>Uso recomendado</th></tr>
+    <tr><td>CSV</td><td>Importar a otras herramientas</td></tr>
+    <tr><td>XLSX</td><td>Manipulación en Excel</td></tr>
+    <tr><td>PDF</td><td>Informes formales</td></tr>
+  </table>
+
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Referencia Rápida — Uso interno</div>
+
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Referencia Rápida v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

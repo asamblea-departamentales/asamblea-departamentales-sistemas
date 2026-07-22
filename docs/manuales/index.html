@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inicio — Sistema de Gestión de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html" class="active">Inicio</a>
+    <a href="manual-usuario-final.html">Usuario Final</a>
+    <a href="manual-administracion.html">Administración</a>
+    <a href="manual-reportes.html">Reportes</a>
+    <a href="manual-referencia-rapida.html">Referencia Rápida</a>
+    <a href="glosario.html">Glosario</a>
+  </nav>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <!-- PORTADA -->
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Manuales de uso</h1>
+      <div class="audiencia">Portal de documentación — Todos los roles</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Código: M-DEP-IND-001</span>
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <!-- CONTROL DE DOCUMENTO -->
+  <div class="doc-control no-print">
+    <h2>Control de documento</h2>
+    <table>
+      <tr><td>Código</td><td>M-DEP-IND-001</td></tr>
+      <tr><td>Versión</td><td>1.0</td></tr>
+      <tr><td>Fecha</td><td>21 de julio de 2026</td></tr>
+      <tr><td>Elaborado por</td><td>Unidad de Sistemas</td></tr>
+      <tr><td>Aprobado por</td><td>Mesa Directiva</td></tr>
+      <tr><td>Clasificación</td><td>Uso interno</td></tr>
+    </table>
+  </div>
+
+  <h2 id="manuales-disp">Manuales por contenido</h2>
+
+  <div class="manual-grid">
+    <div class="manual-card">
+      <div class="icon">&#128187;</div>
+      <h3>Usuario Final</h3>
+      <p>Coordinadores y asistentes técnicos. Uso diario del sistema.</p>
+      <p style="font-size:0.75rem;color:#999;">
+        <a href="manual-usuario-final.html" class="btn">HTML</a>
+        <a href="01-manual-usuario-final.md" class="btn btn-outline">Markdown</a>
+      </p>
+    </div>
+    <div class="manual-card">
+      <div class="icon">&#128736;</div>
+      <h3>Administración</h3>
+      <p>Administradores y rol GOL. Gestión y configuración.</p>
+      <p style="font-size:0.75rem;color:#999;">
+        <a href="manual-administracion.html" class="btn">HTML</a>
+        <a href="02-manual-administracion.md" class="btn btn-outline">Markdown</a>
+      </p>
+    </div>
+    <div class="manual-card">
+      <div class="icon">&#128202;</div>
+      <h3>Reportes</h3>
+      <p>Analistas y directivos. Power BI y exportación de datos.</p>
+      <p style="font-size:0.75rem;color:#999;">
+        <a href="manual-reportes.html" class="btn">HTML</a>
+        <a href="03-manual-reportes-estadisticas.md" class="btn btn-outline">Markdown</a>
+      </p>
+    </div>
+    <div class="manual-card">
+      <div class="icon">&#9889;</div>
+      <h3>Referencia Rápida</h3>
+      <p>Cheatsheet visual de estados, roles y accesos.</p>
+      <p style="font-size:0.75rem;color:#999;">
+        <a href="manual-referencia-rapida.html" class="btn">HTML</a>
+        <a href="04-referencia-rapida.md" class="btn btn-outline">Markdown</a>
+      </p>
+    </div>
+    <div class="manual-card">
+      <div class="icon">&#128214;</div>
+      <h3>Glosario</h3>
+      <p>Definiciones de todos los términos técnicos del sistema.</p>
+      <p style="font-size:0.75rem;color:#999;">
+        <a href="glosario.html" class="btn">HTML</a>
+      </p>
+    </div>
+  </div>
+
+  <h2 id="manuales-rol">Manuales por rol</h2>
+  <p>Seleccione su rol para descargar el manual en PDF adaptado a sus permisos:</p>
+  <div class="manual-grid">
+    <div class="manual-card" style="border-color:var(--dorado);">
+      <div class="icon">&#128081;</div>
+      <h3>Super Admin</h3>
+      <p>Acceso total. Incluye todos los módulos del sistema.</p>
+      <p><a href="pdf/manual-super-admin.pdf" class="btn" target="_blank">📕 PDF Completo (1.5 MB)</a></p>
+    </div>
+    <div class="manual-card" style="border-color:var(--azul-primario);">
+      <div class="icon">&#128736;</div>
+      <h3>Coordinador</h3>
+      <p>Gestión de su oficina. Aprueba solicitudes departamentales.</p>
+      <p><a href="pdf/manual-coordinador.pdf" class="btn" target="_blank">📕 PDF Coordinador (1.5 MB)</a></p>
+    </div>
+    <div class="manual-card" style="border-color:var(--azul-secundario);">
+      <div class="icon">&#128187;</div>
+      <h3>Usuario Final</h3>
+      <p>Crea solicitudes, tickets y actividades. Operativo.</p>
+      <p><a href="pdf/manual-usuario-final.pdf" class="btn" target="_blank">📕 PDF Usuario Final (1.4 MB)</a></p>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>¿Qué manual le corresponde?</strong> Cada usuario tiene un rol asignado en el sistema. El PDF filtrado por rol solo incluye las secciones y funciones que ese rol puede usar.
+  </div>
+
+  <p style="text-align:center;margin-top:2rem;">
+    <a href="pdf/manual-completo.pdf" class="btn" target="_blank" style="font-size:1.1rem;">📕 Descargar Wiki Completa (PDF, 1.5 MB)</a>
+  </p>
+
+  <h2 id="credenciales">Credenciales de desarrollo</h2>
+
+  <div class="section-card">
+    <table class="cred-table">
+      <tr><th>Usuario</th><th>Contraseña</th><th>Rol</th></tr>
+      <tr><td>superadmin</td><td>Admin@2026!</td><td>Super Admin</td></tr>
+      <tr><td>rherrera</td><td>desarrollo2026</td><td>GOL</td></tr>
+      <tr><td>misho</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+      <tr><td>aestrada</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+      <tr><td>mvilleda</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+      <tr><td>aortiz</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+      <tr><td>fgonzalez</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+      <tr><td>pmunoz</td><td>desarrollo2026</td><td>Coordinador</td></tr>
+    </table>
+  </div>
+
+  <div class="no-print">
+    <div class="note">Estas credenciales son exclusivas para el entorno de desarrollo. No utilizar en producción.</div>
+  </div>
+
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Portal de documentación — Uso interno</div>
+
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Portal v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

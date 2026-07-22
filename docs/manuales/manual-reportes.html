@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Reportes y Estadísticas — Sistema de Gestión de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html">Inicio</a>
+    <a href="manual-usuario-final.html">Usuario Final</a>
+    <a href="manual-administracion.html">Administración</a>
+    <a href="manual-reportes.html" class="active">Reportes</a>
+    <a href="manual-referencia-rapida.html">Referencia Rápida</a>
+    <a href="glosario.html">Glosario</a>
+  </nav>
+  <div class="sidebar-section sidebar-toc">
+    <h3>Contenido</h3>
+    <div class="toc-list" id="sidebar-toc-list"></div>
+  </div>
+  <div class="sidebar-section sidebar-keypoints">
+    <h3>Puntos Clave</h3>
+    <div id="keypoints-list"></div>
+  </div>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Manual de Reportes y Estadísticas</h1>
+      <div class="audiencia">Para: Analistas, coordinadores y directivos</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Código: M-DEP-RPT-001</span>
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <!-- CONTROL DE DOCUMENTO -->
+  <div class="doc-control no-print">
+    <h2>Control de documento</h2>
+    <table>
+      <tr><td>Código</td><td>M-DEP-RPT-001</td></tr>
+      <tr><td>Versión</td><td>1.0</td></tr>
+      <tr><td>Fecha</td><td>21 de julio de 2026</td></tr>
+      <tr><td>Elaborado por</td><td>Unidad de Sistemas</td></tr>
+      <tr><td>Aprobado por</td><td>Mesa Directiva</td></tr>
+      <tr><td>Clasificación</td><td>Uso interno</td></tr>
+    </table>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar no-print">
+    <input type="text" id="search-input" placeholder="Buscar en este manual…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <h2 id="dashboard">Dashboard de Actividades</h2>
+  <p>Proporciona una visión general de indicadores clave:</p>
+  <ul>
+    <li>Total de actividades registradas</li>
+    <li>Actividades completadas vs pendientes</li>
+    <li>Calendario mensual de actividades</li>
+    <li>Gráfico de actividades por día/semana</li>
+  </ul>
+
+  <div class="img-wrap">
+    <img src="assets/dashboard-widgets.png" alt="Widgets del dashboard">
+    <div class="caption">Imagen 1: Widgets del dashboard con indicadores clave.</div>
+  </div>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Un coordinador inicia sesión y en el dashboard ve que hay <strong>47 actividades totales</strong>, <strong>32 completadas</strong> y <strong>15 pendientes</strong>. El calendario resalta los días 5, 12 y 20 con actividades programadas, y el gráfico muestra que la productividad subió en los últimos 2 meses.</p>
+  </div>
+
+  <h2 id="cierres-mensuales">Cierres Mensuales</h2>
+  <p>Genera informes consolidados por departamental y mes:</p>
+  <ul>
+    <li><strong>Individual:</strong> reporte PDF detallado de una departamental</li>
+    <li><strong>Consolidado:</strong> PDF comparativo de todas las departamentales</li>
+  </ul>
+
+  <h3>¿Qué incluye un cierre mensual?</h3>
+  <table>
+    <tr><th>Dato</th><th>Descripción</th></tr>
+    <tr><td>Actividades proyectadas</td><td>Planificadas para el período</td></tr>
+    <tr><td>Actividades ejecutadas</td><td>Completadas dentro del período</td></tr>
+    <tr><td>Actividades pendientes</td><td>No completadas</td></tr>
+    <tr><td>Actividades canceladas</td><td>Canceladas en el período</td></tr>
+    <tr><td>% Cumplimiento</td><td>Ejecutadas / (Ejecutadas + Pendientes)</td></tr>
+    <tr><td>Desglose por programa</td><td>Desglose de cada programa de la departamental</td></tr>
+  </table>
+
+  <h3>Estados del cierre</h3>
+  <table>
+    <tr><th>Estado</th><th>Implicaciones</th></tr>
+    <tr><td>Generado</td><td>Actividades bloqueadas, listo para revisión</td></tr>
+    <tr><td>Aprobado</td><td>Cierre validado, no se modifica</td></tr>
+    <tr><td>Reabierto</td><td>Actividades desbloqueadas para corrección</td></tr>
+  </table>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo: Consolidado mensual</div>
+    <p>En enero, el GOL descarga el consolidado y obtiene un PDF con 14 departamentales. La que menor cumplimiento tuvo (Chiquimula, 45%) aparece con alerta naranja, mientras que la de mejor desempeño (Sacatepéquez, 92%) aparece destacada en verde.</p>
+  </div>
+
+  <h2 id="exportaciones">Exportaciones</h2>
+
+  <h3>Exportar actividades</h3>
+  <ol class="steps-list">
+    <li>Abre la lista de actividades</li>
+    <li>Aplica los filtros deseados</li>
+    <li>Selecciona el formato de exportación</li>
+  </ol>
+
+  <p>Formatos disponibles:</p>
+  <table>
+    <tr><th>Formato</th><th>Uso</th></tr>
+    <tr><td>CSV</td><td>Importar a Excel, hojas de cálculo</td></tr>
+    <tr><td>XLSX</td><td>Para manipular en Excel</td></tr>
+    <tr><td>PDF</td><td>Informes formales y presentaciones</td></tr>
+  </table>
+
+  <h3>Exportar otras bitácoras</h3>
+  <ul>
+    <li><strong>Requisiciones:</strong> CSV, Excel, PDF</li>
+    <li><strong>Tickets:</strong> CSV, Excel, PDF</li>
+    <li><strong>Actividades por programa:</strong> reporte detallado exportable</li>
+  </ul>
+
+  <h2 id="visualizaciones">Visualizaciones del Dashboard</h2>
+
+  <h3>Gráfico de actividades</h3>
+  <ul>
+    <li><strong>Eje X:</strong> días del período seleccionado</li>
+    <li><strong>Eje Y:</strong> número de actividades</li>
+    <li><strong>Línea azul:</strong> actividades creadas</li>
+    <li><strong>Línea verde:</strong> actividades completadas</li>
+  </ul>
+
+  <h3>Calendario</h3>
+  <ul>
+    <li>Vista mensual con actividades marcadas por día</li>
+    <li>Clic en un día para ver actividades de esa fecha</li>
+  </ul>
+
+  <h2 id="notificaciones">Notificaciones y Alertas</h2>
+  <ul>
+    <li><strong>Actividades próximas a vencer:</strong> alerta en dashboard y campana</li>
+    <li><strong>Requisiciones urgentes:</strong> basado en días desde creación</li>
+    <li><strong>Tickets sin resolver:</strong> prioridad según antigüedad</li>
+    <li><strong>Contratos por vencer:</strong> notificación a 30 días del vencimiento</li>
+  </ul>
+
+  <h2 id="buenas-practicas">Buenas Prácticas</h2>
+  <ul>
+    <li>Genera cierres mensuales apenas termine el mes</li>
+    <li>Revisa el dashboard diariamente para identificar actividades próximas a vencer</li>
+    <li>Exporta reportes periódicamente para respaldo</li>
+    <li>No reabrir cierres a menos que sea estrictamente necesario</li>
+  </ul>
+
+  <h2 id="faq">Preguntas Frecuentes</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">1. ¿Puedo exportar los datos de más de un mes?</div>
+    <div class="faq-a">Sí, use los filtros de fechas en la lista de actividades para seleccionar un rango y luego exporte. El sistema incluirá todas las actividades del período seleccionado.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">2. ¿El PDF del cierre mensual incluye gráficos?</div>
+    <div class="faq-a">Sí, el PDF incluye tablas de resumen, porcentajes de cumplimiento por programa y barras comparativas. No incluye los gráficos interactivos del dashboard.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">3. ¿Cómo veo el histórico de cierres anteriores?</div>
+    <div class="faq-a">Vaya a <strong>Reportes y Cierres → Cierres Mensuales</strong>. Use los filtros de mes y año para encontrar cierres pasados. Puede descargar el PDF de cualquier cierre previo.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">4. ¿Las exportaciones incluyen archivos adjuntos?</div>
+    <div class="faq-a">No, las exportaciones (CSV, XLSX, PDF) solo incluyen los datos de la tabla. Los archivos adjuntos deben descargarse individualmente desde cada actividad.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">5. ¿Qué diferencia hay entre XLSX y CSV?</div>
+    <div class="faq-a">El XLSX mantiene formato y múltiples hojas, ideal para manipulación directa. El CSV es texto plano sin formato, ideal para importar a otros sistemas o herramientas de análisis.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">6. ¿Se puede personalizar el reporte PDF?</div>
+    <div class="faq-a">El PDF sigue una plantilla fija con los datos de la departamental, programa, cumplimiento y firmas. No es posible modificar su diseño desde la interfaz.</div>
+  </div>
+
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Manual de Reportes — Uso interno</div>
+
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Manual de Reportes v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

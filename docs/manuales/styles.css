@@ -1,0 +1,915 @@
+/* ============================================================
+   SISTEMA DE GESTIÓN DE OFICINAS DEPARTAMENTALES
+   Asamblea Legislativa — Manuales institucionales
+   ============================================================
+   Hoja de estilo — v1.0 — 21 julio 2026
+   Filosofía: PRINT-FIRST. Diseñado para exportación PDF impecable.
+   ============================================================ */
+
+/* ------ Paleta institucional ------ */
+:root {
+  --azul-primario:   #0a2c65;
+  --azul-secundario: #1a4a8a;
+  --azul-claro:      #e8edf5;
+  --dorado:          #a57f2c;
+  --texto:           #2b2b2b;
+  --gris-fondo:      #f2f2f2;
+  --blanco:          #ffffff;
+  --borde:           #c0c0c0;
+  --borde-claro:     #d8d8d8;
+}
+
+/* ============================================================
+   ESTILOS DE PANTALLA
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: var(--texto);
+  background: #eef1f5;
+  line-height: 1.65;
+  font-size: 15px;
+  padding-top: 0;
+}
+
+/* ---- Page wrappers ---- */
+.page {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  background: var(--blanco);
+  min-height: 100vh;
+  box-shadow: 0 0 0 1px var(--borde-claro);
+}
+
+/* ---- Cover / Portada ---- */
+.cover {
+  position: relative;
+  background: var(--blanco);
+  border-bottom: 1px solid var(--borde-claro);
+  padding: 0;
+  margin: 0 -2rem 2.5rem;
+  text-align: center;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.cover .pleca-sup {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 14px;
+  background: var(--azul-primario);
+}
+.cover .pleca-inf {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: var(--dorado);
+}
+.cover .cover-inner {
+  padding: 5rem 3rem;
+  max-width: 720px;
+  width: 100%;
+}
+.cover .escudo {
+  margin-bottom: 1.5rem;
+}
+.cover .escudo img {
+  height: 80px;
+  width: auto;
+}
+.cover .institucion {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+  color: var(--azul-primario);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.cover .sistema {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.3rem;
+  color: var(--texto);
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+.cover .titulo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--azul-primario);
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  border: none;
+}
+.cover .audiencia {
+  font-size: 1rem;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 2rem;
+}
+.cover .divider {
+  width: 60px;
+  height: 3px;
+  background: var(--dorado);
+  margin: 0 auto 2rem;
+}
+.cover .meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 2rem;
+  font-size: 0.82rem;
+  color: #666;
+}
+.cover .meta span { white-space: nowrap; }
+
+/* ---- Doc control table ---- */
+.doc-control {
+  margin: 2rem 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--borde);
+  background: #fafafa;
+}
+.doc-control h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+  color: var(--azul-primario);
+  margin-bottom: 0.75rem;
+  border: none;
+  padding: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.doc-control table { font-size: 0.85rem; margin: 0; }
+.doc-control table td { padding: 0.3rem 0.6rem; border: 1px solid var(--borde-claro); }
+.doc-control table td:first-child { font-weight: 600; background: #f0f0f0; width: 160px; }
+
+/* ---- Navigation top bar (screen only) ---- */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  margin: 0 -2rem;
+  height: 48px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.15);
+}
+.topnav .nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  margin-right: 1rem;
+}
+.topnav .nav-brand img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.topnav .nav-links {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+}
+.topnav .nav-links::-webkit-scrollbar { display: none; }
+.topnav .nav-links a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.76rem;
+  padding: 0.3rem 0.6rem;
+  white-space: nowrap;
+  transition: all 0.12s;
+  flex-shrink: 0;
+  border-bottom: 2px solid transparent;
+}
+.topnav .nav-links a:hover,
+.topnav .nav-links a.active {
+  color: var(--blanco);
+  background: rgba(255,255,255,0.1);
+  border-bottom-color: var(--dorado);
+}
+.topnav .nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--blanco);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+}
+
+/* ---- Search ---- */
+.search-bar { margin-bottom: 1.25rem; position: relative; }
+.search-bar input {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2.2rem;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: var(--blanco) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E") 0.6rem center no-repeat;
+  transition: border-color 0.12s;
+}
+.search-bar input:focus { outline: none; border-color: var(--azul-primario); }
+.search-results { font-size: 0.8rem; color: #888; margin-top: 0.25rem; min-height: 1.2em; }
+.search-results .count { font-weight: 600; color: var(--azul-primario); }
+mark.search-hl { background: #fff176; padding: 0 0.1rem; }
+
+/* ---- TOC ---- */
+.toc-wrap { position: relative; }
+.toc-toggle {
+  display: none;
+  width: 100%;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+.toc-toggle::after { content: ' \25BC'; font-size: 0.65rem; }
+.toc-toggle.open::after { content: ' \25B2'; }
+.toc {
+  background: #fafafa;
+  border: 1px solid var(--borde-claro);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.toc h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.82rem;
+  color: var(--azul-primario);
+  margin-bottom: 0.6rem;
+  border: none;
+  padding: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.toc-list { list-style: none; padding: 0; margin: 0; }
+.toc-list li {
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+  border-bottom: 1px dotted #e0e0e0;
+  padding: 0.1rem 0;
+}
+.toc-list li:last-child { border: none; }
+.toc-list a {
+  color: var(--texto);
+  text-decoration: none;
+  transition: color 0.12s;
+  display: block;
+  padding: 0.1rem 0;
+}
+.toc-list a:hover { color: var(--azul-secundario); }
+.toc-list a.active-toc { color: var(--azul-primario); font-weight: 700; }
+.toc-list .toc-h3 { padding-left: 1.2rem; }
+.toc-list .toc-h3 a { font-size: 0.82rem; color: #555; }
+
+/* ---- Headings ---- */
+h1 { display: none; } /* h1 is only in cover */
+h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.35rem;
+  color: var(--azul-primario);
+  margin: 2rem 0 0.75rem;
+  padding: 0 0 0.35rem 0.6rem;
+  border-left: 4px solid var(--azul-primario);
+  border-bottom: 1px solid var(--borde-claro);
+  page-break-after: avoid;
+  break-after: avoid;
+}
+h2 .num {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  font-size: 0.78rem;
+  width: 26px; height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 0.4rem;
+}
+h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.05rem;
+  color: var(--azul-secundario);
+  margin: 1.25rem 0 0.4rem;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+h4 {
+  font-size: 0.95rem;
+  color: var(--texto);
+  margin: 1rem 0 0.3rem;
+  font-weight: 700;
+}
+
+/* ---- Section cards (screen only, replaced by borders in print) ---- */
+.section-card {
+  background: #fafafa;
+  border: 1px solid var(--borde-claro);
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.9rem;
+  border-left: 4px solid var(--azul-primario);
+}
+.section-card.goal { border-left-color: #2e7d32; }
+.section-card.when { border-left-color: var(--azul-primario); }
+.section-card.steps { border-left-color: #b8860b; }
+.section-card.result { border-left-color: #2e7d32; }
+.section-card.errors { border-left-color: #b71c1c; }
+.section-card.tips { border-left-color: #6a1b9a; }
+.section-card.example { border-left-color: var(--dorado); }
+.section-card .label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  color: inherit;
+  margin-bottom: 0.15rem;
+}
+
+/* ---- Lists ---- */
+ul, ol { padding-left: 1.5rem; margin: 0.3rem 0; }
+p { margin-bottom: 0.3rem; }
+.steps-list { padding-left: 1.5rem; }
+.steps-list li { margin-bottom: 0.3rem; }
+
+/* ---- Tables ---- */
+.table-wrap { overflow-x: auto; margin: 0.75rem 0; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+th, td {
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+  border: 1px solid var(--borde-claro);
+  vertical-align: top;
+}
+th {
+  background: var(--azul-primario);
+  color: var(--blanco);
+  font-weight: 600;
+  white-space: nowrap;
+}
+tr:nth-child(even) { background: var(--gris-fondo); }
+
+/* ---- Badges ---- */
+.badge {
+  display: inline-block;
+  padding: 0.08rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.badge-primary { background: #e3f2fd; color: #0d47a1; border-color: #90caf9; }
+.badge-warning { background: #fff8e1; color: #e65100; border-color: #ffe082; }
+.badge-success { background: #e8f5e9; color: #1b5e20; border-color: #a5d6a7; }
+.badge-danger  { background: #fbe9e7; color: #b71c1c; border-color: #ef9a9a; }
+.badge-info    { background: #e0f7fa; color: #00695c; border-color: #80deea; }
+.badge-secondary { background: #f5f5f5; color: #424242; border-color: #bdbdbd; }
+.badge-purple  { background: #f3e5f5; color: #6a1b9a; border-color: #ce93d8; }
+
+/* ---- Images ---- */
+.img-wrap {
+  background: #fafafa;
+  border: 1px solid var(--borde-claro);
+  padding: 0.5rem;
+  margin: 0.75rem 0;
+  text-align: center;
+}
+.img-wrap img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e0e0e0;
+}
+.img-wrap .caption {
+  font-size: 0.78rem;
+  color: #888;
+  margin-top: 0.35rem;
+  font-style: italic;
+}
+
+/* ---- Notes & Warnings ---- */
+.note { background: #fff8e1; border-left: 4px solid #f9a825; padding: 0.5rem 0.75rem; margin: 0.7rem 0; font-size: 0.85rem; }
+.warning { background: #fbe9e7; border-left: 4px solid #d32f2f; padding: 0.5rem 0.75rem; margin: 0.7rem 0; font-size: 0.85rem; }
+.info-box { background: #e3f2fd; border-left: 4px solid var(--azul-secundario); padding: 0.5rem 0.75rem; margin: 0.7rem 0; font-size: 0.85rem; }
+
+/* ---- Flow ---- */
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem; margin: 0.5rem 0; font-size: 0.82rem; }
+.flow .arrow { color: #aaa; font-weight: 700; }
+
+/* ---- FAQ ---- */
+.faq-item { margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px dotted #e0e0e0; }
+.faq-item:last-child { border: none; }
+.faq-q { font-weight: 700; color: var(--azul-primario); margin-bottom: 0.1rem; font-size: 0.92rem; }
+.faq-a { color: var(--texto); font-size: 0.85rem; }
+
+/* ---- Glossary ---- */
+.glossary dt {
+  font-weight: 700;
+  color: var(--azul-primario);
+  margin-top: 0.5rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px dotted #d0d0d0;
+}
+.glossary dd { margin: 0.1rem 0 0.3rem 1rem; font-size: 0.85rem; color: #444; }
+
+/* ---- General ---- */
+code {
+  background: #eef1f5;
+  padding: 0.08rem 0.3rem;
+  font-size: 0.82rem;
+  font-family: 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+  border: 1px solid #dde2e8;
+  border-radius: 3px;
+}
+hr { border: none; border-top: 1px solid var(--borde-claro); margin: 1rem 0; }
+
+/* ---- Back to top ---- */
+.back-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: calc((100% - 1024px) / 2 + 0.5rem);
+  width: 40px; height: 40px;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.25s;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.back-top.visible { opacity: 1; transform: translateY(0); }
+.back-top:hover { background: var(--azul-secundario); }
+
+/* ---- Footer (screen) ---- */
+.doc-footer {
+  margin-top: 2.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--borde-claro);
+  text-align: center;
+  color: #888;
+  font-size: 0.78rem;
+}
+
+/* ---- Print footer (only in print) ---- */
+.print-footer { display: none; }
+
+/* ---- Manual cards (index) ---- */
+.manual-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.manual-card {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: border-color 0.12s;
+}
+.manual-card:hover { border-color: var(--azul-primario); }
+.manual-card .icon { font-size: 2rem; margin-bottom: 0.4rem; }
+.manual-card h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--azul-primario);
+  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  border: none;
+}
+.manual-card p { font-size: 0.82rem; color: #666; margin-bottom: 0.6rem; }
+.btn {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  text-decoration: none;
+  border: 1px solid var(--azul-primario);
+  font-size: 0.8rem;
+  margin: 0.1rem;
+  transition: background 0.12s;
+  font-weight: 600;
+}
+.btn:hover { background: var(--azul-secundario); }
+.btn-outline {
+  background: transparent;
+  color: var(--azul-primario);
+}
+.btn-outline:hover { background: var(--azul-claro); }
+.cred-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin: 0.5rem 0; }
+.cred-table th, .cred-table td { padding: 0.3rem 0.5rem; text-align: left; border-bottom: 1px solid var(--borde-claro); }
+.cred-table th { font-weight: 700; color: #555; background: transparent; color: var(--texto); }
+
+/* ============================================================
+   WIKI SIDEBAR LAYOUT  (screen only)
+   ============================================================ */
+
+.wiki-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.wiki-sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.3) transparent;
+}
+.wiki-sidebar::-webkit-scrollbar { width: 4px; }
+.wiki-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 2px; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+.sidebar-header img { height: 32px; width: auto; }
+.sidebar-header span { font-weight: 700; font-size: 0.85rem; line-height: 1.2; }
+
+.sidebar-nav {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.sidebar-nav a {
+  display: block;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  font-size: 0.78rem;
+  padding: 0.35rem 1rem;
+  border-left: 3px solid transparent;
+  transition: all 0.12s;
+}
+.sidebar-nav a:hover { color: var(--blanco); background: rgba(255,255,255,0.08); }
+.sidebar-nav a.active {
+  color: var(--blanco);
+  background: rgba(255,255,255,0.1);
+  border-left-color: var(--dorado);
+  font-weight: 600;
+}
+
+.sidebar-section {
+  padding: 0.75rem 1rem 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-section h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.5);
+  margin: 0 0 0.4rem;
+  border: none;
+  padding: 0;
+}
+.sidebar-toc { flex: 1; overflow-y: auto; }
+.sidebar-toc .toc-list { list-style: none; padding: 0; margin: 0; }
+.sidebar-toc .toc-list li {
+  margin: 0;
+  font-size: 0.75rem;
+  border: none;
+  padding: 0;
+}
+.sidebar-toc .toc-list a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  display: block;
+  padding: 0.2rem 1rem;
+  border-left: 2px solid transparent;
+  transition: all 0.12s;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+.sidebar-toc .toc-list a:hover { color: var(--blanco); background: rgba(255,255,255,0.06); }
+.sidebar-toc .toc-list a.active-toc {
+  color: var(--blanco);
+  border-left-color: var(--dorado);
+  background: rgba(255,255,255,0.08);
+  font-weight: 600;
+}
+.sidebar-toc .toc-list .toc-h3 a { padding-left: 1.8rem; font-size: 0.72rem; color: rgba(255,255,255,0.45); }
+
+.sidebar-keypoints {
+  flex-shrink: 0;
+  max-height: 30vh;
+  overflow-y: auto;
+}
+.keypoint-item {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  padding: 0.2rem 1rem;
+  border-left: 2px solid var(--dorado);
+  margin-bottom: 0.2rem;
+  line-height: 1.3;
+}
+.keypoint-item .kp-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dorado);
+  font-weight: 700;
+  display: block;
+}
+
+/* Main content area next to sidebar */
+.wiki-content {
+  margin-left: 280px;
+  flex: 1;
+  min-width: 0;
+}
+.wiki-content .page {
+  max-width: 100%;
+  margin: 0;
+  box-shadow: none;
+  border: none;
+  padding: 0 2.5rem 4rem;
+}
+.wiki-content .topnav {
+  display: none;
+}
+
+/* Sidebar toggle for mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+}
+.sidebar-toggle-btn {
+  display: none;
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 1001;
+  background: var(--azul-primario);
+  color: var(--blanco);
+  border: none;
+  width: 38px;
+  height: 38px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  body { font-size: 14px; }
+  .wiki-content .page { padding: 0 0.75rem 3rem; margin-top: 2.5rem; }
+
+  /* Sidebar becomes overlay drawer */
+  .wiki-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  .wiki-sidebar.open { transform: translateX(0); }
+  .sidebar-overlay { display: none; }
+  .sidebar-overlay.open { display: block; }
+  .sidebar-toggle-btn { display: flex; }
+  .wiki-content { margin-left: 0; }
+
+  .cover { margin: 0 -0.75rem 1.5rem; min-height: 60vh; }
+  .cover .cover-inner { padding: 3rem 1.5rem; }
+  .cover .titulo { font-size: 1.5rem; }
+  .cover .institucion { font-size: 0.85rem; }
+  .toc-toggle { display: block; }
+  .toc { display: none; }
+  .toc.open { display: block; }
+  .manual-grid { grid-template-columns: 1fr; }
+  .back-top { right: 0.75rem; bottom: 1rem; width: 36px; height: 36px; font-size: 1rem; }
+  h2 { font-size: 1.15rem; }
+  .table-wrap { overflow-x: auto; }
+}
+
+/* ============================================================
+   ESTILOS DE IMPRESIÓN (@media print)
+   ============================================================ */
+@media print {
+
+  /* ---- Page setup ---- */
+  @page {
+    size: letter;
+    margin: 2.2cm 2cm 2.8cm 2cm;
+  }
+
+  /* ---- Base ---- */
+  body {
+    font-size: 10.5pt;
+    color: #000;
+    background: var(--blanco);
+    line-height: 1.55;
+  }
+  .page {
+    max-width: 100%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    background: var(--blanco);
+  }
+
+  /* ---- Hide screen-only elements ---- */
+  .topnav,
+  .wiki-sidebar,
+  .sidebar-toggle-btn,
+  .sidebar-overlay,
+  .search-bar,
+  .toc-wrap,
+  .toc-toggle,
+  .toc,
+  .back-top,
+  .nav-toggle,
+  .no-print,
+  .section-card.tips {
+    display: none !important;
+  }
+
+  .wiki-content { margin-left: 0; }
+  .wiki-content .page { padding: 0; box-shadow: none; }
+
+  /* ---- Cover / Portada (full page, no cut) ---- */
+  .cover {
+    min-height: 0;
+    height: 95vh;
+    margin: 0;
+    padding: 0;
+    border: none;
+    page-break-after: always;
+    break-after: page;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--blanco);
+  }
+  .cover .cover-inner {
+    padding: 0;
+    max-width: 85%;
+  }
+  .cover .pleca-sup {
+    position: absolute;
+    height: 12pt;
+    background: var(--azul-primario);
+  }
+  .cover .pleca-inf {
+    position: absolute;
+    height: 5pt;
+    background: var(--dorado);
+  }
+  .cover .escudo img { height: 72pt; }
+  .cover .institucion { font-size: 11pt; }
+  .cover .titulo { font-size: 20pt; }
+  .cover .divider { width: 50pt; height: 2.5pt; }
+
+  /* ---- Doc control page ---- */
+  .doc-control { page-break-after: always; break-after: page; }
+
+  /* ---- Headings ---- */
+  h2 {
+    font-size: 14pt;
+    margin: 1.5cm 0 0.4cm;
+    border-left: 3pt solid var(--azul-primario);
+    border-bottom: 0.5pt solid #ccc;
+    padding-left: 0.4cm;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  h2 .num {
+    font-size: 9pt;
+    width: 22pt; height: 22pt;
+    margin-right: 0.3cm;
+  }
+  h3 { font-size: 12pt; margin: 0.8cm 0 0.3cm; page-break-after: avoid; break-after: avoid; }
+  h4 { font-size: 11pt; }
+
+  /* ---- Section cards become simple borders ---- */
+  .section-card {
+    background: var(--blanco);
+    border: 0.5pt solid #ccc;
+    padding: 0.4cm 0.5cm;
+    margin-bottom: 0.4cm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ---- Tables ---- */
+  table { font-size: 9pt; page-break-inside: auto; }
+  thead { display: table-header-group; }
+  tr { page-break-inside: avoid; break-inside: avoid; }
+  th {
+    background: var(--azul-primario) !important;
+    color: var(--blanco) !important;
+    padding: 0.25cm 0.3cm;
+  }
+  td { padding: 0.2cm 0.3cm; }
+  tr:nth-child(even) { background: var(--gris-fondo); }
+
+  /* ---- Badges with borders (print well in B/W) ---- */
+  .badge {
+    border: 0.5pt solid #999;
+    padding: 0.05cm 0.25cm;
+  }
+  .badge-primary { background: #e3f2fd; }
+  .badge-success { background: #e8f5e9; }
+  .badge-warning { background: #fff8e1; }
+  .badge-danger  { background: #fbe9e7; }
+
+  /* ---- Images ---- */
+  .img-wrap {
+    background: var(--blanco);
+    border: 0.5pt solid #ccc;
+    padding: 0.3cm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .img-wrap .caption { font-size: 8pt; }
+
+  /* ---- Notes / Warnings ---- */
+  .note, .warning, .info-box {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 0.3cm 0.4cm;
+  }
+
+  /* ---- FAQ ---- */
+  .faq-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ---- Lists ---- */
+  ul, ol { padding-left: 0.6cm; }
+
+  /* ---- Print footer ---- */
+  .print-footer {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 7.5pt;
+    color: #666;
+    padding: 0.2cm 0;
+    border-top: 0.5pt solid #bbb;
+    background: var(--blanco);
+    z-index: 9999;
+    margin: 0 2cm;
+  }
+
+  /* ---- Links: no URL after internal links ---- */
+  a[href]::after { content: none !important; }
+
+  /* ---- Force colors in print ---- */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}

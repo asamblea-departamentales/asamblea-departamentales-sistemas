@@ -61,6 +61,10 @@ class AppServiceProvider extends ServiceProvider
             PanelsRenderHook::BODY_END,
             fn () => view('filament.components.impersonate-banner')
         );
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+            fn (): View => view('filament.components.manual-button'),
+        );
     }
 
     protected function validateLdapConfig(): void

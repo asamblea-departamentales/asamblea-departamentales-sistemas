@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Administración — Sistema de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html">Inicio</a>
+    <a href="manual-usuario-final.html">Usuario Final</a>
+    <a href="manual-administracion.html" class="active">Administración</a>
+    <a href="manual-reportes.html">Reportes</a>
+    <a href="manual-referencia-rapida.html">Referencia Rápida</a>
+    <a href="glosario.html">Glosario</a>
+  </nav>
+  <div class="sidebar-section sidebar-toc">
+    <h3>Contenido</h3>
+    <div class="toc-list" id="sidebar-toc-list"></div>
+  </div>
+  <div class="sidebar-section sidebar-keypoints">
+    <h3>Puntos Clave</h3>
+    <div id="keypoints-list"></div>
+  </div>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Manual de Administración</h1>
+      <div class="audiencia">Para: Administradores del sistema y rol GOL</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Código: M-DEP-ADM-001</span>
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <!-- CONTROL DE DOCUMENTO -->
+  <div class="doc-control no-print">
+    <h2>Control de documento</h2>
+    <table>
+      <tr><td>Código</td><td>M-DEP-ADM-001</td></tr>
+      <tr><td>Versión</td><td>1.0</td></tr>
+      <tr><td>Fecha</td><td>21 de julio de 2026</td></tr>
+      <tr><td>Elaborado por</td><td>Unidad de Sistemas</td></tr>
+      <tr><td>Aprobado por</td><td>Mesa Directiva</td></tr>
+      <tr><td>Clasificación</td><td>Uso interno</td></tr>
+    </table>
+  </div>
+
+  <div class="search-bar no-print">
+    <input type="text" id="search-input" placeholder="Buscar en este manual…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <h2 id="gestion-departamentales">Gestión de Departamentales</h2>
+  <p>Acceso: <strong>Gestión → Departamentales</strong></p>
+  <ul>
+    <li><strong>Crear:</strong> nombre, código (abreviatura), activo</li>
+    <li><strong>Editar / Desactivar:</strong> sin eliminar registros asociados</li>
+  </ul>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Para crear la departamental de <strong>Alta Verapaz</strong>, ingrese <em>Nombre</em> = "Alta Verapaz", <em>Código</em> = "AV". Quedará activa por defecto para que los usuarios puedan asociarle actividades.</p>
+  </div>
+
+  <h2 id="gestion-usuarios">Gestión de Usuarios</h2>
+  <p>Acceso: <strong>Accesos → Usuarios</strong></p>
+
+  <h3>Crear usuario</h3>
+  <ol class="steps-list">
+    <li>Haz clic en <strong>Crear</strong></li>
+    <li>Completa: foto (opcional), username, email, nombres, apellidos, contraseña, oficina departamental, rol</li>
+  </ol>
+
+  <h3>Roles disponibles</h3>
+  <table>
+    <tr><th>Rol</th><th>Permisos</th></tr>
+    <tr><td>super_admin</td><td>Acceso total absoluto a todas las funciones</td></tr>
+    <tr><td>gol</td><td>Lectura global, exportación de datos</td></tr>
+    <tr><td>coordinador</td><td>Gestión completa de actividades de su departamental</td></tr>
+    <tr><td>asistente_tecnico</td><td>Carga operativa: ejecución, atestados, bitácoras</td></tr>
+    <tr><td>auditoria</td><td>Consulta de reportes y registros cerrados</td></tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/usuarios-lista.png" alt="Lista de usuarios">
+    <div class="caption">Imagen: Listado de usuarios del sistema.</div>
+  </div>
+
+  <h3>Suplantación (Impersonate)</h3>
+  <ol class="steps-list">
+    <li>En la lista de usuarios, haz clic en <strong>Impersonate</strong></li>
+    <li>Confirmas la acción</li>
+    <li>El sistema te muestra el panel como si fueras ese usuario</li>
+    <li>Para volver: menú superior derecho → <strong>Salir de la departamental</strong></li>
+  </ol>
+
+  <h2 id="roles-permisos">Roles y Permisos (Filament Shield)</h2>
+  <p>Acceso: <strong>Accesos → Roles</strong></p>
+  <p>Cada rol tiene permisos granulares sobre recursos, páginas y widgets.</p>
+
+  <h3>Permisos por recurso</h3>
+  <ul>
+    <li><code>view</code> — Ver registros</li>
+    <li><code>view_any</code> — Ver todos (incluso de otras departamentales)</li>
+    <li><code>create</code> — Crear nuevos</li>
+    <li><code>update</code> — Editar existentes</li>
+    <li><code>delete</code> / <code>delete_any</code> — Eliminar</li>
+  </ul>
+
+  <h2 id="cierre-mensual">Cierre Mensual</h2>
+  <p>Consolida las actividades de una departamental en un mes y genera un PDF.</p>
+
+  <h3>Generar cierre individual</h3>
+  <p><strong>Desde Actividades:</strong> filtra por departamental → <strong>Generar Cierre Mensual</strong> → selecciona mes y año.</p>
+  <p><strong>Desde Cierres Mensuales:</strong> <strong>Generar Cierre Mensual</strong> → selecciona departamental, mes y año.</p>
+
+  <p>El sistema:</p>
+  <ol class="steps-list">
+    <li>Cuenta actividades proyectadas, ejecutadas, pendientes y canceladas</li>
+    <li>Calcula el % de cumplimiento</li>
+    <li>Genera un PDF con el resumen por programa</li>
+    <li>Asocia las actividades al cierre</li>
+  </ol>
+
+  <div class="warning">Una vez generado el cierre, las actividades de ese mes NO se pueden editar ni eliminar.</div>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Si la departamental de <strong>Sacatepéquez</strong> tuvo 15 actividades en junio (12 ejecutadas, 3 pendientes), al generar el cierre mensual el sistema calculará un cumplimiento del 80%, generará un PDF con el desglose por programa y bloqueará las 15 actividades contra ediciones.</p>
+  </div>
+
+  <h3>Generar consolidado</h3>
+  <p>En <strong>Actividades</strong> → <strong>Descargar Consolidado</strong> → selecciona mes y año → PDF con todas las departamentales.</p>
+
+  <h3>Estados del cierre</h3>
+  <table>
+    <tr><th>Estado</th><th>Significado</th></tr>
+    <tr><td>Generado</td><td>Cierre creado, actividades bloqueadas</td></tr>
+    <tr><td>Aprobado</td><td>Cierre validado</td></tr>
+    <tr><td>Reabierto</td><td>Mes disponible para edición nuevamente</td></tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/cierre-mensuales.png" alt="Cierres mensuales">
+    <div class="caption">Imagen: Gestión de cierres mensuales.</div>
+  </div>
+
+  <h2 id="configuracion">Configuración del Sistema</h2>
+  <p>Acceso: <strong>Configuración</strong> en el menú.</p>
+
+  <table>
+    <tr><th>Sección</th><th>Qué configurar</th></tr>
+    <tr><td>General</td><td>Nombre, logo, favicon, tema de colores</td></tr>
+    <tr><td>Sitio</td><td>Modo mantenimiento, nombre, lema, contacto, idioma, zona horaria</td></tr>
+    <tr><td>Redes Sociales</td><td>URLs de Facebook, Twitter, Instagram, LinkedIn, YouTube, TikTok</td></tr>
+    <tr><td>SEO</td><td>Meta descripciones, Open Graph, Twitter Cards, Schema.org, robots.txt</td></tr>
+    <tr><td>Scripts</td><td>Scripts personalizados para header, body, footer; CSS y JS propios</td></tr>
+    <tr><td>Correo</td><td>SMTP: host, puerto, usuario, contraseña; diseño de plantillas</td></tr>
+  </table>
+
+  <h2 id="seguridad">Seguridad</h2>
+  <ul>
+    <li><strong>Autenticación:</strong> contraseñas hasheadas con bcrypt</li>
+    <li><strong>Roles y permisos:</strong> control granular por recurso (Shield)</li>
+    <li><strong>Suplantación:</strong> solo super_admin puede impersonar</li>
+    <li><strong>Notificaciones:</strong> canal seguro por base de datos</li>
+    <li><strong>Logs de actividad:</strong> seguimiento de cambios (spatie/activitylog)</li>
+  </ul>
+
+  <h2 id="faq">Preguntas Frecuentes</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">1. ¿Cómo creo un usuario nuevo?</div>
+    <div class="faq-a">Vaya a <strong>Accesos → Usuarios → Crear</strong>. Complete los campos obligatorios (username, email, nombres, apellidos, contraseña) y asigne un rol. El usuario recibirá sus credenciales de forma segura.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">2. ¿Qué hago si un usuario olvida su contraseña?</div>
+    <div class="faq-a">Puede restablecerla desde <strong>Accesos → Usuarios</strong>, edite el usuario y escriba una nueva contraseña. El sistema la guardará de forma segura.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">3. ¿Puedo eliminar un usuario?</div>
+    <div class="faq-a">No se recomienda eliminar usuarios porque pierde la trazabilidad. En su lugar, desactive la cuenta desde la edición del usuario (marque como inactivo).</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">4. ¿Qué significa &ldquo;Reabrir&rdquo; un cierre mensual?</div>
+    <div class="faq-a">Permite desbloquear las actividades de un mes ya cerrado para hacer correcciones. Solo debe usarse cuando sea estrictamente necesario, ya que afecta los reportes históricos.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">5. ¿Cómo configuro el correo SMTP?</div>
+    <div class="faq-a">Vaya a <strong>Configuración → Correo</strong>. Ingrese los datos del servidor SMTP (host, puerto, usuario, contraseña). Use la opción "Probar Envío" para verificar la conexión antes de guardar.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">6. ¿El sistema tiene respaldo automático de datos?</div>
+    <div class="faq-a">El sistema no incluye respaldos automáticos integrados. Es responsabilidad del administrador del servidor configurar copias de seguridad periódicas de la base de datos.</div>
+  </div>
+
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Manual de Administración — Uso interno</div>
+
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Manual de Administración v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

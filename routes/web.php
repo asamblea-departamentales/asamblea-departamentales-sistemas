@@ -154,6 +154,31 @@ Route::middleware(['web', 'auth'])->get('/consolidado/{año}/{mes}/pdf', functio
 
     return response()->file($path);
 })->name('consolidado.pdf');
+
+/* -----------------------------
+|  PDF DEL MANUAL POR ROL
+-------------------------------*/
+Route::middleware(['web', 'auth'])->get('/admin/manual', function () {
+    $user = auth()->user();
+    $role = $user->getRoleNames()->first();
+    $map = [
+        'super_admin'       => 'manual-super-admin.pdf',
+        'coordinador'       => 'manual-coordinador.pdf',
+        'asistente_tecnico' => 'manual-usuario-final.pdf',
+    ];
+    $file = $map[$role] ?? null;
+    if (! $file) {
+        abort(403, 'No hay manual disponible para su rol.');
+    }
+    $path = base_path("docs/manuales/pdf/{$file}");
+    if (! file_exists($path)) {
+        abort(404, 'Archivo de manual no encontrado.');
+    }
+    return response()->file($path, [
+        'Content-Type' => 'application/pdf',
+    ]);
+})->name('manual.pdf');
+
 // * -----------------------------
 //  RUTA PARA SERVIR ARCHIVOS MEDIA
 // ------------------------------*/

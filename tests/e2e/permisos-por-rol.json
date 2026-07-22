@@ -1,0 +1,69 @@
+{
+  "roles": {
+    "super_admin": { "label": "Super Admin", "desc": "Acceso total al sistema" },
+    "coordinador":  { "label": "Coordinador", "desc": "Gestión de su oficina y aprobación de solicitudes departamentales" },
+    "asistente_tecnico": { "label": "Usuario Final", "desc": "Crea solicitudes, tickets y actividades" }
+  },
+  "manuals": {
+    "super_admin":        ["manual-usuario-final.html", "manual-administracion.html", "manual-reportes.html", "manual-referencia-rapida.html", "glosario.html"],
+    "coordinador":        ["manual-usuario-final.html", "manual-reportes.html", "manual-referencia-rapida.html"],
+    "asistente_tecnico":  ["manual-usuario-final.html", "manual-reportes.html", "manual-referencia-rapida.html"]
+  },
+  "sections": {
+    "manual-usuario-final.html": {
+      "Control de documento": ["super_admin"],
+      "Objetivo del Manual": ["super_admin","coordinador","asistente_tecnico"],
+      "Requisitos Técnicos": ["super_admin","coordinador","asistente_tecnico"],
+      "Acceso al Sistema": [],
+      "Descripción General": ["super_admin","coordinador","asistente_tecnico"],
+      "Panel Principal (Dashboard)": ["super_admin","coordinador","asistente_tecnico"],
+      "Gestión de Actividades": ["super_admin","coordinador","asistente_tecnico"],
+      "Requisiciones (Solicitud de Insumos)": ["super_admin","coordinador","asistente_tecnico"],
+      "Tickets (Reportes de Soporte)": ["super_admin","coordinador","asistente_tecnico"],
+      "Contratos": ["super_admin","coordinador"],
+      "Cierres Mensuales": ["super_admin","coordinador"],
+      "Notificaciones": ["super_admin","coordinador","asistente_tecnico"],
+      "Perfil de Usuario": ["super_admin","coordinador","asistente_tecnico"],
+      "Administración de Departamentales": ["super_admin"],
+      "Administración de Usuarios": ["super_admin"],
+      "Roles y Permisos": ["super_admin"],
+      "Configuración del Sistema": ["super_admin"],
+      "Reportes Power BI": ["super_admin","coordinador","asistente_tecnico"],
+      "Preguntas Frecuentes": ["super_admin","coordinador","asistente_tecnico"],
+      "Solución de Problemas": ["super_admin","coordinador","asistente_tecnico"],
+      "Glosario": ["super_admin","coordinador","asistente_tecnico"],
+      "Conclusión": ["super_admin","coordinador","asistente_tecnico"]
+    },
+    "manual-administracion.html": {
+      "Control de documento": ["super_admin"],
+      "Gestión de Departamentales": ["super_admin"],
+      "Gestión de Usuarios": ["super_admin"],
+      "Roles y Permisos (Filament Shield)": ["super_admin"],
+      "Cierre Mensual": ["super_admin"],
+      "Configuración del Sistema": ["super_admin"],
+      "Seguridad": ["super_admin"],
+      "Preguntas Frecuentes": ["super_admin"]
+    },
+    "manual-reportes.html": {
+      "Control de documento": ["super_admin"],
+      "Dashboard de Actividades": ["super_admin","coordinador","asistente_tecnico"],
+      "Cierres Mensuales": ["super_admin","coordinador"],
+      "Exportaciones": ["super_admin","coordinador","asistente_tecnico"],
+      "Visualizaciones del Dashboard": ["super_admin","coordinador","asistente_tecnico"],
+      "Notificaciones y Alertas": ["super_admin","coordinador","asistente_tecnico"],
+      "Buenas Prácticas": ["super_admin","coordinador","asistente_tecnico"],
+      "Preguntas Frecuentes": ["super_admin","coordinador","asistente_tecnico"]
+    },
+    "manual-referencia-rapida.html": {
+      "Control de documento": ["super_admin"],
+      "Acceso al Sistema": [],
+      "Actividades": ["super_admin","coordinador","asistente_tecnico"],
+      "Requisiciones": ["super_admin","coordinador","asistente_tecnico"],
+      "Tickets": ["super_admin","coordinador","asistente_tecnico"],
+      "Contratos": ["super_admin","coordinador"],
+      "Roles del Sistema": ["super_admin"],
+      "Cierres Mensuales": ["super_admin","coordinador"],
+      "Exportación de Datos": ["super_admin","coordinador","asistente_tecnico"]
+    }
+  }
+}

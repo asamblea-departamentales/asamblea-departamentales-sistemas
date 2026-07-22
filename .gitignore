@@ -19,5 +19,8 @@ yarn-error.log
 /.idea
 /.vscode
 /-local
-/docs
+/docs/prototipos
+/docs/db
+/test-results
+/storage/media-library
 setup.php.disabled

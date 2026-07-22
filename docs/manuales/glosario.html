@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glosario — Sistema de Gestión de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html">Inicio</a>
+    <a href="manual-usuario-final.html">Usuario Final</a>
+    <a href="manual-administracion.html">Administración</a>
+    <a href="manual-reportes.html">Reportes</a>
+    <a href="manual-referencia-rapida.html">Referencia Rápida</a>
+    <a href="glosario.html" class="active">Glosario</a>
+  </nav>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Glosario de Términos</h1>
+      <div class="audiencia">Para: Todos los usuarios</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <div class="search-bar no-print">
+    <input type="text" id="search-input" placeholder="Buscar término…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <dl class="glossary">
+    <dt>Actividad</dt>
+    <dd>Un evento, taller, reunión o tarea registrada en el sistema por una oficina departamental. Puede estar en estado Pendiente, En Progreso, Completada o Cancelada.</dd>
+
+    <dt>Asamblea Legislativa</dt>
+    <dd>Institución del Estado de El Salvador para la cual está desarrollado este sistema.</dd>
+
+    <dt>Asistente Técnico</dt>
+    <dd>Rol de usuario que puede cargar información operativa en el sistema, como ejecutar actividades, adjuntar archivos y gestionar bitácoras (requisiciones, tickets, contratos).</dd>
+
+    <dt>Atestados</dt>
+    <dd>Archivos adjuntos a una actividad. Pueden ser documentos (PDF, Word) o imágenes (JPG, PNG) que respaldan la ejecución de la actividad.</dd>
+
+    <dt>Auditoría</dt>
+    <dd>Rol de usuario que solo puede consultar reportes y registros cerrados, sin capacidad de crear o modificar información.</dd>
+
+    <dt>Cierre Mensual</dt>
+    <dd>Reporte que consolida las actividades de una oficina departamental durante un mes específico. Incluye conteo de actividades proyectadas, ejecutadas, pendientes y canceladas, así como el porcentaje de cumplimiento.</dd>
+
+    <dt>Coordinador</dt>
+    <dd>Rol de usuario que gestiona las actividades de su propia oficina departamental. Puede crear, editar, completar y eliminar actividades de su departamento.</dd>
+
+    <dt>Dashboard</dt>
+    <dd>Panel principal del sistema que se muestra al iniciar sesión. Contiene tarjetas de resumen, un calendario mensual y un gráfico de actividades.</dd>
+
+    <dt>Departamental</dt>
+    <dd>Oficina departamental de la Asamblea Legislativa, ubicada en cada departamento de El Salvador.</dd>
+
+    <dt>Filament</dt>
+    <dd>Framework de PHP utilizado para construir la interfaz de administración del sistema.</dd>
+
+    <dt>GOL</dt>
+    <dd>Rol de usuario con permisos de lectura global sobre todas las oficinas departamentales y capacidad de exportar datos. No puede crear, editar ni eliminar actividades.</dd>
+
+    <dt>Insumo</dt>
+    <dd>Material o suministro que se solicita a través de una requisición. Puede incluir papelería, equipo de oficina, materiales de limpieza, etc.</dd>
+
+    <dt>Macroactividad</dt>
+    <dd>Descripción detallada de una actividad, incluyendo objetivos, alcance y actividades específicas a realizar.</dd>
+
+    <dt>Permiso</dt>
+    <dd>Autorización específica para realizar una acción dentro del sistema (ver, crear, editar, eliminar). Los permisos se agrupan en roles.</dd>
+
+    <dt>Programa</dt>
+    <dd>Clasificación de las actividades en: Educación Cívica, Participación Ciudadana, Atención Ciudadana u Otros.</dd>
+
+    <dt>Requisición</dt>
+    <dd>Solicitud formal de insumos o materiales necesarios para el funcionamiento de una oficina departamental.</dd>
+
+    <dt>Rol</dt>
+    <dd>Conjunto de permisos asignados a un usuario que determina lo que puede hacer en el sistema.</dd>
+
+    <dt>Rubro</dt>
+    <dd>Categoría específica de un insumo solicitado en una requisición: Papelería, Electrónica, Mobiliario, Consumibles o Herramientas.</dd>
+
+    <dt>Super Admin</dt>
+    <dd>Rol con acceso total y absoluto a todas las funciones del sistema, incluyendo configuración global y gestión de usuarios.</dd>
+
+    <dt>TI</dt>
+    <dd>Rol de usuario con acceso técnico total al sistema, similar a Super Admin, orientado al personal de tecnología.</dd>
+
+    <dt>Ticket</dt>
+    <dd>Reporte de soporte técnico, problema, solicitud de servicio, incidente o reclamo registrado en el sistema.</dd>
+
+    <dt>Usuario</dt>
+    <dd>Persona que utiliza el sistema, identificada por un nombre de usuario único y una contraseña. Cada usuario tiene un rol y pertenece a una oficina departamental.</dd>
+  </dl>
+
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Glosario — Uso interno</div>
+
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Glosario v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

@@ -2,8 +2,12 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
-        "build": "vite build"
+    "dev": "vite",
+    "build": "vite build",
+    "screenshots": "node tests/e2e/capturar-pantallas.mjs",
+    "screenshots-todo": "node tests/e2e/capturar-todo.mjs",
+    "pdf-manuales": "node tests/e2e/generar-pdf.mjs",
+    "pdf-por-rol": "node tests/e2e/generar-pdfs-por-rol.mjs"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.7",
@@ -11,6 +15,7 @@
         "autoprefixer": "^10.4.17",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0.0",
+        "playwright": "^1.61.1",
         "postcss": "^8.4.35",
         "postcss-nesting": "^12.0.2",
         "tailwindcss": "^3.4.1",

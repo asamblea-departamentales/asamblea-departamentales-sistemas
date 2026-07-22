@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de Usuario Final — Sistema de Gestión de Oficinas Departamentales</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menú">☰</button>
+<div class="sidebar-overlay"></div>
+
+<div class="wiki-wrapper">
+
+<aside class="wiki-sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'">
+    <span>Oficinas Departamentales</span>
+    <a href="index.html#manuales-rol" title="Descargar PDF por rol" style="margin-left:auto;color:#fff;text-decoration:none;font-size:0.7rem;padding:0.2rem 0.4rem;background:rgba(255,255,255,0.15);border-radius:3px;white-space:nowrap;">📕 PDF</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="index.html">Inicio</a>
+    <a href="manual-usuario-final.html" class="active">Usuario Final</a>
+    <a href="manual-administracion.html">Administración</a>
+    <a href="manual-reportes.html">Reportes</a>
+    <a href="manual-referencia-rapida.html">Referencia Rápida</a>
+    <a href="glosario.html">Glosario</a>
+  </nav>
+  <div class="sidebar-section sidebar-toc">
+    <h3>Contenido</h3>
+    <div class="toc-list" id="sidebar-toc-list"></div>
+  </div>
+  <div class="sidebar-section sidebar-keypoints">
+    <h3>Puntos Clave</h3>
+    <div id="keypoints-list"></div>
+  </div>
+</aside>
+
+<main class="wiki-content">
+
+<div class="page">
+
+  <!-- ===== PORTADA ===== -->
+  <div class="cover">
+    <div class="pleca-sup"></div>
+    <div class="cover-inner">
+      <div class="escudo"><img src="assets/logo-asamblea.png" alt="Logo Asamblea Legislativa" onerror="this.style.display='none'"></div>
+      <div class="institucion">Asamblea Legislativa</div>
+      <div class="sistema">Sistema de Gestión de Oficinas Departamentales</div>
+      <h1 class="titulo">Manual de Usuario Final</h1>
+      <div class="audiencia">Para: Coordinadores y Asistentes Técnicos</div>
+      <div class="divider"></div>
+      <div class="meta">
+        <span>Código: M-DEP-USR-001</span>
+        <span>Versión: 1.0</span>
+        <span>21 de julio de 2026</span>
+        <span>Uso interno</span>
+      </div>
+    </div>
+    <div class="pleca-inf"></div>
+  </div>
+
+  <!-- ===== CONTROL DE DOCUMENTO ===== -->
+  <div class="doc-control no-print">
+    <h2>Control de documento</h2>
+    <table>
+      <tr><td>Código</td><td>M-DEP-USR-001</td></tr>
+      <tr><td>Versión</td><td>1.0</td></tr>
+      <tr><td>Fecha</td><td>21 de julio de 2026</td></tr>
+      <tr><td>Elaborado por</td><td>Unidad de Sistemas</td></tr>
+      <tr><td>Aprobado por</td><td>Mesa Directiva</td></tr>
+      <tr><td>Clasificación</td><td>Uso interno</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== BÚSQUEDA ===== -->
+  <div class="search-bar no-print">
+    <input type="text" id="search-input" placeholder="Buscar en este manual…" autocomplete="off">
+    <div class="search-results" id="search-results"></div>
+  </div>
+
+  <!-- ============ 1. INTRODUCCIÓN ============ -->
+  <h2 id="introduccion">Introducción</h2>
+
+  <p>Bienvenido al <strong>Sistema de Gestión Departamental</strong> de la Asamblea Legislativa.</p>
+  <p>Este sistema le permite a los equipos de las Oficinas Departamentales registrar, dar seguimiento y generar reportes sobre las actividades que realizan en los diferentes municipios y comunidades del país.</p>
+  <p>El sistema fue diseñado para que cualquier persona, sin importar su experiencia con computadoras, pueda aprender a usarlo rápidamente.</p>
+  <p>En este manual encontrará explicaciones paso a paso de todas las funciones disponibles, acompañadas de imágenes que le mostrarán exactamente lo que debe ver en su pantalla en cada momento.</p>
+
+  <!-- ============ 2. OBJETIVO DEL MANUAL ============ -->
+  <h2 id="objetivo">Objetivo del Manual</h2>
+
+  <p>Este manual tiene el propósito de:</p>
+  <ul>
+    <li>Enseñarle a iniciar sesión en el sistema.</li>
+    <li>Explicarle cada pantalla que verá.</li>
+    <li>Mostrarle cómo crear y gestionar actividades.</li>
+    <li>Guiarlo en el uso de solicitudes de insumos (requisiciones).</li>
+    <li>Enseñarle a reportar problemas de soporte (tickets).</li>
+    <li>Explicarle cómo consultar contratos.</li>
+    <li>Mostrarle cómo generar y descargar reportes.</li>
+    <li>Enseñarle las funciones de administración (si tiene los permisos necesarios).</li>
+    <li>Ayudarlo a resolver problemas comunes.</li>
+  </ul>
+
+  <!-- ============ 3. REQUISITOS TÉCNICOS ============ -->
+  <h2 id="requisitos-tecnicos">Requisitos Técnicos</h2>
+
+  <p>Para usar el sistema necesita:</p>
+  <table>
+    <tr><th>Requisito</th><th>Detalle</th></tr>
+    <tr><td>Computadora o tableta</td><td>Con acceso a internet</td></tr>
+    <tr><td>Navegador web</td><td>Google Chrome, Microsoft Edge o Mozilla Firefox (versión reciente)</td></tr>
+    <tr><td>Usuario y contraseña</td><td>Proporcionados por el administrador del sistema</td></tr>
+    <tr><td>Conexión a internet</td><td>Velocidad mínima de 1 Mbps</td></tr>
+  </table>
+  <p>Para adjuntar archivos (atestados), su computadora debe tener los archivos guardados en una carpeta. El sistema acepta:</p>
+  <ul>
+    <li>Documentos de Word (extensión .doc o .docx)</li>
+    <li>Documentos PDF (extensión .pdf)</li>
+    <li>Imágenes (extensión .jpg, .jpeg o .png)</li>
+  </ul>
+
+  <!-- ============ 4. ACCESO AL SISTEMA ============ -->
+  <h2 id="acceso-al-sistema">Acceso al Sistema</h2>
+
+  <h3>Pantalla de inicio de sesión</h3>
+
+  <div class="section-card goal">
+    <div class="label">Objetivo</div>
+    <p>Ingresar al sistema con su nombre de usuario y contraseña.</p>
+  </div>
+
+  <div class="section-card when">
+    <div class="label">¿Cuándo utilizar esta pantalla?</div>
+    <p>Cada vez que desee entrar al sistema. Si ya inició sesión antes y cerró el navegador, deberá volver a ingresar.</p>
+  </div>
+
+  <div class="section-card steps">
+    <div class="label">Pasos</div>
+    <ol class="steps-list">
+      <li>Abra su navegador web (Chrome, Edge o Firefox).</li>
+      <li>En la barra de direcciones (la barra blanca en la parte superior del navegador), escriba la dirección del sistema. Por ejemplo: <code>http://localhost:8000/admin</code>. Presione la tecla <strong>Enter</strong> de su teclado.</li>
+      <li>Aparecerá la pantalla de inicio de sesión. Verá:
+        <ul>
+          <li>El título: <strong>&ldquo;Acceso al Sistema — Asamblea Legislativa&rdquo;</strong></li>
+          <li>Un saludo que dice: <strong>&ldquo;Bienvenido&rdquo;</strong></li>
+          <li>Un subtítulo que dice: <strong>&ldquo;Sistema de Gestión Departamental&rdquo;</strong></li>
+        </ul>
+      </li>
+      <li>En el campo <strong>&ldquo;Nombre de Usuario&rdquo;</strong>, escriba su nombre de usuario.</li>
+      <li>En el campo <strong>&ldquo;Contraseña&rdquo;</strong>, escriba su contraseña.</li>
+      <li>Si lo desea, marque la casilla <strong>&ldquo;Recordarme&rdquo;</strong> para que el sistema recuerde sus datos en ese mismo navegador y no tenga que escribirlos cada vez que entre.</li>
+      <li>Haga clic en el botón <strong>&ldquo;Iniciar Sesión&rdquo;</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="section-card result">
+    <div class="label">Resultado esperado</div>
+    <p>Si sus datos son correctos, entrará al <strong>Panel Principal</strong> (Dashboard). Verá una pantalla con varias tarjetas de colores, un calendario y un gráfico.</p>
+  </div>
+
+  <div class="section-card errors">
+    <div class="label">Posibles errores</div>
+    <table>
+      <tr><th>Error</th><th>Qué significa</th><th>Qué hacer</th></tr>
+      <tr>
+        <td><span class="badge badge-danger">Credenciales incorrectas</span></td>
+        <td>El usuario o la contraseña no coinciden con los registros.</td>
+        <td>Verifique que escribió bien su usuario y contraseña. Las mayúsculas y minúsculas importan.</td>
+      </tr>
+      <tr>
+        <td>Campos vacíos</td>
+        <td>El campo se marca con borde rojo.</td>
+        <td>Complete el campo para continuar.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section-card tips">
+    <div class="label">Recomendaciones</div>
+    <ul>
+      <li>No comparta su contraseña con nadie.</li>
+      <li>Use &ldquo;Recordarme&rdquo; solo en computadoras personales, no en computadoras compartidas.</li>
+      <li>Si ve que su sesión se cierra sola, simplemente vuelva a iniciar sesión.</li>
+    </ul>
+  </div>
+
+  <div class="img-wrap">
+    <img src="assets/login.png" alt="Pantalla de inicio de sesión">
+    <div class="caption">Imagen 1: Pantalla de inicio de sesión con los campos &ldquo;Nombre de Usuario&rdquo; y &ldquo;Contraseña&rdquo;, y el botón &ldquo;Iniciar Sesión&rdquo;.</div>
+  </div>
+
+  <hr>
+
+  <!-- ============ 5. DESCRIPCIÓN GENERAL ============ -->
+  <h2 id="descripcion-general">Descripción General</h2>
+
+  <h3>Estructura del sistema</h3>
+  <p>Una vez que inicie sesión, el sistema se organiza de la siguiente manera:</p>
+  <ul>
+    <li><strong>Barra superior (horizontal):</strong> A la izquierda, el logo o nombre de la institución. A la derecha, un icono de campana (notificaciones) y su nombre de usuario (para acceder a su perfil o cerrar sesión).</li>
+    <li><strong>Menú lateral (vertical, del lado izquierdo):</strong> Contiene las secciones principales del sistema.</li>
+  </ul>
+
+  <table>
+    <tr><th>Grupo del menú</th><th>Secciones que contiene</th></tr>
+    <tr><td>(Sin grupo)</td><td>Actividades</td></tr>
+    <tr><td>Bitácoras</td><td>Requisiciones, Tickets, Contratos</td></tr>
+    <tr><td>Reportes y Cierres</td><td>Cierres Mensuales</td></tr>
+    <tr><td>Gestión</td><td>Departamentales</td></tr>
+    <tr><td>Accesos</td><td>Usuarios, Roles</td></tr>
+    <tr><td>Configuración</td><td>General, Sitio, SEO, Scripts, Redes Sociales, Correo</td></tr>
+  </table>
+
+  <div class="info-box">Las secciones que usted vea en el menú dependen de los permisos que tenga su usuario. Si no ve alguna sección, es porque su rol no tiene acceso a ella.</div>
+
+  <h3>Cómo cerrar sesión</h3>
+  <ol class="steps-list">
+    <li>En la barra superior, a la derecha, haga clic en su nombre.</li>
+    <li>En el menú que aparece, seleccione <strong>&ldquo;Cerrar Sesión&rdquo;</strong>.</li>
+  </ol>
+  <div class="note">Siempre cierre sesión cuando termine de usar el sistema, especialmente si está en una computadora que usan otras personas.</div>
+
+  <!-- ============ 6. PANEL PRINCIPAL ============ -->
+  <h2 id="panel-principal">Panel Principal (Dashboard)</h2>
+
+  <h3>Descripción del Dashboard</h3>
+
+  <div class="section-card goal">
+    <div class="label">Objetivo</div>
+    <p>Tener una vista general rápida de las actividades registradas en el sistema.</p>
+  </div>
+
+  <div class="section-card when">
+    <div class="label">¿Cuándo utilizar esta pantalla?</div>
+    <p>Al iniciar sesión, esta es la primera pantalla que verá. Puede regresar a ella en cualquier momento haciendo clic en el nombre del sistema en la barra superior.</p>
+  </div>
+
+  <p>El panel principal tiene cuatro secciones:</p>
+
+  <table>
+    <tr><th>Sección</th><th>Descripción</th></tr>
+    <tr>
+      <td><span class="badge badge-primary">Total Actividades</span></td>
+      <td>Cantidad total de actividades registradas en el sistema.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-success">Actividades Completadas</span></td>
+      <td>Cuántas actividades se han marcado como completadas.</td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-warning">Actividades Pendientes</span></td>
+      <td>La suma de actividades en estado &ldquo;Pendiente&rdquo; y &ldquo;En Progreso&rdquo;.</td>
+    </tr>
+    <tr>
+      <td>Calendario</td>
+      <td>Vista mensual con actividades programadas en cada día. Puede navegar entre meses con las flechas. Haga clic en una fecha para ver las actividades de ese día.</td>
+    </tr>
+    <tr>
+      <td>Gráfico de actividades</td>
+      <td>Gráfico de línea que muestra cuántas actividades se han creado en cada uno de los últimos 6 meses.</td>
+    </tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/dashboard.png" alt="Dashboard">
+    <div class="caption">Imagen 2: Panel principal con tarjetas de resumen, calendario y gráfico de actividades.</div>
+  </div>
+
+  <div class="img-wrap">
+    <img src="assets/dashboard-widgets.png" alt="Widgets del dashboard">
+    <div class="caption">Imagen 3: Tarjetas de resumen del dashboard con totales, completadas y pendientes.</div>
+  </div>
+
+  <!-- ============ 7. GESTIÓN DE ACTIVIDADES ============ -->
+  <h2 id="gestion-actividades">Gestión de Actividades</h2>
+
+  <h3>Listado de actividades</h3>
+
+  <div class="section-card goal">
+    <div class="label">Objetivo</div>
+    <p>Ver todas las actividades registradas y buscar actividades específicas.</p>
+  </div>
+
+  <div class="section-card when">
+    <div class="label">¿Cuándo utilizar esta pantalla?</div>
+    <p>Cuando necesite consultar las actividades de su oficina, buscar una actividad en particular, o iniciar el proceso para crear, editar o completar una actividad. En el menú lateral, haga clic en <strong>&ldquo;Actividades&rdquo;</strong>.</p>
+  </div>
+
+  <table>
+    <tr><th>Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Usuario</td><td>Nombre de la persona que creó la actividad.</td></tr>
+    <tr><td>Oficina Departamental</td><td>La oficina a la que pertenece la actividad.</td></tr>
+    <tr><td>Programa</td><td>Programa: Educación Cívica, Participación Ciudadana o Atención Ciudadana.</td></tr>
+    <tr><td>Macroactividad</td><td>Breve descripción de la actividad. Si es muy largo, pase el mouse por encima para leerlo completo.</td></tr>
+    <tr><td>Estado</td><td><span class="badge badge-primary">Pendiente</span> <span class="badge badge-warning">En Progreso</span> <span class="badge badge-success">Completada</span> <span class="badge badge-danger">Cancelada</span></td></tr>
+    <tr><td>Archivos</td><td>Número de archivos adjuntos.</td></tr>
+    <tr><td>Lugar</td><td>Dónde se realizó o se realizará la actividad.</td></tr>
+    <tr><td>Asistencia Total</td><td>Suma de asistentes hombres + mujeres.</td></tr>
+    <tr><td>Fecha</td><td>Fecha de la actividad (día/mes/año).</td></tr>
+    <tr><td>Fecha de Inicio</td><td>Cuándo empezó la actividad (incluye hora).</td></tr>
+    <tr><td>Fecha de Vencimiento</td><td>Fecha límite. Si ya pasó y no está completada, se muestra en <span class="badge badge-danger">rojo</span>.</td></tr>
+    <tr><td>Recordatorio</td><td>Icono de campana si hay recordatorio, o campana tachada si no.</td></tr>
+  </table>
+
+  <h4>Filtros disponibles</h4>
+  <table>
+    <tr><th>Filtro</th><th>Para qué sirve</th></tr>
+    <tr><td>Estado</td><td>Muestra solo actividades con un estado específico.</td></tr>
+    <tr><td>Departamental</td><td>(Solo para TI/GOL) Muestra actividades de una o varias oficinas.</td></tr>
+    <tr><td>Mínima Asistencia</td><td>Muestra solo actividades con asistencia igual o mayor al número indicado.</td></tr>
+    <tr><td>Próximas a Vencer</td><td>Interruptor: muestra solo actividades que vencen en los próximos 7 días y no están completadas.</td></tr>
+    <tr><td>Fechas</td><td>Filtra entre dos fechas (&ldquo;Fecha desde&rdquo; y &ldquo;Fecha hasta&rdquo;).</td></tr>
+  </table>
+
+  <h4>Acciones disponibles</h4>
+  <table>
+    <tr><th>Icono</th><th>Acción</th><th>Disponible</th></tr>
+    <tr><td>Ojo 👁</td><td>Ver detalle</td><td>Siempre</td></tr>
+    <tr><td>Lápiz ✏️</td><td>Editar</td><td>Si no está Completada/Cancelada y el mes no está cerrado</td></tr>
+    <tr><td>Papelera 🗑</td><td>Eliminar</td><td>Si no está Completada/Cancelada</td></tr>
+    <tr><td>Check verde ✓</td><td>Marcar como Completada</td><td>Si no está Completada/Cancelada</td></tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/actividades-lista.png" alt="Listado de actividades">
+    <div class="caption">Imagen 4: Listado de actividades con tabla, filtros y botones de acción.</div>
+  </div>
+
+  <hr>
+
+  <h3>Crear una actividad con el Asistente</h3>
+
+  <div class="section-card goal">
+    <div class="label">Objetivo</div>
+    <p>Registrar una actividad nueva paso a paso, con toda la información completa.</p>
+  </div>
+
+  <div class="section-card steps">
+    <div class="label">Pasos</div>
+    <ol class="steps-list">
+      <li>En el menú lateral, haga clic en <strong>&ldquo;Actividades&rdquo;</strong>.</li>
+      <li>En la parte superior, haga clic en <strong>&ldquo;Crear con Asistente&rdquo;</strong>.</li>
+      <li>Aparecerá un formulario dividido en <strong>4 pasos</strong>. Complete cada paso antes de avanzar al siguiente.</li>
+    </ol>
+  </div>
+
+  <h4>Paso 1: Información General</h4>
+  <table>
+    <tr><th>Campo</th><th>Qué debe hacer</th><th>Obligatorio</th></tr>
+    <tr><td>Usuario</td><td>Su nombre aparece automáticamente. No puede cambiarlo.</td><td>Sí</td></tr>
+    <tr><td>Fecha de la Actividad</td><td>Seleccione la fecha. Haga clic y se abrirá un calendario.</td><td>Sí</td></tr>
+    <tr><td>Oficina Departamental</td><td>Su oficina aparece automáticamente.</td><td>Sí</td></tr>
+    <tr><td>Programa</td><td>Seleccione: Educación Cívica, Participación Ciudadana, Atención Ciudadana u Otros.</td><td>Sí</td></tr>
+    <tr><td>Estado</td><td>Seleccione el estado inicial: Pendiente (recomendado), En Progreso, Completada o Cancelada.</td><td>Sí</td></tr>
+  </table>
+
+  <h4>Paso 2: Detalles de la Actividad</h4>
+  <table>
+    <tr><th>Campo</th><th>Qué debe hacer</th><th>Obligatorio</th></tr>
+    <tr><td>Macroactividad</td><td>Escriba una descripción detallada: objetivos, alcance, actividades a realizar.</td><td>Sí</td></tr>
+    <tr><td>Lugar</td><td>Escriba el lugar físico o virtual de la actividad. Ej: &ldquo;Auditorio Principal&rdquo;.</td><td>Sí</td></tr>
+  </table>
+
+  <h4>Paso 3: Programación y Fechas</h4>
+  <table>
+    <tr><th>Campo</th><th>Qué debe hacer</th><th>Obligatorio</th></tr>
+    <tr><td>Fecha de Inicio</td><td>Seleccione fecha y hora de inicio.</td><td>Sí</td></tr>
+    <tr><td>Fecha de Vencimiento</td><td>Seleccione fecha y hora límite. Debe ser posterior a la fecha de inicio.</td><td>Sí</td></tr>
+    <tr><td>Recordatorio</td><td>(Opcional) Seleccione fecha y hora para un recordatorio. Debe ser antes del vencimiento.</td><td>No</td></tr>
+  </table>
+
+  <h4>Paso 4: Documentos y Atestados</h4>
+  <ul>
+    <li>Arrastre archivos o haga clic en el área de carga para seleccionarlos.</li>
+    <li>Máximo <strong>10 archivos</strong>.</li>
+    <li>Cada archivo: máximo <strong>10 MB</strong>.</li>
+    <li>Tipos aceptados: PDF, Word (.doc, .docx), imágenes (.jpg, .jpeg, .png).</li>
+    <li>Puede reordenar los archivos arrastrándolos.</li>
+  </ul>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Un coordinador de Sacatepéquez registra un taller de educación cívica: <em>Programa</em> = "Educación Cívica", <em>Macroactividad</em> = "Taller de participación juvenil en el municipio de Antigua Guatemala", <em>Lugar</em> = "Salón Municipal", fecha 15/07/2026, con 50 asistentes esperados. Adjunta el PDF del plan de taller y una imagen del afiche.</p>
+  </div>
+
+  <div class="section-card result">
+    <div class="label">Resultado esperado</div>
+    <p>Al hacer clic en <strong>&ldquo;Crear Actividad&rdquo;</strong>, verá el mensaje: <em>&ldquo;¡Actividad creada exitosamente!&rdquo;</em> y el sistema lo redirigirá al listado de actividades.</p>
+  </div>
+
+  <div class="section-card errors">
+    <div class="label">Posibles errores</div>
+    <ul>
+      <li><strong>&ldquo;La fecha de vencimiento no puede ser en el pasado.&rdquo;</strong> — Corrija la fecha.</li>
+      <li><strong>Campos obligatorios vacíos</strong> — El campo se marca con borde rojo. Complételo para continuar.</li>
+      <li><strong>Archivo rechazado</strong> — Si pesa más de 10 MB o no es un tipo aceptado.</li>
+    </ul>
+  </div>
+
+  <div class="img-wrap">
+    <img src="assets/actividad-wizard.png" alt="Asistente de 4 pasos">
+    <div class="caption">Imagen 5: Asistente de 4 pasos para crear una actividad.</div>
+  </div>
+
+  <hr>
+
+  <h3>Añadir Rápido</h3>
+
+  <div class="section-card goal">
+    <div class="label">Objetivo</div>
+    <p>Crear una actividad rápidamente sin seguir los 4 pasos del asistente.</p>
+  </div>
+
+  <div class="section-card when">
+    <div class="label">¿Cuándo utilizar?</div>
+    <p>Cuando necesite registrar una actividad sobre la marcha y luego completar los detalles después. En la pantalla de Actividades, haga clic en <strong>&ldquo;Añadir Rápido&rdquo;</strong>.</p>
+  </div>
+
+  <table>
+    <tr><th>Campo</th><th>Obligatorio</th></tr>
+    <tr><td>Usuario, Oficina Departamental, Fecha, Programa, Estado, Fecha de Inicio, Fecha de Vencimiento, Lugar, Macroactividad</td><td>Sí</td></tr>
+    <tr><td>Asistentes Hombres, Asistentes Mujeres</td><td>Solo si el estado es &ldquo;Completada&rdquo;</td></tr>
+    <tr><td>Asistencia Total</td><td>Se calcula automáticamente. No puede editarlo.</td></tr>
+  </table>
+
+  <div class="section-card result">
+    <div class="label">Resultado esperado</div>
+    <p>Verá el mensaje <em>&ldquo;¡Actividad creada!&rdquo;</em> y el sistema lo redirigirá a la pantalla de edición para que pueda adjuntar archivos.</p>
+  </div>
+
+  <div class="section-card errors">
+    <div class="label">Posibles errores</div>
+    <ul>
+      <li><em>&ldquo;La fecha de vencimiento no puede ser en el pasado.&rdquo;</em></li>
+      <li><em>&ldquo;El usuario no tiene departamental asignada.&rdquo;</em></li>
+      <li><em>&ldquo;Faltan datos requeridos: fechas de inicio o vencimiento.&rdquo;</em></li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <h3>Ver detalle de una actividad</h3>
+  <ol class="steps-list">
+    <li>En el listado, haga clic en el icono del <strong>ojo</strong> 👁.</li>
+    <li>Verá toda la información de la actividad en una sola pantalla.</li>
+    <li>En la parte inferior hay dos pestañas: <strong>Atestados</strong> (archivos adjuntos) y <strong>Comentarios</strong>.</li>
+  </ol>
+
+  <h3>Editar una actividad</h3>
+  <div class="warning">No puede editar si la actividad está &ldquo;Completada&rdquo; o &ldquo;Cancelada&rdquo;, o si el mes tiene un Cierre Mensual generado.</div>
+  <ol class="steps-list">
+    <li>Haga clic en el icono del <strong>lápiz</strong> ✏️.</li>
+    <li>Modifique los campos necesarios.</li>
+    <li>Haga clic en <strong>&ldquo;Guardar&rdquo;</strong>.</li>
+  </ol>
+
+  <div class="section-card errors">
+    <div class="label">Mensajes de error al editar</div>
+    <ul>
+      <li><em>&ldquo;Acción no permitida: Esta actividad está completada y no puede ser editada.&rdquo;</em></li>
+      <li><em>&ldquo;Acción no permitida: Esta actividad está cancelada y no puede ser editada.&rdquo;</em></li>
+      <li><em>&ldquo;Permiso Denegado: No tienes permiso para editar esta actividad.&rdquo;</em></li>
+    </ul>
+  </div>
+
+  <h3>Marcar como Completada</h3>
+  <ol class="steps-list">
+    <li>Haga clic en el icono del <strong>check verde</strong> ✓.</li>
+    <li>En la ventana que aparece, escriba los asistentes hombres y mujeres. La asistencia total se calcula automáticamente.</li>
+    <li>Haga clic en <strong>&ldquo;Confirmar&rdquo;</strong>.</li>
+  </ol>
+  <div class="note">Una vez marcada como completada, la actividad queda bloqueada y no se puede editar.</div>
+
+  <div class="section-card result">
+    <div class="label">Mensaje de éxito</div>
+    <p><em>&ldquo;Actividad marcada como completada — La actividad ha sido actualizada con éxito.&rdquo;</em></p>
+  </div>
+
+  <h3>Atestados (Archivos adjuntos)</h3>
+  <p>En la pantalla de edición o vista de una actividad, en la pestaña <strong>Atestados</strong> puede adjuntar, ver y descargar archivos. Arrastre los archivos al área de carga o haga clic para seleccionarlos.</p>
+
+  <h3>Comentarios</h3>
+  <p>En la pestaña <strong>Comentarios</strong> puede escribir notas sobre una actividad. Solo usted puede editar o eliminar sus propios comentarios.</p>
+
+  <!-- ============ 8. REQUISICIONES ============ -->
+  <h2 id="requisiciones">Requisiciones (Solicitud de Insumos)</h2>
+
+  <h3>Listado de requisiciones</h3>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Bitácoras → Requisiciones&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Tipo de Insumo</td><td>Oficina, Limpieza, Tecnología, Mantenimiento, Seguridad, Otros</td></tr>
+    <tr><td>Rubro</td><td>Papelería, Electrónica, Mobiliario, Consumibles, Herramientas</td></tr>
+    <tr><td>Cantidad</td><td>Número de unidades solicitadas</td></tr>
+    <tr><td>Fecha Solicitud</td><td>Fecha de la solicitud (día/Mes/Año)</td></tr>
+    <tr><td>Estado</td><td><span class="badge badge-primary">Solicitada</span> <span class="badge badge-warning">En Revisión</span> <span class="badge badge-info">Aprobada</span> <span class="badge badge-danger">Rechazada</span> <span class="badge badge-success">Comprada</span> <span class="badge badge-secondary">Entregada</span></td></tr>
+    <tr><td>Urgencia</td><td><span class="badge badge-danger">Urgente</span> (15+ días), <span class="badge badge-warning">Alta</span> (7-14 días), <span class="badge badge-primary">Media</span> (3-6 días), <span class="badge badge-secondary">Baja</span> (0-2 días)</td></tr>
+    <tr><td>Departamental</td><td>Oficina que hizo la solicitud</td></tr>
+  </table>
+
+  <h3>Crear una requisición</h3>
+  <ol class="steps-list">
+    <li>Vaya a <strong>&ldquo;Bitácoras → Requisiciones&rdquo;</strong>.</li>
+    <li>Haga clic en <strong>&ldquo;Crear&rdquo;</strong>.</li>
+    <li>Complete: Tipo de Insumo (obligatorio), Rubro (obligatorio), Cantidad (obligatorio, mínimo 1), Fecha de Solicitud, Estado Interno (por defecto Solicitada), Departamental, Observaciones (opcional).</li>
+    <li>Haga clic en <strong>&ldquo;Crear&rdquo;</strong>.</li>
+  </ol>
+
+  <h3>Cambiar el estado de una requisición</h3>
+  <p>Haga clic en el botón <strong>&ldquo;Cambiar Estado&rdquo;</strong> (icono de flechas circulares 🔄). Seleccione el nuevo estado y opcionalmente agregue una observación.</p>
+
+  <div class="flow">
+    <span class="badge badge-primary">Solicitada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-warning">En Revisión</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-info">Aprobada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-success">Comprada</span>
+    <span class="arrow">→</span>
+    <span class="badge badge-secondary">Entregada</span>
+  </div>
+  <div class="flow">
+    <span class="badge badge-primary">Solicitada</span>
+    <span class="arrow">↓</span>
+    <span class="badge badge-danger">Rechazada</span>
+  </div>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>La oficina de <strong>Alta Verapaz</strong> solicita 10 resmas de papel bond (Rubro: Papelería, Tipo: Oficina). La requisición se crea como "Solicitada". A los 5 días pasa a "En Revisión" con urgencia "Media". El administrador la aprueba y la cambia a "Aprobada". Se compra y se marca "Comprada". Finalmente se entrega y pasa a "Entregada".</p>
+  </div>
+
+  <div class="img-wrap">
+    <img src="assets/requisiciones.png" alt="Listado de requisiciones">
+    <div class="caption">Imagen 6: Listado de requisiciones con estados y niveles de urgencia.</div>
+  </div>
+
+  <!-- ============ 9. TICKETS ============ -->
+  <h2 id="tickets">Tickets (Reportes de Soporte)</h2>
+
+  <h3>Listado de tickets</h3>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Bitácoras → Tickets&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Tipo</td><td><span class="badge badge-danger">Soporte Técnico</span> <span class="badge badge-warning">Mantenimiento</span> <span class="badge badge-info">Solicitud</span> <span class="badge badge-primary">Incidente</span> <span class="badge badge-secondary">Reclamo</span></td></tr>
+    <tr><td>Motivo/Asunto</td><td>Resumen del problema</td></tr>
+    <tr><td>Estado</td><td><span class="badge badge-warning">Pendiente</span> <span class="badge badge-info">En Proceso</span> <span class="badge badge-success">Resuelto</span> <span class="badge badge-secondary">Cerrado</span> <span class="badge badge-danger">Cancelado</span></td></tr>
+    <tr><td>Prioridad</td><td><span class="badge badge-danger">Alta</span> (7+ días), <span class="badge badge-warning">Media</span> (3-6 días), <span class="badge badge-secondary">Baja</span> (0-2 días)</td></tr>
+    <tr><td>Días</td><td>&ldquo;Hoy&rdquo; o cantidad de días desde la creación</td></tr>
+  </table>
+
+  <h4>Filtros</h4>
+  <ul>
+    <li>Tipo de Ticket, Estado, Departamental</li>
+    <li><strong>Solo Abiertos</strong> — Pendiente y En Proceso</li>
+    <li><strong>Solo Cerrados</strong> — Resuelto y Cerrado</li>
+    <li><strong>Alta Prioridad</strong> — Creados hace 7+ días</li>
+  </ul>
+
+  <h3>Crear un ticket</h3>
+  <ol class="steps-list">
+    <li>Vaya a <strong>&ldquo;Bitácoras → Tickets&rdquo;</strong>.</li>
+    <li>Haga clic en <strong>&ldquo;Crear&rdquo;</strong>.</li>
+    <li>Complete: Tipo de Ticket (obligatorio), Motivo/Asunto (obligatorio, máx. 255 caracteres), Fecha de Solicitud, Estado, Departamental, Descripción del problema (obligatorio).</li>
+    <li>Haga clic en <strong>&ldquo;Crear&rdquo;</strong>.</li>
+  </ol>
+
+  <h3>Cambiar estado / Cerrar tickets</h3>
+  <ul>
+    <li><strong>Individual:</strong> Haga clic en &ldquo;Cambiar Estado&rdquo; 🔄 y seleccione el nuevo estado.</li>
+    <li><strong>Masivo:</strong> Seleccione varios tickets con las casillas y haga clic en <strong>&ldquo;Cerrar Tickets&rdquo;</strong>.</li>
+  </ul>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Un asistente técnico reporta que la impresora de la oficina de <strong>Sacatepéquez</strong> no enciende. Crea un ticket tipo "Soporte Técnico" con asunto "Impresora no enciende". El ticket queda "Pendiente" con prioridad "Baja". A los 4 días sin resolver, sube a "Media". El técnico lo cambia a "En Proceso", lo repara y lo marca como "Resuelto".</p>
+  </div>
+
+  <!-- ============ 10. CONTRATOS ============ -->
+  <h2 id="contratos">Contratos</h2>
+
+  <p>En el menú lateral, vaya a <strong>&ldquo;Bitácoras → Contratos&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Tipo</td><td><span class="badge badge-primary">Servicios</span> <span class="badge badge-success">Suministros</span> <span class="badge badge-warning">Obras</span> <span class="badge badge-info">Consultoría</span> <span class="badge badge-secondary">Mantenimiento</span> <span class="badge badge-danger">Arrendamiento</span></td></tr>
+    <tr><td>Proveedor</td><td>Nombre del proveedor o contratista</td></tr>
+    <tr><td>Monto</td><td>Monto en USD</td></tr>
+    <tr><td>Estado</td><td><span class="badge badge-success">Vigente</span> <span class="badge badge-warning">Por vencer</span> <span class="badge badge-danger">Vencido</span></td></tr>
+  </table>
+
+  <h4>Filtros</h4>
+  <ul>
+    <li>Tipo de Contrato, Oficina</li>
+    <li><strong>Solo Vigentes</strong>, <strong>Solo Vencidos</strong>, <strong>Por Vencer (30 días)</strong></li>
+  </ul>
+
+  <h3>Crear un contrato</h3>
+  <ol class="steps-list">
+    <li>Vaya a <strong>&ldquo;Bitácoras → Contratos → Crear&rdquo;</strong>.</li>
+    <li>Complete: Tipo (obligatorio), Proveedor (obligatorio, máx. 255), Monto (obligatorio, mínimo 0), Fecha de Inicio (obligatorio), Fecha de Vencimiento (obligatorio, debe ser posterior al inicio), Oficina Responsable (obligatorio, máx. 255), Observaciones (opcional).</li>
+    <li>Haga clic en <strong>&ldquo;Crear&rdquo;</strong>.</li>
+  </ol>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>Se registra un contrato de <strong>servicios de limpieza</strong> con el proveedor "Limpieza Total S.A." por USD 2,400.00. Inicia el 01/01/2026 y vence el 31/12/2026. El sistema lo marca como "Vigente". Cuando falten 30 días para el vencimiento (diciembre de 2026), pasará a "Por vencer" y generará una notificación.</p>
+  </div>
+
+  <!-- ============ 11. CIERRES MENSUALES ============ -->
+  <h2 id="cierres-mensuales">Cierres Mensuales</h2>
+
+  <h3>Listado de cierres</h3>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Reportes y Cierres → Cierres Mensuales&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Columna</th><th>Qué muestra</th></tr>
+    <tr><td>Departamental</td><td>Oficina del cierre</td></tr>
+    <tr><td>Mes / Año</td><td>Período del cierre</td></tr>
+    <tr><td>% Cumplimiento</td><td><span class="badge badge-success">80%+</span> <span class="badge badge-warning">50-79%</span> <span class="badge badge-danger">&lt;50%</span></td></tr>
+    <tr><td>Estado</td><td>Generado, Aprobado, Reabierto</td></tr>
+    <tr><td>Usuario</td><td>Quién generó el cierre</td></tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/cierre-mensuales.png" alt="Cierres mensuales">
+    <div class="caption">Imagen 7: Listado de cierres mensuales.</div>
+  </div>
+
+  <h3>Generar un cierre mensual</h3>
+  <div class="warning">Una vez generado el cierre, las actividades de ese mes NO se pueden editar ni eliminar.</div>
+
+  <ol class="steps-list">
+    <li>Vaya a <strong>&ldquo;Actividades&rdquo;</strong> y haga clic en <strong>&ldquo;Generar Cierre Mensual&rdquo;</strong>, o vaya a <strong>&ldquo;Cierres Mensuales → Generar Cierre Mensual&rdquo;</strong>.</li>
+    <li>Seleccione:
+      <ul>
+        <li><strong>Tipo:</strong> Cierre Individual (su departamental) o Informe Consolidado (todas, solo SuperAdmin/GOL).</li>
+        <li><strong>Mes</strong> y <strong>Año</strong> (por defecto el mes anterior).</li>
+        <li><strong>Observaciones</strong> (opcional, solo individual).</li>
+      </ul>
+    </li>
+    <li>Haga clic en <strong>&ldquo;Generar&rdquo;</strong>.</li>
+  </ol>
+
+  <div class="section-card result">
+    <div class="label">Resultado esperado</div>
+    <p>El sistema contará las actividades, calculará el porcentaje de cumplimiento, generará un PDF y bloqueará las actividades de ese mes. Verá el mensaje: <em>&ldquo;Cierre generado exitosamente&rdquo;</em>.</p>
+  </div>
+
+  <div class="section-card example">
+    <div class="label">Ejemplo</div>
+    <p>En junio, la departamental de <strong>Sacatepéquez</strong> tenía 20 actividades (15 ejecutadas, 3 pendientes, 2 canceladas). Al generar el cierre, el sistema calcula 15/18 = 83% de cumplimiento (ignora las canceladas). Genera un PDF con el resumen por programa y bloquea las 20 actividades. El cierre queda en estado "Generado".</p>
+  </div>
+
+  <!-- ============ 12. NOTIFICACIONES ============ -->
+  <h2 id="notificaciones">Notificaciones</h2>
+
+  <p>El icono de <strong>campana</strong> 🔔 en la barra superior le muestra alertas del sistema:</p>
+  <ul>
+    <li>Actividades próximas a vencer.</li>
+    <li>Cambios de estado en requisiciones y tickets.</li>
+    <li>Confirmaciones de acciones realizadas (éxito o error).</li>
+  </ul>
+
+  <!-- ============ 13. PERFIL DE USUARIO ============ -->
+  <h2 id="perfil-usuario">Perfil de Usuario</h2>
+
+  <ol class="steps-list">
+    <li>En la barra superior, haga clic en su nombre (esquina derecha).</li>
+    <li>Seleccione <strong>&ldquo;Mi Perfil&rdquo;</strong>.</li>
+    <li>Puede cambiar su foto de perfil y ver su información personal.</li>
+  </ol>
+
+  <div class="img-wrap">
+    <img src="assets/perfil.png" alt="Perfil de usuario">
+    <div class="caption">Imagen 8: Pantalla del perfil de usuario.</div>
+  </div>
+
+  <!-- ============ 14. ADMINISTRACIÓN DE DEPARTAMENTALES ============ -->
+  <h2 id="departamentales">Administración de Departamentales</h2>
+
+  <div class="info-box">Esta sección es para usuarios con permisos de administración.</div>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Gestión → Departamentales&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Detalle</th></tr>
+    <tr><td>Nombre</td><td>Sí</td><td>Nombre completo del departamento. Único, máx. 120 caracteres.</td></tr>
+    <tr><td>Código</td><td>Sí</td><td>Abreviatura. Único, máx. 10 caracteres. Ej: AH, SS, SO.</td></tr>
+    <tr><td>Activo</td><td>No</td><td>Marcado por defecto. Si lo desmarca, la departamental queda inactiva.</td></tr>
+  </table>
+
+  <!-- ============ 15. ADMINISTRACIÓN DE USUARIOS ============ -->
+  <h2 id="usuarios">Administración de Usuarios</h2>
+
+  <div class="info-box">Esta sección es para usuarios con permisos de administración.</div>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Accesos → Usuarios&rdquo;</strong>.</p>
+
+  <table>
+    <tr><th>Campo</th><th>Obligatorio</th><th>Detalle</th></tr>
+    <tr><td>Foto de perfil</td><td>No</td><td>Seleccione una imagen desde su computadora.</td></tr>
+    <tr><td>Nombre de usuario</td><td>Sí</td><td>Único, máx. 255 caracteres.</td></tr>
+    <tr><td>Correo electrónico</td><td>Sí</td><td>Único, formato válido de correo, máx. 255 caracteres.</td></tr>
+    <tr><td>Nombres</td><td>Sí</td><td>Máx. 255 caracteres.</td></tr>
+    <tr><td>Apellidos</td><td>Sí</td><td>Máx. 255 caracteres.</td></tr>
+    <tr><td>Contraseña</td><td>Sí</td><td>Se guarda de forma segura en el sistema.</td></tr>
+    <tr><td>Oficina Departamental</td><td>No</td><td>Seleccione la oficina del usuario.</td></tr>
+    <tr><td>Roles</td><td>No</td><td>Uno o más roles para el usuario.</td></tr>
+  </table>
+
+  <div class="img-wrap">
+    <img src="assets/usuarios-lista.png" alt="Listado de usuarios">
+    <div class="caption">Imagen 9: Listado de usuarios.</div>
+  </div>
+
+  <h3>Suplantación (Impersonate)</h3>
+  <p>Los administradores pueden entrar al sistema como si fueran otro usuario. En el listado, haga clic en <strong>&ldquo;Impersonate&rdquo;</strong> y confirme. Para volver, haga clic en <strong>&ldquo;Salir de la departamental&rdquo;</strong> en la barra superior.</p>
+
+  <!-- ============ 16. ROLES Y PERMISOS ============ -->
+  <h2 id="roles-permisos">Roles y Permisos</h2>
+
+  <div class="info-box">Esta sección es para usuarios con permisos de administración.</div>
+
+  <table>
+    <tr><th>Rol</th><th>Capacidad principal</th></tr>
+    <tr><td><strong>Super Admin</strong></td><td>Acceso total a todas las funciones del sistema.</td></tr>
+    <tr><td><strong>TI</strong></td><td>Acceso técnico total, similar a Super Admin.</td></tr>
+    <tr><td><strong>GOL</strong></td><td>Lectura global y exportación. No puede crear, editar ni eliminar actividades.</td></tr>
+    <tr><td><strong>Coordinador</strong></td><td>Gestión completa de actividades de su propia oficina.</td></tr>
+    <tr><td><strong>Asistente Técnico</strong></td><td>Carga operativa: ejecutar actividades, adjuntar atestados, gestionar bitácoras.</td></tr>
+    <tr><td><strong>Auditoría</strong></td><td>Solo consulta de reportes y registros cerrados. No puede crear ni modificar.</td></tr>
+  </table>
+
+  <!-- ============ 17. CONFIGURACIÓN DEL SISTEMA ============ -->
+  <h2 id="configuracion">Configuración del Sistema</h2>
+
+  <div class="info-box">Esta sección es únicamente para usuarios con permisos de administración.</div>
+
+  <table>
+    <tr><th>Sección</th><th>Qué puede configurar</th></tr>
+    <tr><td><strong>General</strong></td><td>Nombre de la marca, logo, favicon, colores del tema, CSS personalizado.</td></tr>
+    <tr><td><strong>Sitio</strong></td><td>Modo mantenimiento, nombre, lema, descripción, logo, información de contacto, idioma, zona horaria, enlaces legales, mensajes de error 404/500.</td></tr>
+    <tr><td><strong>Redes Sociales</strong></td><td>URLs de: Facebook, Twitter, Instagram, LinkedIn, YouTube, Pinterest, TikTok.</td></tr>
+    <tr><td><strong>SEO</strong></td><td>Título, meta descripción, palabras clave, Open Graph, Twitter Cards, Schema.org, códigos de verificación, robots.txt, sitemap.</td></tr>
+    <tr><td><strong>Scripts &amp; Analytics</strong></td><td>Scripts para header, body, footer; CSS y JS personalizados; configuración de cookies.</td></tr>
+    <tr><td><strong>Correo</strong></td><td>SMTP (host, puerto, usuario, contraseña), Mailgun, Postmark, SES; prueba de envío; cola y límite de envíos; plantillas de correo.</td></tr>
+  </table>
+
+  <!-- ============ 18. REPORTES POWER BI ============ -->
+  <h2 id="reportes-powerbi">Reportes Power BI</h2>
+
+  <div class="info-box">Esta sección solo está disponible si el administrador ha configurado la integración con Power BI.</div>
+  <p>En el menú lateral, vaya a <strong>&ldquo;Reportes y Cierres → Reportes&rdquo;</strong>. Verá un reporte interactivo de Power BI incrustado en la página.</p>
+
+  <table>
+    <tr><th>Control</th><th>Qué hace</th></tr>
+    <tr><td>Pantalla Completa</td><td>Expande el reporte a toda la pantalla.</td></tr>
+    <tr><td>Actualizar</td><td>Recarga el reporte con datos recientes.</td></tr>
+    <tr><td>Abrir en Power BI</td><td>Abre el reporte en Power BI Service.</td></tr>
+  </table>
+
+  <!-- ============ 19. PREGUNTAS FRECUENTES ============ -->
+  <h2 id="faq">Preguntas Frecuentes</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">1. Olvidé mi contraseña, ¿qué hago?</div>
+    <div class="faq-a">Contacte al administrador del sistema para que le restablezca la contraseña. El sistema cuenta con una página de restablecimiento, pero su disponibilidad depende de la configuración del administrador.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">2. ¿Cómo sé si mi actividad se guardó correctamente?</div>
+    <div class="faq-a">El sistema muestra un mensaje verde en la parte inferior: <em>&ldquo;creada exitosamente&rdquo;</em> o <em>&ldquo;actualizada con éxito&rdquo;</em>. También puede ir al listado de actividades y buscar la actividad para confirmar.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">3. ¿Por qué no puedo editar una actividad?</div>
+    <div class="faq-a">Puede que la actividad esté &ldquo;Completada&rdquo; o &ldquo;Cancelada&rdquo;, o que el mes ya tenga un Cierre Mensual. En ambos casos, la edición no está permitida.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">4. ¿Qué significa que el mes está &ldquo;cerrado&rdquo;?</div>
+    <div class="faq-a">Significa que ya se generó un Cierre Mensual para ese mes. Las actividades de ese mes no se pueden editar ni eliminar. Un administrador puede &ldquo;reabrir&rdquo; el mes desde Cierres Mensuales.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">5. ¿Quién puede ver los archivos que adjunto?</div>
+    <div class="faq-a">Los archivos se guardan en una carpeta privada de su oficina departamental. Solo las personas de su mismo departamento pueden verlos.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">6. ¿Puedo eliminar un comentario que escribí?</div>
+    <div class="faq-a">Sí, solo usted puede eliminar sus propios comentarios. Use el icono de papelera al lado del comentario.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">7. ¿Cómo sé si tengo una requisición urgente?</div>
+    <div class="faq-a">En la columna &ldquo;Urgencia&rdquo; del listado de requisiciones: <span class="badge badge-danger">Urgente</span> (15+ días), <span class="badge badge-warning">Alta</span> (7-14 días), <span class="badge badge-primary">Media</span> (3-6 días), <span class="badge badge-secondary">Baja</span> (0-2 días).</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">8. ¿Qué hago si el sistema no me deja iniciar sesión?</div>
+    <div class="faq-a">Revise que su usuario y contraseña estén escritos correctamente. Si perdió su contraseña, contacte al administrador. Si el problema persiste, su cuenta podría estar desactivada.</div>
+  </div>
+
+  <!-- ============ 20. SOLUCIÓN DE PROBLEMAS ============ -->
+  <h2 id="solucion-problemas">Solución de Problemas</h2>
+
+  <table>
+    <tr><th>Problema</th><th>Posible solución</th></tr>
+    <tr>
+      <td>No puedo iniciar sesión</td>
+      <td>Verifique usuario y contraseña (mayúsculas/minúsculas). Contacte al administrador para restablecerla.</td>
+    </tr>
+    <tr>
+      <td>La página no carga o se ve en blanco</td>
+      <td>Actualice (F5). Pruebe con Chrome, Edge o Firefox. El sistema podría estar en mantenimiento.</td>
+    </tr>
+    <tr>
+      <td>No veo el botón que necesito</td>
+      <td>Su usuario podría no tener los permisos necesarios. Contacte al administrador.</td>
+    </tr>
+    <tr>
+      <td>No puedo adjuntar un archivo</td>
+      <td>Verifique: tipo aceptado (PDF, Word, JPG, PNG) y peso máximo (10 MB).</td>
+    </tr>
+    <tr>
+      <td>El sistema se ve desordenado</td>
+      <td>Actualice la página (F5). Pruebe con otro navegador actualizado.</td>
+    </tr>
+  </table>
+
+  <!-- ============ 21. GLOSARIO ============ -->
+  <h2 id="glosario">Glosario</h2>
+
+  <dl class="glossary">
+    <dt>Actividad</dt>
+    <dd>Un evento, taller, reunión o tarea registrada en el sistema.</dd>
+    <dt>Asistente Técnico</dt>
+    <dd>Rol de usuario que puede cargar información operativa.</dd>
+    <dt>Atestados</dt>
+    <dd>Archivos adjuntos a una actividad (documentos, imágenes, PDFs).</dd>
+    <dt>Auditoría</dt>
+    <dd>Rol de usuario que solo puede consultar información.</dd>
+    <dt>Cierre Mensual</dt>
+    <dd>Reporte que consolida las actividades de un mes.</dd>
+    <dt>Coordinador</dt>
+    <dd>Rol de usuario que gestiona las actividades de su oficina.</dd>
+    <dt>Dashboard</dt>
+    <dd>Panel principal con resumen de información del sistema.</dd>
+    <dt>Departamental</dt>
+    <dd>Oficina departamental de la Asamblea Legislativa.</dd>
+    <dt>GOL</dt>
+    <dd>Rol de usuario con permisos de lectura global y exportación.</dd>
+    <dt>Insumo</dt>
+    <dd>Material o suministro que se solicita (papelería, equipo, etc.).</dd>
+    <dt>Macroactividad</dt>
+    <dd>Descripción detallada de una actividad.</dd>
+    <dt>Permiso</dt>
+    <dd>Autorización para realizar una acción específica en el sistema.</dd>
+    <dt>Requisición</dt>
+    <dd>Solicitud de insumos o materiales.</dd>
+    <dt>Rol</dt>
+    <dd>Conjunto de permisos que tiene un usuario.</dd>
+    <dt>Rubro</dt>
+    <dd>Categoría de un insumo (papelería, electrónica, etc.).</dd>
+    <dt>Super Admin</dt>
+    <dd>Rol con acceso total al sistema.</dd>
+    <dt>TI</dt>
+    <dd>Rol de usuario con acceso técnico total al sistema.</dd>
+    <dt>Ticket</dt>
+    <dd>Reporte de soporte, problema o solicitud.</dd>
+    <dt>Usuario</dt>
+    <dd>Persona que utiliza el sistema, identificada por un nombre de usuario y contraseña.</dd>
+  </dl>
+
+  <p style="font-size:.85rem;">Consulte el <a href="glosario.html">Glosario completo</a> para más términos.</p>
+
+  <!-- ============ 22. CONCLUSIÓN ============ -->
+  <h2 id="conclusion">Conclusión</h2>
+
+  <p>Este manual le ha mostrado cómo usar el Sistema de Gestión Departamental de la Asamblea Legislativa.</p>
+  <p>Recuerde:</p>
+  <ul>
+    <li>Use el <strong>Asistente</strong> para crear actividades completas paso a paso.</li>
+    <li>Use <strong>Añadir Rápido</strong> cuando necesite registrar algo sobre la marcha.</li>
+    <li>Revise el <strong>Dashboard</strong> diariamente para estar al tanto de las actividades próximas a vencer.</li>
+    <li>Consulte las <strong>Notificaciones</strong> (campana) para no perderse ninguna actualización.</li>
+    <li>Genere los <strong>Cierres Mensuales</strong> al final de cada período.</li>
+    <li>Si tiene dudas, revise este manual o contacte al administrador del sistema.</li>
+  </ul>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <a href="#" class="back-top no-print" id="back-top" aria-label="Volver arriba">↑</a>
+
+  <!-- ===== PRINT FOOTER ===== -->
+  <div class="print-footer">Sistema de Gestión de Oficinas Departamentales — Manual de Usuario Final — Uso interno</div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="doc-footer">
+    <p>Sistema de Gestión de Oficinas Departamentales — Manual de Usuario Final v1.0 — Asamblea Legislativa — Julio 2026</p>
+  </footer>
+
+</div>
+
+</main>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>
