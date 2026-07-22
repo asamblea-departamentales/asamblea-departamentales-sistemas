@@ -584,39 +584,6 @@ class ActividadResource extends Resource
                                     ->maxLength(255)
                                     ->placeholder('Ej: Auditorio Principal')
                                     ->dehydrated(),
-
-                                Forms\Components\TextInput::make('asistentes_hombres')
-                                    ->label('Asistentes Hombres')
-                                    ->numeric()
-                                    ->minValue(0)
-                                    ->default(0)
-                                    ->live()
-                                    ->placeholder('0')
-                                    ->required(fn ($get) => $get('estado') === 'Completada')
-                                    ->dehydrated()
-                                    ->afterStateUpdated(fn ($state, $set, $get) =>
-                                        $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
-                                    ),
-
-                                Forms\Components\TextInput::make('asistentes_mujeres')
-                                    ->label('Asistentes Mujeres')
-                                    ->numeric()
-                                    ->minValue(0)
-                                    ->default(0)
-                                    ->live()
-                                    ->placeholder('0')
-                                    ->required(fn ($get) => $get('estado') === 'Completada')
-                                    ->dehydrated()
-                                    ->afterStateUpdated(fn ($state, $set, $get) =>
-                                        $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
-                                    ),
-
-                                Forms\Components\TextInput::make('asistencia_completa')
-                                    ->label('Asistencia Total')
-                                    ->numeric()
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->placeholder('Se calcula automáticamente'),
                             ]),
 
                         Forms\Components\Textarea::make('macroactividad')
@@ -634,10 +601,6 @@ class ActividadResource extends Resource
                         $data['programa'] = $data['programa'] ?? 'Otro';
                         $data['departamental_id'] = auth()->user()->departamental_id ?? null;
                         $data['user_id'] = auth()->id();
-
-                        $data['asistencia_completa'] =
-                        ((int) ($data['asistentes_hombres'] ?? 0)) +
-                        ((int) ($data['asistentes_mujeres'] ?? 0));
 
                         if (empty($data['star_date']) || empty($data['due_date'])) {
                             Notification::make()->title('Error de Validación')

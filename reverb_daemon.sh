@@ -8,8 +8,9 @@
 # 3. Registrar en el crontab del usuario: * * * * * bash /ruta/reverb_daemon.sh
 # ==============================================================================
 
-# [MODIFICAR]: Define aquí la ruta absoluta de la carpeta raíz del proyecto en producción
-APP_DIR="/var/www/html/sistema-oficinas-departamentales"
+# [MODIFICAR]: Define aqui la ruta absoluta de la carpeta raiz del proyecto en produccion
+# Ajustar segun la ruta real del servidor
+APP_DIR="/var/www/asamblea-departamentales-sistemas"
 
 # Rutas dinámicas de archivos de registro y control (No requieren modificación)
 LOG_FILE="$APP_DIR/storage/logs/reverb.log"
@@ -32,5 +33,5 @@ fi
 cd "$APP_DIR" || exit 1
 
 # 3. Arrancar Reverb en segundo plano redirigiendo logs y guardando el nuevo ID de proceso
-nohup php artisan reverb:start --host=0.0.0.0 --port=6001 >> "$LOG_FILE" 2>&1 &
+nohup php artisan reverb:start --host=0.0.0.0 --port=6002 >> "$LOG_FILE" 2>&1 &
 echo $! > "$PID_FILE"
