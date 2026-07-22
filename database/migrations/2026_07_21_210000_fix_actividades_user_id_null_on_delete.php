@@ -9,10 +9,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('actividades', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-        });
-
         DB::table('actividades')
             ->whereNotIn('user_id', fn ($q) => $q->select('id')->from('users'))
             ->update(['user_id' => null]);
