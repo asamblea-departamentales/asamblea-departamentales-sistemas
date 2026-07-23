@@ -74,8 +74,8 @@ class CreateActividad extends CreateRecord
                                 ->visible(fn () => auth()->user()->isCentralRole()),
 
                             Forms\Components\Hidden::make('departamental_id')
-                                ->default(fn () => auth()->user()->departamental_id)
-                                ->required()
+                                ->default(fn () => auth()->user()->departamental_id ?? auth()->user()->departamental?->getKey())
+                                ->required('Debe tener un departamental asignado. Contacte a TI.')
                                 ->rules(['exists:departamentales,id'])
                                 ->visible(fn () => !auth()->user()->isCentralRole()),
 
@@ -91,14 +91,13 @@ class CreateActividad extends CreateRecord
                                 ->native(false)
                                 // Formato de visualización
                                 ->displayFormat('d/m/Y'),
-                            // Campo de texto para la oficina departamental
                             Forms\Components\TextInput::make('departamental_display')
-                            // Etiqueta del campo
                                 ->label('Oficina Departamental')
-                            // Campo solo lectura
-                                ->default(fn () => auth()->user()->departamental?->nombre ?? 'Sin departamental')
+                                ->default(fn () => auth()->user()->departamental?->nombre ?? 'Sin departamental asignado')
                                 ->disabled()
-                                ->dehydrated(false), // No se guarda en la base de datos
+                                ->dehydrated(false)
+                                ->hint(fn () => auth()->user()->departamental_id ? null : 'Sin departamental - Contacte a TI')
+                                ->hintColor(fn () => auth()->user()->departamental_id ? null : 'danger'),
                             // Campo de texto para el programa
                             Forms\Components\Select::make('programa')
                                 // Etiqueta del campo

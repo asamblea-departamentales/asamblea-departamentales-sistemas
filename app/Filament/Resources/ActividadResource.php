@@ -70,8 +70,8 @@ class ActividadResource extends Resource
                             ->visible(fn () => auth()->user()->isCentralRole()),
 
                         Forms\Components\Hidden::make('departamental_id')
-                            ->default(fn () => auth()->user()->departamental_id)
-                            ->required()
+                            ->default(fn () => auth()->user()->departamental_id ?? auth()->user()->departamental?->getKey())
+                            ->required('Debe tener un departamental asignado. Contacte a TI.')
                             ->rules(['exists:departamentales,id'])
                             ->visible(fn () => !auth()->user()->isCentralRole()),
 
