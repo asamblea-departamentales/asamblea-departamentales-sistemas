@@ -61,10 +61,19 @@ class ActividadResource extends Resource
                             ->native(false)
                             ->dehydrated(true),
 
+                        Forms\Components\Select::make('departamental_id')
+                            ->label('Oficina Departamental')
+                            ->options(fn () => \App\Models\Departamental::pluck('nombre', 'id'))
+                            ->searchable()
+                            ->required()
+                            ->rules(['exists:departamentales,id'])
+                            ->visible(fn () => auth()->user()->isCentralRole()),
+
                         Forms\Components\Hidden::make('departamental_id')
                             ->default(fn () => auth()->user()->departamental_id)
-                            ->required(fn () => auth()->user() && auth()->user()->departamental_id !== null)
-                            ->rules(fn () => auth()->user() && auth()->user()->departamental_id !== null ? ['exists:departamentales,id'] : []),
+                            ->required()
+                            ->rules(['exists:departamentales,id'])
+                            ->visible(fn () => !auth()->user()->isCentralRole()),
 
                         Forms\Components\TextInput::make('departamental_display')
                             ->label('Oficina Departamental')
@@ -513,9 +522,20 @@ class ActividadResource extends Resource
                                     ->disabled()
                                     ->dehydrated(),
 
+                                Forms\Components\Select::make('departamental_id')
+                                    ->label('Oficina Departamental')
+                                    ->options(fn () => \App\Models\Departamental::pluck('nombre', 'id'))
+                                    ->searchable()
+                                    ->required()
+                                    ->rules(['exists:departamentales,id'])
+                                    ->visible(fn () => auth()->user()->isCentralRole())
+                                    ->dehydrated(),
+
                                 Forms\Components\Hidden::make('departamental_id')
                                     ->default(fn () => auth()->user()->departamental_id)
                                     ->required()
+                                    ->rules(['exists:departamentales,id'])
+                                    ->visible(fn () => !auth()->user()->isCentralRole())
                                     ->dehydrated(),
 
                                 Forms\Components\TextInput::make('departamental_display')
@@ -599,7 +619,6 @@ class ActividadResource extends Resource
                         $data['due_date'] = $data['due_date'] ?? now()->addDays(7);
                         $data['fecha'] = $data['fecha'] ?? now()->format('Y-m-d');
                         $data['programa'] = $data['programa'] ?? 'Otro';
-                        $data['departamental_id'] = auth()->user()->departamental_id ?? null;
                         $data['user_id'] = auth()->id();
 
                         if (empty($data['star_date']) || empty($data['due_date'])) {

@@ -65,10 +65,19 @@ class CreateActividad extends CreateRecord
                                 // Campo deshabilitado (no editable)
                                 ->disabled(),
                             // Campo oculto para la departamental (se asigna automáticamente)
+                            Forms\Components\Select::make('departamental_id')
+                                ->label('Oficina Departamental')
+                                ->options(fn () => \App\Models\Departamental::pluck('nombre', 'id'))
+                                ->searchable()
+                                ->required()
+                                ->rules(['exists:departamentales,id'])
+                                ->visible(fn () => auth()->user()->isCentralRole()),
+
                             Forms\Components\Hidden::make('departamental_id')
                                 ->default(fn () => auth()->user()->departamental_id)
-                                ->required(fn () => auth()->user() && auth()->user()->departamental_id !== null)
-                                ->rules(fn () => auth()->user() && auth()->user()->departamental_id !== null ? ['exists:departamentales,id'] : []),
+                                ->required()
+                                ->rules(['exists:departamentales,id'])
+                                ->visible(fn () => !auth()->user()->isCentralRole()),
 
                             // Campo para seleccionar la fecha de la actividad
                             Forms\Components\DatePicker::make('fecha')
@@ -234,7 +243,15 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
     // Método que se ejecuta antes de crear el registro para modificar los datos
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        // Validación: verifica si la fecha de vencimiento está en el pasado
+        if (empty($data['departamental_id'])) {
+            Notification::make()
+                ->title('Error de Validación')
+                ->body('Debe seleccionar una Oficina Departamental.')
+                ->danger()
+                ->send();
+            $this->halt();
+        }
+
         if (isset($data['due_date']) && $data['due_date'] < now()) {
             // Crea y envía una notificación de error
             Notification::make()

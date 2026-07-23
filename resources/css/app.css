@@ -111,8 +111,6 @@
 .fi-modal,
 .fi-modal-content,
 .fi-modal-card,
-.fi-sidebar,
-.fi-sidebar-content,
 .fi-card,
 .fi-section,
 .fi-section > .fi-section-content,
@@ -143,8 +141,7 @@
 }
 
 /* Fix extra por si usas modales anidados o wizards */
-.fi-modal .fi-modal-card > div,
-.fi-sidebar .fi-sidebar-content > div {
+.fi-modal .fi-modal-card > div {
     overflow: visible !important;
 }
 
