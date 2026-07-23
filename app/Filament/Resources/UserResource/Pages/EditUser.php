@@ -30,6 +30,7 @@ class EditUser extends EditRecord
                     ->label('Cambiar Contraseña')
                     ->icon('heroicon-o-key')
                     ->color('warning')
+                    ->visible(fn () => auth()->user()->isCentralRole())
                     ->form([
                         Forms\Components\TextInput::make('new_password')
                             ->label('Nueva Contraseña')
