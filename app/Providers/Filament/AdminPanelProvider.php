@@ -70,7 +70,6 @@ class AdminPanelProvider extends PanelProvider
             // El broadcasting funciona automáticamente si está configurado
             
             // UX
-            ->spa()
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
             ->darkMode(false)

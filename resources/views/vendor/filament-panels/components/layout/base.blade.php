@@ -56,7 +56,7 @@
         <script data-navigate-once>
             window.Echo = new window.EchoFactory(@js(config('filament.broadcasting.echo')));
 
-            document.addEventListener('livewire:load', () => {
+            document.addEventListener('livewire:init', () => {
                 const userId = document.querySelector('meta[name="user-id"]')?.content;
                 console.log('Echo cargado, usuario:', userId);
 
