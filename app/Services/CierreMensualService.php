@@ -42,17 +42,19 @@ class CierreMensualService
         $cierresConsolidados = [];
 
         if ($tipoCierre === 'individual') {
-            if (! $user->departamental_id) {
+            $departamentalId = $data['departamental_id'] ?? $user->departamental_id;
+
+            if (! $departamentalId) {
                 return [
                     'generados' => 0,
                     'omitidos' => 1,
                     'cierres' => [],
-                    'error' => 'El usuario no tiene departamental asignada.',
+                    'error' => 'Debe seleccionar una Oficina Departamental.',
                 ];
             }
 
             $resultado = $this->procesarCierreDepartamental(
-                $user->departamental_id,
+                $departamentalId,
                 $mes,
                 $año,
                 $user,

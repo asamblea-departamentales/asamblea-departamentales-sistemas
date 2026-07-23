@@ -5,6 +5,7 @@ namespace App\Filament\Resources\CierreMensualResource\Pages;
 use App\Filament\Resources\ActividadResource;
 use App\Filament\Resources\CierreMensualResource;
 use App\Models\CierreMensual;
+use App\Models\Departamental;
 use App\Services\CierreMensualService;
 use Carbon\Carbon;
 use Filament\Actions;
@@ -36,12 +37,24 @@ class ListCierreMensuals extends ListRecords
                         ->label('Tipo de Cierre/Informe')
                         ->options(fn () => collect([
                             'individual' => 'Cierre Individual (Solo mi departamental)',
-                        ]->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
+                        ])->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
                             $options->put('consolidado', 'Informe Consolidado (Todas las departamentales)');
-                        })->toArray()))
+                        })->toArray())
                         ->default('individual')
                         ->required()
                         ->live()
+                        ->columnSpanFull(),
+
+                    \Filament\Forms\Components\Select::make('departamental_id')
+                        ->label('Oficina Departamental')
+                        ->options(fn () => Departamental::pluck('nombre', 'id'))
+                        ->searchable()
+                        ->required()
+                        ->rules(['exists:departamentales,id'])
+                        ->visible(fn (\Filament\Forms\Get $get) =>
+                            $get('tipo_cierre') === 'individual'
+                            && auth()->user()->isCentralRole()
+                        )
                         ->columnSpanFull(),
 
                     \Filament\Forms\Components\Grid::make(2)
@@ -104,6 +117,16 @@ class ListCierreMensuals extends ListRecords
 
             DB::commit();
 
+            if (isset($resultado['error'])) {
+                Notification::make()
+                    ->title('No se generó el cierre')
+                    ->body($resultado['error'])
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+
             $mensaje = $tipoCierre === 'individual'
                 ? "Se ha generado el cierre de {$service->getNombreMes($mes)} {$año}."
                 : "Se generó el informe consolidado para {$service->getNombreMes($mes)} {$año} con {$resultado['generados']} departamentales.";
@@ -119,13 +142,19 @@ class ListCierreMensuals extends ListRecords
                 ->send();
 
             if ($tipoCierre === 'individual' && $resultado['generados'] > 0) {
-                $cierre = CierreMensual::where('departamental_id', $user->departamental_id)
+                $departamentalId = $data['departamental_id'] ?? $user->departamental_id;
+                $cierre = CierreMensual::where('departamental_id', $departamentalId)
                     ->where('mes', $mes)
                     ->where('año', $año)
                     ->first();
 
-                $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+                if ($cierre) {
+                    $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+                    return;
+                }
             }
+
+            $this->redirect(\App\Filament\Resources\CierreMensualResource::getUrl('index'));
 
         } catch (\Exception $e) {
             DB::rollBack();

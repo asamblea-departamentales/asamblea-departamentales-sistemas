@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ActividadResource\Pages;
 
 use App\Filament\Resources\ActividadResource;
 use App\Models\CierreMensual;
+use App\Models\Departamental;
 use App\Services\CierreMensualService;
 use Carbon\Carbon;
 use Filament\Actions;
@@ -93,6 +94,18 @@ class ListActividades extends ListRecords
                         ->live()
                         ->columnSpanFull(),
 
+                    \Filament\Forms\Components\Select::make('departamental_id')
+                        ->label('Oficina Departamental')
+                        ->options(fn () => Departamental::pluck('nombre', 'id'))
+                        ->searchable()
+                        ->required()
+                        ->rules(['exists:departamentales,id'])
+                        ->visible(fn (\Filament\Forms\Get $get) =>
+                            $get('tipo_cierre') === 'individual'
+                            && auth()->user()->isCentralRole()
+                        )
+                        ->columnSpanFull(),
+
                     \Filament\Forms\Components\Grid::make(2)
                         ->schema([
                             \Filament\Forms\Components\Select::make('mes')
@@ -146,6 +159,16 @@ class ListActividades extends ListRecords
 
             DB::commit();
 
+            if (isset($resultado['error'])) {
+                Notification::make()
+                    ->title('No se generó el cierre')
+                    ->body($resultado['error'])
+                    ->danger()
+                    ->send();
+
+                return;
+            }
+
             $mensaje = $tipoCierre === 'individual'
                 ? "Se ha generado el cierre de {$service->getNombreMes($mes)} {$año}."
                 : "Se generó el informe consolidado para {$service->getNombreMes($mes)} {$año} con {$resultado['generados']} departamentales.";
@@ -161,18 +184,15 @@ class ListActividades extends ListRecords
                 ->send();
 
             if ($tipoCierre === 'individual' && $resultado['generados'] > 0) {
-                $departamentalId = $user->isSuperAdmin() ? $resultado['cierres'][0]->departamental_id ?? null : $user->departamental_id;
+                $departamentalId = $data['departamental_id'] ?? $user->departamental_id;
+                $cierre = CierreMensual::where('departamental_id', $departamentalId)
+                    ->where('mes', $mes)
+                    ->where('año', $año)
+                    ->first();
 
-                if ($departamentalId) {
-                    $cierre = CierreMensual::where('departamental_id', $departamentalId)
-                        ->where('mes', $mes)
-                        ->where('año', $año)
-                        ->first();
-
-                    if ($cierre) {
-                        $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
-                        return;
-                    }
+                if ($cierre) {
+                    $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+                    return;
                 }
             }
 
