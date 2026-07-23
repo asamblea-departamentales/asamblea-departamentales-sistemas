@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ActividadResource\Pages;
 
 use App\Filament\Resources\ActividadResource;
+use App\Filament\Resources\ActividadResource\RelationManagers\ComentarioRelationManager;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -10,6 +11,13 @@ use Filament\Infolists\Infolist;
 class ViewActividad extends ViewRecord
 {
     protected static string $resource = ActividadResource::class;
+
+    public function getRelationManagers(): array
+    {
+        return [
+            ComentarioRelationManager::class,
+        ];
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {
