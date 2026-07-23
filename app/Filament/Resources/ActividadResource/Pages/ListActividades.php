@@ -85,9 +85,9 @@ class ListActividades extends ListRecords
                         ->label('Tipo de Cierre/Informe')
                         ->options(fn () => collect([
                             'individual' => 'Cierre Individual (Solo mi departamental)',
-                        ]->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
+                        ])->when(auth()->user()->hasAnyRole(['super_admin', 'gol']), function ($options) {
                             $options->put('consolidado', 'Informe Consolidado (Todas las departamentales)');
-                        })->toArray()))
+                        })->toArray())
                         ->default('individual')
                         ->required()
                         ->live()
