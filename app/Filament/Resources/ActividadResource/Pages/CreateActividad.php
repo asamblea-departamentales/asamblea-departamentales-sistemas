@@ -267,6 +267,11 @@ class CreateActividad extends CreateRecord
         return $data;
     }
 
+    protected function getFormActions(): array
+    {
+        return [];
+    }
+
     // Método que define la notificación que se muestra después de crear el registro
     protected function getCreatedNotification(): ?Notification
     {
