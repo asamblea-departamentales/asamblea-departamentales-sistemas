@@ -26,7 +26,7 @@ class CatalogoResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasAnyRole(['ti', 'super_admin']);
+        return auth()->user()->hasAnyRole(['ti', 'super_admin', 'asistente_tecnico']);
     }
 
     public static function form(Form $form): Form
