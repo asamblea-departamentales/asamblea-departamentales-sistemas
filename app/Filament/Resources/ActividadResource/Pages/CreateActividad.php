@@ -79,7 +79,11 @@ class CreateActividad extends CreateRecord
                                 ->visible(fn () => auth()->user()->isCentralRole()),
 
                             Forms\Components\Hidden::make('departamental_id')
-                                ->default(fn () => auth()->user()->departamental_id ?? auth()->user()->departamental?->getKey())
+                                ->afterStateHydrated(function ($state, $set) {
+                                    if (blank($state)) {
+                                        $set('departamental_id', auth()->user()->departamental_id);
+                                    }
+                                })
                                 ->required('Debe tener un departamental asignado. Contacte a TI.')
                                 ->rules(['exists:departamentales,id'])
                                 ->visible(fn () => !auth()->user()->isCentralRole()),
