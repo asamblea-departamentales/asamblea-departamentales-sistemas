@@ -29,7 +29,7 @@ class ActividadChart extends ChartWidget
         $query = Actividad::query();
 
         if (! $user->isCentralRole()) {
-            $query->where('actividads.departamental_id', $user->departamental_id);
+            $query->where('actividades.departamental_id', $user->departamental_id);
         }
 
         $counts = $query->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, COUNT(*) as total")

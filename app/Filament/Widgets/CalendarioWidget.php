@@ -21,7 +21,7 @@ class CalendarioWidget extends FullCalendarWidget implements HasActions
         $query = Actividad::query();
 
         if (! $user->isCentralRole()) {
-            $query->where('actividads.departamental_id', $user->departamental_id);
+            $query->where('actividades.departamental_id', $user->departamental_id);
         }
 
         return $query

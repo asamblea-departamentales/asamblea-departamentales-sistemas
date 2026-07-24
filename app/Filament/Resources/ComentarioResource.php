@@ -123,7 +123,7 @@ class ComentarioResource extends Resource
         if (! $user->isCentralRole()) {
             $query->where(function ($q) use ($user) {
                 $q->whereHas('actividad', function ($aQuery) use ($user) {
-                    $aQuery->where('actividads.departamental_id', $user->departamental_id);
+                    $aQuery->where('actividades.departamental_id', $user->departamental_id);
                 })->orWhereHas('ticket', function ($tQuery) use ($user) {
                     $tQuery->where('tickets.departamental_id', $user->departamental_id);
                 });

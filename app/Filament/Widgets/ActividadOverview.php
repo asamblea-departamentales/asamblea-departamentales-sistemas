@@ -14,7 +14,7 @@ class ActividadOverview extends BaseWidget
         $query = Actividad::query();
 
         if (! $user->isCentralRole()) {
-            $query->where('actividads.departamental_id', $user->departamental_id);
+            $query->where('actividades.departamental_id', $user->departamental_id);
         }
 
         $counts = $query->selectRaw("
