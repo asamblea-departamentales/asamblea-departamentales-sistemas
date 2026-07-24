@@ -47,14 +47,12 @@ class Catalogo extends Model
 
     public static function options(string $grupo): array
     {
-        return Cache::remember("catalogo_options_{$grupo}", 3600, function () use ($grupo) {
-            return static::porGrupo($grupo)
-                ->activos()
-                ->orderBy('orden')
-                ->orderBy('label')
-                ->pluck('label', 'slug')
-                ->toArray();
-        });
+        return static::porGrupo($grupo)
+            ->activos()
+            ->orderBy('orden')
+            ->orderBy('label')
+            ->pluck('label', 'slug')
+            ->toArray();
     }
 
     public static function label(string $grupo, ?string $slug): ?string
@@ -70,13 +68,11 @@ class Catalogo extends Model
 
     public static function slugs(string $grupo): array
     {
-        return Cache::remember("catalogo_slugs_{$grupo}", 3600, function () use ($grupo) {
-            return static::porGrupo($grupo)
-                ->activos()
-                ->orderBy('orden')
-                ->pluck('slug')
-                ->toArray();
-        });
+        return static::porGrupo($grupo)
+            ->activos()
+            ->orderBy('orden')
+            ->pluck('slug')
+            ->toArray();
     }
 
     public static function flushCache(): void
