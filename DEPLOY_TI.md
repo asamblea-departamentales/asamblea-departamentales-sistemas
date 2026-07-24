@@ -82,6 +82,42 @@ Si falla, revisar el log de errores y ejecutar manualmente los pasos del SQL que
 
 ---
 
+## Paso 3.1 -- Verificar y corregir departamental_id de usuarios
+
+Los usuarios coordinadores deben tener `departamental_id` asignado. Si esta vacio, el Wizard de Actividades no avanza del paso 1.
+
+```bash
+# Verificar el estado de un usuario especifico
+php artisan tinker --execute="
+\$u = App\Models\User::with('departamental')->find('USUARIO_UUID');
+dump([
+    'departamental_id' => \$u->departamental_id,
+    'departamental_relacion_id' => \$u->departamental?->id,
+    'departamental_nombre' => \$u->departamental?->nombre,
+]);
+"
+
+# Corregir TODOS los usuarios con departamental_id nulo
+php artisan tinker --execute="
+\$fixed = 0;
+App\Models\User::whereNull('departamental_id')->each(function (\$u) use (&\$fixed) {
+    \$dept = \$u->departamental;
+    if (\$dept) {
+        \$u->update(['departamental_id' => \$dept->id]);
+        \$fixed++;
+        echo 'Fixed: ' . \$u->firstname . ' -> ' . \$dept->nombre . PHP_EOL;
+    } else {
+        echo 'SKIP: ' . \$u->firstname . ' (' . (\$u->email ?? 'no email') . ')' . PHP_EOL;
+    }
+});
+echo 'Total fixed: ' . \$fixed;
+"
+```
+
+**IMPORTANTE:** Si `departamental_relacion_id` es null pero `departamental_nombre` tiene valor, hay un problema de integridad referencial que debe resolverse manualmente.
+
+---
+
 ## Paso 4 -- Limpiar caches
 
 ```bash
@@ -106,6 +142,47 @@ php artisan storage:link
 ```
 
 Si ya existe, ignorar.
+
+---
+
+## Paso 5.1 -- Montar share CIFS (Repositorio de Atestados)
+
+Los atestados/adjuntos de Actividades se almacenan en un share CIFS. Si no esta montado, los uploads fallan o se guardan localmente.
+
+```bash
+# Verificar si ya esta montado
+df -h | grep repositorio
+
+# Si NO esta montado, montar:
+sudo mkdir -p /mnt/repositorio_dpto
+sudo mount -t cifs //172.19.10.99/Repositorio_dpto /mnt/repositorio_dpto \
+  -o username=userdpto,password=Dpto2026,uid=www-data,gid=www-data
+
+# Verificar
+ls -la /mnt/repositorio_dpto/
+
+# Agregar al .env si no existe
+grep -q 'SMB_MOUNT_POINT' .env || echo 'SMB_MOUNT_POINT=/mnt/repositorio_dpto' >> .env
+```
+
+### Verificar que los atestados funcionan
+
+```bash
+# Verificar que existen registros de media
+php artisan tinker --execute="echo 'Media records: ' . \Spatie\MediaLibrary\MediaCollections\Models\Media::count();"
+
+# Verificar que los archivos existen en disco
+php artisan tinker --execute="
+\$media = \Spatie\MediaLibrary\MediaCollections\Models\Media::first();
+if (\$media) {
+    echo 'File: ' . \$media->name . PHP_EOL;
+    echo 'Path: ' . \$media->getPath() . PHP_EOL;
+    echo 'Exists: ' . (file_exists(\$media->getPath()) ? 'YES' : 'NO') . PHP_EOL;
+} else {
+    echo 'No media records found';
+}
+"
+```
 
 ---
 

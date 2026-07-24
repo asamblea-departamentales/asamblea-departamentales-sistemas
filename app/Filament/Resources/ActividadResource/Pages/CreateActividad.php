@@ -64,6 +64,11 @@ class CreateActividad extends CreateRecord
                                 ->default(auth()->id())
                                 // Campo deshabilitado (no editable)
                                 ->disabled(),
+                            // Fallback: disabled() ejecuta dehydrated(false) automáticamente.
+                            // Este Hidden garantiza que user_id siempre esté en el form state.
+                            Forms\Components\Hidden::make('user_id')
+                                ->default(fn () => auth()->id())
+                                ->required(),
                             // Campo oculto para la departamental (se asigna automáticamente)
                             Forms\Components\Select::make('departamental_id')
                                 ->label('Oficina Departamental')

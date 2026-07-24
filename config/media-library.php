@@ -81,7 +81,7 @@ return [
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => App\Support\Media\ActividadPathGenerator::class,
+    'path_generator' => null,
     /*
      * The class that contains the strategy for determining how to remove files.
      */
@@ -91,9 +91,7 @@ return [
      * Here you can specify which path generator should be used for the given class.
      */
     'custom_path_generators' => [
-        // Model::class => PathGenerator::class
-        // or
-        // 'model_morph_alias' => PathGenerator::class
+        \App\Models\Actividad::class => App\Support\Media\ActividadPathGenerator::class,
     ],
 
     /*

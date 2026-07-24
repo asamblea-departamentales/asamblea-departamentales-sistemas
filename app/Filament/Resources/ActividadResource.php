@@ -201,6 +201,7 @@ class ActividadResource extends Resource
                     ->enableDownload()
                     ->maxFiles(10)
                     ->maxSize(10240)
+                    ->preserveFilenames(false) //mejor practica con SMB
                     ->helperText('Máximo 10 archivos, 10 MB cada uno.'),
             ]);
     }
