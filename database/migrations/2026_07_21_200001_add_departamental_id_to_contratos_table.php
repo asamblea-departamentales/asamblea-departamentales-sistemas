@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('contratos', function (Blueprint $table) {
             $table->unsignedBigInteger('departamental_id')->nullable()->after('id');
             $table->foreign('departamental_id')->references('id')->on('departamentales')
-                  ->cascadeOnUpdate()->nullOnDelete();
+                ->cascadeOnUpdate()->nullOnDelete();
         });
     }
 

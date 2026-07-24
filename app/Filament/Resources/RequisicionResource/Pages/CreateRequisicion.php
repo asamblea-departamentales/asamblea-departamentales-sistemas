@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\RequisicionResource\Pages;
 
 use App\Filament\Resources\RequisicionResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateRequisicion extends CreateRecord

@@ -2,19 +2,22 @@
 
 namespace App\Notifications;
 
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use Filament\Notifications\Notification as FilamentNotification;
-use Filament\Notifications\Actions\Action;
 
 class DepartamentalFaltanteNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public int $departamental_id;
+
     public string $departamental_nombre;
+
     public int $mes;
+
     public int $anio;
 
     public function __construct(int $departamental_id, string $departamental_nombre, ?int $mes = null, ?int $anio = null)
@@ -28,7 +31,7 @@ class DepartamentalFaltanteNotification extends Notification implements ShouldQu
     }
 
     /**
-     * IMPORTANTE: Solo usar 'database' 
+     * IMPORTANTE: Solo usar 'database'
      * Filament maneja el broadcast automáticamente
      */
     public function via($notifiable): array
@@ -42,7 +45,7 @@ class DepartamentalFaltanteNotification extends Notification implements ShouldQu
     public function toDatabase($notifiable): array
     {
         $mesTexto = $this->obtenerNombreMes($this->mes);
-        
+
         // Usar FilamentNotification para crear el formato correcto
         return FilamentNotification::make()
             ->warning()

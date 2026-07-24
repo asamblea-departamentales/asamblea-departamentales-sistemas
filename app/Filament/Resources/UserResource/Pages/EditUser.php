@@ -23,7 +23,7 @@ class EditUser extends EditRecord
     {
         $actions = [
             ImpersonatePageAction::make()->record($this->record),
-            
+
             Actions\ActionGroup::make([
                 // ✅ Acción de Cambiar Contraseña (mejorada)
                 Actions\Action::make('change_password')
@@ -40,7 +40,7 @@ class EditUser extends EditRecord
                             ->revealable()
                             ->helperText('Mínimo 8 caracteres')
                             ->autocomplete('new-password'),
-                        
+
                         Forms\Components\TextInput::make('new_password_confirmation')
                             ->label('Confirmar Nueva Contraseña')
                             ->password()
@@ -98,7 +98,7 @@ class EditUser extends EditRecord
 
     public function getTitle(): string
     {
-        return 'Editar Usuario: ' . $this->record->name;
+        return 'Editar Usuario: '.$this->record->name;
     }
 
     public function getHeading(): string|Htmlable

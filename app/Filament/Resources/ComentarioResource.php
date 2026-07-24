@@ -15,7 +15,9 @@ class ComentarioResource extends Resource
     protected static ?string $model = Comentarios::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
+
     protected static ?string $navigationLabel = 'Comentarios';
+
     protected static ?string $navigationGroup = 'Actividades';
 
     public static function form(Form $form): Form
@@ -66,49 +68,46 @@ class ComentarioResource extends Resource
                 ->label('Fecha de creación')
                 ->dateTime('d/m/Y H:i'),
         ])
-        ->filters([
-            Tables\Filters\SelectFilter::make('actividad_id')->relationship('actividad', 'macroactividad'),
-            Tables\Filters\SelectFilter::make('user')->relationship('user', 'name'),
-        ])
-        ->actions([
+            ->filters([
+                Tables\Filters\SelectFilter::make('actividad_id')->relationship('actividad', 'macroactividad'),
+                Tables\Filters\SelectFilter::make('user')->relationship('user', 'name'),
+            ])
+            ->actions([
 
-            Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
 
-            // ✅ Editar solo para roles autorizados
-            Tables\Actions\EditAction::make()
-                ->visible(fn () =>
-                    auth()->user()->hasAnyRole([
+                // ✅ Editar solo para roles autorizados
+                Tables\Actions\EditAction::make()
+                    ->visible(fn () => auth()->user()->hasAnyRole([
                         'ti',
                         'super_admin',
                         'coordinador',
                         'gol',
                     ])
-                ),
+                    ),
 
-            // ✅ Eliminar solo para roles autorizados
-            Tables\Actions\DeleteAction::make()
-                ->visible(fn () =>
-                    auth()->user()->hasAnyRole([
+                // ✅ Eliminar solo para roles autorizados
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn () => auth()->user()->hasAnyRole([
                         'ti',
                         'super_admin',
                         'coordinador',
                         'gol',
                     ])
-                ),
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->visible(fn () =>
-                        auth()->user()->hasAnyRole([
+                    ),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()->hasAnyRole([
                             'ti',
                             'super_admin',
                             'coordinador',
                             'gol',
                         ])
-                    ),
-            ]),
-        ]);
+                        ),
+                ]),
+            ]);
     }
 
     public static function getRelations(): array

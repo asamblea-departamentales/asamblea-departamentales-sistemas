@@ -11,18 +11,18 @@ use Filament\Forms\Form;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BaseLogin;
-use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Database\QueryException;
 
 class Login extends BaseLogin
 {
     protected int $maxAttempts = 5;
+
     protected int $decayMinutes = 1;
 
     public function form(Form $form): Form
@@ -96,7 +96,7 @@ class Login extends BaseLogin
 
     protected function throttleKey(): string
     {
-        return strtolower($this->data['username'] ?? '') . '|' . request()->ip();
+        return strtolower($this->data['username'] ?? '').'|'.request()->ip();
     }
 
     public function authenticate(): ?LoginResponse
@@ -107,7 +107,7 @@ class Login extends BaseLogin
             $seconds = RateLimiter::availableIn($throttleKey);
 
             throw ValidationException::withMessages([
-                'data.username' => 'Demasiados intentos. Intente de nuevo en ' . $seconds . ' segundos.',
+                'data.username' => 'Demasiados intentos. Intente de nuevo en '.$seconds.' segundos.',
             ]);
         }
 

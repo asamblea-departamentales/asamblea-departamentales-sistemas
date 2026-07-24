@@ -2,8 +2,8 @@
 
 namespace App\Support\Media;
 
-use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\Support\PathGenerator\PathGenerator;
 
 class ActividadPathGenerator implements PathGenerator
 {
@@ -12,10 +12,10 @@ class ActividadPathGenerator implements PathGenerator
         $model = $media->model;
 
         if ($model && $model->departamental_id) {
-            return 'departamentales/' 
-                . $model->departamental_id 
-                . '/actividades/' 
-                . $model->id . '/';
+            return 'departamentales/'
+                .$model->departamental_id
+                .'/actividades/'
+                .$model->id.'/';
         }
 
         return 'otros/';
@@ -23,11 +23,11 @@ class ActividadPathGenerator implements PathGenerator
 
     public function getPathForConversions(Media $media): string
     {
-        return $this->getPath($media) . 'conversions/';
+        return $this->getPath($media).'conversions/';
     }
 
     public function getPathForResponsiveImages(Media $media): string
     {
-        return $this->getPath($media) . 'responsive/';
+        return $this->getPath($media).'responsive/';
     }
 }

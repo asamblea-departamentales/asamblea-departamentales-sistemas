@@ -4,9 +4,9 @@ namespace App\Filament\Resources\ActividadResource\Pages;
 
 use App\Filament\Resources\ActividadResource;
 use App\Filament\Resources\ActividadResource\RelationManagers\ComentarioRelationManager;
-use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Resources\Pages\ViewRecord;
 
 class ViewActividad extends ViewRecord
 {
@@ -81,33 +81,32 @@ class ViewActividad extends ViewRecord
 
                 // 🔥 GALERÍA PRO
                 Infolists\Components\Section::make('Atestados')
-    ->schema([
-        Infolists\Components\RepeatableEntry::make('atestados_urls')
-            ->label('')
-            ->schema([
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('atestados_urls')
+                            ->label('')
+                            ->schema([
 
-                Infolists\Components\ImageEntry::make('url')
-                    ->label('Vista previa')
-                    ->height(120),
+                                Infolists\Components\ImageEntry::make('url')
+                                    ->label('Vista previa')
+                                    ->height(120),
 
-                Infolists\Components\TextEntry::make('name')
-                    ->label('Nombre'),
+                                Infolists\Components\TextEntry::make('name')
+                                    ->label('Nombre'),
 
-                Infolists\Components\TextEntry::make('size')
-                    ->label('Tamaño (KB)')
-                    ->formatStateUsing(fn ($state) => round($state / 1024, 2)),
+                                Infolists\Components\TextEntry::make('size')
+                                    ->label('Tamaño (KB)')
+                                    ->formatStateUsing(fn ($state) => round($state / 1024, 2)),
 
-                Infolists\Components\TextEntry::make('url')
-                    ->label('Acciones')
-                    ->formatStateUsing(fn ($state) =>
-                        "<a href='{$state}' target='_blank'>👁 Ver</a> | 
+                                Infolists\Components\TextEntry::make('url')
+                                    ->label('Acciones')
+                                    ->formatStateUsing(fn ($state) => "<a href='{$state}' target='_blank'>👁 Ver</a> | 
                          <a href='{$state}' download>⬇ Descargar</a>"
-                    )
-                    ->html(),
+                                    )
+                                    ->html(),
 
-            ])
-            ->columns(2),
-    ]),
+                            ])
+                            ->columns(2),
+                    ]),
             ]);
     }
 }

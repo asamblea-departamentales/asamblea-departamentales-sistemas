@@ -31,7 +31,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    //NUEVO
+    // NUEVO
     /*
     |--------------------------------------------------------------------------
     | Power BI Configuration
@@ -49,6 +49,5 @@ return [
         'service_url' => 'https://app.powerbi.com',
         'api_url' => 'https://api.powerbi.com/v1.0/myorg',
     ],
-
 
 ];

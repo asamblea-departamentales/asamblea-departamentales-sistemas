@@ -71,6 +71,7 @@ class SendNewContactNotification implements ShouldQueue
                 $adminEmail = config('app.admin_email');
                 if (! $adminEmail) {
                     Log::warning('No recipients configured for contact notification and no app.admin_email set. Skipping.');
+
                     return;
                 }
                 $recipients = [$adminEmail];

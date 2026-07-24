@@ -13,9 +13,9 @@ return new class extends Migration
             $table->uuid('cierre_mensual_id')->nullable()->index();
 
             $table->foreign('cierre_mensual_id')
-                  ->references('id')
-                  ->on('cierres_mensuales')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('cierres_mensuales')
+                ->cascadeOnDelete();
         });
     }
 

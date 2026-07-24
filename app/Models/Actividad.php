@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Actividad extends Model implements HasMedia
 {
-    use InteractsWithMedia, LogsActivity;
     use BelongsToDepartamental;
     use HasFactory;
+    use InteractsWithMedia, LogsActivity;
 
     protected $table = 'actividades';
 
@@ -94,17 +94,17 @@ class Actividad extends Model implements HasMedia
             || $user->hasAnyRole(['ti', 'super_admin', 'gol']);
     }
 
-//NUEVO
-public function getAtestadosUrlsAttribute()
-{
-    return $this->getMedia('atestados')->map(function ($media) {
-        return [
-            'url' => $media->getUrl(),
-            'name' => $media->name,
-            'size' => $media->size,
-        ];
-    })->toArray();
-}
+    // NUEVO
+    public function getAtestadosUrlsAttribute()
+    {
+        return $this->getMedia('atestados')->map(function ($media) {
+            return [
+                'url' => $media->getUrl(),
+                'name' => $media->name,
+                'size' => $media->size,
+            ];
+        })->toArray();
+    }
 
     /*
     |--------------------------------------------------------------------------

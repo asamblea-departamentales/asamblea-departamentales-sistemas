@@ -5,12 +5,13 @@ namespace App\Console\Commands;
 use App\Models\Actividad;
 use App\Models\User;
 use App\Notifications\ActividadReminderNotification;
-use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class SendActividadReminders extends Command
 {
     protected $signature = 'actividades:reminders {--dry-run : Ejecutar en modo de prueba sin enviar notificaciones}';
+
     protected $description = 'Enviar notificaciones de recordatorio de actividades programadas';
 
     public function handle()
@@ -38,6 +39,7 @@ class SendActividadReminders extends Command
         if ($actividades->isEmpty()) {
             $this->info('✅ No hay actividades pendientes de notificación');
             $this->showUpcomingActivities();
+
             return Command::SUCCESS;
         }
 
@@ -47,21 +49,23 @@ class SendActividadReminders extends Command
 
         foreach ($actividades as $actividad) {
             try {
-                if (!$actividad->user) {
+                if (! $actividad->user) {
                     $this->warn("⚠️  Actividad #{$actividad->id} '{$actividad->macroactividad}' no tiene usuario asignado - SALTANDO");
                     $skipped++;
+
                     continue;
                 }
 
-                if (!$actividad->star_date) {
+                if (! $actividad->star_date) {
                     $this->warn("⚠️  Actividad #{$actividad->id} no tiene fecha de inicio - SALTANDO");
                     $skipped++;
+
                     continue;
                 }
 
                 $tiempoRestante = $this->calculateTimeRemaining($actividad->star_date);
 
-                if (!$isDryRun) {
+                if (! $isDryRun) {
                     // Enviar notificación usando tu clase ActividadReminderNotification
                     $actividad->user->notify(new ActividadReminderNotification($actividad));
 
@@ -82,7 +86,7 @@ class SendActividadReminders extends Command
 
                 $notificationsSent++;
             } catch (\Exception $e) {
-                $this->error("❌ Error al procesar actividad #{$actividad->id}: " . $e->getMessage());
+                $this->error("❌ Error al procesar actividad #{$actividad->id}: ".$e->getMessage());
                 $errors++;
             }
         }
@@ -97,7 +101,7 @@ class SendActividadReminders extends Command
      */
     private function notifyAdditionalUsers(Actividad $actividad): void
     {
-        $additionalUsers = User::whereHas('roles', function ($query) use ($actividad) {
+        $additionalUsers = User::whereHas('roles', function ($query) {
             $query->whereIn('name', ['super_admin', 'ti']);
         })->get();
 
@@ -125,15 +129,16 @@ class SendActividadReminders extends Command
 
         if ($fechaInicio->isPast()) {
             $diff = $now->diff($fechaInicio);
+
             return "⚠️  Debería haber comenzado hace {$diff->h}h {$diff->i}m";
         }
 
         $diff = $now->diff($fechaInicio);
-        
+
         if ($diff->days > 0) {
             return "⏳ Comienza en {$diff->days}d {$diff->h}h {$diff->i}m";
         }
-        
+
         return "⏳ Comienza en {$diff->h}h {$diff->i}m";
     }
 
@@ -147,7 +152,9 @@ class SendActividadReminders extends Command
             ->limit(5)
             ->get();
 
-        if ($upcoming->isEmpty()) return;
+        if ($upcoming->isEmpty()) {
+            return;
+        }
 
         $this->info('📅 PRÓXIMAS ACTIVIDADES:');
         foreach ($upcoming as $actividad) {
@@ -161,18 +168,22 @@ class SendActividadReminders extends Command
     {
         $this->newLine();
         $this->info('📊 RESUMEN');
-        
+
         if ($isDryRun) {
             $this->warn("🔍 MODO DRY RUN - Notificaciones que se habrían enviado: {$sent}");
         } else {
             $this->info("✅ Notificaciones enviadas: {$sent}");
         }
-        
-        if ($skipped) $this->warn("⏭️ Omitidas: {$skipped}");
-        if ($errors) $this->error("❌ Errores: {$errors}");
 
-        if (!$isDryRun && $sent > 0) {
-            $this->info("🔔 Las notificaciones aparecerán en la campanita de cada usuario");
+        if ($skipped) {
+            $this->warn("⏭️ Omitidas: {$skipped}");
+        }
+        if ($errors) {
+            $this->error("❌ Errores: {$errors}");
+        }
+
+        if (! $isDryRun && $sent > 0) {
+            $this->info('🔔 Las notificaciones aparecerán en la campanita de cada usuario');
         }
     }
 }

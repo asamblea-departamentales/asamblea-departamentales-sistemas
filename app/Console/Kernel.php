@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         // Asegúrate de haber creado el comando con:
         // php artisan make:command SendActividadReminders
         $schedule->command('actividades:reminders')->everyMinute();
-        //Ejecutar el comando cada 28 de cada mes a las 8:00 AM
+        // Ejecutar el comando cada 28 de cada mes a las 8:00 AM
         $schedule->command('departamentales:check')->monthlyOn(28, '08:00');
     }
 

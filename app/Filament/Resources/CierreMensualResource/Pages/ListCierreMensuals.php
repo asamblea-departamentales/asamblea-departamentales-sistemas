@@ -51,8 +51,7 @@ class ListCierreMensuals extends ListRecords
                         ->searchable()
                         ->required()
                         ->rules(['exists:departamentales,id'])
-                        ->visible(fn (\Filament\Forms\Get $get) =>
-                            $get('tipo_cierre') === 'individual'
+                        ->visible(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'individual'
                             && auth()->user()->isCentralRole()
                         )
                         ->columnSpanFull(),
@@ -150,6 +149,7 @@ class ListCierreMensuals extends ListRecords
 
                 if ($cierre) {
                     $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+
                     return;
                 }
             }
@@ -159,7 +159,7 @@ class ListCierreMensuals extends ListRecords
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Error generando cierre: ' . $e->getMessage(), [
+            \Log::error('Error generando cierre: '.$e->getMessage(), [
                 'exception' => $e,
                 'user_id' => auth()->id(),
             ]);

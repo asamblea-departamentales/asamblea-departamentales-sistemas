@@ -4,14 +4,14 @@ namespace App\Notifications;
 
 use App\Models\Actividad;
 use Carbon\Carbon;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Notifications\Notification;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Notification;
 
-class ActividadReminderNotification extends Notification implements ShouldQueue, ShouldBroadcast
+class ActividadReminderNotification extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
 
@@ -74,7 +74,8 @@ class ActividadReminderNotification extends Notification implements ShouldQueue,
         if (! $notifiable) {
             return [];
         }
-        return [new PrivateChannel('notifications.' . $notifiable->getKey())];
+
+        return [new PrivateChannel('notifications.'.$notifiable->getKey())];
     }
 
     public function broadcastAs()
@@ -98,6 +99,7 @@ class ActividadReminderNotification extends Notification implements ShouldQueue,
 
         if ($fechaInicio->isPast()) {
             $diff = $now->diff($fechaInicio);
+
             return "Deberia haber comenzado hace {$diff->h}h {$diff->i}m";
         }
 

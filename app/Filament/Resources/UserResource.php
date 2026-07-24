@@ -23,7 +23,6 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -211,7 +210,7 @@ class UserResource extends Resource
                     ->circular()
                     ->extraAttributes(['alt' => __('resource.user.avatar_alt')]),
 
-                    Tables\Columns\TextColumn::make('firstname')
+                Tables\Columns\TextColumn::make('firstname')
                     ->label('Nombre Completo')
                     ->formatStateUsing(fn (Model $record) => $record->firstname.' '.$record->lastname)
                     ->searchable(['firstname', 'lastname'])
@@ -279,7 +278,7 @@ class UserResource extends Resource
                 /** @var \App\Models\User|null $user */
                 $user = Filament::auth()->user();
 
-                //TI global (puede cambiar a uno por departamental)
+                // TI global (puede cambiar a uno por departamental)
                 $isCentral = $user && ($user->hasAnyRole(['ti', 'gol']) || $user->hasRole(config('filament-shield.super_admin.name')));
 
                 if (! $isCentral && $user) {

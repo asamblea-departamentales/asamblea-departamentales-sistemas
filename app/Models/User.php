@@ -12,21 +12,21 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Sanctum\HasApiTokens;
+use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
+use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
-use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
-use LdapRecord\Laravel\Auth\LdapAuthenticatable;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, MustVerifyEmail, LdapAuthenticatable
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, LdapAuthenticatable, MustVerifyEmail
 {
+    use AuthenticatesWithLdap;
     use HasApiTokens, HasFactory, Notifiable;
     use HasRoles, HasUuids;
     use Impersonate;
     use InteractsWithMedia;
-    use AuthenticatesWithLdap;
 
     /**
      * The attributes that are mass assignable.
@@ -165,13 +165,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     /* ==============================
  |  Notificaciones Broadcasted
  ===============================*/
-/**
- * Los canales de notificación de transmisión del usuario.
- *
- * //@return array<string, mixed>|string
- */
- public function receivesBroadcastNotificationsOn(): string
- {
-    return 'notifications.'.$this->id;
- }
+    /**
+     * Los canales de notificación de transmisión del usuario.
+     *
+     * //@return array<string, mixed>|string
+     */
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'notifications.'.$this->id;
+    }
 }

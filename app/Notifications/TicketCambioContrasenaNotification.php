@@ -26,10 +26,10 @@ class TicketCambioContrasenaNotification extends Notification implements ShouldQ
     {
         return [
             'title' => 'Solicitud de cambio de contraseña',
-            'body' => 'El usuario ' . $this->solicitante->firstname . ' ' . $this->solicitante->lastname
-                      . ' (' . $this->solicitante->email . ') ha solicitado un cambio de contraseña.',
+            'body' => 'El usuario '.$this->solicitante->firstname.' '.$this->solicitante->lastname
+                      .' ('.$this->solicitante->email.') ha solicitado un cambio de contraseña.',
             'ticket_id' => $this->ticket->id,
-            'url' => '/admin/tickets/' . $this->ticket->id,
+            'url' => '/admin/tickets/'.$this->ticket->id,
         ];
     }
 }

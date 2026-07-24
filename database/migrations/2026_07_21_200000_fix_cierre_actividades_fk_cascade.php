@@ -11,9 +11,9 @@ return new class extends Migration
         Schema::table('actividades', function (Blueprint $table) {
             $table->dropForeign(['cierre_mensual_id']);
             $table->foreign('cierre_mensual_id')
-                  ->references('id')
-                  ->on('cierres_mensuales')
-                  ->nullOnDelete();
+                ->references('id')
+                ->on('cierres_mensuales')
+                ->nullOnDelete();
         });
     }
 
@@ -22,9 +22,9 @@ return new class extends Migration
         Schema::table('actividades', function (Blueprint $table) {
             $table->dropForeign(['cierre_mensual_id']);
             $table->foreign('cierre_mensual_id')
-                  ->references('id')
-                  ->on('cierres_mensuales')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('cierres_mensuales')
+                ->cascadeOnDelete();
         });
     }
 };

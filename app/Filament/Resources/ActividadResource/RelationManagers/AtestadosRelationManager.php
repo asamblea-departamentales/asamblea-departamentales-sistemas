@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ActividadResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
 
 class AtestadosRelationManager extends RelationManager
 {
@@ -28,8 +28,7 @@ class AtestadosRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\ImageColumn::make('preview')
                     ->label('Preview')
-                    ->getStateUsing(fn ($record) =>
-                        str_contains($record->mime_type, 'image')
+                    ->getStateUsing(fn ($record) => str_contains($record->mime_type, 'image')
                             ? $record->getUrl()
                             : null
                     )
@@ -44,7 +43,7 @@ class AtestadosRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('size')
                     ->label('Tamaño')
-                    ->formatStateUsing(fn ($state) => number_format($state / 1024, 2) . ' KB'),
+                    ->formatStateUsing(fn ($state) => number_format($state / 1024, 2).' KB'),
             ])
             ->actions([
                 Tables\Actions\Action::make('ver')

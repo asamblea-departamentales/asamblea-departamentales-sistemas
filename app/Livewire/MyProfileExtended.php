@@ -2,29 +2,29 @@
 
 namespace App\Livewire;
 
+use App\Models\Ticket;
+use Carbon\Carbon;
 use Exception;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
-use Jeffgreco13\FilamentBreezy\Livewire\MyProfileComponent;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Ticket;
-use Carbon\Carbon;
+use Jeffgreco13\FilamentBreezy\Livewire\MyProfileComponent;
 
 use function Filament\Support\is_app_url;
 
 class MyProfileExtended extends MyProfileComponent
 {
     public ?array $data = [];
+
     public $user;
 
     public function mount(): void
@@ -42,7 +42,7 @@ class MyProfileExtended extends MyProfileComponent
     {
         $user = Filament::auth()->user();
 
-        if (!$user instanceof Model) {
+        if (! $user instanceof Model) {
             throw new Exception('The authenticated user object must be an Eloquent model to allow the profile page to update it.');
         }
 
@@ -52,6 +52,7 @@ class MyProfileExtended extends MyProfileComponent
     protected function isUserTI(): bool
     {
         $user = $this->getUser();
+
         return $user->hasAnyRole(['ti', 'super_admin']);
     }
 
@@ -121,12 +122,12 @@ class MyProfileExtended extends MyProfileComponent
                     ])
                     ->visible(fn () => $this->isUserTI()),
 
-                    Section::make('Contraseña')
-    ->description('Para cambiar su contraseña, debe solicitar autorización del departamento de TI.')
-    ->schema([
-        \Filament\Forms\Components\View::make('components.solicitar-password-button'),
-    ])
-    ->visible(fn () => !$this->isUserTI()),
+                Section::make('Contraseña')
+                    ->description('Para cambiar su contraseña, debe solicitar autorización del departamento de TI.')
+                    ->schema([
+                        \Filament\Forms\Components\View::make('components.solicitar-password-button'),
+                    ])
+                    ->visible(fn () => ! $this->isUserTI()),
             ])
             ->operation('edit')
             ->model($this->getUser())
@@ -171,36 +172,37 @@ class MyProfileExtended extends MyProfileComponent
     }
 
     /**
-    * Solicitar cambio de contraseña
-   */
+     * Solicitar cambio de contraseña
+     */
     public function solicitarCambioPassword(): void
     {
-     $user = $this->getUser();
+        $user = $this->getUser();
 
         try {
             // Verificar si ya existe solicitud pendiente
             $existingRequest = Ticket::where('tipo_ticket', 'CAMBIO_CONTRASENA')
-            ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario ' . $user->name . '%')
-            ->where('estado_interno', 'PENDIENTE')
-            ->exists();
+                ->where('motivo', 'like', '%Solicitud de cambio de contraseña por parte del usuario '.$user->name.'%')
+                ->where('estado_interno', 'PENDIENTE')
+                ->exists();
 
             if ($existingRequest) {
                 Notification::make()
-                ->title('Solicitud Pendiente')
-                ->warning()
-                ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
-                ->send();
+                    ->title('Solicitud Pendiente')
+                    ->warning()
+                    ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
+                    ->send();
+
                 return;
             }
 
             $ticket = Ticket::create([
-            'tipo_ticket' => 'CAMBIO_CONTRASENA',
-            'motivo' => 'Solicitud de cambio de contraseña por parte del usuario ' . $user->name,
-            'fecha_solicitud' => Carbon::now(),
-            'estado_interno' => 'PENDIENTE',
-            'departamental_id' =>$user->departamental_id,
-            'observaciones' => 'El usuario ' . $user->email . ' ha solicitado un cambio de contraseña.'
-        ]);
+                'tipo_ticket' => 'CAMBIO_CONTRASENA',
+                'motivo' => 'Solicitud de cambio de contraseña por parte del usuario '.$user->name,
+                'fecha_solicitud' => Carbon::now(),
+                'estado_interno' => 'PENDIENTE',
+                'departamental_id' => $user->departamental_id,
+                'observaciones' => 'El usuario '.$user->email.' ha solicitado un cambio de contraseña.',
+            ]);
 
             // Notificar a usuarios TI y super_admin via BD
             $tiUsers = \App\Models\User::query()
@@ -214,22 +216,21 @@ class MyProfileExtended extends MyProfileComponent
             }
 
             Notification::make()
-            ->title('Solicitud Enviada')
-            ->success()
-            ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI será notificado.')
-            ->send();
+                ->title('Solicitud Enviada')
+                ->success()
+                ->body('Se ha creado el ticket para el cambio de contraseña. El departamento de TI será notificado.')
+                ->send();
 
         } catch (\Exception $e) {
-            \Log::error('Error al crear ticket: ' . $e->getMessage());
+            \Log::error('Error al crear ticket: '.$e->getMessage());
 
             Notification::make()
-            ->title('Error')
-            ->danger()
-            ->body('No se pudo crear la solicitud.')
-            ->send();
-         }
+                ->title('Error')
+                ->danger()
+                ->body('No se pudo crear la solicitud.')
+                ->send();
+        }
     }
-
 
     public function render(): View
     {

@@ -66,10 +66,10 @@ return [
             'database' => [
                 'model' => App\Models\User::class,
                 'sync_attributes' => [
-                    'username'  => 'samaccountname',
+                    'username' => 'samaccountname',
                     'firstname' => 'givenname',
-                    'lastname'  => 'sn',
-                    'email'     => 'mail',
+                    'lastname' => 'sn',
+                    'email' => 'mail',
                 ],
                 'sync_existing' => [
                     'username' => 'samaccountname',

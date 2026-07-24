@@ -7,122 +7,122 @@ use App\Filament\Resources\TicketResource\RelationManagers\TicketComentarioRelat
 use App\Models\Ticket;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-use Filament\Notifications\Notification;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Traits\HasRoles;
 
 class TicketResource extends Resource
 {
     protected static ?string $model = Ticket::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
+
     protected static ?string $navigationGroup = 'Bitacoras';
+
     protected static ?string $navigationLabel = 'Tickets';
+
     protected static ?string $pluralModelLabel = 'Tickets';
 
     // Badge con contador de tickets abiertos
     public static function getNavigationBadge(): ?string
-{
-    $user = \Filament\Facades\Filament::auth()->user();
+    {
+        $user = \Filament\Facades\Filament::auth()->user();
 
-    $isCentral = $user && (
-        $user->hasAnyRole(['ti','gol']) ||
-        $user->hasRole(config('filament-shield.super_admin.name'))
-    );
+        $isCentral = $user && (
+            $user->hasAnyRole(['ti', 'gol']) ||
+            $user->hasRole(config('filament-shield.super_admin.name'))
+        );
 
-    $query = static::getModel()::abiertos();
+        $query = static::getModel()::abiertos();
 
-    if (! $isCentral && $user) {
-        $query->where('departamental_id', $user->departamental_id);
+        if (! $isCentral && $user) {
+            $query->where('departamental_id', $user->departamental_id);
+        }
+
+        return (string) $query->count();
     }
 
-    return (string) $query->count();
-}
-
     public static function form(Form $form): Form
-{
-    return $form
-        ->schema([
-            Forms\Components\Section::make('Información del Ticket')
-                ->schema([
-                    Forms\Components\Select::make('tipo_ticket')
-                        ->label('Tipo de Ticket')
-                        ->options(Ticket::TIPOS)
-                        ->required()
-                        ->searchable(),
-                    
-                    Forms\Components\TextInput::make('motivo')
-                        ->label('Motivo/Asunto')
-                        ->required()
-                        ->maxLength(255)
-                        ->columnSpan(2),
-                ])->columns(3),
+    {
+        return $form
+            ->schema([
+                Forms\Components\Section::make('Información del Ticket')
+                    ->schema([
+                        Forms\Components\Select::make('tipo_ticket')
+                            ->label('Tipo de Ticket')
+                            ->options(Ticket::TIPOS)
+                            ->required()
+                            ->searchable(),
 
-            Forms\Components\Section::make('Gestión del Ticket')
-                ->schema([
-                    Forms\Components\DatePicker::make('fecha_solicitud')
-                        ->label('Fecha de Solicitud')
-                        ->required()
-                        ->default(now())
-                        ->native(false),
-                    
-                    Forms\Components\Select::make('estado_interno')
-                        ->label('Estado')
-                        ->options(Ticket::ESTADOS)
-                        ->default('PENDIENTE')
-                        ->required(),
-                    
-                    Forms\Components\Hidden::make('departamental_id')
-                        ->default(fn () => auth()->user()->departamental_id)
-                        ->visible(fn () => ! auth()->user()->isCentralRole())
-                        ->dehydrated(),
-                    Forms\Components\Select::make('departamental_id')
-                        ->label('Departamental')
-                        ->relationship(name: 'departamental', titleAttribute: 'nombre')
-                        ->searchable()
-                        ->required()
-                        ->visible(fn () => auth()->user()->isCentralRole()),
-                    
-                    
-                ])->columns(3),
+                        Forms\Components\TextInput::make('motivo')
+                            ->label('Motivo/Asunto')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan(2),
+                    ])->columns(3),
 
-            Forms\Components\Section::make('Descripción y Observaciones')
-                ->schema([
-                    Forms\Components\Textarea::make('observaciones')
-                        ->label('Descripción del problema/solicitud')
-                        ->required()
-                        ->rows(4)
-                        ->columnSpanFull(),
-                ]),
-        ]);
-}
+                Forms\Components\Section::make('Gestión del Ticket')
+                    ->schema([
+                        Forms\Components\DatePicker::make('fecha_solicitud')
+                            ->label('Fecha de Solicitud')
+                            ->required()
+                            ->default(now())
+                            ->native(false),
 
+                        Forms\Components\Select::make('estado_interno')
+                            ->label('Estado')
+                            ->options(Ticket::ESTADOS)
+                            ->default('PENDIENTE')
+                            ->required(),
+
+                        Forms\Components\Hidden::make('departamental_id')
+                            ->default(fn () => auth()->user()->departamental_id)
+                            ->visible(fn () => ! auth()->user()->isCentralRole())
+                            ->dehydrated(),
+                        Forms\Components\Select::make('departamental_id')
+                            ->label('Departamental')
+                            ->relationship(name: 'departamental', titleAttribute: 'nombre')
+                            ->searchable()
+                            ->required()
+                            ->visible(fn () => auth()->user()->isCentralRole()),
+
+                    ])->columns(3),
+
+                Forms\Components\Section::make('Descripción y Observaciones')
+                    ->schema([
+                        Forms\Components\Textarea::make('observaciones')
+                            ->label('Descripción del problema/solicitud')
+                            ->required()
+                            ->rows(4)
+                            ->columnSpanFull(),
+                    ]),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
         return $table
-        //Para limitar vista
-        ->modifyQueryUsing(function ($query) {
-            /** @var \App\Models\User|null $user */
-            $user = \Filament\Facades\Filament::auth()->user();
+        // Para limitar vista
+            ->modifyQueryUsing(function ($query) {
+                /** @var \App\Models\User|null $user */
+                $user = \Filament\Facades\Filament::auth()->user();
 
-            // TI global, Administrador, super_admin → ven todos los tickets
-            $isCentral = $user && (
-                $user->hasAnyRole(['ti','gol']) ||
-                $user->hasRole(config('filament-shield.super_admin.name'))
-            );
+                // TI global, Administrador, super_admin → ven todos los tickets
+                $isCentral = $user && (
+                    $user->hasAnyRole(['ti', 'gol']) ||
+                    $user->hasRole(config('filament-shield.super_admin.name'))
+                );
 
-            // Coordinadores y usuarios normales → solo tickets de su departamental
-            if (! $isCentral && $user) {
-                $query->where('departamental_id', $user->departamental_id);
-            }
-            $query->with('departamental');
-        })
+                // Coordinadores y usuarios normales → solo tickets de su departamental
+                if (! $isCentral && $user) {
+                    $query->where('departamental_id', $user->departamental_id);
+                }
+                $query->with('departamental');
+            })
 
             ->columns([
                 Tables\Columns\BadgeColumn::make('tipo_ticket')
@@ -136,18 +136,18 @@ class TicketResource extends Resource
                         'secondary' => 'RECLAMO',
                         'success' => 'CAMBIO_CONTRASENA',
                     ]),
-                
+
                 Tables\Columns\TextColumn::make('motivo')
                     ->label('Motivo/Asunto')
                     ->sortable()
                     ->searchable()
                     ->limit(40),
-                
+
                 Tables\Columns\TextColumn::make('fecha_solicitud')
                     ->label('Fecha')
                     ->date('d/M/Y')
                     ->sortable(),
-                
+
                 Tables\Columns\BadgeColumn::make('estado_interno')
                     ->label('Estado')
                     ->formatStateUsing(fn (string $state): string => Ticket::ESTADOS[$state] ?? $state)
@@ -158,7 +158,7 @@ class TicketResource extends Resource
                         'secondary' => 'Cerrado',
                         'danger' => 'Cancelado',
                     ]),
-                
+
                 Tables\Columns\BadgeColumn::make('prioridad')
                     ->label('Prioridad')
                     ->getStateUsing(fn (Ticket $record): string => $record->prioridad)
@@ -167,28 +167,22 @@ class TicketResource extends Resource
                         'warning' => 'Media',
                         'secondary' => 'Baja',
                     ]),
-                
-                    Tables\Columns\TextColumn::make('departamental.nombre')
+
+                Tables\Columns\TextColumn::make('departamental.nombre')
                     ->label('Departamental')
                     ->sortable()
                     ->searchable()
                     ->default('No especificada'),
-                
-                
 
-                
-                
-                    Tables\Columns\TextColumn::make('dias_creacion')
-    ->label('Días')
-    ->getStateUsing(fn (Ticket $record): string =>
-        $record->diasDesdeCreacion() === 0 
-            ? 'Hoy' 
-            : $record->diasDesdeCreacion() . ' días'
-    )
-    ->sortable(false)
-    ->searchable(false),
+                Tables\Columns\TextColumn::make('dias_creacion')
+                    ->label('Días')
+                    ->getStateUsing(fn (Ticket $record): string => $record->diasDesdeCreacion() === 0
+                            ? 'Hoy'
+                            : $record->diasDesdeCreacion().' días'
+                    )
+                    ->sortable(false)
+                    ->searchable(false),
 
-                
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime('d/M/Y H:i')
@@ -199,37 +193,35 @@ class TicketResource extends Resource
                 SelectFilter::make('tipo_ticket')
                     ->label('Tipo de Ticket')
                     ->options(Ticket::TIPOS),
-                
+
                 SelectFilter::make('estado_interno')
                     ->label('Estado')
                     ->options(Ticket::ESTADOS),
-                
-                    SelectFilter::make('departamental_id')
+
+                SelectFilter::make('departamental_id')
                     ->label('Departamental')
                     ->options(function () {
                         return \App\Models\Departamental::pluck('nombre', 'id')->toArray();
                     }),
-                
-                
+
                 Filter::make('abiertos')
                     ->label('Solo Abiertos')
                     ->query(fn (Builder $query): Builder => $query->abiertos()),
-                
+
                 Filter::make('cerrados')
                     ->label('Solo Cerrados')
                     ->query(fn (Builder $query): Builder => $query->cerrados()),
-                
+
                 Filter::make('alta_prioridad')
                     ->label('Alta Prioridad')
-                    ->query(fn (Builder $query): Builder => 
-                        $query->abiertos()
-                            ->where('fecha_solicitud', '<=', now()->subDays(7))
+                    ->query(fn (Builder $query): Builder => $query->abiertos()
+                        ->where('fecha_solicitud', '<=', now()->subDays(7))
                     ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                
+
                 // Acción para cambiar estado
                 Tables\Actions\Action::make('cambiar_estado')
                     ->label('Cambiar Estado')
@@ -250,10 +242,10 @@ class TicketResource extends Resource
                     ->action(function (array $data, Ticket $record): void {
                         $record->update([
                             'estado_interno' => $data['nuevo_estado'],
-                            'observaciones' => ($record->observaciones ?? '') . 
-                                "\n\n[" . now()->format('d/m/Y H:i') . "] Estado cambiado a " . 
-                                Ticket::ESTADOS[$data['nuevo_estado']] . 
-                                (isset($data['comentario']) ? ": " . $data['comentario'] : "")
+                            'observaciones' => ($record->observaciones ?? '').
+                                "\n\n[".now()->format('d/m/Y H:i').'] Estado cambiado a '.
+                                Ticket::ESTADOS[$data['nuevo_estado']].
+                                (isset($data['comentario']) ? ': '.$data['comentario'] : ''),
                         ]);
                     })
                     ->visible(fn (Ticket $record) => ! empty(Ticket::TRANSICIONES[$record->estado_interno] ?? [])),
@@ -261,7 +253,7 @@ class TicketResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    
+
                     // Acción masiva para cerrar tickets
                     Tables\Actions\BulkAction::make('cerrar_tickets')
                         ->label('Cerrar Tickets')
@@ -272,18 +264,19 @@ class TicketResource extends Resource
                             foreach ($records as $record) {
                                 if (! $record->estaAbierto()) {
                                     $skipped++;
+
                                     continue;
                                 }
                                 $record->update([
                                     'estado_interno' => 'CERRADO',
-                                    'observaciones' => ($record->observaciones ?? '') . 
-                                        "\n[" . now()->format('d/m/Y H:i') . "] Ticket cerrado masivamente"
+                                    'observaciones' => ($record->observaciones ?? '').
+                                        "\n[".now()->format('d/m/Y H:i').'] Ticket cerrado masivamente',
                                 ]);
                             }
 
                             if ($skipped > 0) {
                                 Notification::make()
-                                    ->title($skipped . ' ticket(s) ya estaban cerrados/cancelados')
+                                    ->title($skipped.' ticket(s) ya estaban cerrados/cancelados')
                                     ->warning()->send();
                             }
                         })

@@ -75,7 +75,7 @@ class AppServiceProvider extends ServiceProvider
         ], fn ($v) => empty($v));
 
         if ($missing) {
-            Log::warning('LDAP habilitado pero variables faltantes: ' . implode(', ', array_keys($missing)));
+            Log::warning('LDAP habilitado pero variables faltantes: '.implode(', ', array_keys($missing)));
         }
     }
 }

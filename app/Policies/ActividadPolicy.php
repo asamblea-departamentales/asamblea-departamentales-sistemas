@@ -15,11 +15,12 @@ class ActividadPolicy
      */
     public function viewAny(User $user): bool
     {
-        //GOL y Administrador siempre pueden ver todas
-        if($user->hasRole(['ti', 'gol'])){
+        // GOL y Administrador siempre pueden ver todas
+        if ($user->hasRole(['ti', 'gol'])) {
             return true;
         }
-        //Otros roles depende del permiso
+
+        // Otros roles depende del permiso
         return $user->can('view_any_actividad');
     }
 

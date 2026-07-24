@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 class SyncMediaToManager extends Command
 {
     protected $signature = 'media:sync-to-manager';
+
     protected $description = 'Sincroniza archivos de Spatie al Media Manager';
 
     public function handle()
@@ -21,12 +22,12 @@ class SyncMediaToManager extends Command
 
         foreach ($spatieMedia as $media) {
             $folderName = ucfirst(str_replace('_', ' ', $media->collection_name));
-            
+
             $folder = DB::table('folders')
                 ->where('name', $folderName)
                 ->first();
 
-            if (!$folder) {
+            if (! $folder) {
                 $folderId = DB::table('folders')->insertGetId([
                     'name' => $folderName,
                     'description' => "Carpeta de {$folderName}",
@@ -34,7 +35,7 @@ class SyncMediaToManager extends Command
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-                
+
                 $this->info("📁 Carpeta creada: {$folderName} (ID: {$folderId})");
             } else {
                 $folderId = $folder->id;
@@ -46,7 +47,7 @@ class SyncMediaToManager extends Command
                 ->where('model_id', $folderId)
                 ->exists();
 
-            if (!$exists) {
+            if (! $exists) {
                 DB::table('media_has_models')->insert([
                     'media_id' => $media->id,
                     'model_type' => 'TomatoPHP\FilamentMediaManager\Models\Folder',
@@ -64,7 +65,7 @@ class SyncMediaToManager extends Command
         }
 
         $this->newLine();
-        $this->info("✅ Sincronización completada!");
+        $this->info('✅ Sincronización completada!');
         $this->info("   Archivos vinculados: {$synced}");
         $this->info("   Archivos omitidos: {$skipped}");
     }

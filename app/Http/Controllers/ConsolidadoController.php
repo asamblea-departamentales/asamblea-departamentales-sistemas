@@ -12,14 +12,14 @@ class ConsolidadoController extends Controller
     {
         $cierres = CierreMensual::where('mes', $mes)
             ->where('año', $año)
-            ->with('departamental','actividades')
+            ->with('departamental', 'actividades')
             ->get();
 
         $pdf = Pdf::loadView('pdf.cierre_consolidado', [
             'cierres' => $cierres,
             'mes' => $mes,
             'año' => $año,
-            'meses' => $this->meses()
+            'meses' => $this->meses(),
         ]);
 
         $filename = "consolidado/{$mes}-{$año}.pdf";
@@ -32,8 +32,8 @@ class ConsolidadoController extends Controller
     public function meses()
     {
         return [
-            1=>"Enero",2=>"Febrero",3=>"Marzo",4=>"Abril",5=>"Mayo",6=>"Junio",
-            7=>"Julio",8=>"Agosto",9=>"Septiembre",10=>"Octubre",11=>"Noviembre",12=>"Diciembre"
+            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril', 5 => 'Mayo', 6 => 'Junio',
+            7 => 'Julio', 8 => 'Agosto', 9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
         ];
     }
 }

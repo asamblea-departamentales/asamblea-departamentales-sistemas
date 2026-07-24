@@ -25,7 +25,7 @@ return new class extends Migration
         // 2. Drop índice huérfano si existe (mismo nombre que la FK)
         $hasIndex = DB::select("SHOW INDEX FROM actividades WHERE Key_name = 'actividades_user_id_foreign'");
         if (! empty($hasIndex)) {
-            DB::unprepared("ALTER TABLE actividades DROP INDEX actividades_user_id_foreign");
+            DB::unprepared('ALTER TABLE actividades DROP INDEX actividades_user_id_foreign');
         }
 
         // 3. Limpiar registros huérfanos

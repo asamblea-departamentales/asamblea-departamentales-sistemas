@@ -13,15 +13,15 @@ return new class extends Migration
 
             // Relación con departamentales (BIGINT)
             $table->foreignId('departamental_id')
-                  ->constrained('departamentales')
-                  ->cascadeOnDelete();
+                ->constrained('departamentales')
+                ->cascadeOnDelete();
 
             // Relación con users (UUID)
             $table->uuid('user_id');
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->cascadeOnDelete();
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
 
             $table->integer('mes'); // 1-12
             $table->integer('año'); // Ej: 2025

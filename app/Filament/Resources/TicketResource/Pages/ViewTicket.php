@@ -6,11 +6,11 @@ use App\Filament\Resources\TicketResource;
 use App\Filament\Resources\TicketResource\RelationManagers\TicketComentarioRelationManager;
 use App\Models\Ticket;
 use Filament\Actions;
-use Filament\Resources\Pages\ViewRecord;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\Section;
 use Filament\Forms;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Pages\ViewRecord;
 
 class ViewTicket extends ViewRecord
 {
@@ -47,10 +47,10 @@ class ViewTicket extends ViewRecord
                 ->action(function (array $data): void {
                     $this->record->update([
                         'estado_interno' => $data['nuevo_estado'],
-                        'observaciones' => ($this->record->observaciones ?? '') .
-                            "\n\n[" . now()->format('d/m/Y H:i') . "] Estado cambiado a " .
-                            Ticket::ESTADOS[$data['nuevo_estado']] .
-                            (isset($data['comentario']) ? ": " . $data['comentario'] : "")
+                        'observaciones' => ($this->record->observaciones ?? '').
+                            "\n\n[".now()->format('d/m/Y H:i').'] Estado cambiado a '.
+                            Ticket::ESTADOS[$data['nuevo_estado']].
+                            (isset($data['comentario']) ? ': '.$data['comentario'] : ''),
                     ]);
 
                     $this->refreshFormData(['estado_interno', 'observaciones']);
@@ -71,8 +71,8 @@ class ViewTicket extends ViewRecord
                 ->action(function (array $data): void {
                     $this->record->update([
                         'estado_interno' => 'CERRADO',
-                        'observaciones' => ($this->record->observaciones ?? '') .
-                            "\n\n[" . now()->format('d/m/Y H:i') . "] Ticket CERRADO: " . $data['motivo_cierre']
+                        'observaciones' => ($this->record->observaciones ?? '').
+                            "\n\n[".now()->format('d/m/Y H:i').'] Ticket CERRADO: '.$data['motivo_cierre'],
                     ]);
 
                     $this->refreshFormData(['estado_interno', 'observaciones']);
@@ -133,7 +133,7 @@ class ViewTicket extends ViewRecord
 
                         TextEntry::make('dias_desde_creacion')
                             ->label('Dias desde creacion')
-                            ->getStateUsing(fn () => $this->record->diasDesdeCreacion() . ' dias')
+                            ->getStateUsing(fn () => $this->record->diasDesdeCreacion().' dias')
                             ->badge()
                             ->color(fn () => match (true) {
                                 $this->record->diasDesdeCreacion() >= 7 => 'danger',
@@ -151,8 +151,8 @@ class ViewTicket extends ViewRecord
                                 $diff = $this->record->created_at->diff($this->record->updated_at);
 
                                 return $diff->days > 0
-                                    ? $diff->days . ' días'
-                                    : ($diff->h > 0 ? $diff->h . ' horas' : $diff->i . ' minutos');
+                                    ? $diff->days.' días'
+                                    : ($diff->h > 0 ? $diff->h.' horas' : $diff->i.' minutos');
                             }),
                     ])->columns(3),
 
@@ -162,7 +162,9 @@ class ViewTicket extends ViewRecord
                             ->label('Descripción y Historial de Cambios')
                             ->html()
                             ->formatStateUsing(function (?string $state) {
-                                if (!$state) return 'Sin descripción';
+                                if (! $state) {
+                                    return 'Sin descripción';
+                                }
 
                                 $formatted = nl2br(e($state));
 
@@ -195,7 +197,10 @@ class ViewTicket extends ViewRecord
                             ->label('Requiere atención')
                             ->badge()
                             ->getStateUsing(function () {
-                                if (!$this->record->estaAbierto()) return 'No aplica';
+                                if (! $this->record->estaAbierto()) {
+                                    return 'No aplica';
+                                }
+
                                 return match (true) {
                                     $this->record->diasDesdeCreacion() >= 7 => 'Urgente',
                                     $this->record->diasDesdeCreacion() >= 3 => 'Pronto',
@@ -203,7 +208,10 @@ class ViewTicket extends ViewRecord
                                 };
                             })
                             ->color(function () {
-                                if (!$this->record->estaAbierto()) return 'secondary';
+                                if (! $this->record->estaAbierto()) {
+                                    return 'secondary';
+                                }
+
                                 return match (true) {
                                     $this->record->diasDesdeCreacion() >= 7 => 'danger',
                                     $this->record->diasDesdeCreacion() >= 3 => 'warning',

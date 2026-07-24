@@ -4,7 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EmailVerification;
 use App\Filament\Pages\Auth\RequestPasswordReset;
+use App\Filament\Pages\Reportes;
 use App\Filament\Resources\ActividadResource;
+use App\Filament\Resources\CierreMensualResource;
 use App\Filament\Resources\ContratoResource;
 use App\Filament\Resources\DepartamentalResource;
 use App\Filament\Resources\RequisicionResource;
@@ -15,9 +17,8 @@ use App\Filament\Widgets\ActividadChart;
 use App\Filament\Widgets\ActividadOverview;
 use App\Filament\Widgets\CalendarioWidget;
 use App\Http\Middleware\FilamentRobotsMiddleware;
-use App\Models\CierreMensual;
-use App\Filament\Resources\CierreMensualResource;
 use App\Settings\GeneralSettings;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -31,15 +32,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
-use Jeffgreco13\FilamentBreezy\Livewire\MyProfile\ChangePassword;
-use App\Filament\Pages\Reportes;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-
-
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -68,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('30s')  // Polling cada 30 segundos
             // NO existe ->broadcastNotifications() en tu versión
             // El broadcasting funciona automáticamente si está configurado
-            
+
             // UX
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->sidebarCollapsibleOnDesktop()
@@ -90,7 +85,7 @@ class AdminPanelProvider extends PanelProvider
             // Pages
             ->pages([
                 Pages\Dashboard::class,
-                Reportes::class, //Agregado
+                Reportes::class, // Agregado
             ])
 
             // Widgets
@@ -102,36 +97,35 @@ class AdminPanelProvider extends PanelProvider
 
             // Plugins
             ->plugins([
-    FilamentFullCalendarPlugin::make()
-        ->selectable(true)
-        ->editable(true),
+                FilamentFullCalendarPlugin::make()
+                    ->selectable(true)
+                    ->editable(true),
 
-    BreezyCore::make()
-        ->myProfile(
-            shouldRegisterUserMenu: true,
-            shouldRegisterNavigation: false,
-            navigationGroup: 'Settings',
-            hasAvatars: true,
-            slug: 'my-profile'
-        )
-        ->withoutMyProfileComponents([
-            'update_password',
-        ])
-        ->myProfileComponents([
-            'personal_info' => \App\Livewire\MyProfileExtended::class,
-        ]),
+                BreezyCore::make()
+                    ->myProfile(
+                        shouldRegisterUserMenu: true,
+                        shouldRegisterNavigation: false,
+                        navigationGroup: 'Settings',
+                        hasAvatars: true,
+                        slug: 'my-profile'
+                    )
+                    ->withoutMyProfileComponents([
+                        'update_password',
+                    ])
+                    ->myProfileComponents([
+                        'personal_info' => \App\Livewire\MyProfileExtended::class,
+                    ]),
 
-    FilamentShieldPlugin::make(), // 🔥 separado correctamente
-])
-                
+                FilamentShieldPlugin::make(), // 🔥 separado correctamente
+            ])
 
             // Boton para salir del impersonate (NUEVO)
             ->userMenuItems([
                 \Filament\Navigation\UserMenuItem::make()
-                ->label('Salir de la departamental')
-                ->icon('heroicon-o-arrow-left-on-rectangle')
-                ->url(fn () => route('impersonate.leave'))
-                ->visible(fn () => app(\Lab404\Impersonate\Services\ImpersonateManager::class)->isImpersonating()),
+                    ->label('Salir de la departamental')
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->url(fn () => route('impersonate.leave'))
+                    ->visible(fn () => app(\Lab404\Impersonate\Services\ImpersonateManager::class)->isImpersonating()),
             ])
 
             // Middlewares

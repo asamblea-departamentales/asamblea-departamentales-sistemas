@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Requisicion extends Model
@@ -11,7 +11,9 @@ class Requisicion extends Model
     use HasFactory;
 
     protected $table = 'requisiciones';
+
     protected $keyType = 'string';
+
     public $incrementing = false; // Porque usamos UUID
 
     protected $fillable = [
@@ -61,7 +63,7 @@ class Requisicion extends Model
     protected static function boot(): void
     {
         parent::boot();
-    
+
         static::creating(function ($model) {
             $model->id = (string) Str::uuid();
 
@@ -73,7 +75,6 @@ class Requisicion extends Model
             }
         });
     }
-    
 
     // Scopes útiles
     public function scopePorEstado($query, $estado)
@@ -92,10 +93,9 @@ class Requisicion extends Model
     }
 
     public function scopePorDepartamental($query, $departamentalId)
-{
-    return $query->where('departamental_id', $departamentalId);
-}
-
+    {
+        return $query->where('departamental_id', $departamentalId);
+    }
 
     public function scopePendientes($query)
     {
@@ -131,7 +131,7 @@ class Requisicion extends Model
     public function getUrgenciaAttribute()
     {
         $dias = $this->diasDesdeCreacion();
-        
+
         if ($dias >= 15) {
             return 'Urgente';
         } elseif ($dias >= 7) {
@@ -139,12 +139,13 @@ class Requisicion extends Model
         } elseif ($dias >= 3) {
             return 'Media';
         }
+
         return 'Baja';
     }
 
     public function getEstadoColorAttribute()
     {
-        return match($this->estado_interno) {
+        return match ($this->estado_interno) {
             'SOLICITADA' => 'primary',
             'EN_REVISION' => 'warning',
             'APROBADA' => 'info',
@@ -157,13 +158,13 @@ class Requisicion extends Model
 
     public function getCantidadFormateadaAttribute()
     {
-        return number_format($this->cantidad) . ' unidades';
+        return number_format($this->cantidad).' unidades';
     }
 
     // Método para obtener el siguiente estado posible
     public function getSiguientesEstadosPosibles()
     {
-        return match($this->estado_interno) {
+        return match ($this->estado_interno) {
             'SOLICITADA' => ['EN_REVISION', 'RECHAZADA'],
             'EN_REVISION' => ['APROBADA', 'RECHAZADA'],
             'APROBADA' => ['COMPRADA', 'RECHAZADA'],
@@ -172,7 +173,7 @@ class Requisicion extends Model
         };
     }
 
-    //Relacion con departamental
+    // Relacion con departamental
     public function departamental()
     {
         return $this->belongsTo(Departamental::class);

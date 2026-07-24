@@ -73,7 +73,7 @@ class ActividadResource extends Resource
                             ->default(fn () => auth()->user()->departamental_id ?? auth()->user()->departamental?->getKey())
                             ->required('Debe tener un departamental asignado. Contacte a TI.')
                             ->rules(['exists:departamentales,id'])
-                            ->visible(fn () => !auth()->user()->isCentralRole()),
+                            ->visible(fn () => ! auth()->user()->isCentralRole()),
 
                         Forms\Components\TextInput::make('departamental_display')
                             ->label('Oficina Departamental')
@@ -111,8 +111,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->required(fn ($get) => $get('estado') === 'Completada')
-                            ->afterStateUpdated(fn ($state, $set, $get) =>
-                                $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
+                            ->afterStateUpdated(fn ($state, $set, $get) => $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
                             ),
                         Forms\Components\TextInput::make('asistentes_mujeres')
                             ->label('Asistentes Mujeres')
@@ -122,8 +121,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->required(fn ($get) => $get('estado') === 'Completada')
-                            ->afterStateUpdated(fn ($state, $set, $get) =>
-                                $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
+                            ->afterStateUpdated(fn ($state, $set, $get) => $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
                             ),
                         Forms\Components\TextInput::make('asistencia_completa')
                             ->label('Asistencia Completa')
@@ -201,7 +199,7 @@ class ActividadResource extends Resource
                     ->enableDownload()
                     ->maxFiles(10)
                     ->maxSize(10240)
-                    ->preserveFilenames(false) //mejor practica con SMB
+                    ->preserveFilenames(false) // mejor practica con SMB
                     ->helperText('Máximo 10 archivos, 10 MB cada uno.'),
             ]);
     }
@@ -349,9 +347,9 @@ class ActividadResource extends Resource
                     }),
             ])
             ->actions([
-            Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make(),
 
-            Tables\Actions\EditAction::make()
+                Tables\Actions\EditAction::make()
                     ->visible(fn (Model $record) => auth()->user()->can('update_actividad')
                         && $record->estado !== 'Completada'
                         && $record->estado !== 'Cancelada'
@@ -376,7 +374,7 @@ class ActividadResource extends Resource
                         }
                     }),
 
-            Tables\Actions\DeleteAction::make()
+                Tables\Actions\DeleteAction::make()
                     ->visible(fn (Model $record) => auth()->user()->can('delete_actividad')
                         && $record->estado !== 'Completada'
                         && $record->estado !== 'Cancelada'
@@ -401,7 +399,7 @@ class ActividadResource extends Resource
                         }
                     }),
 
-            Tables\Actions\Action::make('mark_as_completed')
+                Tables\Actions\Action::make('mark_as_completed')
                     ->label('Marcar como Completada')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
@@ -419,8 +417,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->default(fn ($record) => $record->asistentes_hombres ?? 0)
-                            ->afterStateUpdated(fn ($state, $set, $get) =>
-                                $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
+                            ->afterStateUpdated(fn ($state, $set, $get) => $set('asistencia_completa', (int) $state + (int) $get('asistentes_mujeres'))
                             ),
 
                         Forms\Components\TextInput::make('asistentes_mujeres')
@@ -432,8 +429,7 @@ class ActividadResource extends Resource
                             ->live()
                             ->placeholder('0')
                             ->default(fn ($record) => $record->asistentes_mujeres ?? 0)
-                            ->afterStateUpdated(fn ($state, $set, $get) =>
-                                $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
+                            ->afterStateUpdated(fn ($state, $set, $get) => $set('asistencia_completa', (int) $get('asistentes_hombres') + (int) $state)
                             ),
 
                         Forms\Components\TextInput::make('asistencia_completa')
@@ -461,19 +457,21 @@ class ActividadResource extends Resource
                     ->modalDescription('Ingresa los datos de asistencia para marcar la actividad como completada.')
                     ->modalSubmitActionLabel('Confirmar')
                     ->modalWidth('lg'),
-        ])
+            ])
             ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->before(function ($records, $action) {
                             $skipped = [];
                             foreach ($records as $record) {
                                 if (in_array($record->estado, ['Completada', 'Cancelada'])) {
-                                    $skipped[] = '"' . $record->macroactividad . '" (' . $record->estado . ')';
+                                    $skipped[] = '"'.$record->macroactividad.'" ('.$record->estado.')';
+
                                     continue;
                                 }
                                 if (CierreMensual::mesCerrado($record->departamental_id, $record->fecha->month, $record->fecha->year)) {
-                                    $skipped[] = '"' . $record->macroactividad . '" (mes cerrado)';
+                                    $skipped[] = '"'.$record->macroactividad.'" (mes cerrado)';
+
                                     continue;
                                 }
                             }
@@ -484,26 +482,27 @@ class ActividadResource extends Resource
                                     ->body('Todas las seleccionadas están en estado terminal o en mes cerrado.')
                                     ->danger()->send();
                                 $action->halt();
+
                                 return;
                             }
 
                             if (! empty($skipped)) {
                                 Notification::make()
                                     ->title('Eliminación parcial')
-                                    ->body(count($skipped) . ' actividad(es) omitida(s): ' . implode(', ', $skipped))
+                                    ->body(count($skipped).' actividad(es) omitida(s): '.implode(', ', $skipped))
                                     ->warning()->send();
                             }
                         }),
-            ]),
-        ])
+                ]),
+            ])
             ->headerActions([
-            Tables\Actions\CreateAction::make()
+                Tables\Actions\CreateAction::make()
                     ->label('Crear con Asistente')
                     ->icon('heroicon-o-sparkles')
                     ->color('primary')
                     ->url(fn () => static::getUrl('create')),
 
-            Tables\Actions\Action::make('quick_add')
+                Tables\Actions\Action::make('quick_add')
                     ->label('Añadir Rápido')
                     ->icon('heroicon-o-plus')
                     ->color('success')
@@ -536,7 +535,7 @@ class ActividadResource extends Resource
                                     ->default(fn () => auth()->user()->departamental_id)
                                     ->required()
                                     ->rules(['exists:departamentales,id'])
-                                    ->visible(fn () => !auth()->user()->isCentralRole())
+                                    ->visible(fn () => ! auth()->user()->isCentralRole())
                                     ->dehydrated(),
 
                                 Forms\Components\TextInput::make('departamental_display')
@@ -665,7 +664,7 @@ class ActividadResource extends Resource
                             $action->halt();
                         }
                     }),
-        ]);
+            ]);
     }
 
     public static function canViewAny(): bool

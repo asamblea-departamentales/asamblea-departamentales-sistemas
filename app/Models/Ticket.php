@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Ticket extends Model
 {
     use HasFactory;
 
     protected $table = 'tickets';
+
     protected $keyType = 'string';
+
     public $incrementing = false; // Porque usamos UUID
 
     protected $fillable = [
@@ -57,7 +59,7 @@ class Ticket extends Model
     ];
 
     protected static function boot(): void
-    {   
+    {
         parent::boot();
 
         static::creating(function ($model) {
@@ -85,7 +87,6 @@ class Ticket extends Model
         return $query->where('departamental_id', $departamentalId);
     }
 
-
     public function scopeAbiertos($query)
     {
         return $query->whereNotIn('estado_interno', ['RESUELTO', 'CERRADO', 'CANCELADO']);
@@ -99,7 +100,7 @@ class Ticket extends Model
     // Métodos auxiliares
     public function estaAbierto()
     {
-        return !in_array($this->estado_interno, ['RESUELTO', 'CERRADO', 'CANCELADO']);
+        return ! in_array($this->estado_interno, ['RESUELTO', 'CERRADO', 'CANCELADO']);
     }
 
     public function diasDesdeCreacion()
@@ -110,18 +111,19 @@ class Ticket extends Model
     public function getPrioridadAttribute()
     {
         $dias = $this->diasDesdeCreacion();
-        
+
         if ($dias >= 7) {
             return 'Alta';
         } elseif ($dias >= 3) {
             return 'Media';
         }
+
         return 'Baja';
     }
 
     public function getEstadoColorAttribute()
     {
-        return match($this->estado_interno) {
+        return match ($this->estado_interno) {
             'PENDIENTE' => 'warning',
             'EN_PROCESO' => 'info',
             'RESUELTO' => 'success',
@@ -140,6 +142,4 @@ class Ticket extends Model
     {
         return $this->hasMany(Comentarios::class);
     }
-
-
 }

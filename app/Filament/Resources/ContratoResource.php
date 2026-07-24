@@ -8,17 +8,21 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class ContratoResource extends Resource
 {
     protected static ?string $model = Contrato::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
+
     protected static ?string $navigationGroup = 'Bitacoras';
+
     protected static ?string $navigationLabel = 'Contratos';
+
     protected static ?string $pluralModelLabel = 'Contratos';
 
     // Badge con contador de contratos por vencer
@@ -27,7 +31,7 @@ class ContratoResource extends Resource
         $user = \Filament\Facades\Filament::auth()->user();
 
         $isCentral = $user && (
-            $user->hasAnyRole(['ti','gol']) ||
+            $user->hasAnyRole(['ti', 'gol']) ||
             $user->hasRole(config('filament-shield.super_admin.name'))
         );
 
@@ -39,6 +43,7 @@ class ContratoResource extends Resource
         }
 
         $porVencer = $query->count();
+
         return $porVencer > 0 ? (string) $porVencer : null;
     }
 
@@ -49,25 +54,24 @@ class ContratoResource extends Resource
                 Forms\Components\Section::make('Información del Contrato')
                     ->schema([
                         Forms\Components\Select::make('tipo')
-    ->label('Tipo de Contrato')
-    ->required()
-    ->options([
-        'SERVICIOS'     => 'Servicios',
-        'SUMINISTROS'   => 'Suministros',
-        'OBRAS'         => 'Obras',
-        'CONSULTORIA'   => 'Consultoría',
-        'MANTENIMIENTO' => 'Mantenimiento',
-        'ARRENDAMIENTO' => 'Arrendamiento',
-    ])
-    ->native(false) // ← usa el select nativo del navegador
-    ->placeholder('Seleccione un tipo de contrato'),
+                            ->label('Tipo de Contrato')
+                            ->required()
+                            ->options([
+                                'SERVICIOS' => 'Servicios',
+                                'SUMINISTROS' => 'Suministros',
+                                'OBRAS' => 'Obras',
+                                'CONSULTORIA' => 'Consultoría',
+                                'MANTENIMIENTO' => 'Mantenimiento',
+                                'ARRENDAMIENTO' => 'Arrendamiento',
+                            ])
+                            ->native(false) // ← usa el select nativo del navegador
+                            ->placeholder('Seleccione un tipo de contrato'),
 
-                        
                         Forms\Components\TextInput::make('proveedor')
                             ->label('Proveedor/Contratista')
                             ->required()
                             ->maxLength(255),
-                        
+
                         Forms\Components\TextInput::make('monto')
                             ->label('Monto del Contrato')
                             ->required()
@@ -93,13 +97,13 @@ class ContratoResource extends Resource
                             ->label('Fecha de Inicio')
                             ->required()
                             ->native(false),
-                        
+
                         Forms\Components\DatePicker::make('fecha_vencimiento')
                             ->label('Fecha de Vencimiento')
                             ->required()
                             ->native(false)
                             ->after('fecha_inicio'),
-                        
+
                         Forms\Components\TextInput::make('oficina')
                             ->label('Oficina Responsable')
                             ->required()
@@ -123,7 +127,7 @@ class ContratoResource extends Resource
                 $user = \Filament\Facades\Filament::auth()->user();
 
                 $isCentral = $user && (
-                    $user->hasAnyRole(['ti','gol']) ||
+                    $user->hasAnyRole(['ti', 'gol']) ||
                     $user->hasRole(config('filament-shield.super_admin.name'))
                 );
 
@@ -145,33 +149,33 @@ class ContratoResource extends Resource
                     ])
                     ->sortable()
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('proveedor')
                     ->label('Proveedor')
                     ->sortable()
                     ->searchable()
                     ->limit(30),
-                
+
                 Tables\Columns\TextColumn::make('monto')
                     ->label('Monto')
                     ->money('USD')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('fecha_inicio')
                     ->label('Inicio')
                     ->date('d/M/Y')
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('fecha_vencimiento')
                     ->label('Vencimiento')
                     ->date('d/M/Y')
                     ->sortable()
                     ->color(fn (Contrato $record): string => match (true) {
-                        !$record->estaVigente() => 'danger',
+                        ! $record->estaVigente() => 'danger',
                         $record->diasParaVencimiento() <= 30 => 'warning',
                         default => 'success'
                     }),
-                
+
                 Tables\Columns\BadgeColumn::make('estado')
                     ->label('Estado')
                     ->getStateUsing(fn (Contrato $record): string => $record->estado)
@@ -180,12 +184,12 @@ class ContratoResource extends Resource
                         'warning' => 'Por vencer',
                         'danger' => 'Vencido',
                     ]),
-                
+
                 Tables\Columns\TextColumn::make('oficina')
                     ->label('Oficina')
                     ->sortable()
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime('d/M/Y H:i')
@@ -203,7 +207,7 @@ class ContratoResource extends Resource
                         'MANTENIMIENTO' => 'Mantenimiento',
                         'ARRENDAMIENTO' => 'Arrendamiento',
                     ]),
-                
+
                 SelectFilter::make('oficina')
                     ->label('Oficina')
                     ->options(function () {
@@ -211,20 +215,19 @@ class ContratoResource extends Resource
                             ->pluck('oficina', 'oficina')
                             ->toArray();
                     }),
-                
+
                 Filter::make('vigentes')
                     ->label('Solo Vigentes')
                     ->query(fn (Builder $query): Builder => $query->vigentes()),
-                
+
                 Filter::make('vencidos')
                     ->label('Solo Vencidos')
                     ->query(fn (Builder $query): Builder => $query->vencidos()),
-                
+
                 Filter::make('por_vencer')
                     ->label('Por Vencer (30 días)')
-                    ->query(fn (Builder $query): Builder => 
-                        $query->vigentes()
-                            ->where('fecha_vencimiento', '<=', now()->addDays(30))
+                    ->query(fn (Builder $query): Builder => $query->vigentes()
+                        ->where('fecha_vencimiento', '<=', now()->addDays(30))
                     ),
             ])
             ->actions([

@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'default' => match(env('APP_ENV')){
-        'staging'=> 'staging',
-        'production'=> 'production',
+    'default' => match (env('APP_ENV')) {
+        'staging' => 'staging',
+        'production' => 'production',
         default => 'mysql',
-    } ,
+    },
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return [
 
     'connections' => [
 
-        'mysql' => [ //local
+        'mysql' => [ // local
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),

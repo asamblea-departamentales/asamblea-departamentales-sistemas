@@ -107,15 +107,13 @@
 /*  → Soluciona dropdowns cortados en Select, filtros, acciones, etc. */
 /* ============================================================= */
 
-.fi-body,
+/* Dropdowns, modales, secciones y formularios */
 .fi-modal,
 .fi-modal-content,
 .fi-modal-card,
 .fi-card,
 .fi-section,
 .fi-section > .fi-section-content,
-.fi-page,
-.fi-main,
 .fi-form,
 .fi-fo-field-wrp,
 .fi-field-wrp,

@@ -100,8 +100,7 @@ class ListActividades extends ListRecords
                         ->searchable()
                         ->required()
                         ->rules(['exists:departamentales,id'])
-                        ->visible(fn (\Filament\Forms\Get $get) =>
-                            $get('tipo_cierre') === 'individual'
+                        ->visible(fn (\Filament\Forms\Get $get) => $get('tipo_cierre') === 'individual'
                             && auth()->user()->isCentralRole()
                         )
                         ->columnSpanFull(),
@@ -192,6 +191,7 @@ class ListActividades extends ListRecords
 
                 if ($cierre) {
                     $this->redirect(route('filament.admin.resources.cierre-mensuales.view', $cierre));
+
                     return;
                 }
             }

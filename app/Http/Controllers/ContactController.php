@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ContactUsCreated;
 use App\Http\Requests\ContactUsRequest;
 use App\Models\ContactUs;
-use App\Events\ContactUsCreated;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;

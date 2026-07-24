@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('requisiciones', function (Blueprint $table) {
-            if (!Schema::hasColumn('requisiciones', 'departamental_id')) {
+            if (! Schema::hasColumn('requisiciones', 'departamental_id')) {
                 $table->unsignedBigInteger('departamental_id')->nullable()->after('observaciones');
 
                 $table->foreign('departamental_id')

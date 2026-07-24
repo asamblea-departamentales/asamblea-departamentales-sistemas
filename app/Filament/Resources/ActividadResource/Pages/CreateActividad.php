@@ -7,20 +7,17 @@ namespace App\Filament\Resources\ActividadResource\Pages;
 // Importación del recurso ActividadResource
 use App\Filament\Resources\ActividadResource;
 // Importación de la clase base para páginas de creación de registros
-use Filament\Actions;
-// Importación de acciones de Filament
-use Filament\Forms;
-// Importación de componentes de formularios
-use Filament\Forms\Form;
-// Importación de la clase Form
-use Filament\Notifications\Notification;
-// Importación del sistema de notificaciones
-use Filament\Resources\Pages\CreateRecord;
-use TomatoPHP\FilamentMediaManager\Models\Folder;
-use Illuminate\Support\Facades\Storage;
-use TomatoPHP\FilamentMediaManager\Models\Media;
-use Illuminate\Database\Eloquent\Model; // ← Asegúrate de tener este use arriba del archivo
 use App\Models\Actividad;
+// Importación de acciones de Filament
+use Filament\Actions;
+// Importación de componentes de formularios
+use Filament\Forms;
+// Importación de la clase Form
+use Filament\Forms\Form;
+// Importación del sistema de notificaciones
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord; // ← Asegúrate de tener este use arriba del archivo
+use Illuminate\Database\Eloquent\Model;
 
 // Declaración de la clase CreateActividad que extiende de CreateRecord
 class CreateActividad extends CreateRecord
@@ -86,7 +83,7 @@ class CreateActividad extends CreateRecord
                                 })
                                 ->required('Debe tener un departamental asignado. Contacte a TI.')
                                 ->rules(['exists:departamentales,id'])
-                                ->visible(fn () => !auth()->user()->isCentralRole()),
+                                ->visible(fn () => ! auth()->user()->isCentralRole()),
 
                             // Campo para seleccionar la fecha de la actividad
                             Forms\Components\DatePicker::make('fecha')
@@ -115,15 +112,15 @@ class CreateActividad extends CreateRecord
                                 ->required()
                                 // Opciones de Programas
                                 ->options([
-                                    'Programa de Educacion Civica'=> 'Programa de Educacion Civica',
-                                    'Programa de Participacion Ciudadana'=> 'Programa de Participacion Ciudadana',
-                                    'Programa de Atencion Ciudadana'=> 'Programa de Atencion Ciudadana',
-                                    'Otro'=> 'Otros'
+                                    'Programa de Educacion Civica' => 'Programa de Educacion Civica',
+                                    'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
+                                    'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
+                                    'Otro' => 'Otros',
                                 ])
                                 ->placeholder('Seleccione un programa')
                                 ->searchable()
                                 ->native(false),
-                        
+
                             // Campo select para el estado de la actividad
                             Forms\Components\Select::make('estado')
                                 // Etiqueta del campo
@@ -169,64 +166,64 @@ class CreateActividad extends CreateRecord
                         ]),
 
                     // Tercer paso del wizard: Programación y Fechas
-Forms\Components\Wizard\Step::make('Programación y Fechas')
-->description('Fechas importantes y recordatorios')
-->icon('heroicon-o-calendar-days')
-->schema([
-    Forms\Components\DateTimePicker::make('star_date')
-        ->label('Fecha de Inicio')
-        ->required()
-        ->format('Y-m-d H:i:s') // <- CORREGIDO (era 'd/m/Y H:i')
-        ->displayFormat('d/m/Y H:i')
-        ->native(false)
-        ->seconds(false) // <- AGREGADO
-        ->default(now())
-        ->helperText('Fecha y hora de inicio de la actividad'),
-        
-    Forms\Components\DateTimePicker::make('due_date')
-        ->label('Fecha de Vencimiento')
-        ->required()
-        ->format('Y-m-d H:i:s')
-        ->displayFormat('d/m/Y H:i')
-        ->native(false)
-        ->seconds(false) // <- AGREGADO
-        ->default(now()->addDays(7))
-        ->after('star_date')
-        ->helperText('Fecha límite para completar la actividad'),
-        
-    Forms\Components\DateTimePicker::make('reminder_at')
-        ->label('Recordatorio')
-        ->format('Y-m-d H:i:s')
-        ->displayFormat('d/m/Y H:i')
-        ->native(false)
-        ->seconds(false) // <- AGREGADO
-        ->helperText('Opcional: Fecha y hora del recordatorio')
-        ->before('due_date'),
-])
-->columns(3),
+                    Forms\Components\Wizard\Step::make('Programación y Fechas')
+                        ->description('Fechas importantes y recordatorios')
+                        ->icon('heroicon-o-calendar-days')
+                        ->schema([
+                            Forms\Components\DateTimePicker::make('star_date')
+                                ->label('Fecha de Inicio')
+                                ->required()
+                                ->format('Y-m-d H:i:s') // <- CORREGIDO (era 'd/m/Y H:i')
+                                ->displayFormat('d/m/Y H:i')
+                                ->native(false)
+                                ->seconds(false) // <- AGREGADO
+                                ->default(now())
+                                ->helperText('Fecha y hora de inicio de la actividad'),
+
+                            Forms\Components\DateTimePicker::make('due_date')
+                                ->label('Fecha de Vencimiento')
+                                ->required()
+                                ->format('Y-m-d H:i:s')
+                                ->displayFormat('d/m/Y H:i')
+                                ->native(false)
+                                ->seconds(false) // <- AGREGADO
+                                ->default(now()->addDays(7))
+                                ->after('star_date')
+                                ->helperText('Fecha límite para completar la actividad'),
+
+                            Forms\Components\DateTimePicker::make('reminder_at')
+                                ->label('Recordatorio')
+                                ->format('Y-m-d H:i:s')
+                                ->displayFormat('d/m/Y H:i')
+                                ->native(false)
+                                ->seconds(false) // <- AGREGADO
+                                ->helperText('Opcional: Fecha y hora del recordatorio')
+                                ->before('due_date'),
+                        ])
+                        ->columns(3),
                     // Cuarto paso del wizard: Documentos y Atestados
                     Forms\Components\Wizard\Step::make('Documentos y Atestados')
-                    ->description('Adjuntar archivos relacionados')
-                    ->icon('heroicon-o-paper-clip')
-                    ->schema([
-                        \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
-    ->label('Adjuntar Atestados')
-    ->collection('atestados')
-    ->disk('repositorio')
-    ->multiple()
-    ->reorderable()
-    ->panelLayout('grid')
-    ->imagePreviewHeight('120')
-    ->enableOpen()
-    ->enableDownload()
-    ->maxFiles(10)
-    ->maxSize(10240)
-    ->preserveFilenames(false) //mejor práctica con SMB
-    ->columnSpanFull()
-    ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental en el Media Manager.')
-    ->hint('Solo tu equipo puede verlos')
-    ->hintIcon('heroicon-o-lock-closed'),
-                    ]),
+                        ->description('Adjuntar archivos relacionados')
+                        ->icon('heroicon-o-paper-clip')
+                        ->schema([
+                            \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('atestados')
+                                ->label('Adjuntar Atestados')
+                                ->collection('atestados')
+                                ->disk('repositorio')
+                                ->multiple()
+                                ->reorderable()
+                                ->panelLayout('grid')
+                                ->imagePreviewHeight('120')
+                                ->enableOpen()
+                                ->enableDownload()
+                                ->maxFiles(10)
+                                ->maxSize(10240)
+                                ->preserveFilenames(false) // mejor práctica con SMB
+                                ->columnSpanFull()
+                                ->helperText('Los archivos aparecerán automáticamente en la carpeta privada de tu departamental en el Media Manager.')
+                                ->hint('Solo tu equipo puede verlos')
+                                ->hintIcon('heroicon-o-lock-closed'),
+                        ]),
                 ])
                 // Configuración del botón de submit del wizard
                     ->submitAction(
@@ -327,11 +324,9 @@ Forms\Components\Wizard\Step::make('Programación y Fechas')
         ];
     }
 
-
     protected function handleRecordCreation(array $data): Model
-{
-    return Actividad::create($data);
+    {
+        return Actividad::create($data);
+    }
 }
-}
-    // Cierre de la clase CreateActividad
-
+// Cierre de la clase CreateActividad

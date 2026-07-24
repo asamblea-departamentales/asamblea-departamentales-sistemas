@@ -162,8 +162,8 @@ Route::middleware(['web', 'auth'])->get('/admin/manual', function () {
     $user = auth()->user();
     $role = $user->getRoleNames()->first();
     $map = [
-        'super_admin'       => 'manual-super-admin.pdf',
-        'coordinador'       => 'manual-coordinador.pdf',
+        'super_admin' => 'manual-super-admin.pdf',
+        'coordinador' => 'manual-coordinador.pdf',
         'asistente_tecnico' => 'manual-usuario-final.pdf',
     ];
     $file = $map[$role] ?? null;
@@ -174,6 +174,7 @@ Route::middleware(['web', 'auth'])->get('/admin/manual', function () {
     if (! file_exists($path)) {
         abort(404, 'Archivo de manual no encontrado.');
     }
+
     return response()->file($path, [
         'Content-Type' => 'application/pdf',
     ]);
@@ -204,7 +205,7 @@ Route::middleware(['web', 'auth'])->get('/media/{media}', function (Media $media
     }
 
     $disk = $media->disk;
-    $path = $media->getPath();
+    $path = $media->getPathRelativeToRoot();
 
     if (! Storage::disk($disk)->exists($path)) {
         abort(404, 'Archivo no encontrado');

@@ -1,4 +1,5 @@
 <?php
+
 /*
 
 namespace App\Livewire;
@@ -12,7 +13,7 @@ class RequestPasswordChange extends Component
 {
     // Indica si el usuario ya tiene una solicitud de cambio de contraseña pendiente.
     public $hasPendingRequest = false;
-    
+
     // Almacena el objeto del ticket pendiente encontrado (si existe).
     public $pendingTicket = null;
 
@@ -50,7 +51,7 @@ class RequestPasswordChange extends Component
                 ->warning()
                 ->body('Ya tiene una solicitud de cambio de contraseña pendiente.')
                 ->send();
-            
+
             return;
         }
 
@@ -62,7 +63,7 @@ class RequestPasswordChange extends Component
                 'fecha_solicitud' => Carbon::now(),
                 'estado_interno' => 'PENDIENTE',
                 // Asume que el usuario tiene una columna 'departamental_id'.
-                'departamental_id' => auth()->user()->departamental_id, 
+                'departamental_id' => auth()->user()->departamental_id,
                 'observaciones' => 'El usuario ' . auth()->user()->email . ' ha solicitado un cambio de contraseña.'
             ]);
 
@@ -75,7 +76,7 @@ class RequestPasswordChange extends Component
                 ->success()
                 ->body('Se ha creado un ticket para el cambio de contraseña.')
                 ->send();
-                
+
         } catch (\Exception $e) {
             // 5. Manejo de errores y notificación si la creación del ticket falla.
             Notification::make()
@@ -96,4 +97,3 @@ class RequestPasswordChange extends Component
 }
 
 */
-?>

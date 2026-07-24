@@ -6,8 +6,8 @@ use App\Models\Actividad;
 use App\Models\CierreMensual;
 use App\Models\Departamental;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CierreMensualService
 {

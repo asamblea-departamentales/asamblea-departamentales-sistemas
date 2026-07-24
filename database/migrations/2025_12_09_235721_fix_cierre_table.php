@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('cierres_mensuales', function (Blueprint $table) {
             $table->dropColumn('porcentaje_cumplimiento');
         });
-        
+
     }
 
     /**

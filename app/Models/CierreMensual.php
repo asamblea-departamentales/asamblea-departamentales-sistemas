@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class CierreMensual extends Model
 {
@@ -18,6 +17,7 @@ class CierreMensual extends Model
     protected $table = 'cierres_mensuales';
 
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = [
@@ -45,7 +45,7 @@ class CierreMensual extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            if (!$model->id) {
+            if (! $model->id) {
                 $model->id = (string) Str::uuid();
             }
         });
@@ -99,35 +99,33 @@ class CierreMensual extends Model
         });
     }
 
-        public function getPorcentajeCumplimientoAttribute()
-        {
-            if ($this->actividades_proyectadas > 0) {
-                return round(($this->actividades_ejecutadas / $this->actividades_proyectadas) * 100, 2);
-            }
-            return 0;
+    public function getPorcentajeCumplimientoAttribute()
+    {
+        if ($this->actividades_proyectadas > 0) {
+            return round(($this->actividades_ejecutadas / $this->actividades_proyectadas) * 100, 2);
         }
 
-
-public function generarPDF()
-{
-    $pdf = Pdf::loadView('pdf.cierre_mensual', [
-        'cierre' => $this,
-        'actividades' => $this->actividades,
-        'meses' => app(\App\Services\CierreMensualService::class)->getMesesDisponibles(),
-    ]);
-
-    $pdfDir = storage_path('app/public/cierres');
-    if (!is_dir($pdfDir)) {
-        mkdir($pdfDir, 0755, true);
+        return 0;
     }
 
-    $pdfPath = "cierres/cierre_{$this->id}.pdf";
-    $pdf->save(storage_path("app/public/$pdfPath"));
+    public function generarPDF()
+    {
+        $pdf = Pdf::loadView('pdf.cierre_mensual', [
+            'cierre' => $this,
+            'actividades' => $this->actividades,
+            'meses' => app(\App\Services\CierreMensualService::class)->getMesesDisponibles(),
+        ]);
 
-    $this->update(['pdf_path' => $pdfPath]);
+        $pdfDir = storage_path('app/public/cierres');
+        if (! is_dir($pdfDir)) {
+            mkdir($pdfDir, 0755, true);
+        }
 
-    return $pdfPath;
-}
+        $pdfPath = "cierres/cierre_{$this->id}.pdf";
+        $pdf->save(storage_path("app/public/$pdfPath"));
 
-            
+        $this->update(['pdf_path' => $pdfPath]);
+
+        return $pdfPath;
+    }
 }
