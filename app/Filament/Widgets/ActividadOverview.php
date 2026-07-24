@@ -10,7 +10,14 @@ class ActividadOverview extends BaseWidget
 {
     protected function getStats(): array
     {
-        $counts = Actividad::selectRaw("
+        $user = auth()->user();
+        $query = Actividad::query();
+
+        if (! $user->isCentralRole()) {
+            $query->where('actividads.departamental_id', $user->departamental_id);
+        }
+
+        $counts = $query->selectRaw("
             COUNT(*) as total,
             SUM(CASE WHEN estado = 'Completada' THEN 1 ELSE 0 END) as completadas,
             SUM(CASE WHEN estado IN ('Pendiente','En Progreso') THEN 1 ELSE 0 END) as pendientes,

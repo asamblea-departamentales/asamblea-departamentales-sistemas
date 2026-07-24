@@ -115,6 +115,24 @@ class ComentarioResource extends Resource
         return [];
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (! $user->isCentralRole()) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('actividad', function ($aQuery) use ($user) {
+                    $aQuery->where('actividads.departamental_id', $user->departamental_id);
+                })->orWhereHas('ticket', function ($tQuery) use ($user) {
+                    $tQuery->where('tickets.departamental_id', $user->departamental_id);
+                });
+            });
+        }
+
+        return $query;
+    }
+
     public static function getPages(): array
     {
         return [

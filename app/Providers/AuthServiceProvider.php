@@ -8,6 +8,7 @@ use App\Policies\ActividadPolicy;
 use App\Policies\Blog\CategoryPolicy as BlogPostCategoryPolicy;
 use App\Policies\Blog\PostPolicy as BlogPostPolicy;
 use App\Policies\CierreMensualPolicy;
+use App\Policies\ComentariosPolicy;
 use App\Policies\ContratoPolicy;
 use App\Policies\ExceptionPolicy;
 use App\Policies\RequisicionPolicy;
@@ -32,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Contrato::class => ContratoPolicy::class,
         \App\Models\CierreMensual::class => CierreMensualPolicy::class,
         \App\Models\User::class => UserPolicy::class,
+        \App\Models\Comentarios::class => ComentariosPolicy::class,
     ];
 
     /**

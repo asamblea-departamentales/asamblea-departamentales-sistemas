@@ -9,7 +9,7 @@ class ContratoPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('view_any_contrato');
     }
 
     public function view(User $user, Contrato $contrato): bool
@@ -23,7 +23,7 @@ class ContratoPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create_contrato');
     }
 
     public function update(User $user, Contrato $contrato): bool

@@ -14,6 +14,8 @@ use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Sanctum\HasApiTokens;
 use LdapRecord\Laravel\Auth\AuthenticatesWithLdap;
 use LdapRecord\Laravel\Auth\LdapAuthenticatable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -27,6 +29,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     use HasRoles, HasUuids;
     use Impersonate;
     use InteractsWithMedia;
+    use LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -173,5 +176,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     public function receivesBroadcastNotificationsOn(): string
     {
         return 'notifications.'.$this->id;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['firstname', 'lastname', 'email', 'departamental_id', 'activo'])
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['remember_token']);
     }
 }

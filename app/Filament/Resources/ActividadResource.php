@@ -84,11 +84,7 @@ class ActividadResource extends Resource
                         Forms\Components\Select::make('programa')
                             ->label('Programa')
                             ->required()
-                            ->options([
-                                'Programa de Educacion Civica' => 'Programa de Educacion Civica',
-                                'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
-                                'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
-                            ])
+                            ->options(\App\Models\Catalogo::options('programa'))
                             ->native(true)
                             ->placeholder('Seleccione un programa')
                             ->columnSpanFull(),
@@ -375,9 +371,9 @@ class ActividadResource extends Resource
                     }),
 
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn (Model $record) => auth()->user()->can('delete_actividad')
-                        && $record->estado !== 'Completada'
-                        && $record->estado !== 'Cancelada'
+                    ->visible(fn (Model $record) => auth()->user()->isCentralRole()
+                        && auth()->user()->can('delete_actividad')
+                        && ! in_array($record->estado, ['Completada', 'Cancelada'])
                     )
                     ->before(function (Model $record, Tables\Actions\DeleteAction $action) {
                         if (in_array($record->estado, ['Completada', 'Cancelada'])) {
@@ -555,12 +551,7 @@ class ActividadResource extends Resource
                                 Forms\Components\Select::make('programa')
                                     ->label('Programa')
                                     ->required()
-                                    ->options([
-                                        'Programa de Educacion Civica' => 'Programa de Educacion Civica',
-                                        'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
-                                        'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
-                                        'Otro' => 'Otro',
-                                    ])
+                                    ->options(\App\Models\Catalogo::options('programa'))
                                     ->placeholder('Seleccione un programa')
                                     ->searchable()
                                     ->native(false)
@@ -709,17 +700,12 @@ class ActividadResource extends Resource
             return false;
         }
 
-        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
+        if (! $user->isCentralRole()) {
             return false;
         }
 
-        if (! $user->isCentralRole()) {
-            $mes = $record->fecha->month;
-            $año = $record->fecha->year;
-
-            if (CierreMensual::mesCerrado($record->departamental_id, $mes, $año)) {
-                return false;
-            }
+        if (in_array($record->estado, ['Completada', 'Cancelada'])) {
+            return false;
         }
 
         return true;
@@ -727,7 +713,9 @@ class ActividadResource extends Resource
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()->can('delete_any_actividad');
+        $user = auth()->user();
+
+        return $user->can('delete_any_actividad') && $user->isCentralRole();
     }
 
     public static function getRelations(): array

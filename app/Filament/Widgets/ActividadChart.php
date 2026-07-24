@@ -25,7 +25,14 @@ class ActividadChart extends ChartWidget
         $startDate = $now->copy()->subMonths(5)->startOfMonth();
         $endDate = $now->copy()->endOfMonth();
 
-        $counts = Actividad::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, COUNT(*) as total")
+        $user = auth()->user();
+        $query = Actividad::query();
+
+        if (! $user->isCentralRole()) {
+            $query->where('actividads.departamental_id', $user->departamental_id);
+        }
+
+        $counts = $query->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as mes, COUNT(*) as total")
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('mes')
             ->pluck('total', 'mes')

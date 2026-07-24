@@ -99,7 +99,7 @@ class CierreMensualResource extends Resource
                                 'reabierto' => 'Reabierto',
                             ])
                             ->required()
-                            ->disabled(fn () => ! auth()->user()->isSuperAdmin() && ! auth()->user()->hasAnyRole(['ti', 'gol'])),
+                            ->disabled(fn () => ! auth()->user()->isSuperAdmin() && ! auth()->user()->hasRole('ti')),
 
                         Forms\Components\Textarea::make('observaciones')
                             ->rows(3),

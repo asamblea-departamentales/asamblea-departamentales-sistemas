@@ -156,6 +156,73 @@ Route::middleware(['web', 'auth'])->get('/consolidado/{año}/{mes}/pdf', functio
 })->name('consolidado.pdf');
 
 /* -----------------------------
+|  REPORTES PDF GENERALES
+------------------------------*/
+Route::middleware(['web', 'auth'])->get('/reportes/actividades/pdf', function () {
+    $user = auth()->user();
+    $query = \App\Models\Actividad::query()->with(['departamental', 'user']);
+
+    if (! $user->isCentralRole()) {
+        $query->where('departamental_id', $user->departamental_id);
+    }
+
+    $actividades = $query->orderByDesc('created_at')->get();
+    $titulo = $user->isCentralRole() ? 'Todas las departamentales' : ($user->departamental?->nombre ?? 'Mi departamental');
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.actividades_reporte', compact('actividades', 'titulo'));
+
+    return $pdf->download('reporte_actividades_'.now()->format('Y-m-d').'.pdf');
+})->name('reportes.actividades.pdf');
+
+Route::middleware(['web', 'auth'])->get('/reportes/tickets/pdf', function () {
+    $user = auth()->user();
+    $query = \App\Models\Ticket::query()->with('departamental');
+
+    if (! $user->isCentralRole()) {
+        $query->where('departamental_id', $user->departamental_id);
+    }
+
+    $tickets = $query->orderByDesc('created_at')->get();
+    $titulo = $user->isCentralRole() ? 'Todas las departamentales' : ($user->departamental?->nombre ?? 'Mi departamental');
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.tickets_reporte', compact('tickets', 'titulo'));
+
+    return $pdf->download('reporte_tickets_'.now()->format('Y-m-d').'.pdf');
+})->name('reportes.tickets.pdf');
+
+Route::middleware(['web', 'auth'])->get('/reportes/requisiciones/pdf', function () {
+    $user = auth()->user();
+    $query = \App\Models\Requisicion::query()->with('departamental');
+
+    if (! $user->isCentralRole()) {
+        $query->where('departamental_id', $user->departamental_id);
+    }
+
+    $requisiciones = $query->orderByDesc('created_at')->get();
+    $titulo = $user->isCentralRole() ? 'Todas las departamentales' : ($user->departamental?->nombre ?? 'Mi departamental');
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.requisiciones_reporte', compact('requisiciones', 'titulo'));
+
+    return $pdf->download('reporte_requisiciones_'.now()->format('Y-m-d').'.pdf');
+})->name('reportes.requisiciones.pdf');
+
+Route::middleware(['web', 'auth'])->get('/reportes/contratos/pdf', function () {
+    $user = auth()->user();
+    $query = \App\Models\Contrato::query()->with('departamental');
+
+    if (! $user->isCentralRole()) {
+        $query->where('departamental_id', $user->departamental_id);
+    }
+
+    $contratos = $query->orderByDesc('created_at')->get();
+    $titulo = $user->isCentralRole() ? 'Todas las departamentales' : ($user->departamental?->nombre ?? 'Mi departamental');
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.contratos_reporte', compact('contratos', 'titulo'));
+
+    return $pdf->download('reporte_contratos_'.now()->format('Y-m-d').'.pdf');
+})->name('reportes.contratos.pdf');
+
+/* -----------------------------
 |  PDF DEL MANUAL POR ROL
 -------------------------------*/
 Route::middleware(['web', 'auth'])->get('/admin/manual', function () {

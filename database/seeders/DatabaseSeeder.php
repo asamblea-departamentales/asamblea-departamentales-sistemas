@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ContactUsSeeder::class,
             MenuSeeder::class,
             DepartamentalesSeeder::class,
+            CatalogoSeeder::class,
             // para tener data
             AssignShieldPermissionsSeeder::class,
         ]);

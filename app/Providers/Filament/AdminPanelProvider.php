@@ -93,6 +93,9 @@ class AdminPanelProvider extends PanelProvider
                 ActividadOverview::class,
                 ActividadChart::class,
                 CalendarioWidget::class,
+                \App\Filament\Widgets\TicketOverview::class,
+                \App\Filament\Widgets\RequisicionOverview::class,
+                \App\Filament\Widgets\ContratoOverview::class,
             ])
 
             // Plugins

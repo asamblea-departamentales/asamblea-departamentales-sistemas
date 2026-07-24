@@ -50,13 +50,13 @@ class RequisicionResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('tipo_insumo')
                             ->label('Tipo de Insumo')
-                            ->options(Requisicion::TIPOS_INSUMO)
+                            ->options(\App\Models\Catalogo::options('tipo_insumo'))
                             ->required()
                             ->searchable(),
 
                         Forms\Components\Select::make('rubro')
                             ->label('Rubro')
-                            ->options(Requisicion::RUBROS)
+                            ->options(\App\Models\Catalogo::options('rubro'))
                             ->required()
                             ->searchable(),
 
@@ -134,13 +134,13 @@ class RequisicionResource extends Resource
                     ->label('Tipo de Insumo')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn (string $state): string => Requisicion::TIPOS_INSUMO[$state] ?? $state),
+                    ->formatStateUsing(fn (string $state): string => \App\Models\Catalogo::label('tipo_insumo', $state) ?? $state),
 
                 Tables\Columns\TextColumn::make('rubro')
                     ->label('Rubro')
                     ->sortable()
                     ->searchable()
-                    ->formatStateUsing(fn (string $state): string => Requisicion::RUBROS[$state] ?? $state),
+                    ->formatStateUsing(fn (string $state): string => \App\Models\Catalogo::label('rubro', $state) ?? $state),
 
                 Tables\Columns\TextColumn::make('cantidad')
                     ->label('Cantidad')
@@ -194,11 +194,11 @@ class RequisicionResource extends Resource
 
                 SelectFilter::make('tipo_insumo')
                     ->label('Tipo de Insumo')
-                    ->options(Requisicion::TIPOS_INSUMO),
+                    ->options(\App\Models\Catalogo::options('tipo_insumo')),
 
                 SelectFilter::make('rubro')
                     ->label('Rubro')
-                    ->options(Requisicion::RUBROS),
+                    ->options(\App\Models\Catalogo::options('rubro')),
 
                 SelectFilter::make('departamental_id')
                     ->label('Departamental')
@@ -256,6 +256,16 @@ class RequisicionResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_requisicion');
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_any_requisicion');
     }
 
     public static function getPages(): array

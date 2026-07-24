@@ -144,6 +144,12 @@ class UserResource extends Resource
                                     ->required()
                                     ->maxLength(255),
 
+                                Forms\Components\Toggle::make('activo')
+                                    ->label('Activo')
+                                    ->default(true)
+                                    ->required()
+                                    ->visible(fn () => auth()->user()->hasAnyRole(['ti', 'super_admin'])),
+
                                 // === Departamental ===
                                 Select::make('departamental_id')
                                     ->label('Departamental')

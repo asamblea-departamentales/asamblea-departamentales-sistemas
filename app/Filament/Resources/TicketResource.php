@@ -54,7 +54,7 @@ class TicketResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('tipo_ticket')
                             ->label('Tipo de Ticket')
-                            ->options(Ticket::TIPOS)
+                            ->options(\App\Models\Catalogo::options('tipo_ticket'))
                             ->required()
                             ->searchable(),
 
@@ -127,7 +127,7 @@ class TicketResource extends Resource
             ->columns([
                 Tables\Columns\BadgeColumn::make('tipo_ticket')
                     ->label('Tipo')
-                    ->formatStateUsing(fn (string $state): string => Ticket::TIPOS[$state] ?? $state)
+                    ->formatStateUsing(fn (string $state): string => \App\Models\Catalogo::label('tipo_ticket', $state) ?? $state)
                     ->colors([
                         'danger' => 'SOPORTE_TECNICO',
                         'warning' => 'MANTENIMIENTO',
@@ -192,7 +192,7 @@ class TicketResource extends Resource
             ->filters([
                 SelectFilter::make('tipo_ticket')
                     ->label('Tipo de Ticket')
-                    ->options(Ticket::TIPOS),
+                    ->options(\App\Models\Catalogo::options('tipo_ticket')),
 
                 SelectFilter::make('estado_interno')
                     ->label('Estado')
@@ -291,6 +291,16 @@ class TicketResource extends Resource
         return [
             TicketComentarioRelationManager::class,
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_ticket');
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_any_ticket');
     }
 
     public static function getPages(): array

@@ -9,7 +9,7 @@ class TicketPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('view_any_ticket');
     }
 
     public function view(User $user, Ticket $ticket): bool
@@ -23,7 +23,7 @@ class TicketPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create_ticket');
     }
 
     public function update(User $user, Ticket $ticket): bool

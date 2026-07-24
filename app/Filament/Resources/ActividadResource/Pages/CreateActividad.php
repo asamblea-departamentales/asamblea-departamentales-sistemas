@@ -8,6 +8,7 @@ namespace App\Filament\Resources\ActividadResource\Pages;
 use App\Filament\Resources\ActividadResource;
 // Importación de la clase base para páginas de creación de registros
 use App\Models\Actividad;
+use App\Models\CierreMensual;
 // Importación de acciones de Filament
 use Filament\Actions;
 // Importación de componentes de formularios
@@ -106,17 +107,9 @@ class CreateActividad extends CreateRecord
                                 ->hintColor(fn () => auth()->user()->departamental_id ? null : 'danger'),
                             // Campo de texto para el programa
                             Forms\Components\Select::make('programa')
-                                // Etiqueta del campo
                                 ->label('Programa')
-                                // Campo obligatorio
                                 ->required()
-                                // Opciones de Programas
-                                ->options([
-                                    'Programa de Educacion Civica' => 'Programa de Educacion Civica',
-                                    'Programa de Participacion Ciudadana' => 'Programa de Participacion Ciudadana',
-                                    'Programa de Atencion Ciudadana' => 'Programa de Atencion Ciudadana',
-                                    'Otro' => 'Otros',
-                                ])
+                                ->options(\App\Models\Catalogo::options('programa'))
                                 ->placeholder('Seleccione un programa')
                                 ->searchable()
                                 ->native(false),
@@ -326,6 +319,23 @@ class CreateActividad extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+        $user = auth()->user();
+
+        if (! $user->isCentralRole()) {
+            $fecha = \Carbon\Carbon::parse($data['fecha']);
+            $departamentalId = $data['departamental_id'] ?? $user->departamental_id;
+
+            if (CierreMensual::mesCerrado($departamentalId, $fecha->month, $fecha->year)) {
+                Notification::make()
+                    ->title('Mes cerrado')
+                    ->body('No se pueden crear actividades en un mes que ya fue cerrado.')
+                    ->danger()
+                    ->send();
+
+                $this->halt();
+            }
+        }
+
         return Actividad::create($data);
     }
 }

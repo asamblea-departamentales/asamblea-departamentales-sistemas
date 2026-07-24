@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Contrato extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'contratos';
 
@@ -90,5 +92,12 @@ class Contrato extends Model
     public function departamental()
     {
         return $this->belongsTo(Departamental::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['tipo', 'proveedor', 'monto', 'fecha_inicio', 'fecha_vencimiento', 'oficina', 'departamental_id', 'observaciones'])
+            ->logOnlyDirty();
     }
 }

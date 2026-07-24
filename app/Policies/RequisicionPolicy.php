@@ -9,7 +9,7 @@ class RequisicionPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('view_any_requisicion');
     }
 
     public function view(User $user, Requisicion $requisicion): bool
@@ -23,7 +23,7 @@ class RequisicionPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create_requisicion');
     }
 
     public function update(User $user, Requisicion $requisicion): bool

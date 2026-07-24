@@ -17,7 +17,14 @@ class CalendarioWidget extends FullCalendarWidget implements HasActions
 
     public function fetchEvents(array $fetchInfo): array
     {
-        return Actividad::query()
+        $user = auth()->user();
+        $query = Actividad::query();
+
+        if (! $user->isCentralRole()) {
+            $query->where('actividads.departamental_id', $user->departamental_id);
+        }
+
+        return $query
             ->where('star_date', '>=', $fetchInfo['start'])
             ->where('due_date', '<=', $fetchInfo['end'])
             ->select(['id', 'macroactividad', 'star_date', 'due_date', 'estado'])

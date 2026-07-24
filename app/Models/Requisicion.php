@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Requisicion extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'requisiciones';
 
@@ -177,5 +179,12 @@ class Requisicion extends Model
     public function departamental()
     {
         return $this->belongsTo(Departamental::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['tipo_insumo', 'rubro', 'cantidad', 'fecha_solicitud', 'estado_interno', 'departamental_id', 'observaciones'])
+            ->logOnlyDirty();
     }
 }

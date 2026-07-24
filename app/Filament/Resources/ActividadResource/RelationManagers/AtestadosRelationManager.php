@@ -14,11 +14,14 @@ class AtestadosRelationManager extends RelationManager
 
     public function form(Forms\Form $form): Forms\Form
     {
+        $actividad = $this->getOwnerRecord();
+
         return $form->schema([
             \Filament\Forms\Components\SpatieMediaLibraryFileUpload::make('file')
                 ->collection('atestados')
                 ->multiple()
-                ->disk('repositorio'),
+                ->disk('repositorio')
+                ->visible(fn () => $actividad->estado !== 'Completada'),
         ]);
     }
 
@@ -51,7 +54,8 @@ class AtestadosRelationManager extends RelationManager
                     ->url(fn ($record) => $record->getUrl())
                     ->openUrlInNewTab(),
 
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn () => in_array($this->getOwnerRecord()->estado, ['Pendiente', 'En Progreso', 'Cancelada'])),
             ]);
     }
 }

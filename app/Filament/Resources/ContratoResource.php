@@ -56,15 +56,8 @@ class ContratoResource extends Resource
                         Forms\Components\Select::make('tipo')
                             ->label('Tipo de Contrato')
                             ->required()
-                            ->options([
-                                'SERVICIOS' => 'Servicios',
-                                'SUMINISTROS' => 'Suministros',
-                                'OBRAS' => 'Obras',
-                                'CONSULTORIA' => 'Consultoría',
-                                'MANTENIMIENTO' => 'Mantenimiento',
-                                'ARRENDAMIENTO' => 'Arrendamiento',
-                            ])
-                            ->native(false) // ← usa el select nativo del navegador
+                            ->options(\App\Models\Catalogo::options('tipo_contrato'))
+                            ->native(false)
                             ->placeholder('Seleccione un tipo de contrato'),
 
                         Forms\Components\TextInput::make('proveedor')
@@ -199,14 +192,7 @@ class ContratoResource extends Resource
             ->filters([
                 SelectFilter::make('tipo')
                     ->label('Tipo de Contrato')
-                    ->options([
-                        'SERVICIOS' => 'Servicios',
-                        'SUMINISTROS' => 'Suministros',
-                        'OBRAS' => 'Obras',
-                        'CONSULTORIA' => 'Consultoría',
-                        'MANTENIMIENTO' => 'Mantenimiento',
-                        'ARRENDAMIENTO' => 'Arrendamiento',
-                    ]),
+                    ->options(\App\Models\Catalogo::options('tipo_contrato')),
 
                 SelectFilter::make('oficina')
                     ->label('Oficina')
@@ -247,6 +233,16 @@ class ContratoResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->can('create_contrato');
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_any_contrato');
     }
 
     public static function getPages(): array

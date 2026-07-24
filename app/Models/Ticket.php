@@ -6,10 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Ticket extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $table = 'tickets';
 
@@ -141,5 +143,12 @@ class Ticket extends Model
     public function comentarios()
     {
         return $this->hasMany(Comentarios::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['tipo_ticket', 'motivo', 'fecha_solicitud', 'estado_interno', 'departamental_id', 'observaciones'])
+            ->logOnlyDirty();
     }
 }

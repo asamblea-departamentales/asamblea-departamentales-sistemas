@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ActividadResource\Pages;
 
 use App\Filament\Resources\ActividadResource;
+use App\Filament\Resources\ActividadResource\RelationManagers\AtestadosRelationManager;
 use App\Filament\Resources\ActividadResource\RelationManagers\ComentarioRelationManager;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -16,6 +17,7 @@ class ViewActividad extends ViewRecord
     {
         return [
             ComentarioRelationManager::class,
+            AtestadosRelationManager::class,
         ];
     }
 

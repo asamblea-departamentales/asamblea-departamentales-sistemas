@@ -130,6 +130,36 @@ class ListActividades extends ListRecords
                     $this->generarCierreMensual($data);
                 })
                 ->visible(fn () => auth()->user()->hasAnyRole(['super_admin', 'gol', 'coordinador'])),
+
+            Actions\Action::make('exportar_csv')
+                ->label('Exportar CSV')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->action(function () use ($user) {
+                    $query = \App\Models\Actividad::query()->with(['departamental', 'user']);
+
+                    if (! $user->isCentralRole()) {
+                        $query->where('departamental_id', $user->departamental_id);
+                    }
+
+                    $data = $query->get()->map(fn ($a) => collect([
+                        $a->id,
+                        \App\Models\Catalogo::label('programa', $a->programa) ?? $a->programa,
+                        $a->macroactividad,
+                        $a->estado,
+                        $a->star_date?->format('d/m/Y'),
+                        $a->due_date?->format('d/m/Y'),
+                        $a->lugar,
+                        $a->departamental?->nombre,
+                        $a->user?->firstname.' '.$a->user?->lastname,
+                    ]));
+
+                    return \App\Exports\CsvExport::download(
+                        $data,
+                        ['ID', 'Programa', 'Macroactividad', 'Estado', 'Fecha Inicio', 'Fecha Fin', 'Lugar', 'Departamental', 'Creado Por'],
+                        'actividades_'.now()->format('Y-m-d').'.csv'
+                    );
+                }),
         ];
     }
 
